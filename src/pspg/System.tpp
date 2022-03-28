@@ -268,14 +268,17 @@ namespace Pspg
       tmpFieldsKGrid_.allocate(nMonomer);
 
       for (int i = 0; i < nMonomer; ++i) {
+         //#wField(i).allocate(basis().nBasis());
          wField(i).allocate(basis().nStar());
          wFieldRGrid(i).allocate(mesh().dimensions());
          wFieldKGrid(i).allocate(mesh().dimensions());
 
+         //#cField(i).allocate(basis().nBasis());
          cField(i).allocate(basis().nStar());
          cFieldRGrid(i).allocate(mesh().dimensions());
          cFieldKGrid(i).allocate(mesh().dimensions());
 
+         //#tmpFields_[i].allocate(basis().nBasis());
          tmpFields_[i].allocate(basis().nStar());
          tmpFieldsRGrid_[i].allocate(mesh().dimensions());
          tmpFieldsKGrid_[i].allocate(mesh().dimensions());
@@ -438,12 +441,15 @@ namespace Pspg
             // Compute w fields, excluding Lagrange multiplier contribution
             //code is bad here, `mangled' access of data in array
             for (int i = 0; i < mixture().nMonomer(); ++i) {
-               assignUniformReal<<<nBlocks, nThreads>>>(wFieldRGrid(i).cDField(), 0, mesh().size());
+               assignUniformReal<<<nBlocks, nThreads>>>(wFieldRGrid(i).cDField(), 
+                                                        0, mesh().size());
             }
             for (int i = 0; i < mixture().nMonomer(); ++i) {
                for (int j = 0; j < mixture().nMonomer(); ++j) {
-                  pointWiseAddScale<<<nBlocks, nThreads>>>(wFieldRGrid(i).cDField(), cFieldRGrid(j).cDField(), 
-                                                            interaction().chi(i,j), mesh().size());
+                  pointWiseAddScale<<<nBlocks, nThreads>>>(wFieldRGrid(i).cDField(), 
+                                                           cFieldRGrid(j).cDField(), 
+                                                           interaction().chi(i,j), 
+                                                           mesh().size());
                }
             }
 
@@ -618,7 +624,8 @@ namespace Pspg
       // Compute excess interaction free energy
       for (int i = 0; i < nm; ++i) {
          for (int j = i + 1; j < nm; ++j) {
-           assignUniformReal<<<nBlocks, nThreads>>>(workArray.cDField(), interaction().chi(i, j), nx);
+           assignUniformReal<<<nBlocks, nThreads>>>(workArray.cDField(), 
+                                                    interaction().chi(i, j), nx);
            inPlacePointwiseMul<<<nBlocks, nThreads>>>(workArray.cDField(), cFieldsRGrid_[i].cDField(), nx);
            inPlacePointwiseMul<<<nBlocks, nThreads>>>(workArray.cDField(), cFieldsRGrid_[j].cDField(), nx);
            fHelmholtz_ += gpuSum(workArray.cDField(), nx) / double(nx);
