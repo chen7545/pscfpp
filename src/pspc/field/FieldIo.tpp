@@ -1178,8 +1178,9 @@ namespace Pspc
    }
 
    template <int D>
-   void FieldIo<D>::convertBasisToKGrid(DArray< DArray <double> > const & in,
-                                        DArray< RFieldDft<D> >& out) const
+   void 
+   FieldIo<D>::convertBasisToKGrid(DArray< DArray <double> > const & in,
+                                   DArray< RFieldDft<D> >& out) const
    {
       UTIL_ASSERT(in.capacity() == out.capacity());
       int n = in.capacity();
@@ -1189,8 +1190,9 @@ namespace Pspc
    }
 
    template <int D>
-   void FieldIo<D>::convertKGridToBasis(DArray< RFieldDft<D> > const & in,
-                                        DArray< DArray <double> > & out) const
+   void 
+   FieldIo<D>::convertKGridToBasis(DArray< RFieldDft<D> > const & in,
+                                    DArray< DArray <double> > & out) const
    {
       UTIL_ASSERT(in.capacity() == out.capacity());
       int n = in.capacity();
