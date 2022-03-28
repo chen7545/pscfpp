@@ -32,7 +32,7 @@ namespace Pspg
    */
    template <int D>
    FieldIo<D>::FieldIo()
-    : unitCellPtr_(0),
+    : unitCellPtr_(0),     //# unitCellPtr_ is absent in Pspc::FieldIo
       meshPtr_(0),
       fftPtr_(0),
       groupNamePtr_(0),
@@ -49,6 +49,8 @@ namespace Pspg
 
    /*
    * Get and store addresses of associated objects.
+   *
+   * //# unitCell argument and unitCellPtr_ assignment absent in Pspc
    */
    template <int D>
    void FieldIo<D>::associate(UnitCell<D>& unitCell,
@@ -65,25 +67,30 @@ namespace Pspg
       fftPtr_ = &fft;
       fileMasterPtr_ = &fileMaster;
    }
-  
+ 
    template <int D>
    void FieldIo<D>::readFieldsBasis(std::istream& in, 
                                     DArray< RDField<D> >& fields)
+   //# Additional UnitCell<D>& unitCell argument in Pspc
    {
       int nMonomer = fields.capacity();
+      //# nMonomer is not set here, instead passed to readFieldHeader
+      //# Extra variable fieldCapacity, not set here
       UTIL_CHECK(nMonomer > 0);
 
-      DArray<cudaReal*> temp_out;
-      temp_out.allocate(nMonomer);
-
       // Read header
-      FieldIo<D>::readFieldHeader(in);
+      FieldIo<D>::readFieldHeader(in); //# Extra arguments nMonomer, unitCell
       std::string label;
       in >> label;
       UTIL_CHECK(label == "N_star");
       int nStarIn;
       in >> nStarIn;
       UTIL_CHECK(nStarIn > 0);
+
+      //# Extra code to check and, if needed, allocate DArray fields
+
+      DArray<cudaReal*> temp_out;
+      temp_out.allocate(nMonomer);
 
       int i, j;
       int nStar = basis().nStar();
@@ -100,6 +107,7 @@ namespace Pspg
 
       DArray<double> temp;
       temp.allocate(nMonomer);
+      //# Allocate additional array temp2 (used to read in second line)
 
       // Loop over stars to read field components
       IntVec<D> waveIn, waveBz, waveDft;
@@ -135,9 +143,9 @@ namespace Pspg
 
       }
 
-     for(int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; i++) {
          cudaMemcpy(fields[i].cDField(), temp_out[i],
-            nStar * sizeof(cudaReal), cudaMemcpyHostToDevice);
+                    nStar * sizeof(cudaReal), cudaMemcpyHostToDevice);
          delete[] temp_out[i];
          temp_out[i] = nullptr;
       }
@@ -174,10 +182,10 @@ namespace Pspg
          temp_out[i] = new cudaReal[nStar];
       }   
 
-     for(int i = 0; i < nMonomer; i++) {
+      for(int i = 0; i < nMonomer; i++) {
          cudaMemcpy(temp_out[i], fields[i].cDField(),
-            nStar * sizeof(cudaReal), cudaMemcpyDeviceToHost);
-     }
+                    nStar * sizeof(cudaReal), cudaMemcpyDeviceToHost);
+      }
 
       out << "N_star       " << std::endl 
           << "             " << nBasis << std::endl;
@@ -196,7 +204,7 @@ namespace Pspg
          }
       }
 
-     for(int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; i++) {
          delete[] temp_out[i];
          temp_out[i] = nullptr;
       }   
