@@ -15,6 +15,7 @@
 #include <util/format/Dbl.h>
 
 #include <string>
+#include <random>
 
 namespace Pscf {
 namespace Fd1d
@@ -283,6 +284,46 @@ namespace Fd1d
          out << Int(i, 5);
          for (j = 0; j < nm; ++j) {
             out << "  " << Dbl(fields[j][nx-1]);
+         }
+         out << std::endl;
+      }
+
+   }
+   
+   /*
+    * Add Gaussian noise to an array of fields
+    */
+   void FieldIo::noise(Array<Field> const & fields, 
+                       double mean, double stddev,
+                       std::string const & filename)
+   {
+      std::ofstream out;
+      fileMaster().openOutputFile(filename, out);
+      noise(fields, mean, stddev, out);
+      out.close();
+   }
+
+   /*
+   * Add Gaussian noise to an array of fields
+   */
+   void 
+   FieldIo::noise(Array<Field> const & fields, double mean, double stddev, std::ostream& out)
+   {
+      int nm = mixture().nMonomer();
+      int nx = domain().nx();
+      out << "nx     "  <<  nx              << std::endl;
+      out << "nm     "  <<  nm              << std::endl;
+      
+      // Define random generator with Gaussian distribution
+      std::default_random_engine generator;
+      std::normal_distribution<double> dist(mean, stddev);
+      // Loop over Grid to add Gaussian noise and write fields
+      
+      int i, j;
+      for (i = 0; i < nx; ++i){
+         out << Int(i, 5);
+         for (j = 0; j < nm; ++j){
+            out << "  " <<Dbl(fields[j][i] + dist(generator));
          }
          out << std::endl;
       }

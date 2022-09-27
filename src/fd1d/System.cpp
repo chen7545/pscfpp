@@ -363,6 +363,19 @@ namespace Fd1d
             inBuffer >> filename;
             Log::file() << "outfile = " << Str(filename, 20) << std::endl;
             fieldIo.extend(wFields(), m, filename);
+         } else 
+         if (command == "NOISE_W"){
+            double mean;
+            inBuffer >> mean;
+            Log::file() << std::endl;
+            Log::file() << "mean  = " << Int(mean, 20) << std::endl;
+            double stddev;
+            inBuffer >> stddev;
+            Log::file() << std::endl;
+            Log::file() << "stddev  = " << Int(stddev, 20) << std::endl;
+            inBuffer >> filename;
+            Log::file() << "outfile = " << Str(filename, 20) << std::endl;
+            fieldIo.noise(wFields(), mean, stddev, filename);
          } else {
             Log::file() << "  Error: Unknown command  " << command << std::endl;
             readNext = false;

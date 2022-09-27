@@ -221,7 +221,7 @@ namespace Fd1d
          
          // Decrease increment if necessary
          j = 0;
-         while (dWNormNew_ > dWNorm_ && j < 3) {
+         while (dWNormNew_ > dWNorm_ && j < 8) {
             //double dWNormDecrease_;
             Log::file() << "      error = " 
                         << dWNormNew_ << ", decreasing increment" << std::endl;

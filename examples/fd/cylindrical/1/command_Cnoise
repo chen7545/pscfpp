@@ -1,0 +1,3 @@
+READ_W  in/w
+NOISE_W 15 12 in/Noise_w
+FINISH

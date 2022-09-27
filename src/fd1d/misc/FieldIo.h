@@ -25,7 +25,7 @@ namespace Fd1d {
 
    public:
 
-      typedef System::Field Field;
+      typedef DArray<double> Field;
 
       /**
       * Constructor.
@@ -159,7 +159,30 @@ namespace Fd1d {
       */
       void extend(Array<Field> const & fields, int m, 
                   std::string const & filename);
+                  
+                  
+      /**
+      * Add Gaussian noise to an array of fields
+      *
+      * \param fields  array of fields to be added noise
+      * \param mean    mean of the Guassian noise 
+      * \param stddev  standard deviation of the Guassian noise 
+      * \param out  output stream for noisy field
+      */
+      void noise(Array<Field> const & fields, double mean, double stddev, std::ostream& out);
 
+      /**
+      * Add Gaussian noise to an array of fields
+      *
+      * \param fields  field to be added noise
+      * \param mean    mean of the Guassian noise 
+      * \param stddev  standard deviation of the Guassian noise 
+      * \param filename  name of output file for noisy field
+      */
+      void noise(Array<Field> const & fields, double mean, double stddev,
+                  std::string const & filename);
+                  
+ 
    private:
 
       /// Work array (capacity = # of monomer types).
