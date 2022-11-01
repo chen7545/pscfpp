@@ -35,6 +35,24 @@ namespace Pspc{
       // Call parent class readParameters
       AmIteratorTmpl<Compressor<D>, DArray<double> >::readParameters(in);
    }
+   
+   template <int D>
+   void AmCompressor<D>::setup()
+   {
+      // Allocate memory required by AM algorithm if not done earlier.
+      AmIteratorTmpl<Compressor<D>, DArray<double> >::setup();
+      // Store the current values of the fields
+      const int nMonomer = system().mixture().nMonomer();
+      const int nBasis = system().basis().nBasis();
+      w0.allocate(nMonomer);
+      for (int i = 0; i < nMonomer; ++i) {
+         w0[i].allocate(nBasis);
+         for (int j = 0; j< nBasis; ++j){
+            w0[i][j] = system().w().basis(i)[j];
+         }
+      }
+      
+   }
 
    // Compute and return L2 norm of residual vector
    template <int D>
@@ -190,13 +208,20 @@ namespace Pspc{
    template <int D>
    void AmCompressor<D>::getCurrent(DArray<double>& curr)
    {
-      // Straighten out fields into linear arrays
-
-      const int nMonomer = system().mixture().nMonomer();
       const int nBasis = system().basis().nBasis();
+      const DArray< DArray<double> > * currSys = &system().w().basis();
 
-      // Application of the template is not straightforward.
-
+      /*
+      * The field that we are adjusting must thus be a 
+      * Langrange multiplier field with nBasis components
+      * The current value is the difference between w and w0 
+      * for the first monomer (any monomer should give the same answer)
+      */
+      
+      for (int i = 0; i < nBasis; i++){
+         curr[i] = (*currSys)[0][i] - w0[0][i];
+      }
+         
    }
 
    // Perform the main system computation (solve the MDE)
@@ -218,7 +243,7 @@ namespace Pspc{
       }
       resid[0] = -1.0;
 
-       // Compute SCF residual vector elements
+       // Compute SCF residual vector elements. Deviation from incompressibility
       for (int j = 0; j < nMonomer; ++j) {
         for (int k = 0; k < nBasis; ++k) {
            resid[k] += system().c().basis(j)[k];
@@ -234,9 +259,18 @@ namespace Pspc{
       // Convert back to field format
       const int nMonomer = system().mixture().nMonomer();
       const int nBasis = system().basis().nBasis();
-
-      // Need a strategy for this - it's not straightforward
-
+      DArray< DArray<double> > wField;
+      wField.allocate(nMonomer);
+      
+      //New field is the w0 + the newGuess for the Lagrange multiplier field
+      for (int i = 0; i < nMonomer; i++){
+         wField[i].allocate(nBasis);
+         for (int k = 0; k < nBasis; k++){
+            wField[i][k] = w0[i][k] + newGuess[k];
+         }
+      }
+      system().setWBasis(wField);
+      
    }
 
    template<int D>
