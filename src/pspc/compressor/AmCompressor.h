@@ -51,10 +51,11 @@ namespace Pspc
       */
       void readParameters(std::istream& in);
       void setup();
+      int compress();
       // Inherited public member functions
       //using AmIteratorTmpl<Compressor<D>, DArray<double> >::setup;
       
-      using AmIteratorTmpl<Compressor<D>, DArray<double> >::solve;
+     // using AmIteratorTmpl<Compressor<D>, DArray<double> >::solve;
       using AmIteratorTmpl<Compressor<D>, DArray<double> >::setClassName;
 
    protected:
@@ -211,6 +212,13 @@ namespace Pspc
       void outputToLog();
 
    };
+   
+   #ifndef PSPC_AM_COMPRESSOR_TPP
+   // Suppress implicit instantiation
+   extern template class AmCompressor<1>;
+   extern template class AmCompressor<2>;
+   extern template class AmCompressor<3>;
+   #endif
 
 } // namespace Pspc
 } // namespace Pscf

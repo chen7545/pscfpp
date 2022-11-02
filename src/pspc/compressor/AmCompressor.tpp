@@ -53,6 +53,14 @@ namespace Pspc{
       }
       
    }
+   
+   template <int D>
+   int AmCompressor<D>::compress()
+   {
+   
+    return AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
+   }
+   
 
    // Compute and return L2 norm of residual vector
    template <int D>

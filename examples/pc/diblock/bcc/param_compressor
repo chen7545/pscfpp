@@ -27,7 +27,7 @@ System{
     lattice        cubic 
     groupName      I_m_-3_m
   }
-  AmCompressor{
+  Compressor{
     maxItr       100
     epsilon      1e-10
     maxHist      50 
