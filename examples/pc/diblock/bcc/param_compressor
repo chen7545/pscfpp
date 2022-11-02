@@ -31,7 +31,6 @@ System{
     maxItr       100
     epsilon      1e-10
     maxHist      50 
-    isFlexible   1
   }
 }
 
