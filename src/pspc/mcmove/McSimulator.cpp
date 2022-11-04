@@ -5,12 +5,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "McMoveManager.tpp"
+#include "McSimulator.tpp"
 
 namespace Pscf {
 namespace Pspc {
-   template class McMoveManager<1>;
-   template class McMoveManager<2>;
-   template class McMoveManager<3>;
+   template class McSimulator<1>;
+   template class McSimulator<2>;
+   template class McSimulator<3>;
 }
 }
