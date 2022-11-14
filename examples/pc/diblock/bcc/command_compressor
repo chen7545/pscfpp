@@ -1,9 +1,12 @@
 READ_W_BASIS     in/w.bf
-WRITE_STARS      out/stars
-WRITE_WAVES      out/waves
-COMPRESS          
-WRITE_W_BASIS    out/w.bf
-WRITE_C_BASIS    out/c.bf
-BASIS_TO_RGRID   out/w.bf  out/w.rf
+WRITE_STARS      out/stars_c
+WRITE_WAVES      out/waves_c
+COMPRESS
+WRITE_W_BASIS    out/w.bf_c
+WRITE_C_BASIS    out/c.bf_c
+BASIS_TO_RGRID   out/w.bf_c  out/w.rf_c
+
+COMPARE_RGRID    out/w.rf_c  out/w.rf
+
 FINISH
 
