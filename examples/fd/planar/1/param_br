@@ -24,10 +24,10 @@ System{
      nx     101
   }
   BinaryRelaxIterator{
-     epsilon      1.0E-8
+     epsilon      1.0E-12
      maxIter      40000
-     lambdaPlus   2.0
-     lambdaMinus  2.0
+     lambdaPlus   1.0
+     lambdaMinus  1.0
      
   }
 }

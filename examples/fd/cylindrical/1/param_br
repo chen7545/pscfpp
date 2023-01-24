@@ -30,10 +30,11 @@ System{
      xMax            4.00
      nx               401
   }
-  AmIterator{
-     epsilon     1.0E-8
-     maxItr      500
-     outputTime  1
-     errorType   maxResid
+  BinaryRelaxIterator{
+     epsilon      1.0E-10
+     maxIter      40000
+     lambdaPlus   2.0
+     lambdaMinus  2.0
+     
   }
 }

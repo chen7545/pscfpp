@@ -125,7 +125,8 @@ namespace Fd1d
     
       /// Is the ensemble canonical for all species ?
       bool isCanonical_;
-    
+      
+   
       /**
       * Allocate required memory.
       */
@@ -154,6 +155,13 @@ namespace Fd1d
       void updateWFields(Array<WField> const & wOld,
                          Array<WField> const & dW_,
                          Array<WField> & wNew);
+                         
+      void computeResidual(Array<WField> const & wFields, 
+                           Array<WField> const & cFields, 
+                           Array<double>& residual);
+                           
+      double residualNorm(Array<double> const & residual) const;
+                           
                          
    };
 

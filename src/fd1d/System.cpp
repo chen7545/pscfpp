@@ -1,7 +1,7 @@
 /*
 * PSCF - Polymer Self-Consistent Field Theory
 *
-* Copyright 2016 - 2022, The Regents of the University of Minnesota
+* Copyright 2016 - 2019, The Regents of the University of Minnesota
 * Distributed under the terms of the GNU General Public License.
 */
 
@@ -185,6 +185,9 @@ namespace Fd1d
       hasDomain_ = true;
       allocateFields();
 
+      // Initialize iterator
+      //readParamComposite(in, iterator());
+
       // Instantiate and initialize an Iterator 
       std::string className;
       bool isEnd;
@@ -196,7 +199,7 @@ namespace Fd1d
          UTIL_THROW(msg.c_str());
       }
 
-      // Optionally instantiate and initialize a Sweep object
+      // Optionally instantiate a Sweep object
       sweepPtr_ = 
          sweepFactoryPtr_->readObjectOptional(in, *this, className, isEnd);
       if (sweepPtr_) {
@@ -277,12 +280,7 @@ namespace Fd1d
       while (readNext) {
 
          inBuffer >> command;
-
-         if (inBuffer.eof()) {
-            break;
-         } else {
-            Log::file() << command;
-         }
+         Log::file() << command;
 
          if (command == "FINISH") {
             Log::file() << std::endl;
@@ -294,21 +292,15 @@ namespace Fd1d
          } else
          if (command == "COMPUTE") {
             // Solve the modified diffusion equation, without iteration
-            Log::file() << std::endl;
             compute();
          } else
          if (command == "ITERATE") {
-            // Attempt iteratively solve a single SCFT problem
+            // Attempt iteration to convergence
             bool isContinuation = false;
             int fail = iterate(isContinuation);
             if (fail) {
                readNext = false;
             }
-         } else
-         if (command == "SWEEP") {
-            // Attempt to solve a sequence of SCFT problems along a line
-            // through parameter space.
-            sweep();
          } else
          if (command == "COMPARE_HOMOGENEOUS") {
             int mode;
@@ -320,6 +312,10 @@ namespace Fd1d
             comparison.compute(mode);
             comparison.output(mode, Log::file());
          } else 
+         if (command == "SWEEP") {
+            // Do a series of iterations.
+            sweep();
+         } else
          if (command == "WRITE_W") {
             readEcho(inBuffer, filename);
             fieldIo_.writeFields(wFields(), filename);  
@@ -356,8 +352,7 @@ namespace Fd1d
             Log::file() << "vertexId  = " 
                         << Int(vertexId, 5) << std::endl;
             inBuffer >> filename;
-            Log::file() << "outfile   = " 
-                        << Str(filename, 20) << std::endl;
+            Log::file() << "outfile   = " << Str(filename, 20) << std::endl;
             fieldIo_.writeVertexQ(mixture_, polymerId, vertexId, filename);  
          } else
          if (command == "REMESH_W") {
@@ -377,11 +372,24 @@ namespace Fd1d
             inBuffer >> filename;
             Log::file() << "outfile = " << Str(filename, 20) << std::endl;
             fieldIo_.extend(wFields(), m, filename);
+         }else 
+         if (command == "NOISE_W"){
+            double mean;
+            inBuffer >> mean;
+            Log::file() << std::endl;
+            Log::file() << "mean  = " << Int(mean, 20) << std::endl;
+            double stddev;
+            inBuffer >> stddev;
+            Log::file() << std::endl;
+            Log::file() << "stddev  = " << Int(stddev, 20) << std::endl;
+            inBuffer >> filename;
+            Log::file() << "outfile = " << Str(filename, 20) << std::endl;
+            fieldIo_.noise(wFields(), mean, stddev, filename);
          } else {
-            Log::file() << "  Error: Unknown command  " 
-                        << command << std::endl;
+            Log::file() << "  Error: Unknown command  " << command << std::endl;
             readNext = false;
          }
+         
 
       }
    }

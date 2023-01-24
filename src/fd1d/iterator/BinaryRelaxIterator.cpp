@@ -58,6 +58,9 @@ namespace Fd1d
       dWNew_.allocate(nm);
       wFieldsNew_.allocate(nm);
       cFieldsNew_.allocate(nm);
+      int nr = nm*nx;
+      residual_.allocate(nr);
+      residualNew_.allocate(nr);
       for (int i = 0; i < nm; ++i) {
          wFieldsNew_[i].allocate(nx);
          cFieldsNew_[i].allocate(nx);
@@ -97,6 +100,80 @@ namespace Fd1d
       dWNorm = (dWpNorm + dWmNorm)/double(nx);
       dWNorm = sqrt(dWNorm);
    }
+   
+      void BinaryRelaxIterator::computeResidual(Array<WField> const & wFields,
+                                    Array<CField> const & cFields,
+                                    Array<double>& residual)
+   {
+      int nm = system().mixture().nMonomer();  // number of monomer types
+      int nx = domain().nx();         // number of grid points
+      int i;                          // grid point index
+      int j;                          // monomer indices
+      int ir;                         // residual index
+
+      // Loop over grid points
+      for (i = 0; i < nx; ++i) {
+
+         // Copy volume fractions at grid point i to cArray_
+         for (j = 0; j < nm; ++j) {
+            cArray_[j] = cFields[j][i];
+         }
+
+         // Compute w fields, without Langrange multiplier, from c fields
+         system().interaction().computeW(cArray_, wArray_);
+
+         // Initial residual = wPredicted(from above) - actual w
+         for (j = 0; j < nm; ++j) {
+            ir = j*nx + i;
+            residual[ir] = wArray_[j] - wFields[j][i];
+         }
+
+         // Residuals j = 1, ..., nm-1 are differences from component j=0
+         for (j = 1; j < nm; ++j) {
+            ir = j*nx + i;
+            residual[ir] = residual[ir] - residual[i];
+         }
+
+         // Residual for component j=0 then imposes incompressiblity
+         residual[i] = -1.0;
+         for (j = 0; j < nm; ++j) {
+            residual[i] += cArray_[j];
+         }
+      }
+
+      /*
+      * Note: In canonical ensemble, the spatial integral of the
+      * incompressiblity residual is guaranteed to be zero, as a result of how
+      * volume fractions are computed in SCFT. One of the nx incompressibility
+      * constraints is thus redundant. To avoid this redundancy, replace the
+      * incompressibility residual at the last grid point by a residual that
+      * requires the w field for the last monomer type at the last grid point
+      * to equal zero.
+      */
+
+      if (isCanonical_) {
+         residual[nx-1] = wFields[nm-1][nx-1];
+      }
+
+   }
+   
+      double BinaryRelaxIterator::residualNorm(Array<double> const & residual) const
+   {
+      int nm = system().mixture().nMonomer();  // number of monomer types
+      int nx = domain().nx();         // number of grid points
+      int nr = nm*nx;                 // number of residual components
+      double value, norm;
+      norm = 0.0;
+      for (int ir = 0; ir <  nr; ++ir) {
+         value = fabs(residual[ir]);
+         if (value > norm) {
+            norm = value;
+         }
+      }
+      return norm;
+   }
+   
+
 
    void BinaryRelaxIterator::updateWFields(Array<WField> const & wOld,
                                   Array<WField> const & dW,
@@ -170,6 +247,8 @@ namespace Fd1d
       // Compute initial dWNorm.
       mixture().compute(system().wFields(), system().cFields());
       computeDW(system().wFields(), system().cFields(), dW_, dWNorm_);
+      computeResidual(system().wFields(), system().cFields(), residual_);
+      double dWNorm_ = residualNorm(residual_);
     
       // Iterative loop
       int i, j, k;
@@ -200,8 +279,10 @@ namespace Fd1d
          updateWFields(system().wFields(), dW_, wFieldsNew_);
          mixture().compute(wFieldsNew_, cFieldsNew_);
          computeDW(wFieldsNew_, cFieldsNew_, dWNew_, dWNormNew_);
+         computeResidual(wFieldsNew_, cFieldsNew_, residualNew_);
+         dWNormNew_ = residualNorm(residualNew_);
          
-         // Decrease increment if necessary
+/*         // Decrease increment if necessary
          j = 0;
          while (dWNormNew_ > dWNorm_ && j < 3) {
             //double dWNormDecrease_;
@@ -209,6 +290,9 @@ namespace Fd1d
                         << dWNormNew_ << ", decreasing increment" << std::endl;
             lambdaPlus_ *= 0.5;
             lambdaMinus_ *= 0.5;
+            if ( lambdaPlus_ == 0 ||lambdaMinus_ ){
+               break;
+            }
             //Print lambdaPlus_ and lambdaMinus_ 
             Log::file() << "      lambdaPlus = " 
                         << lambdaPlus_ << std::endl;
@@ -218,11 +302,13 @@ namespace Fd1d
                       dWNormNew_);
             updateWFields(system().wFields(), dWNew_, wFieldsNew_);
             mixture().compute(wFieldsNew_, cFieldsNew_);
+            computeResidual(wFieldsNew_, cFieldsNew_, residualNew_);
+            dWNorm_ = residualNorm(residualNew_);
             ++j;
-         }
+         }*/
          
          // Accept or reject update
-         if (dWNormNew_ < dWNorm_) {
+         //if (dWNormNew_ < dWNorm_) {
             // Update system fields
             for (j = 0; j < nm; ++j) {
                for (k = 0; k < nx; ++k) {
@@ -231,11 +317,11 @@ namespace Fd1d
                   dW_[j][k] = dWNew_[j][k];
                 }
             dWNorm_ = dWNormNew_;
-            }
-        } else {
-            Log::file() << "Iteration failed, norm = "
+         //   }
+       // } else {
+/*            Log::file() << "Iteration failed, norm = "
             << dWNormNew_ << std::endl;
-            break;
+            break;*/
           }
         
       }

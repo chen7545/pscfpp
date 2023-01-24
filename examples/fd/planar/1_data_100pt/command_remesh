@@ -1,0 +1,3 @@
+READ_W  in/w
+REMESH_W 100 in/Remesh_w
+FINISH

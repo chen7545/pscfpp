@@ -14,7 +14,7 @@ System{
   }
   Interaction{
      chi(   
-        0  1    20.0
+        0  1    24.0
      )
   }
   Domain{
@@ -23,12 +23,9 @@ System{
      xMax 1.7
      nx   101
   }
-  AmIterator{
-     epsilon   1.0E-8
-     maxItr    200
-     maxHist   50
-     outputTime  1
-     errorType   maxResid
+  NrIterator{
+     epsilon   0.00000001
   }
 }
 
+   nSolvent  0

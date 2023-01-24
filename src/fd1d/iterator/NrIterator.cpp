@@ -9,7 +9,7 @@
 #include <fd1d/System.h>
 #include <pscf/inter/Interaction.h>
 #include <util/misc/Log.h>
-
+#include <util/misc/Timer.h>
 #include <math.h>
 
 namespace Pscf {
@@ -223,7 +223,10 @@ namespace Fd1d
    }
 
    int NrIterator::solve(bool isContinuation)
-   {
+   {   // Start overall timer
+      Timer timerTotal;
+      timerTotal.start();
+      
       int nm = system().mixture().nMonomer();  // number of monomer types
       int np = system().mixture().nPolymer();  // number of polymer species
       int nx = domain().nx();         // number of grid points
@@ -274,9 +277,16 @@ namespace Fd1d
                      << std::endl;
 
          if (norm < epsilon_) {
+            timerTotal.stop();
+            Log::file() << "The epsilon is " << epsilon_<< std::endl;
             Log::file() << "Converged" << std::endl;
             system().computeFreeEnergy();
             // Success
+            Log::file() << "\n\n";
+            // Output timing resultsl;
+            Log::file() << "Total time:                             "  
+                        << timerTotal.time()   << " s  "  << std::endl;
+            Log::file() << "\n\n";
             return 0;
          }
 

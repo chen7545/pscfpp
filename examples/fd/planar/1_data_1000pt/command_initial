@@ -1,0 +1,8 @@
+READ_W               in/Remesh_w
+ITERATE
+COMPARE_HOMOGENEOUS  0
+WRITE_C              out/c
+WRITE_W              out/w_1000
+WRITE_PARAM          out/data
+WRITE_THERMO         out/data
+FINISH
