@@ -24,7 +24,7 @@ System{
      nx   100
   }
   AmIterator{
-     epsilon   1.0E-8
+     epsilon   1.0E-7
      maxItr    200
      maxHist   50
      outputTime  1

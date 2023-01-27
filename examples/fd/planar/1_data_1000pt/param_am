@@ -14,7 +14,7 @@ System{
   }
   Interaction{
      chi(   
-        0  1    24.0
+        0  1    21.0
      )
   }
   Domain{
@@ -31,4 +31,4 @@ System{
      errorType   maxResid
   }
 }
-
+ 

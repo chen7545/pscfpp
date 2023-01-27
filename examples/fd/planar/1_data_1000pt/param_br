@@ -14,7 +14,7 @@ System{
   }
   Interaction{
      chi(   
-        0  1    50.0
+        0  1    21.0
      )
   }
   Domain{
@@ -24,10 +24,10 @@ System{
      nx     1000
   }
   BinaryRelaxIterator{
-     epsilon      1.0E-8
+     epsilon      1.0E-10
      maxIter      10000
-     lambdaPlus  5
-     lambdaMinus  5
+     lambdaPlus  1
+     lambdaMinus  1
      
   }
 }
