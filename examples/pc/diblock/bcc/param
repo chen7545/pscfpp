@@ -15,24 +15,24 @@ System{
       ]
       phi     1.0
     }
-    ds   0.01
+    ds   0.02
   }
   Interaction{
     chi(  
-         1   0   20.0
+         1   0   26
     )
   }
   Domain{
-    mesh           32    32    32
+    mesh           16    16    16
     lattice        cubic 
     groupName      I_m_-3_m
   }
   AmIterator{
-    epsilon      1.0e-10
-    maxItr       100
-    maxHist      50 
+    epsilon      1.0e-5
+    maxItr       200
+    maxHist      30 
     isFlexible   1
   }
 }
 
-    unitCell       cubic     1.923199
+    unitCell       cubic     4

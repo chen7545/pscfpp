@@ -14,6 +14,7 @@
 #include <util/containers/Array.h>
 #include <util/containers/DArray.h>
 #include <util/containers/DMatrix.h>
+#include <pscf/iterator/AmbdInteraction.h>
 
 namespace Pscf {
 namespace Fd1d
@@ -73,8 +74,9 @@ namespace Fd1d
       */
       int solve(bool isContinuation = false);
 
-   private:
-
+      private:
+      
+      AmbdInteraction interaction_;
       /// Solver for linear system Ax = b.
       LuSolver solver_;
 
@@ -92,12 +94,16 @@ namespace Fd1d
 
       /// Residual vector. size = nr = (# monomers)x(# grid points).
       DArray<double> residual_;
+     
+      DArray<double> resid_;
 
       /// Jacobian matrix. Dimensions nr x nr.
       DMatrix<double> jacobian_;
 
       /// Perturbed residual. size = nr.
       DArray<double> residualNew_;
+      
+      DArray<double> residNew_;
 
       /// Change in field
       DArray<double> dOmega_;
@@ -160,6 +166,10 @@ namespace Fd1d
       void incrementWFields(Array<WField> const & wOld,
                             Array<double> const & dW,
                             Array<WField>& wNew);
+                            
+      void getResidual(Array<WField> const & wFields, 
+                       Array<WField> const & cFields, 
+                       Array<double>& residual);
 
    };
 

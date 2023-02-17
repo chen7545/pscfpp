@@ -14,6 +14,7 @@
 #include <util/containers/Array.h>
 #include <util/containers/DArray.h>
 #include <util/containers/DMatrix.h>
+#include <pscf/iterator/AmbdInteraction.h>
 
 
 namespace Pscf {
@@ -78,7 +79,7 @@ namespace Fd1d
    
    private:
     
-    
+      AmbdInteraction interaction_;
       /// Perturbed chemical potential fields (work space).
       DArray<WField> wFieldsNew_;
     
