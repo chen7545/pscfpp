@@ -28,7 +28,7 @@ System{
      maxItr    2000
      maxHist   50
      outputTime  1
-     errorType   maxResid
+     errorType   relNormResid
   }
 }
 

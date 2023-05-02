@@ -385,7 +385,26 @@ namespace Fd1d
             inBuffer >> filename;
             Log::file() << "outfile = " << Str(filename, 20) << std::endl;
             fieldIo_.noise(wFields(), mean, stddev, filename);
-         } else {
+         }else 
+         if (command == "Random_W"){
+            double A;
+            inBuffer >> A;
+            Log::file() << std::endl;
+            Log::file() << "A  = " << Int(A, 20) << std::endl;
+            double B;
+            inBuffer >> B;
+            Log::file() << std::endl;
+            Log::file() << "B  = " << Int(B, 20) << std::endl;
+            inBuffer >> filename;
+            Log::file() << "outfile = " << Str(filename, 20) << std::endl;
+            fieldIo_.random_w(wFields(), A, B, filename);
+         }else
+         if (command == "Random_C"){
+            inBuffer >> filename;
+            compute();
+            fieldIo_.writeFields(cFields(), filename);
+         }
+         else {
             Log::file() << "  Error: Unknown command  " << command << std::endl;
             readNext = false;
          }

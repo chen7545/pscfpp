@@ -1,0 +1,7 @@
+READ_W               in/w_noise
+ITERATE
+WRITE_C              out/c
+WRITE_W              out/w
+WRITE_PARAM          out/data
+WRITE_THERMO         out/data
+FINISH

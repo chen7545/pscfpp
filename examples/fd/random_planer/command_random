@@ -1,0 +1,6 @@
+READ_W               in/w
+ITERATE
+NOISE_W		20 5 in/w_noise
+READ_W 		     in/w_noise
+Random_C             in/c_random
+FINISH

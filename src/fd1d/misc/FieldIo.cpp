@@ -23,6 +23,7 @@
 #include <string>
 #include <random>
 
+
 namespace Pscf {
 namespace Fd1d
 {
@@ -357,6 +358,7 @@ namespace Fd1d
       out.close();
    }
 
+
    /*
    * Add Gaussian noise to an array of fields
    */
@@ -371,13 +373,46 @@ namespace Fd1d
       // Define random generator with Gaussian distribution
       std::default_random_engine generator;
       std::normal_distribution<double> dist(mean, stddev);
+      std::default_random_engine generator2;
+      std::normal_distribution<double> dist2(0,2);
+      // Loop over Grid to add Gaussian noise and write fields
+      
+      int i, j;
+      for (i = 0; i < nx; ++i){
+         out << Int(i, 5);
+         out << "  " <<Dbl(dist(generator));
+         out << "  " <<Dbl(dist(generator));
+         out << std::endl;
+      }
+
+   }
+   
+   void FieldIo::random_w(Array<Field> const & fields, 
+                       double A, double B,
+                       std::string const & filename)
+   {
+      std::ofstream out;
+      fileMaster().openOutputFile(filename, out);
+      random_w(fields, A, B, out);
+      out.close();
+   } 
+   
+   void 
+   FieldIo::random_w(Array<Field> const & fields, double A, double B, std::ostream& out)
+   {  
+      std::random_device rd;
+      std::mt19937 gen(rd()); 
+      int nm = fields.capacity();
+      int nx = fields[0].capacity();
+      out << "nx     "  <<  nx              << std::endl;
+      out << "nm     "  <<  nm              << std::endl;
+      
       // Loop over Grid to add Gaussian noise and write fields
       
       int i, j;
       for (i = 0; i < nx; ++i){
          out << Int(i, 5);
          for (j = 0; j < nm; ++j){
-            out << "  " <<Dbl(fields[j][i] + dist(generator));
          }
          out << std::endl;
       }

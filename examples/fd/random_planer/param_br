@@ -14,21 +14,22 @@ System{
   }
   Interaction{
      chi(   
-        0  1    80.0
+        0  1    20.0
      )
   }
   Domain{
-     mode planar
-     xMin 0.0
-     xMax 1.7
-     nx   1000
+     mode   planar
+     xMin   0.0
+     xMax   1.7
+     nx     101
   }
-  AmIterator{
-     epsilon   1E-8
-     maxItr    800
-     maxHist   50
-     outputTime  1
-     errorType   relNormResid
+  BinaryRelaxIterator{
+     epsilon      1.0E-8
+     maxIter      40000
+     lambdaPlus   1.0
+     lambdaMinus  1.0
+     
   }
 }
- 
+
+   nSolvent  0

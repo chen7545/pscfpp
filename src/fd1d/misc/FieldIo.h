@@ -199,8 +199,16 @@ namespace Fd1d {
       void noise(Array<Field> const & fields, double mean, double stddev,
                   std::string const & filename);
 
+      void random_w(Array<Field> const & fields, double A, double B, std::ostream& out);
+      void random_w(Array<Field> const & fields, double A, double B,
+                  std::string const & filename);
 
-   private:
+
+            
+
+
+
+ private:
 
       /// Work array (capacity = # of monomer types).
       DArray<double> w_;

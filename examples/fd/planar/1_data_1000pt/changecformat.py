@@ -33,19 +33,16 @@ for line in content:
     c.append(mat)
 
 #Remove nx and nm value
-c = c[2:]
+data = c[2:]
 
-#Cound the summation of concentration at each grid differ from 1
-diff = 0
-for i in range(len(c)):
-    sum_c = 0
-    for j in range(len(c[i])):
-        #sum the the concentation at grid i
-        sum_c += c[i][j]
-    diff += abs(sum_c -1)
+output_file = "output.txt"
 
-print("The sum of inaccuracy of concentration on each grid is ")
-print(diff)
+# Write the 2D numpy array to the text file with a space before each line
+with open(output_file, "w") as f:
+    for row in data:
+        formatted_row = " ".join(map(lambda x: f"{x:.11e}", row))
+        f.write(f" {formatted_row}\n")
+
         
 
 
