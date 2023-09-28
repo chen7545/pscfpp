@@ -77,6 +77,11 @@ namespace Pspc
       int counterMDE(); 
       
       /**
+      * Return how many error goes up.
+      */
+      int counterErrorUp(); 
+      
+      /**
       * Return compressor times contributions.
       */
       void outputTimers(std::ostream& out);
@@ -102,6 +107,11 @@ namespace Pspc
       * Count how many times MDE has been solved.
       */
       int counter_;
+      
+      /**
+      * Count how many times error goes up.
+      */
+      int counterErrorUp_;
       
       /**
       * Current values of the fields
@@ -230,6 +240,11 @@ namespace Pspc
    template <int D>
    inline int AmCompressor<D>::counterMDE()
    { return counter_; }
+   
+   // Get the how many times MDE has been solved.
+   template <int D>
+   inline int AmCompressor<D>::counterErrorUp()
+   { return counterErrorUp_; }
 
 } // namespace Pspc
 } // namespace Pscf

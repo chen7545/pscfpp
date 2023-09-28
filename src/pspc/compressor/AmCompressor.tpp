@@ -22,6 +22,7 @@ namespace Pspc{
    AmCompressor<D>::AmCompressor(System<D>& system)
    : Compressor<D>(system),
      counter_(0),
+     counterErrorUp_(0),
      isAllocated_(false)
    {  setClassName("AmCompressor"); }
 
@@ -75,6 +76,7 @@ namespace Pspc{
    {
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
       counter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      counterErrorUp_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::counterErrorUp();
       return solve;
    }
 

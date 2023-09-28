@@ -133,6 +133,15 @@ namespace Pscf
          double error;
          try {
             error = computeError(verbose_);
+            if (itr_ == 0){
+               error0_ = error;
+            } else{
+               r_ = error0_/error;
+               if (r_ < 1){
+                  counterErrorUp_++;
+               }
+               error0_ = error;
+            }
          } catch (const NanException&) {
             Log::file() << ",  error  =             NaN" << std::endl;
             break; // Exit loop if a NanException is caught
@@ -166,8 +175,7 @@ namespace Pscf
                computeError(2); 
             }
 
-            totalItr_ += itr_;
-            
+            totalItr_ += itr_;            
             // Successful completion (i.e., converged within tolerance)
             return 0;
 

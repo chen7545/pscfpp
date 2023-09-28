@@ -75,7 +75,7 @@ namespace Pscf {
       * Clear timers 
       */
       void clearTimers();
-
+      
    protected:
 
       /// Type of error criterion used to test convergence 
@@ -212,16 +212,30 @@ namespace Pscf {
       double timerCoeff();
       double timerOmega();
       double timerTotal();
-      
+   
       /**
       * Have data structures required by the AM algorithm been allocated?
       */
       bool isAllocatedAM() const;
+      
+      /**
+      *  Return how many times error goes up
+      */
+      int counterErrorUp();
 
    private:
 
       // Private member variables
-
+      
+      /// Number of times error goes up
+      int counterErrorUp_;
+      
+      /// Previous iteration's Error
+      double error0_;
+      
+      /// error change ratio (itr i/ itr i+1)
+      double r_;
+      
       /// Error tolerance.
       double epsilon_;
 
@@ -446,7 +460,7 @@ namespace Pscf {
       * Output relevant system details to the iteration log.
       */
       virtual void outputToLog() = 0;
-
+      
    };
   
    /*
@@ -539,6 +553,13 @@ namespace Pscf {
    template <typename Iterator, typename T>
    double AmIteratorTmpl<Iterator,T>::timerTotal() 
    {  return timerTotal_.time(); }
+   
+   /*
+   * Return total number of times error goes up
+   */
+   template <typename Iterator, typename T>
+   int AmIteratorTmpl<Iterator,T>::counterErrorUp() 
+   {  return counterErrorUp_; }
    
 }
 #include "AmIteratorTmpl.tpp"
