@@ -106,7 +106,7 @@ namespace Pspg
       /**
       * Count how many times error goes up.
       */
-      int counterErrorUp_
+      int counterErrorUp_;
       
       /**
       * Current values of the fields
