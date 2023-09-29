@@ -59,6 +59,11 @@ namespace Pspg
       virtual int counterMDE() = 0;
       
       /**
+      * Count how many times error goes up
+      */
+      virtual int counterErrorUp() = 0;
+      
+      /**
       * Log output timing results 
       */
       virtual void outputTimers(std::ostream& out) = 0;

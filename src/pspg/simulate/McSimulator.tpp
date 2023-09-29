@@ -139,8 +139,11 @@ namespace Pspg {
          analyzerManager_.output();
       }
       
-      // Output how many times MDE has been solved for the simulation run
+      // Output how many times error goes up for the simulation run
       Log::file() << std::endl;
+      Log::file() << "Error goes counter   " << system().compressor().counterErrorUp()<< std::endl;
+      Log::file() << std::endl;
+      // Output how many times MDE has been solved for the simulation run
       Log::file() << "MDE counter   " << system().compressor().counterMDE()<< std::endl;
       Log::file() << std::endl;
       

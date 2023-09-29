@@ -78,6 +78,11 @@ namespace Pspg
       int counterMDE(); 
       
       /**
+      * Return how many error goes up.
+      */
+      int counterErrorUp(); 
+      
+      /**
       * Return compressor times contributions.
       */
       void outputTimers(std::ostream& out);
@@ -97,6 +102,11 @@ namespace Pspg
       * Count how many times MDE has been solved.
       */
       int counter_;
+      
+      /**
+      * Count how many times error goes up.
+      */
+      int counterErrorUp_
       
       /**
       * Current values of the fields
@@ -224,6 +234,11 @@ namespace Pspg
    template <int D>
    inline int AmCompressor<D>::counterMDE()
    { return counter_; }
+   
+   // Get the how many times MDE has been solved.
+   template <int D>
+   inline int AmCompressor<D>::counterErrorUp()
+   { return counterErrorUp_; }
 
 } // namespace Pspg
 } // namespace Pscf
