@@ -9,6 +9,7 @@
 */
 
 #include <pscf/inter/Interaction.h>
+#include <pscf/homogeneous/Mixture.h>      
 #include <pscf/math/LuSolver.h>
 #include "NanException.h"
 #include <util/containers/FArray.h>
@@ -607,6 +608,7 @@ namespace Pscf
       timerTotal_.clear();
       totalItr_ = 0;
    }
+   
 
 }
 #endif

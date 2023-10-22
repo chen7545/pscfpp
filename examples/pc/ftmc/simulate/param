@@ -28,11 +28,11 @@ System{
     lattice     cubic   
     groupName   P_-1
   }
-  AmCompressor{
+  LrAmCompressor{
     epsilon      1.0e-4
     maxItr       200
     maxHist      30     
-    verbose	 0
+    verbose	 1
     errorType    normResid
   }
   McSimulator{

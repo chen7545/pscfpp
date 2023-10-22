@@ -75,7 +75,7 @@ namespace Pscf {
       * Clear timers 
       */
       void clearTimers();
-
+   
    protected:
 
       /// Type of error criterion used to test convergence 
