@@ -140,6 +140,7 @@ namespace Pscf
          }
          if (verbose_ > 0 && verbose_ < 3) {
              Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
+             Log::file() << std::endl;
          }
          timerError_.stop();
 
@@ -520,7 +521,7 @@ namespace Pscf
          // Find norm of residual vector relative to field
          double normField = norm(fieldHists_[0]);
          double relNormRes = normRes/normField;
-         Log::file() << "Relative Norm = " << Dbl(relNormRes,15) << std::endl;
+         Log::file() << "Relative Norm = " << Dbl(relNormRes,15);
    
          // Check if calculation has diverged (normRes will be NaN)
          UTIL_CHECK(!std::isnan(normRes));

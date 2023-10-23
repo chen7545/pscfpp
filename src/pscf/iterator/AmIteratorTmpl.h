@@ -214,6 +214,11 @@ namespace Pscf {
       double timerTotal();
       
       /**
+      * Return error type
+      */
+      std::string errorType();
+       
+      /**
       * Have data structures required by the AM algorithm been allocated?
       */
       bool isAllocatedAM() const;
@@ -539,6 +544,13 @@ namespace Pscf {
    template <typename Iterator, typename T>
    double AmIteratorTmpl<Iterator,T>::timerTotal() 
    {  return timerTotal_.time(); }
+   
+   /*
+   * Return error type
+   */
+   template <typename Iterator, typename T>
+   std::string AmIteratorTmpl<Iterator,T>::errorType() 
+   {  return errorType_; }
    
 }
 #include "AmIteratorTmpl.tpp"
