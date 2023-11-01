@@ -1750,6 +1750,55 @@ namespace Pspc
          UTIL_CHECK(workDft_.meshDimensions() == fft().meshDimensions());
       }
    }
+   
+   
+   template <int D>
+   void FieldIo<D>:: addsin(std::ostream &out,
+                     DArray< RField<D> > const & fields, 
+                     UnitCell<D> const & unitCell,
+                     double a, double f) const
+   {
+      int nMonomer = fields.capacity();
+      UTIL_CHECK(nMonomer > 0);
+      UTIL_CHECK(D == 1);
+      writeFieldHeader(out, nMonomer, unitCell);
+      out << "mesh " <<  std::endl
+          << "           " << mesh().dimensions() << std::endl;
+
+      DArray<RField<D> > temp;
+      temp.allocate(nMonomer);
+      for (int i = 0; i < nMonomer; ++i) {
+         temp[i].allocate(mesh().dimensions());
+      } 
+
+      for (int i = 0; i < mesh().dimension(0); ++i) {
+         for (int j = 0; j < nMonomer; ++j) {
+            temp[j][i] = fields[j][i] + a * sin(2 * M_PI * f * i);
+         }
+      }
+
+      // Write fields
+      MeshIterator<D> itr(mesh().dimensions());
+      for (itr.begin(); !itr.atEnd(); ++itr) {
+         for (int j = 0; j < nMonomer; ++j) {
+            out << "  " << Dbl(temp[j][itr.rank()], 18, 15);
+         }
+         out << std::endl;
+      }
+
+   }
+
+   template <int D>
+   void FieldIo<D>::addsin(std::string filename, 
+                           DArray< RField<D> > const & fields, 
+                           UnitCell<D> const & unitCell,
+                           double a, double f) const
+   {
+      std::ofstream file;
+      fileMaster().openOutputFile(filename, file);
+      addsin(file, fields, unitCell, a ,f);
+      file.close();
+   }
 
 } // namespace Pspc
 } // namespace Pscf

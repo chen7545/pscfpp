@@ -216,6 +216,27 @@ namespace Fd1d {
       */
       void extend(DArray<Field> const& fields, int m, 
                   std::string const& filename);
+                  
+      /**
+      * Add small amplitude sinusoidal variation in the field
+      *
+      * \param fields  array of fields to be extended
+      * \param a  amplitude of sinusoidal variation
+      * \param f  frequency of sinusoidal variation
+      * \param out  output stream for extended field
+      */
+      void addsin(DArray<Field> const& fields, double a, double f, std::ostream& out);
+
+      /**
+      * Add small amplitude sinusoidal variation in the field
+      *
+      * \param fields  array of fields to be extended
+      * \param a  amplitude of sinusoidal variation
+      * \param f  frequency of sinusoidal variation
+      * \param out  output stream for extended field
+      */
+      void addsin(DArray<Field> const& fields, double a, double f,
+                  std::string const& filename);
 
    private:
 

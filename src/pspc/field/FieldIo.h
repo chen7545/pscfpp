@@ -639,6 +639,38 @@ namespace Pspc
       */
       bool hasSymmetry(RFieldDft<D> const & in, double epsilon = 1.0e-8,
                        bool verbose = true) const;
+                       
+                     
+      /**
+      * Add small amplitude sinusoidal variation in the field for 1D.
+      *
+      * \param out  output stream (i.e., output file)
+      * \param fields array of RField fields (r-space grid)
+      * \param unitCell  associated crystallographic unit cell
+      * \param a  amplitude of sinusoidal variation
+      * \param f  frequency of sinusoidal variation
+      */
+      void addsin(std::ostream& out, 
+                  DArray< RField<D> > const & fields, 
+                  UnitCell<D> const & unitCell,
+                  double a, double f) const;
+
+      /**
+      * Add small amplitude sinusoidal variation in the field for 1D
+      *
+      * \param out  output stream (i.e., output file)
+      * \param fields array of RField fields (r-space grid)
+      * \param unitCell  associated crystallographic unit cell
+      * \param a  amplitude of sinusoidal variation
+      * \param f  frequency of sinusoidal variation
+      * 
+      */
+      void addsin(std::string filename,
+                  DArray< RField<D> > const & fields, 
+                  UnitCell<D> const & unitCell,
+                  double a, double f) const;
+      
+      
 
       ///@}
 

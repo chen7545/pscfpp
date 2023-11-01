@@ -19,6 +19,8 @@
 #include <pscf/inter/Interaction.h>
 #include <pscf/homogeneous/Clump.h>
 
+#include <prdc/crystal/shiftToMinimum.h>
+
 #include <util/format/Str.h>
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
@@ -420,7 +422,21 @@ namespace Fd1d
             inBuffer >> filename;
             Log::file() << "outfile = " << Str(filename, 20) << std::endl;
             fieldIo_.extend(wFields(), m, filename);
-         } else {
+         } else
+         if (command == "PERTURB_W") {
+            double a;
+            inBuffer >> a;
+            Log::file() << std::endl;
+            Log::file() << "Amplitude       = " << Dbl(a, 3,3) << std::endl;
+            double f;
+            inBuffer >> f;
+            Log::file() << std::endl;
+            Log::file() << "Frequency       = " << Dbl(f, 3,3) << std::endl;
+            inBuffer >> filename;
+            Log::file() << "outfile = " << Str(filename, 20) << std::endl;
+            fieldIo_.addsin(wFields(), a, f, filename);
+         }
+            else {
             Log::file() << "  Error: Unknown command  " 
                         << command << std::endl;
             readNext = false;
@@ -858,6 +874,6 @@ namespace Fd1d
          }
       }
    }
-
+   
 } // namespace Fd1d
 } // namespace Pscf

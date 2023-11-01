@@ -26,6 +26,8 @@
 #include <pscf/inter/Interaction.h>
 #include <pscf/math/IntVec.h>
 #include <pscf/homogeneous/Clump.h>
+#include <pscf/mesh/MeshIterator.h>
+#include <prdc/crystal/shiftToMinimum.h>
 
 #include <util/param/BracketPolicy.h>
 #include <util/param/ParamComponent.h>
@@ -624,6 +626,41 @@ namespace Pspc {
             readEcho(in, filename);
             UTIL_CHECK(mask_.hasData());
             fieldIo().writeFieldRGrid(filename, mask_.rgrid(), unitCell());
+         } else
+         if (command == "PERTURB_W") {
+            UTIL_CHECK(D == 1);
+            double a;
+            in >> a;
+            Log::file() << std::endl;
+            Log::file() << "Amplitude  = " << Dbl(a, 3,3) << std::endl;
+            double f;
+            in >> f;
+            Log::file() << std::endl;
+            Log::file() << "Frequency  = " << Dbl(f, 3,3) << std::endl;
+            readEcho(in, filename);
+            domain_.fieldIo().addsin(filename, w_.rgrid(), domain_.unitCell(), a, f);
+         } else
+         if (command == "ESTIMATE_LR") {
+            UTIL_CHECK(D == 1);
+            double a;
+            in >> a;
+            double f;
+            in >> f;
+            computeIntraCorrelations();
+            readEcho(in, filename);
+            domain_.fieldIo().writeFieldRGrid(filename, estimateLR(a,f), 
+                                         domain_.unitCell());
+            
+         } else
+         if (command == "ESTIMATE_ERROR") {
+            UTIL_CHECK(D == 1);
+            double a;
+            in >> a;
+            double f;
+            in >> f;
+            readEcho(in, filename);
+            domain_.fieldIo().writeFieldRGrid(filename, estimateError(a,f), 
+                                         domain_.unitCell());
          } else {
             Log::file() << "Error: Unknown command  " 
                         << command << std::endl;
@@ -1832,6 +1869,169 @@ namespace Pspc {
 
       hasCFields_ = false;
       hasFreeEnergy_ = false;
+   }
+   
+   
+   template<int D>
+   double System<D>::computeDebye(double x)
+   {
+      if (x == 0){
+         return 1.0;
+      } else {
+         return 2.0 * (std::exp(-x) - 1.0 + x) / (x * x);
+      }
+   }
+   
+   template<int D>
+   double System<D>::computeIntraCorrelation(double qSquare)
+   {
+      const int np = mixture().nPolymer();
+      const double vMonomer = mixture().vMonomer();
+      // Overall intramolecular correlation
+      double omega = 0;
+      int monomerId; int nBlock; 
+      double kuhn; double length; double g; double rg2; 
+      Polymer<D> const * polymerPtr;
+      
+      for (int i = 0; i < np; i++){
+         polymerPtr = &mixture().polymer(i);
+         nBlock = polymerPtr->nBlock();
+         double totalLength = 0;
+         for (int j = 0; j < nBlock; j++) {
+            totalLength += polymerPtr->block(j).length();
+         }
+         for (int j = 0; j < nBlock; j++) {
+            monomerId = polymerPtr-> block(j).monomerId();
+            kuhn = mixture().monomer(monomerId).kuhn();
+            // Get the length (number of monomers) in this block.
+            length = polymerPtr-> block(j).length();
+            rg2 = length/totalLength * kuhn* kuhn /6.0;
+            g = computeDebye(qSquare*rg2);
+            omega += length/totalLength * length * g/vMonomer;
+         }
+      }
+      return omega;
+   }
+   
+   template<int D>
+   RField<D> System<D>::computeIntraCorrelations()
+   {
+      IntVec<D> const & dimensions = mesh().dimensions();
+      IntVec<D> kMeshDimensions;
+      RField<D> intraCorrelation;
+      for (int i = 0; i < D; ++i) {
+         if (i < D - 1) {
+            kMeshDimensions[i] = dimensions[i];
+         } else {
+            kMeshDimensions[i] = dimensions[i]/2 + 1;
+         }
+      }
+      intraCorrelation.allocate(kMeshDimensions);
+      MeshIterator<D> iter;
+      iter.setDimensions(kMeshDimensions);
+      IntVec<D> G, Gmin;
+      double Gsq;
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         G = iter.position();
+         Gmin = shiftToMinimum(G, mesh().dimensions(), unitCell());
+         Gsq = unitCell().ksq(Gmin);
+         intraCorrelation[iter.rank()] = computeIntraCorrelation(Gsq);
+      }
+      return intraCorrelation;
+   }
+   
+   template<int D>
+   RField<D> System<D>::estimateLR(double a, double f)
+   {
+      RField<D> resid_;
+      RFieldDft<D> residK_;
+      RField<D> intraCorrelation;
+      IntVec<D> kMeshDimensions;
+      IntVec<D> const & dimensions = mesh().dimensions();
+      for (int i = 0; i < D; ++i) {
+         if (i < D - 1) {
+            kMeshDimensions[i] = dimensions[i];
+         } else {
+            kMeshDimensions[i] = dimensions[i]/2 + 1;
+         }
+      }
+      resid_.allocate(dimensions);
+      residK_.allocate(dimensions);
+      intraCorrelation.allocate(kMeshDimensions);
+      intraCorrelation = computeIntraCorrelations();
+      const int nMonomer = mixture().nMonomer();
+      const int meshSize = domain().mesh().size();
+      const int n = meshSize;
+      
+      // dw
+      for (int i = 0; i < mesh().dimension(0); ++i) {
+         resid_[i] = a * sin(2 * M_PI * f * i);
+      }
+      
+      // Convert residual to Fourier Space
+      fft().forwardTransform(resid_, residK_);
+      // Residual combine with Linear response factor
+      MeshIterator<D> iter;
+      iter.setDimensions(residK_.dftDimensions());
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         residK_[iter.rank()][0] *= intraCorrelation[iter.rank()];
+         residK_[iter.rank()][1] *= intraCorrelation[iter.rank()];
+      }
+      
+      // Convert back to real Space
+      fft().inverseTransform(residK_, resid_);
+      return resid_;
+   }
+   
+   template<int D>
+   RField<D> System<D>::estimateError(double a, double f)
+   {
+      RField<D> error;
+      RFieldDft<D> errorDft;
+      IntVec<D> kMeshDimensions;
+      IntVec<D> const & dimensions = mesh().dimensions();
+      const int nMonomer = mixture().nMonomer();
+      const int meshSize = domain().mesh().size();
+      for (int i = 0; i < D; ++i) {
+         if (i < D - 1) {
+            kMeshDimensions[i] = dimensions[i];
+         } else {
+            kMeshDimensions[i] = dimensions[i]/2 + 1;
+         }
+      }
+      error.allocate(dimensions);
+      errorDft.allocate(dimensions);
+      computeIntraCorrelations();
+      RField<D> estimate = estimateLR(a,f);
+      for (int i = 0; i<  mesh().dimension(0); i++){
+         double real = -1;
+         for (int j = 0; j <nMonomer ; j++){
+            real +=  c_.rgrid(j)[i];
+         }
+         error[i] = abs(estimate[i] - real );
+      }
+      
+      fft().forwardTransform(error, errorDft);
+      
+      MeshIterator<D> iter;
+      iter.setDimensions(kMeshDimensions);
+      IntVec<D> G, Gmin;
+      double Gsq;
+      std::ofstream outputFile("out/error_K");
+      if (!outputFile.is_open()) {
+        std::cerr << "Failed to open the file for writing." << std::endl;
+      }
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         G = iter.position();
+         Gmin = shiftToMinimum(G, mesh().dimensions(), unitCell());
+         Gsq = unitCell().ksq(Gmin);
+         outputFile << Gsq ;
+         std::complex<double> z(errorDft[iter.rank()][0], errorDft[iter.rank()][1]);
+         outputFile << " "<< std::abs(z) << std::endl;
+      }
+       outputFile.close();
+      
+      return error;
    }
 
 } // namespace Pspc

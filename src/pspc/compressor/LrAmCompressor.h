@@ -89,6 +89,7 @@ namespace Pspc
       
       double computeError(int verbose);
       
+      
    protected:
   
       // Inherited protected members 

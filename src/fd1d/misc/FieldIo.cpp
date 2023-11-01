@@ -372,6 +372,51 @@ namespace Fd1d
       }
 
    }
+   
+   /*
+   * Add small amplitude sinusoidal variation, write result to output file
+   */
+   void FieldIo::addsin(DArray<Field> const & fields, double a, double f,
+                        std::string const & filename)
+   {
+      std::ofstream out;
+      fileMaster().openOutputFile(filename, out);
+      addsin(fields, a, f, out);
+      out.close();
+   }
+
+   /*
+   * Add small amplitude sinusoidal variation, write result to output file
+   */
+   void 
+   FieldIo::addsin(DArray<Field> const & fields, double a, double f, std::ostream& out)
+   {
+      int nm = fields.capacity();
+      UTIL_CHECK(nm > 0);
+      int nx = fields[0].capacity();
+      UTIL_CHECK(nx == domain().nx());
+      if (nm > 1) {
+         for (int i = 0; i < nm; ++i) {
+            UTIL_CHECK(nx == fields[i].capacity());
+         }
+      }
+      out << "nx     "  <<  nx              << std::endl;
+      out << "nm     "  <<  nm              << std::endl;
+
+      // Write fields
+      double w;
+      int i, j;
+      for (i = 0; i < nx; ++i) {
+         out << Int(i, 5);
+         for (j = 0; j < nm; ++j) {
+            w = fields[j][i] + a * sin(2 * M_PI * f * i);
+            out << "  " << Dbl(w, 18, 11);
+         }
+         out << std::endl;
+      }
+
+   }
+
 
 } // namespace Fd1d
 } // namespace Pscf

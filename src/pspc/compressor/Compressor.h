@@ -75,7 +75,7 @@ namespace Pspc
       */
       System<D> const & system() const
       {  return *sysPtr_;}
-
+      
    protected:
 
       /**

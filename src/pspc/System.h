@@ -102,7 +102,13 @@ namespace Pspc
       ///@}
       /// \name Lifetime (Actions)
       ///@{
-
+         
+      double computeDebye(double x);
+      double computeIntraCorrelation(double qSquare);
+      RField<D> computeIntraCorrelations();
+      RField<D> estimateLR(double a, double f);
+      RField<D> estimateError(double a, double f);
+      
       /**
       * Process command line options.
       *

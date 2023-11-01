@@ -384,7 +384,11 @@ namespace Fd1d
       * Get FileMaster by reference.
       */
       FileMaster& fileMaster();
-
+      
+      double computeIntraCorrelation(double qSquare);
+      
+      void computeIntraCorrelation();
+      
       ///@}
 
    private:

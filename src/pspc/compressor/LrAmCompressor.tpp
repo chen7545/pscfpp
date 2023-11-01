@@ -330,7 +330,7 @@ namespace Pspc{
             length = polymerPtr-> block(j).length();
             rg2 = length * kuhn* kuhn /6.0;
             g = computeDebye(qSquare*rg2);
-            omega += length/totalLength * length * g / vMonomer;
+            omega += length/totalLength * length * g/ vMonomer;
          }
       }
       return omega;
@@ -350,7 +350,6 @@ namespace Pspc{
          intraCorrelation_[iter.rank()] = computeIntraCorrelation(Gsq);
       }
    }
-
    
    template<int D>
    double LrAmCompressor<D>::computeError(int verbose)
