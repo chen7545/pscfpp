@@ -1773,7 +1773,7 @@ namespace Pspc
 
       for (int i = 0; i < mesh().dimension(0); ++i) {
          for (int j = 0; j < nMonomer; ++j) {
-            temp[j][i] = fields[j][i] + a * sin(2 * M_PI * f * i);
+            temp[j][i] = fields[j][i] + a * (sin(2 * M_PI * f * i) +cos(2 * M_PI * f * i));
          }
       }
 
