@@ -151,6 +151,16 @@ namespace Pspc {
                   << system().compressor().counterMDE() << std::endl;
       Log::file() << std::endl;
       
+      Log::file() << std::endl;
+      Log::file() << "Subspace Step reduce percentage:   " 
+                  << system().compressor().subspacePercent()/(nStep+1)<< std::endl;
+      Log::file() << std::endl;
+      
+      Log::file() << std::endl;
+      Log::file() << "Correction Step reduce percentage:   " 
+                  << system().compressor().correctionPercent()/(nStep+1)<< std::endl;
+      Log::file() << std::endl;
+      
       // Output times for the simulation run
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;

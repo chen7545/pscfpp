@@ -29,10 +29,9 @@ System{
   }
   AmCompressor{
     epsilon      1.0e-4
-    maxItr       200
-    maxHist      30     
+    maxItr       200 
     verbose	 0
-    errorType    normResid
+    errorType    rmsResid
   }
   McSimulator{
     McMoveManager{

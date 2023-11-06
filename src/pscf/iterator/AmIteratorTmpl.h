@@ -75,6 +75,8 @@ namespace Pscf {
       * Clear timers 
       */
       void clearTimers();
+      
+      std::string errorType();
 
    protected:
 
@@ -180,6 +182,7 @@ namespace Pscf {
       * \return error  measure used to test for convergence.
       */
       virtual double computeError(int verbose);
+      virtual double computeError(T a);
 
       /**
       * Return the current residual vector by const reference.
@@ -200,6 +203,17 @@ namespace Pscf {
       * Return the total number of iterations needed to converge.
       */
       int totalItr();
+         
+      /*
+      * Return Am subspace step reduce error percentage
+      */
+      double subspacePercent();
+      
+      /*
+      * Return Am subspace step reduce error percentage
+      */
+      double correctionPercent();
+      
       
       /**
       * Return timers for analyzing performance
@@ -221,7 +235,12 @@ namespace Pscf {
    private:
 
       // Private member variables
-
+      double preError_;
+      double error_;
+      double updateError_;
+      double correctionPercent_;
+      double subspacePercent_;
+      double subspaceError_;
       /// Error tolerance.
       double epsilon_;
 
@@ -478,11 +497,32 @@ namespace Pscf {
    {  return isAllocatedAM_; }
    
    /*
+   * Return error type
+   */ 
+   template <typename Iterator, typename T>
+   std::string AmIteratorTmpl<Iterator,T>::errorType() 
+   {  return errorType_; }
+   
+   /*
    * Return total iteration counter
    */
    template <typename Iterator, typename T>
    int AmIteratorTmpl<Iterator,T>::totalItr() 
    {  return totalItr_; }
+   
+   /*
+   * Return Am subspace step reduce error percentage
+   */
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::subspacePercent() 
+   {  return subspacePercent_; }
+   
+   /*
+   * Return Am subspace step reduce error percentage
+   */
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::correctionPercent() 
+   {  return correctionPercent_; }
    
    /*
    * Return computing MDE time cost

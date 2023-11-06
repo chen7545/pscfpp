@@ -1,5 +1,5 @@
-#ifndef PSPC_AM_COMPRESSOR_H
-#define PSPC_AM_COMPRESSOR_H
+#ifndef PSPC_LR_AM_COMPRESSOR_H
+#define PSPC_LR_AM_COMPRESSOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field Theory
@@ -10,6 +10,7 @@
 
 #include "Compressor.h"
 #include <prdc/cpu/RField.h>
+#include <prdc/cpu/RFieldDft.h>
 #include <pscf/iterator/AmIteratorTmpl.h>                 
 
 namespace Pscf {
@@ -28,7 +29,7 @@ namespace Pspc
    * \ingroup Pspc_Compressor_Module
    */
    template <int D>
-   class AmCompressor 
+   class LrAmCompressor 
          : public AmIteratorTmpl<Compressor<D>, DArray<double> >
    {
 
@@ -39,12 +40,12 @@ namespace Pspc
       * 
       * \param system System object associated with this compressor.
       */
-      AmCompressor(System<D>& system);
+      LrAmCompressor(System<D>& system);
 
       /**
       * Destructor.
       */
-      ~AmCompressor();
+      ~LrAmCompressor();
 
       /**
       * Read all parameters and initialize.
@@ -80,7 +81,6 @@ namespace Pspc
       double subspacePercent();
       double correctionPercent();
       
-      
       /**
       * Return compressor times contributions.
       */
@@ -90,6 +90,9 @@ namespace Pspc
       // Inherited public member functions
       using AmIteratorTmpl<Compressor<D>, DArray<double> >::setClassName;
       
+      double computeError(int verbose);
+      
+      
    protected:
   
       // Inherited protected members 
@@ -97,7 +100,11 @@ namespace Pspc
       using Compressor<D>::system;
 
    private:
-   
+      /**
+      * Type of error criterion used to test convergence 
+      */ 
+      std::string errorType_;
+      
       /**
       * How many times MDE has been solved for each mc move 
       */
@@ -116,20 +123,42 @@ namespace Pspc
       * Current values of the fields
       */
       DArray< RField<D> > w0_;  
-
+      
+      DArray<double> error_;
+      
+      /**
+      * Residual in real space used for linear response anderson mixing.
+      */
+      RField<D> resid_;
+      
+      /**
+      * Residual in Fourier space used for linear response anderson mixing.
+      */
+      RFieldDft<D> residK_;
+     
+      /**
+      * IntraCorrelation.
+      */
+      RField<D> intraCorrelation_;
+      
+      /**
+      * Dimensions of wavevector mesh in real-to-complex transform
+      */ 
+      IntVec<D> kMeshDimensions_;
+      
       /**
       * Has the variable been allocated?
       */
       bool isAllocated_;
       
       /**
-      * Template w Field used in update function
+      * Template w Field used in update function.
       */
       
       DArray< RField<D> > wFieldTmp_;
       
       /**
-      * New Basis variable used in updateBasis function 
+      * New Basis variable used in updateBasis function. 
       */
       DArray<double> newBasis_;
 
@@ -230,22 +259,36 @@ namespace Pspc
       */
       void outputToLog();
       
-
+      /**
+      * Compute Debye function
+      */
+      double computeDebye(double x);
+      
+      /**
+      * Compute intramolecular correlation at specific sqSquare
+      */
+      double computeIntraCorrelation(double qSquare);
+      
+      /**
+      * Compute intramolecular correlation  
+      */
+      void computeIntraCorrelation();
+      
    };
    
    // Inline member functions
 
    // Get the how many times MDE has been solved.
    template <int D>
-   inline int AmCompressor<D>::counterMDE()
+   inline int LrAmCompressor<D>::counterMDE()
    { return counter_; }
    
    template <int D>
-   inline double AmCompressor<D>::subspacePercent()
+   inline double LrAmCompressor<D>::subspacePercent()
    { return subspacePercent_; }
    
    template <int D>
-   inline double AmCompressor<D>::correctionPercent()
+   inline double LrAmCompressor<D>::correctionPercent()
    { return correctionPercent_; }
 
 } // namespace Pspc

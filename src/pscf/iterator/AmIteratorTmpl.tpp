@@ -30,6 +30,10 @@ namespace Pscf
    template <typename Iterator, typename T>
    AmIteratorTmpl<Iterator,T>::AmIteratorTmpl()
     : errorType_("relNormResid"),
+      preError_(0),
+      error_(0),
+      correctionPercent_(0),
+      subspacePercent_(0),
       epsilon_(0),
       lambda_(0),
       maxItr_(200),
@@ -82,7 +86,8 @@ namespace Pscf
    {
       // Initialization and allocate operations on entry to loop.
       setup(isContinuation);
-
+      subspacePercent_ = 0;
+      correctionPercent_ = 0;
       // Preconditions for generic Anderson-mixing (AM) algorithm.
       UTIL_CHECK(hasInitialGuess());
       UTIL_CHECK(isAllocatedAM_);
@@ -98,7 +103,9 @@ namespace Pscf
       // Iterative loop
       nBasis_ = fieldBasis_.size();
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
-
+         if(itr_ > 0){
+            preError_ = error_;
+         }
          // Append current field to fieldHists_ ringbuffer
          getCurrent(temp_);
          fieldHists_.append(temp_);
@@ -110,7 +117,7 @@ namespace Pscf
          }
          
          if (verbose_ > 0){
-            Log::file() << " Iteration " << Int(itr_,5);
+            Log::file() << " Iteration " << Int(itr_,5) << std::endl;
          }
 
 
@@ -130,15 +137,26 @@ namespace Pscf
 
          // Compute scalar error, output report to log file.
          timerError_.start();
-         double error;
          try {
-            error = computeError(verbose_);
+            error_ = computeError(verbose_);
          } catch (const NanException&) {
             Log::file() << ",  error  =             NaN" << std::endl;
             break; // Exit loop if a NanException is caught
          }
+         if (itr_>0){
+            double totalReduce = preError_ - error_;
+            subspacePercent_ += (preError_-subspaceError_)/totalReduce;
+            correctionPercent_ += (subspaceError_ - updateError_)/totalReduce;
+            //Log::file() << ",  pre  = " << Dbl(preError_, 15) << std::endl;
+            //Log::file() << ",  After Subspace Error_  = " << Dbl(subspaceError_, 15) << std::endl;
+            //Log::file() << ",  After Correction Error_ = " << Dbl(updateError_, 15) << std::endl;
+           // Log::file() << ",  Subspace Step reduce percentage  = " << Dbl((preError_-subspaceError_)/totalReduce, 15) << std::endl;
+            //Log::file() << ",  Correction Step reduce percentage  = " << Dbl((subspaceError_ - updateError_)/totalReduce, 15) << std::endl;
+         
+         }
          if (verbose_ > 0 && verbose_ < 3) {
-             Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
+             Log::file() << ",  error  = " << Dbl(error_, 15) << std::endl;
+             Log::file() << "\n";
          }
          timerError_.stop();
 
@@ -146,7 +164,7 @@ namespace Pscf
          outputToLog();
 
          // Check for convergence
-         if (error < epsilon_) {
+         if (error_ < epsilon_) {
 
             // Stop timers
             timerAM_.stop();
@@ -165,7 +183,10 @@ namespace Pscf
                Log::file() << "\n";
                computeError(2); 
             }
-
+            subspacePercent_ = subspacePercent_/itr_;
+            correctionPercent_ = correctionPercent_/itr_;
+            Log::file() << "Subspace Step reduce percentage(avg)  = " << Dbl(subspacePercent_, 15) << std::endl;
+            Log::file() << "Correction Step reduce percentage(avg)  = " << Dbl(correctionPercent_, 15) << std::endl;
             totalItr_ += itr_;
             
             // Successful completion (i.e., converged within tolerance)
@@ -190,7 +211,6 @@ namespace Pscf
             timerMDE_.start();
             evaluate();
             timerMDE_.stop();
-
          }
 
       }
@@ -416,18 +436,23 @@ namespace Pscf
 
       // Add linear combinations of field and residual basis vectors
       if (nBasis_ > 0) {
-
          // Combine basis vectors into trial guess and predicted residual
          addHistories(fieldTrial_, fieldBasis_, coeffs_, nBasis_);
          addHistories(resTrial_, resBasis_, coeffs_, nBasis_);
-
       }
-
+      update(fieldTrial_);
+      evaluate();
+      getResidual(temp_);
+      subspaceError_ = computeError(temp_);
       // Correct for predicted error
       addPredictedError(fieldTrial_, resTrial_,lambda_);
 
       // Update system using new trial field
       update(fieldTrial_);
+      evaluate();
+      getResidual(temp_);
+      // Append current residual to resHists_ ringbuffer
+      updateError_ = computeError(temp_);
 
       return;
    }
@@ -559,6 +584,30 @@ namespace Pscf
 
       return error;
    }
+   
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::computeError(T a)
+   { 
+      double error = 0;
+      
+      // Find max residual vector element
+      double maxRes  = maxAbs(a);
+      // Find norm of residual vector
+      double normRes = norm(a);
+      // Find root-mean-squared residual element value
+      double rmsRes = normRes/sqrt(nElem_);
+      if (errorType_ == "maxResid") {
+         error = maxRes;
+      } else if (errorType_ == "normResid") {
+         error = normRes;
+      } else if (errorType_ == "rmsResid") {
+         error = rmsRes;
+      } else {
+         UTIL_THROW("Invalid iterator error type in parameter file.");
+      }
+      return error; 
+   }
+   
    
    template <typename Iterator, typename T>
    void AmIteratorTmpl<Iterator,T>::outputTimers(std::ostream& out)

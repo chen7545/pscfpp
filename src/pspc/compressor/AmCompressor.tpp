@@ -75,6 +75,8 @@ namespace Pspc{
    {
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
       counter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      subspacePercent_ += AmIteratorTmpl<Compressor<D>,DArray<double>>::subspacePercent();
+      correctionPercent_ += AmIteratorTmpl<Compressor<D>,DArray<double>>::correctionPercent();
       return solve;
    }
 
