@@ -1774,7 +1774,7 @@ namespace Pspc
 
       for (int i = 0; i < meshSize; ++i) {
          for (int j = 0; j < nMonomer; ++j) {
-            temp[j][i] = fields[j][i] + a * cos(f*i);
+            temp[j][i] = fields[j][i] + a * cos(f*2*M_PI * i/meshSize);
          }
       }
 

@@ -1957,7 +1957,7 @@ namespace Pspc {
       
       // dw
       for (int i = 0; i < mesh().dimension(0); ++i) {
-         resid_[i] = a_ * cos(f_*i);
+         resid_[i] = a_ *  cos(f_*2*M_PI *i/meshSize);
       }
       
       // Convert residual to Fourier Space
