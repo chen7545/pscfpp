@@ -106,8 +106,10 @@ namespace Pspc
       double computeDebye(double x);
       double computeIntraCorrelation(double qSquare);
       RField<D> computeIntraCorrelations();
-      RField<D> estimateLR(double a, double f);
-      RField<D> estimateError(double a, double f);
+      RField<D> estimateLR();
+      RField<D> estimateError();
+      double a_;
+      double f_;
       
       /**
       * Process command line options.

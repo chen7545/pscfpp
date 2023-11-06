@@ -629,37 +629,29 @@ namespace Pspc {
          } else
          if (command == "PERTURB_W") {
             UTIL_CHECK(D == 1);
-            double a;
-            in >> a;
+            in >> a_;
             Log::file() << std::endl;
-            Log::file() << "Amplitude  = " << Dbl(a, 3,3) << std::endl;
-            double f;
-            in >> f;
+            Log::file() << "Amplitude  = " << Dbl(a_, 3,3) << std::endl;
+            in >> f_;
             Log::file() << std::endl;
-            Log::file() << "Frequency  = " << Dbl(f, 3,3) << std::endl;
+            Log::file() << "q  = " << Dbl(f_, 3,3) << std::endl;
             readEcho(in, filename);
-            domain_.fieldIo().addsin(filename, w_.rgrid(), domain_.unitCell(), a, f);
+            domain_.fieldIo().addsin(filename, w_.rgrid(), domain_.unitCell(), a_, f_);
          } else
          if (command == "ESTIMATE_LR") {
             UTIL_CHECK(D == 1);
-            double a;
-            in >> a;
-            double f;
-            in >> f;
+            UTIL_CHECK(a_!=0);
             computeIntraCorrelations();
             readEcho(in, filename);
-            domain_.fieldIo().writeFieldRGrid(filename, estimateLR(a,f), 
+            domain_.fieldIo().writeFieldRGrid(filename, estimateLR(), 
                                          domain_.unitCell());
             
          } else
          if (command == "ESTIMATE_ERROR") {
             UTIL_CHECK(D == 1);
-            double a;
-            in >> a;
-            double f;
-            in >> f;
+            UTIL_CHECK(a_!=0);
             readEcho(in, filename);
-            domain_.fieldIo().writeFieldRGrid(filename, estimateError(a,f), 
+            domain_.fieldIo().writeFieldRGrid(filename, estimateError(), 
                                          domain_.unitCell());
          } else {
             Log::file() << "Error: Unknown command  " 
@@ -1941,7 +1933,7 @@ namespace Pspc {
    }
    
    template<int D>
-   RField<D> System<D>::estimateLR(double a, double f)
+   RField<D> System<D>::estimateLR()
    {
       RField<D> resid_;
       RFieldDft<D> residK_;
@@ -1965,7 +1957,7 @@ namespace Pspc {
       
       // dw
       for (int i = 0; i < mesh().dimension(0); ++i) {
-         resid_[i] = a * sin(2 * M_PI * f * i);
+         resid_[i] = a_ * cos(f_*i);
       }
       
       // Convert residual to Fourier Space
@@ -1984,7 +1976,7 @@ namespace Pspc {
    }
    
    template<int D>
-   RField<D> System<D>::estimateError(double a, double f)
+   RField<D> System<D>::estimateError()
    {
       RField<D> error;
       RFieldDft<D> errorDft;
@@ -2002,7 +1994,7 @@ namespace Pspc {
       error.allocate(dimensions);
       errorDft.allocate(dimensions);
       computeIntraCorrelations();
-      RField<D> estimate = estimateLR(a,f);
+      RField<D> estimate = estimateLR();
       for (int i = 0; i<  mesh().dimension(0); i++){
          double real = -1;
          for (int j = 0; j <nMonomer ; j++){

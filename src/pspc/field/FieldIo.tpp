@@ -1759,6 +1759,7 @@ namespace Pspc
                      double a, double f) const
    {
       int nMonomer = fields.capacity();
+      const int meshSize = mesh().size();
       UTIL_CHECK(nMonomer > 0);
       UTIL_CHECK(D == 1);
       writeFieldHeader(out, nMonomer, unitCell);
@@ -1768,12 +1769,12 @@ namespace Pspc
       DArray<RField<D> > temp;
       temp.allocate(nMonomer);
       for (int i = 0; i < nMonomer; ++i) {
-         temp[i].allocate(mesh().dimensions());
-      } 
+         temp[i].allocate(meshSize);
+      }
 
-      for (int i = 0; i < mesh().dimension(0); ++i) {
+      for (int i = 0; i < meshSize; ++i) {
          for (int j = 0; j < nMonomer; ++j) {
-            temp[j][i] = fields[j][i] + a * (sin(2 * M_PI * f * i) +cos(2 * M_PI * f * i));
+            temp[j][i] = fields[j][i] + a * cos(f*i);
          }
       }
 
