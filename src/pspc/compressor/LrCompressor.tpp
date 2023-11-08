@@ -101,17 +101,24 @@ namespace Pspc{
       
       // Iterative loop
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
-         // Compute residual vector
-         getResidual();
-         double error = computeError(verbose_);
-         
          if (verbose_ > 2) {
             Log::file() << "------------------------------- \n";
          }
          
          if (verbose_ > 0){
-            Log::file() << " Iteration " << Int(itr_,5);
+            Log::file() <<  std::endl;
+            Log::file() << " Iteration " << Int(itr_,5) << std::endl;
          }
+         // Compute residual vector
+         getResidual();
+         double error;
+         try {
+            error = computeError(verbose_);
+         } catch (const NanException&) {
+            Log::file() << ",  error  =             NaN" << std::endl;
+            break; // Exit loop if a NanException is caught
+         }
+         
          // Check for convergence
          if (error < epsilon_) {
             timerTotal_.stop();
