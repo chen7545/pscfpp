@@ -5,7 +5,9 @@ pspc_simulate_mcmove_= \
   pspc/simulate/mcmove/McMoveFactory.cpp \
   pspc/simulate/mcmove/McMoveManager.cpp \
   pspc/simulate/mcmove/RealMove.cpp \
+  pspc/simulate/mcmove/RealWcMove.cpp \
   pspc/simulate/mcmove/FourierMove.cpp \
+  pspc/simulate/mcmove/FourierWcMove.cpp \
   pspc/simulate/mcmove/ForceBiasMove.cpp 
   
 pspc_simulate_mcmove_OBJS=\

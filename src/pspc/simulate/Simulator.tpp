@@ -62,8 +62,9 @@ namespace Pspc {
       wc_.allocate(nMonomer);
       cc_.allocate(nMonomer);
       const int meshSize = system().domain().mesh().size();
+      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
       for (int i = 0; i < nMonomer; ++i) {
-         wc_[i].allocate(meshSize);
+         wc_[i].allocate(meshDimensions);
          cc_[i].allocate(meshSize);
       }
 

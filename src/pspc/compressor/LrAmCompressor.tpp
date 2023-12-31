@@ -91,7 +91,7 @@ namespace Pspc{
    template <int D>
    int LrAmCompressor<D>::compress()
    {
-      int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
+      int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve(true);
       //mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
       return solve;
    }
