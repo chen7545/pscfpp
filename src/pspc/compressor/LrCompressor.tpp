@@ -111,6 +111,7 @@ namespace Pspc{
             Log::file() <<  std::endl;
             Log::file() << " Iteration " << Int(itr_,5) << std::endl;
          }
+         
          // Compute residual vector
          getResidual();
          double error;
@@ -120,7 +121,11 @@ namespace Pspc{
             Log::file() << ",  error  =             NaN" << std::endl;
             break; // Exit loop if a NanException is caught
          }
-
+         
+         #ifdef PSCF_LR_TEST
+         Log::file() << " Iteration " << Int(itr_,5) << std::endl;
+         Log::file() << "current/previous error ratio: "<< error/preError_ << std::endl; 
+         #endif
          // Check for convergence
          if (error < epsilon_) {
 
@@ -142,7 +147,9 @@ namespace Pspc{
             return 0; // Success
 
          } else{
-
+            #ifdef PSCF_LR_TEST
+            preError_ = error;
+            #endif
             // Not yet converged.
             updateWFields();
             timerMDE_.start();

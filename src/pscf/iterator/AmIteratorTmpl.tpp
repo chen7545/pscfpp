@@ -151,16 +151,15 @@ namespace Pscf
          outputToLog();
          
          // Debugging output
-         #if 0
          #ifdef PSCF_AM_TEST
          if(itr_>0){
-            Log::file() << "preError_" << preError_ << "\n";
-            Log::file() << "mixingError_" << mixingError_ << "\n";
-            Log::file() << "correctionError_" << correctionError_ << "\n";
-            Log::file() << "mixingRatio_" << mixingError_/preError_ << "\n";
-            Log::file() << "correctionRatio_" << correctionError_/preError_ << "\n";
+            //Log::file() << "preError_" << preError_ << "\n";
+            //Log::file() << "mixingError_" << mixingError_ << "\n";
+            //Log::file() << "correctionError_" << correctionError_ << "\n";
+            Log::file() << " Iteration " << Int(itr_,5) << "\n";
+            Log::file() << "mixingRatio " << mixingError_/preError_ << "\n";
+            Log::file() << "correctionRatio " << correctionError_/preError_ << "\n";
          }
-         #endif
          #endif
 
          // Check for convergence
@@ -185,7 +184,7 @@ namespace Pscf
             }
 
             totalItr_ += itr_;
-
+            // Log::file()<< "RingBuffer Size: " << resHists_.size()<< std::endl;
             // Successful completion (i.e., converged within tolerance)
             return 0;
 

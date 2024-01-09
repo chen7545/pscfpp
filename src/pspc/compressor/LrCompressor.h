@@ -8,6 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+/*
+* Uncomment to test the how error reduction for each iteration
+*/ 
+#define PSCF_LR_TEST
+
 #include "Compressor.h"
 #include <prdc/cpu/RField.h>
 #include <prdc/cpu/RFieldDft.h>
@@ -96,6 +101,10 @@ namespace Pspc
 
    private:
 
+      #ifdef PSCF_LR_TEST
+      double preError_{0};
+      #endif
+      
       // Error tolerance.
       double epsilon_;
 

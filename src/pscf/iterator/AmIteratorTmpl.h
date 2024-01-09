@@ -4,7 +4,7 @@
 * Uncomment to test the contirbution of Anderson-Mixing for error reduction
 * from linear mixing step and correction step 
 */ 
-//#define PSCF_AM_TEST
+#define PSCF_AM_TEST
 
 /*
 * PSCF - Polymer Self-Consistent Field Theory
