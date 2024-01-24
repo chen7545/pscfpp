@@ -103,7 +103,7 @@ namespace Pspg{
    int LrAmCompressor<D>::compress()
    {
       int solve = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::solve();
-      mdeCounter_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal>>::totalItr();
+      //mdeCounter_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal>>::totalItr();
       return solve;
    }
 
@@ -227,7 +227,10 @@ namespace Pspg{
    // Perform the main system computation (solve the MDE)
    template <int D>
    void LrAmCompressor<D>::evaluate()
-   {  system().compute(); }
+   {  
+      system().compute(); 
+      ++mdeCounter_;
+   }
 
    // Compute the residual for the current system state
    template <int D>
@@ -368,6 +371,12 @@ namespace Pspg{
       // Copy parameters to the end of the curr array
       cudaMemcpy(intraCorrelation_.cField(), temp, kSize_*sizeof(cudaReal), cudaMemcpyHostToDevice);
       delete[] temp;
+   }
+   
+   template<int D>
+   double LrAmCompressor<D>::setLambda()
+   {
+      return 1.0;
    }
    
    template<int D>

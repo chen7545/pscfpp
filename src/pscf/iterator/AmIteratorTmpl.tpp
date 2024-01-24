@@ -15,6 +15,7 @@
 #include <util/format/Dbl.h>
 #include <util/format/Int.h>
 #include <util/misc/Timer.h>
+#include <util/misc/FileMaster.h>  
 #include <cmath>
 
 namespace Pscf
@@ -58,11 +59,11 @@ namespace Pscf
       read(in, "epsilon", epsilon_);
 
       // Maximum number of iterations (optional parameter)
-      // Default set in constructor (200) or before calling this function
+      // Default set in constructor (200) or by prior call to setMaxItr
       readOptional(in, "maxItr", maxItr_);
 
       // Maximum number of previous states in history (optional)
-      // Default set in constructor (50) or before calling this function
+      // Default set in constructor (50) or by prior call to setMaxHist
       readOptional(in, "maxHist", maxHist_);
 
       // Verbosity level of error reporting, values 0-3 (optional)
@@ -82,11 +83,11 @@ namespace Pscf
    {
       // Initialization and allocate operations on entry to loop.
       setup(isContinuation);
-
+      
       // Preconditions for generic Anderson-mixing (AM) algorithm.
       UTIL_CHECK(hasInitialGuess());
       UTIL_CHECK(isAllocatedAM_);
-      
+
       // Start overall timer
       timerTotal_.start();
 
@@ -98,7 +99,7 @@ namespace Pscf
       // Iterative loop
       nBasis_ = fieldBasis_.size();
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
-
+         
          // Append current field to fieldHists_ ringbuffer
          getCurrent(temp_);
          fieldHists_.append(temp_);
@@ -108,45 +109,64 @@ namespace Pscf
          if (verbose_ > 2) {
             Log::file() << "------------------------------- \n";
          }
-         
+
          if (verbose_ > 0){
             Log::file() << " Iteration " << Int(itr_,5);
          }
+         
+         lambda_ = setLambda();
 
-
-         if (nBasis_ < maxHist_) {
-            lambda_ = 1.0 - pow(0.9, nBasis_ + 1);
-         } else {
-            lambda_ = 1.0;
-         }
-
-         // Compute residual vector
+         // Compute current residual vector, store in temp_
          timerResid_.start();
          getResidual(temp_);
 
-         // Append current residual to resHists_ ringbuffer
+         // Append current residual to resHists_ ring buffer
          resHists_.append(temp_);
          timerResid_.stop();
 
-         // Compute scalar error, output report to log file.
+
+         // Compute scalar error used to test convergence
          timerError_.start();
-         double error;
          try {
-            error = computeError(verbose_);
+            error_ = computeError(verbose_);
          } catch (const NanException&) {
             Log::file() << ",  error  =             NaN" << std::endl;
             break; // Exit loop if a NanException is caught
          }
          if (verbose_ > 0 && verbose_ < 3) {
-             Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
+            Log::file() << ",  error  = " << Dbl(error_, 15) 
+                        << std::endl;
          }
          timerError_.stop();
-
+         
          // Output additional details of this iteration to the log file
          outputToLog();
+         
+         #ifdef PSCF_AM_TEST
+         // Compute errors and ratios used for algorithm testing
+         correctionError_ = computeError(temp_);
+         if (itr_ > 0) {
+            mixingRatio_ += mixingError_/preError_;
+            correctionRatio_ += correctionError_/preError_;
+            testCounter ++;
+            #if 1
+            //Log::file() << "   nBasis          = " << nBasis_ << "\n";
+            //Log::file() << "   preError        = " << preError_ << "\n";
+            //Log::file() << "   mixingError     = " << mixingError_ 
+            //            << "\n";
+            Log::file() << "   correctionError = " << correctionError_ 
+                        << "\n" ;
+            Log::file() << "   mixingRatio     = "
+                        << mixingError_/preError_ << "\n";
+            Log::file() << "   correctionRatio = " 
+                        << correctionError_/preError_ << "\n";
+            #endif
+         }
+         preError_ = correctionError_;
+         #endif
 
          // Check for convergence
-         if (error < epsilon_) {
+         if (error_ < epsilon_) {
 
             // Stop timers
             timerAM_.stop();
@@ -155,7 +175,7 @@ namespace Pscf
             if (verbose_ > 2) {
                Log::file() << "-------------------------------\n";
             }
-            
+
             if (verbose_ > 0) {
                Log::file() << " Converged\n";
             }
@@ -163,11 +183,11 @@ namespace Pscf
             // Output error report if not done previously
             if (verbose_ == 2) {
                Log::file() << "\n";
-               computeError(2); 
+               computeError(2);
             }
 
             totalItr_ += itr_;
-            
+
             // Successful completion (i.e., converged within tolerance)
             return 0;
 
@@ -178,7 +198,7 @@ namespace Pscf
             computeResidCoeff();
             timerCoeff_.stop();
 
-            // Compute the trial updated field and update the system
+            // Compute updated field and update the system
             timerOmega_.start();
             updateGuess();
             timerOmega_.stop();
@@ -186,17 +206,16 @@ namespace Pscf
             timerAM_.stop();
 
             // Perform the main calculation of the parent system -
-            // solve MDEs, compute phi's, compute stress if needed
+            // Solve MDEs, compute phi's, compute stress if needed
             timerMDE_.start();
             evaluate();
             timerMDE_.stop();
-
          }
 
       }
-      
-      
-      // Failure: iteration counter itr reached maxItr without converging
+
+
+      // Failure: Counter itr_ reached maxItr_ without converging
       timerTotal_.stop();
 
       Log::file() << "Iterator failed to converge.\n";
@@ -225,8 +244,8 @@ namespace Pscf
    */
    template <typename Iterator, typename T>
    void AmIteratorTmpl<Iterator,T>::setErrorType(std::string errorType)
-   {  
-      errorType_ = errorType; 
+   {
+      errorType_ = errorType;
 
       if (!isValidErrorType()) {
          std::string msg = "Invalid iterator error type [";
@@ -270,7 +289,7 @@ namespace Pscf
             || errorType_ == "rmsResid"
             || errorType_ == "maxResid"
             || errorType_ == "relNormResid");
-      return valid; 
+      return valid;
 
    }
 
@@ -313,7 +332,7 @@ namespace Pscf
 
       // Clear histories and bases (ring buffers)
       if (verbose_ > 0) {
-         Log::file() << "Clearing Anderson-mixing history.\n";
+         Log::file() << "Clearing AM field history and basis vectors.\n";
       }
       resHists_.clear();
       fieldHists_.clear();
@@ -347,20 +366,27 @@ namespace Pscf
       // Do nothing else on first iteration
       if (itr_ == 0) return;
 
-      // Update basis spanning differences of past field vectors
-      updateBasis(fieldBasis_, fieldHists_);
+      // Update fieldBasis_, resBasis_, U_ matrix and v_ vector
+      if (fieldHists_.size() > 1) {
 
-      // Update basis spanning differences of past residual vectors
-      updateBasis(resBasis_, resHists_);
+         // Update basis spanning differences of past field vectors
+         updateBasis(fieldBasis_, fieldHists_);
+   
+         // Update basis spanning differences of past residual vectors
+         updateBasis(resBasis_, resHists_);
+   
+         // Update nBasis_
+         nBasis_ = fieldBasis_.size();
+         UTIL_CHECK(fieldBasis_.size() == nBasis_);
+   
+         // Update the U matrix and v vector.
+         updateU(U_, resBasis_, nBasis_);
+      }
 
-      // Update nBasis_
-      nBasis_ = fieldBasis_.size();
-      UTIL_CHECK(fieldBasis_.size() == nBasis_);
+      UTIL_CHECK(nBasis_ > 0);
 
-      // Update the U matrix and v vector.
-      updateU(U_, resBasis_, nBasis_);
+      // Update v_ vector
       updateV(v_, resHists_[0], resBasis_, nBasis_);
-      // Note: resHists_[0] is the current residual vector
 
       // Solve matrix equation problem to compute coefficients
       // that minmize the L2 norm of the residual vector.
@@ -422,12 +448,33 @@ namespace Pscf
          addHistories(resTrial_, resBasis_, coeffs_, nBasis_);
 
       }
+      
+      #ifdef PSCF_AM_TEST
+      // Additional computation of error after linear mixing step
+      timerOmega_.stop();
+
+      timerMDE_.start();
+      update(fieldTrial_);
+      evaluate();
+      timerMDE_.stop();
+
+      timerResid_.start();
+      getResidual(temp_);
+      timerResid_.stop();
+
+      timerError_.start();
+      mixingError_ = computeError(temp_);
+      timerError_.stop();
+
+      timerOmega_.start();
+      #endif
 
       // Correct for predicted error
       addPredictedError(fieldTrial_, resTrial_,lambda_);
 
       // Update system using new trial field
       update(fieldTrial_);
+
 
       return;
    }
@@ -444,12 +491,33 @@ namespace Pscf
       if (!isAllocatedAM()) {
          allocateAM();
       } else {
+         // Clear residual and field history buffers
+         resHists_.clear();
+         fieldHists_.clear();
          if (!isContinuation) {
-            clear();
+            // Clear bases iff not a continuation
+            resBasis_.clear();
+            fieldBasis_.clear();
          }
       }
    }
 
+   /**
+   * Set mixing parameter for second step of an Anderson Mixing Algorithm
+   * (virtual)
+   */
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::setLambda()
+   {
+      double lambda;
+      if (nBasis_ < maxHist_) {
+         lambda = 1.0 - pow(0.9, nBasis_ + 1);
+      } else {
+         lambda = 1.0;
+      }
+      return lambda;
+   }
+   
    /*
    * Compute L2 norm of a vector.
    */
@@ -462,7 +530,7 @@ namespace Pscf
 
    // Update entire U matrix
    template <typename Iterator, typename T>
-   void 
+   void
    AmIteratorTmpl<Iterator, T> ::updateU(DMatrix<double> & U,
                             RingBuffer<T> const & resBasis,
                             int nHist)
@@ -484,7 +552,7 @@ namespace Pscf
    }
 
    template <typename Iterator, typename T>
-   void 
+   void
    AmIteratorTmpl<Iterator, T>::updateV(DArray<double> & v,
                                         T const & resCurrent,
                                         RingBuffer<T> const & resBasis,
@@ -507,11 +575,11 @@ namespace Pscf
          // Find max residual vector element
          double maxRes  = maxAbs(resHists_[0]);
          Log::file() << "Max Residual  = " << Dbl(maxRes,15) << "\n";
-   
+
          // Find norm of residual vector
          double normRes = norm(resHists_[0]);
          Log::file() << "Residual Norm = " << Dbl(normRes,15) << "\n";
-   
+
          // Find root-mean-squared residual element value
          double rmsRes = normRes/sqrt(nElem_);
          Log::file() << "RMS Residual  = " << Dbl(rmsRes,15) << "\n";
@@ -519,11 +587,12 @@ namespace Pscf
          // Find norm of residual vector relative to field
          double normField = norm(fieldHists_[0]);
          double relNormRes = normRes/normField;
-         Log::file() << "Relative Norm = " << Dbl(relNormRes,15) << std::endl;
-   
+         Log::file() << "Relative Norm = " << Dbl(relNormRes,15) 
+                     << std::endl;
+
          // Check if calculation has diverged (normRes will be NaN)
          UTIL_CHECK(!std::isnan(normRes));
-   
+
          // Set error value
          if (errorType_ == "maxResid") {
             error = maxRes;
@@ -553,12 +622,36 @@ namespace Pscf
          } else {
             UTIL_THROW("Invalid iterator error type in parameter file.");
          }
-         //Log::file() << ",  error  = " << Dbl(error, 15) << "\n";
 
       }
 
       return error;
    }
+   
+   #ifdef PSCF_AM_TEST
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::computeError(T a)
+   { 
+      double error = 0;
+      if (errorType_ == "maxResid") {
+         // Maximum residual vector element
+         error = maxAbs(a);
+      } else if (errorType_ == "normResid") {
+         // L2 norm of residual vector
+         error = norm(a);
+      } else if (errorType_ == "rmsResid") {
+         // Root-mean-squared residual element value
+         error = norm(a)/sqrt(nElem_);
+      } else if (errorType_ == "relNormResid") {
+         double normRes = norm(a);
+         double normField = norm(fieldHists_[0]);
+         error = normRes/normField;
+      } else {
+         UTIL_THROW("Invalid iterator error type.");
+      }
+      return error; 
+   }
+   #endif
    
    template <typename Iterator, typename T>
    void AmIteratorTmpl<Iterator,T>::outputTimers(std::ostream& out)
@@ -567,7 +660,7 @@ namespace Pscf
       double total = timerTotal_.time();
       out << "\n";
       out << "                          ";
-      out << "Total" << std::setw(22)<< "Per Iteration" 
+      out << "Total" << std::setw(22)<< "Per Iteration"
           << std::setw(9) << "Fraction" << "\n";
       out << "MDE solution:             "
           << Dbl(timerMDE_.time(), 9, 3)  << " s,  "
@@ -581,7 +674,7 @@ namespace Pscf
           << Dbl(timerCoeff_.time(), 9, 3)  << " s,  "
           << Dbl(timerCoeff_.time()/totalItr_, 9, 3)  << " s,  "
           << Dbl(timerCoeff_.time()/total, 9, 3) << "\n";
-      out << "checking convergence:     "  
+      out << "checking convergence:     "
           << Dbl(timerError_.time(), 9, 3)  << " s,  "
           << Dbl(timerError_.time()/totalItr_, 9, 3)  << " s,  "
           << Dbl(timerError_.time()/total, 9, 3) << "\n";
@@ -593,8 +686,15 @@ namespace Pscf
           << Dbl(total, 9, 3) <<  " s,  "
           << Dbl(total/totalItr_, 9, 3) << " s  \n";
       out << "\n";
+      
+      #ifdef PSCF_AM_TEST
+      out << "Average Mixing Step Ratio:     "
+           << Dbl(mixingRatio_/testCounter, 3, 3)<< "\n";
+      out << "Average Correction Step Ratio:     "
+           << Dbl(correctionRatio_/testCounter, 3, 3)<< "\n";
+      #endif
    }
-   
+
    template <typename Iterator, typename T>
    void AmIteratorTmpl<Iterator,T>::clearTimers()
    {
