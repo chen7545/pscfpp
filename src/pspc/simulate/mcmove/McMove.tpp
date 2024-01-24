@@ -64,6 +64,7 @@ namespace Pspc {
       nAttempt_ = 0;
       nAccept_  = 0;
       clearTimers();
+      random().setSeed(0);
    }
 
    /*
