@@ -301,6 +301,10 @@ namespace Pspc
       */
       void fCorrections();
       
+      /**
+      * Set mixing parameter lambda
+      */
+      double setLambda();
       
       using Compressor<D>::system;
 

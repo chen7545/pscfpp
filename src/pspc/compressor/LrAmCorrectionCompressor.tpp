@@ -97,7 +97,7 @@ namespace Pspc{
    int LrAmCorrectionCompressor<D>::compress()
    {
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
-      mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      //mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
       return solve;
    }
 
@@ -223,7 +223,10 @@ namespace Pspc{
    // Perform the main system computation (solve the MDE)
    template <int D>
    void LrAmCorrectionCompressor<D>::evaluate()
-   {  system().compute(); }
+   {  
+      system().compute(); 
+      ++mdeCounter_;
+   }
 
    // Compute the residual for the current system state
    template <int D>
@@ -301,6 +304,12 @@ namespace Pspc{
    {
       AmIteratorTmpl<Compressor<D>, DArray<double> >::clearTimers();
       mdeCounter_ = 0;
+   }
+   
+   template<int D>
+   double LrAmCorrectionCompressor<D>::setLambda()
+   {
+      return 1.0;
    }
    
    template<int D>
