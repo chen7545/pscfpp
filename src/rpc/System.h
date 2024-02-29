@@ -102,6 +102,14 @@ namespace Rpc {
       ///@}
       /// \name Lifetime (Actions)
       ///@{
+         
+      double computeDebye(double x);
+      double computeIntraCorrelation(double qSquare);
+      RField<D> computeIntraCorrelations();
+      RField<D> estimateLR(double stepSize);
+      void estimateError(double stepSize);
+      double a_;
+      double f_;
 
       /**
       * Process command line options.

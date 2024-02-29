@@ -23,10 +23,12 @@
 
 #include <prdc/cpu/RFieldComparison.h>
 #include <prdc/crystal/BFieldComparison.h>
+#include <prdc/crystal/shiftToMinimum.h>
 
 #include <pscf/inter/Interaction.h>
 #include <pscf/math/IntVec.h>
 #include <pscf/homogeneous/Clump.h>
+#include <pscf/mesh/MeshIterator.h>
 
 #include <util/param/BracketPolicy.h>
 #include <util/param/ParamComponent.h>
@@ -34,6 +36,7 @@
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
 #include <util/misc/ioUtil.h>
+#include <util/random/Random.h> 
 
 #include <string>
 #include <cmath>
@@ -707,6 +710,14 @@ namespace Rpc {
             UTIL_CHECK(mask_.hasData());
             fieldIo().writeFieldRGrid(filename, mask_.rgrid(), unitCell(),
                                       mask_.isSymmetric());
+         } else
+         if (command == "ESTIMATE_ERROR") {
+            double stepSize;
+            in >> stepSize;
+            Log::file()  << "Change of step size is: " << stepSize;
+            readEcho(in, filename);
+            estimateError(stepSize);
+            //domain_.fieldIo().writeFieldRGrid(filename, estimateError(), domain_.unitCell());
          } else {
             Log::file() << "Error: Unknown command  " 
                         << command << std::endl;
@@ -2029,6 +2040,208 @@ namespace Rpc {
       hasCFields_ = false;
       hasFreeEnergy_ = false;
    }
+   
+   template<int D>
+   double System<D>::computeDebye(double x)
+   {
+      if (x == 0){
+         return 1.0;
+      } else {
+         return 2.0 * (std::exp(-x) - 1.0 + x) / (x * x);
+      }
+   }
+   
+   template<int D>
+   double System<D>::computeIntraCorrelation(double qSquare)
+   {
+      const int np = mixture().nPolymer();
+      const double vMonomer = mixture().vMonomer();
+      // Overall intramolecular correlation
+      double omega = 0;
+      int monomerId; int nBlock;
+      double kuhn; double length; double g; double rg2;
+      Polymer<D> const * polymerPtr;
+
+      for (int i = 0; i < np; i++){
+         polymerPtr = &mixture().polymer(i);
+         nBlock = polymerPtr->nBlock();
+         for (int j = 0; j < nBlock; j++) {
+            monomerId = polymerPtr-> block(j).monomerId();
+            kuhn = mixture().monomer(monomerId).kuhn();
+            // Get the length (number of monomers) in this block.
+            length = polymerPtr-> block(j).length();
+            rg2 = length * kuhn* kuhn /6.0;
+            g = computeDebye(qSquare*rg2);
+            omega += length * g/ vMonomer;
+         }
+      }
+      return omega;
+   }
+   
+   template<int D>
+   RField<D> System<D>::computeIntraCorrelations()
+   {
+      IntVec<D> const & dimensions = mesh().dimensions();
+      IntVec<D> kMeshDimensions;
+      RField<D> intraCorrelation;
+      for (int i = 0; i < D; ++i) {
+         if (i < D - 1) {
+            kMeshDimensions[i] = dimensions[i];
+         } else {
+            kMeshDimensions[i] = dimensions[i]/2 + 1;
+         }
+      }
+      intraCorrelation.allocate(kMeshDimensions);
+      MeshIterator<D> iter;
+      iter.setDimensions(kMeshDimensions);
+      IntVec<D> G, Gmin;
+      double Gsq;
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         G = iter.position();
+         Gmin = shiftToMinimum(G, mesh().dimensions(), unitCell());
+         Gsq = unitCell().ksq(Gmin);
+         intraCorrelation[iter.rank()] = computeIntraCorrelation(Gsq);
+      }
+      return intraCorrelation;
+   }
+   
+   template<int D>
+   RField<D> System<D>::estimateLR(double stepSize){
+      IntVec<D> const & dimensions = mesh().dimensions();
+      const int nMonomer = mixture().nMonomer();
+      const int meshSize = domain().mesh().size();
+      //w homogenous
+      DArray< RField<D> > w1;
+      //w after real random move
+      DArray< RField<D> > w2;
+      w1.allocate(nMonomer);
+      w2.allocate(nMonomer);
+      
+      for (int i = 0; i < nMonomer; ++i) {
+         w1[i].allocate(dimensions);
+         w2[i].allocate(dimensions);
+      }
+      
+      // Read w1 field
+      fieldIo().readFieldsRGrid("in/w1", w1, domain_.unitCell());
+      Random random_;
+      random_.setSeed(0);
+      for (int k = 0; k < meshSize; k++){
+         //Random number generator
+         double r = random_.uniform(-stepSize,stepSize);
+         for (int i = 0; i < nMonomer; i++){
+            w2[i][k] = w1[i][k] + r;
+         }
+      }
+      setWRGrid(w2);
+      writeWRGrid("in/w2");
+      
+      RField<D> resid_;
+      RFieldDft<D> residK_;
+      RField<D> intraCorrelation;
+      IntVec<D> kMeshDimensions;
+      const double vMonomer = mixture().vMonomer();
+      for (int i = 0; i < D; ++i) {
+         if (i < D - 1) {
+            kMeshDimensions[i] = dimensions[i];
+         } else {
+            kMeshDimensions[i] = dimensions[i]/2 + 1;
+         }
+      }
+      resid_.allocate(dimensions);
+      residK_.allocate(dimensions);
+      intraCorrelation.allocate(kMeshDimensions);
+      intraCorrelation = computeIntraCorrelations();
+      
+      // dw
+      for (int i = 0; i < meshSize; ++i) {
+         resid_[i] = w2[0][i] - w1[0][i];
+      }
+      
+      // Convert residual to Fourier Space
+      fft().forwardTransform(resid_, residK_);
+      // Residual combine with Linear response factor (dphi = -vR* dw)
+      MeshIterator<D> iter;
+      iter.setDimensions(residK_.dftDimensions());
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         residK_[iter.rank()][0] *= vMonomer * intraCorrelation[iter.rank()];
+         residK_[iter.rank()][1] *= vMonomer * intraCorrelation[iter.rank()];
+      }
+      
+      // Convert back to real Space
+      fft().inverseTransform(residK_, resid_);
+      return resid_;
+   }
+   
+   template<int D>
+   void System<D>::estimateError(double stepSize)
+   {
+      RField<D> realError;
+      RFieldDft<D> realErrorDft;
+      RField<D> estimateError = estimateLR(stepSize);
+      RFieldDft<D> estimateDft;
+      
+      IntVec<D> kMeshDimensions;
+      IntVec<D> const & dimensions = mesh().dimensions();
+      const int nMonomer = mixture().nMonomer();
+      const int meshSize = domain().mesh().size();
+      for (int i = 0; i < D; ++i) {
+         if (i < D - 1) {
+            kMeshDimensions[i] = dimensions[i];
+         } else {
+            kMeshDimensions[i] = dimensions[i]/2 + 1;
+         }
+      }
+      
+      realError.allocate(dimensions);
+      realErrorDft.allocate(dimensions);
+      estimateDft.allocate(dimensions);
+      computeIntraCorrelations();
+      compute();
+      for (int i = 0; i<  meshSize; i++){
+         double real = 1;
+         for (int j = 0; j <nMonomer ; j++){
+            real -=  c_.rgrid(j)[i];
+         }
+         realError[i] = real;
+      }
+      
+      fft().forwardTransform(realError, realErrorDft);
+      fft().forwardTransform(estimateError, estimateDft);
+      
+      MeshIterator<D> iter;
+      iter.setDimensions(kMeshDimensions);
+      IntVec<D> G, Gmin;
+      double Gsq;
+      std::ofstream outputFile("out/error_K");
+      if (!outputFile.is_open()) {
+        std::cerr << "Failed to open the file for writing." << std::endl;
+      }
+      outputFile <<  "k^2" << "     " << "phi_real/phi_LR" << std::endl;
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         G = iter.position();
+         Gmin = shiftToMinimum(G, mesh().dimensions(), unitCell());
+         Gsq = unitCell().ksq(Gmin);
+         outputFile << Gsq ;
+         std::complex<double> real(realErrorDft[iter.rank()][0], realErrorDft[iter.rank()][1]);
+         std::complex<double> estimate(estimateDft[iter.rank()][0], estimateDft[iter.rank()][1]);
+         outputFile << "    "<< abs(real/estimate) << std::endl;
+      }
+       outputFile.close();
+       
+      std::ofstream outputFile2("out/Lrerror");
+      if (!outputFile2.is_open()) {
+        std::cerr << "Failed to open the file for writing." << std::endl;
+      }
+      outputFile2 <<  "Real" << "          " << "Estimate" << std::endl;
+      for (int i = 0; i < meshSize; i++) {
+         outputFile2 << " "<< realError[i]<< "          " <<estimateError[i] << std::endl;
+      }
+       outputFile2.close();
+   }
+   
+   
+   
 
 } // namespace Rpc
 } // namespace Pscf
