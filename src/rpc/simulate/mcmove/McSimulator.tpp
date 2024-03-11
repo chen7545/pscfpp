@@ -66,10 +66,6 @@ namespace Rpc {
       // Set random seed
       random().setSeed(seed_);
       
-      // Initialize Simulator<D> base class
-      allocate();
-      analyzeChi();
-
       // Read block of mc move data inside
       readParamComposite(in, mcMoveManager_);
 
@@ -86,21 +82,33 @@ namespace Rpc {
    void McSimulator<D>::setup()
    {  
       UTIL_CHECK(system().w().hasData());
-
-      // Allocate mcState_, if necessary.
-      if (!mcState_.isAllocated) {
-         const int nMonomer = system().mixture().nMonomer();
-         const IntVec<D> dimensions = system().domain().mesh().dimensions();
-         mcState_.allocate(nMonomer, dimensions);
+      
+      // Figure out what needs to be saved
+      state_.ccSavePolicy = false;
+      state_.dcSavePolicy = false;
+      // Loop over McMoves to set true if true for any move
+      if (needsCc()){
+         state_.ccSavePolicy = true;
       }
-   
+      if (needsDc()){
+         state_.dcSavePolicy = true;
+      }
+      // Initialize Simulator<D> base class
+      allocate();
+      
       // Eigenanalysis of the projected chi matrix.
       analyzeChi();
-
+      
       // Compute field components and MC Hamiltonian for initial state
       system().compute();
       computeWc();
       computeHamiltonian();
+      if (state_.ccSavePolicy || state_.dcSavePolicy) {
+         computeCc();
+      }
+      if (state_.dcSavePolicy) {
+         computeDc();
+      }
       mcMoveManager_.setup();
       if (analyzerManager_.size() > 0){
          analyzerManager_.setup();
@@ -214,73 +222,6 @@ namespace Rpc {
       Log::file() << endl;
 
    }
-
-   /*
-   * Save the current Monte-Carlo state prior to an attempted MC move.
-   *
-   * Invoked before each attempted Monte-Carlo move.
-   */
-   template <int D>
-   void McSimulator<D>::saveMcState()
-   {
-      UTIL_CHECK(system().w().hasData());
-      UTIL_CHECK(hasWc());
-      UTIL_CHECK(hasHamiltonian());
-      UTIL_CHECK(mcState_.isAllocated);
-      UTIL_CHECK(!mcState_.hasData);
-
-      // Set fields
-      int nMonomer = system().mixture().nMonomer();
-      for (int i = 0; i < nMonomer; ++i) {
-         mcState_.w[i] = system().w().rgrid(i);
-         mcState_.wc[i] = wc(i);
-      }
-
-      // Set Hamiltonian
-      mcState_.hamiltonian  = hamiltonian();
-      mcState_.idealHamiltonian  = idealHamiltonian();
-      mcState_.fieldHamiltonian  = fieldHamiltonian();
-
-      mcState_.hasData = true;
-   }
-
-   /*
-   * Restore a saved Monte-Carlo state.
-   *
-   * Invoked after an attempted Monte-Carlo move is rejected.
-   */
-   template <int D>
-   void McSimulator<D>::restoreMcState()
-   {
-      UTIL_CHECK(mcState_.isAllocated);
-      UTIL_CHECK(mcState_.hasData);
-      const int nMonomer = system().mixture().nMonomer();
-
-      // Restore fields
-      system().setWRGrid(mcState_.w); 
-      for (int i = 0; i < nMonomer; ++i) {
-         wc_[i] = mcState_.wc[i];
-      }
-      hasWc_ = true;
-
-      // Restore Hamiltonian and components
-      system().setWRGrid(mcState_.w); 
-      hamiltonian_ = mcState_.hamiltonian;
-      idealHamiltonian_ = mcState_.idealHamiltonian;
-      fieldHamiltonian_ = mcState_.fieldHamiltonian;
-      hasHamiltonian_ = true;
-
-      mcState_.hasData = false;
-   }
- 
-   /*
-   * Clear the saved Monte-Carlo state.
-   *
-   * Invoked when an attempted Monte-Carlo move is accepted.
-   */
-   template <int D>
-   void McSimulator<D>::clearMcState()
-   {  mcState_.hasData = false; }
 
    /*
    * Open, read and analyze a trajectory file
