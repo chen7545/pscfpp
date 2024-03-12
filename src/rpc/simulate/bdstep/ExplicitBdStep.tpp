@@ -30,7 +30,8 @@ namespace Rpc {
     : BdStep<D>(simulator),
       w_(),
       dwc_(),
-      mobility_(0.0)
+      mobility_(0.0),
+      nFail_(0)
    {}
 
    /*
@@ -120,11 +121,13 @@ namespace Rpc {
       // Enforce incompressibility (also solves MDE repeatedly)
       int compress = system().compressor().compress();
       if (compress != 0){
-         //simulator().restoreState();
+         simulator().restoreState();
+         nFail_++;
       } else{
          UTIL_CHECK(system().hasCFields());
-
+         
          // Evaluate component properties in new state
+         simulator().clearState();
          simulator().computeWc();
          simulator().computeCc();
          simulator().computeDc();

@@ -88,6 +88,11 @@ namespace Rpc {
       * Clear timers 
       */
       virtual void clearTimers();
+      
+      /*
+      * Return number of moves that fail to converge.
+      */
+      virtual long nFail() = 0;
 
       // Accessor Functions
 

@@ -547,7 +547,6 @@ namespace Rpc {
    {
       UTIL_CHECK(system().w().hasData());
       UTIL_CHECK(hasWc());
-      UTIL_CHECK(hasHamiltonian());
       UTIL_CHECK(state_.isAllocated);
       UTIL_CHECK(!state_.hasData);
 
@@ -577,6 +576,7 @@ namespace Rpc {
       
       // Save Hamiltonian based on hamiltonianSavePolicy
       if (state_.hamiltonianSavePolicy){
+         UTIL_CHECK(hasHamiltonian());
          state_.hamiltonian  = hamiltonian();
          state_.idealHamiltonian  = idealHamiltonian();
          state_.fieldHamiltonian  = fieldHamiltonian();

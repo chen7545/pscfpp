@@ -187,6 +187,9 @@ namespace Rpc {
       // Output times for the simulation run
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;
+      if (stepper().nFail() > 0){
+         Log::file() << "nFailStep           " << stepper().nFail() << std::endl;
+      }
       Log::file() << "Total run time      " << time
                   << " sec" << std::endl;
       double rStep = double(nStep);

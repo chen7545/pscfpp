@@ -62,7 +62,12 @@ namespace Rpc {
       * Take a single Brownian dynamics step.
       */
       virtual void step();
-
+      
+      /**
+      * Return number of moves that fail to converge.
+      */
+      virtual long nFail();
+      
    protected:
 
       using BdStep<D>::system;
@@ -92,8 +97,17 @@ namespace Rpc {
 
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
-
+      
+      // Number of moves that fail to converge.
+      long  nFail_;      
    };
+   
+   /*
+   * Return number of moves that fail to converge.
+   */
+   template <int D>
+   inline long PredCorrBdStep<D>::nFail()
+   {  return nFail_; }
 
    #ifndef RPC_PRED_CORR_BD_STEP_TPP
    // Suppress implicit instantiation

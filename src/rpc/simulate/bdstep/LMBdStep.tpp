@@ -34,7 +34,8 @@ namespace Rpc {
       dwc_(),
       etaNewPtr_(0),
       etaOldPtr_(0),
-      mobility_(0.0)
+      mobility_(0.0),
+      nFail_(0)
    {}
 
    /*
@@ -77,7 +78,7 @@ namespace Rpc {
    {
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
-
+      
       // Prefactor b for displacements
       const double vSystem = system().domain().unitCell().volume();
       const double b = sqrt(0.5*mobility_*double(meshSize)/vSystem);
@@ -136,6 +137,9 @@ namespace Rpc {
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       int i, j, k;
+      
+      // Save current state
+      simulator().saveState();
 
       // Copy current fields to w_
       for (i = 0; i < nMonomer; ++i) {
@@ -168,17 +172,23 @@ namespace Rpc {
 
       // Set modified fields at predicted state wp_
       system().setWRGrid(w_);
-      system().compressor().compress();
-      UTIL_CHECK(system().hasCFields());
+      int compress = system().compressor().compress();
+      if (compress != 0){
+         simulator().restoreState();
+         nFail_++;
+      } else {
+         UTIL_CHECK(system().hasCFields());
+         
+         // Compute components and derivatives at wp_
+         simulator().clearState();
+         simulator().clearData();
+         simulator().computeWc();
+         simulator().computeCc();
+         simulator().computeDc();
 
-      // Compute components and derivatives at wp_
-      simulator().clearData();
-      simulator().computeWc();
-      simulator().computeCc();
-      simulator().computeDc();
-
-      // Exchange old and new random fields
-      exchangeOldNew();
+         // Exchange old and new random fields
+         exchangeOldNew();
+      }
    }
 
 }
