@@ -112,6 +112,7 @@ namespace Rpc {
    void BdSimulator<D>::setup()
    {
       UTIL_CHECK(system().w().hasData());
+      state_.hamiltonianSavePolicy = false;
       analyzeChi();
       system().compute();
       computeWc();

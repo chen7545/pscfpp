@@ -66,6 +66,20 @@ namespace Rpc {
       virtual void step() = 0;
       
       /**
+      * Decide whether cc fields need to be saved for move
+      * The default implementation is false
+      */
+      virtual bool needsCc()
+      {  return false; }
+      
+      /**
+      * Decide whether dc fields need to be saved for move
+      * The default implementation is false
+      */
+      virtual bool needsDc()
+      { return true; }
+      
+      /**
       * Log output timing results 
       */
       virtual void outputTimers(std::ostream& out);

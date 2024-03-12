@@ -86,6 +86,7 @@ namespace Rpc {
       // Figure out what needs to be saved
       state_.ccSavePolicy = false;
       state_.dcSavePolicy = false;
+      state_.hamiltonianSavePolicy = true;
       // Loop over McMoves to set true if true for any move
       if (needsCc()){
          state_.ccSavePolicy = true;

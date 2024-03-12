@@ -91,10 +91,13 @@ namespace Rpc {
       
       /// Save policy controls if dc fields needs to be saved.
       bool dcSavePolicy;
+      
+      /// Save policy controls if hamiltonian needs to be saved.
+      bool hamiltonianSavePolicy;
 
       /// Is this struct being used to store data?
       bool hasData;
-
+      
       /// Has memory be allocated for the w field?
       bool isAllocated;
 

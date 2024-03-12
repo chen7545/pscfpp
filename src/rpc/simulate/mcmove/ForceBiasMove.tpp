@@ -234,7 +234,7 @@ namespace Rpc {
    {
       // Output timing results, if requested.
       out << "\n";
-      out << "Real Move times contributions:\n";
+      out << "Force Bias Move times contributions:\n";
       McMove<D>::outputTimers(out);
    }
 
