@@ -2076,7 +2076,7 @@ namespace Rpc {
             //Log::file()<< "length" << length<< std::endl;
          }
       }
-      return omega/2;
+      return omega;
    }
    
    template<int D>
