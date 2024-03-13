@@ -335,7 +335,7 @@ namespace Rpc{
             omega += length * g/ vMonomer;
          }
       }
-      return omega;
+      return omega/2;
    }
 
    template<int D>

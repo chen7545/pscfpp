@@ -2073,9 +2073,10 @@ namespace Rpc {
             rg2 = length * kuhn* kuhn /6.0;
             g = computeDebye(qSquare*rg2);
             omega += length * g/ vMonomer;
+            //Log::file()<< "length" << length<< std::endl;
          }
       }
-      return omega;
+      return omega/2;
    }
    
    template<int D>
@@ -2124,8 +2125,30 @@ namespace Rpc {
       
       // Read w1 field
       fieldIo().readFieldsRGrid("in/w1", w1, domain_.unitCell());
+      setWRGrid(w1);
+      compute();
+      RField<D> realError;
+      realError.allocate(dimensions);
+      for (int i = 0; i<  meshSize; i++){
+         double real = 1;
+         for (int j = 0; j <nMonomer ; j++){
+            real -=  c_.rgrid(j)[i];
+         }
+         realError[i] = real;
+      }
+      std::ofstream outputFileIn("out/ErrorIn");
+      if (!outputFileIn.is_open()) {
+        std::cerr << "Failed to open the file for writing." << std::endl;
+      }
+      outputFileIn <<  "Real" << std::endl;
+      for (int i = 0; i < meshSize; i++) {
+         outputFileIn << " "<< realError[i] << std::endl;
+      }
+      outputFileIn.close();
+      
       Random random_;
       random_.setSeed(0);
+      
       for (int k = 0; k < meshSize; k++){
          //Random number generator
          double r = random_.uniform(-stepSize,stepSize);
