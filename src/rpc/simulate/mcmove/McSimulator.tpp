@@ -132,8 +132,8 @@ namespace Rpc {
       Timer timer;
       Timer analyzerTimer;
       timer.start();
-      for (iStep_ = 0; iStep_ < nStep; ++iStep_) {
-
+      iStep_ = 0;
+      for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
          // Analysis (if any)
          analyzerTimer.start();
          if (Analyzer<D>::baseInterval != 0) {
@@ -147,8 +147,10 @@ namespace Rpc {
 
          // Choose and attempt an McMove
          mcMoveManager_.chooseMove().move();
-         if (!mcMoveManager_.chosenMove().isConverge()){
-            Log::file() << "Step: "<< iStep_<< " fail to converge" << "\n";
+         if (mcMoveManager_.chosenMove().isConverge()){
+            iStep_++;
+         } else{
+            Log::file() << "Step: "<< iTotalStep_<< " fail to converge" << "\n";
          }
       }
 
@@ -182,6 +184,9 @@ namespace Rpc {
       // Output times for the simulation run
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;
+      if (iStep_ != nStep){
+         Log::file() << "nFail Step              " << (nStep - iStep_) << std::endl;
+      }
       Log::file() << "Total run time      " << time
                   << " sec" << std::endl;
       double rStep = double(nStep);

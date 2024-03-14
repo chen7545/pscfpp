@@ -74,16 +74,13 @@ namespace Rpc {
       */
       virtual void step();
       
-      /**
-      * Return number of moves that fail to converge.
-      */
-      virtual long nFail();
-
    protected:
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
       using BdStep<D>::random;
+      using BdStep<D>::failConverge;
+      using BdStep<D>::successConverge;
       using ParamComposite::read;
 
    private:
@@ -111,9 +108,6 @@ namespace Rpc {
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
       
-      // Number of moves that fail to converge.
-      long  nFail_;
-
       // Private member functions
 
       RField<D>& etaNew(int i) 
@@ -130,13 +124,6 @@ namespace Rpc {
 
    };
    
-   /*
-   * Return number of moves that fail to converge.
-   */
-   template <int D>
-   inline long LMBdStep<D>::nFail()
-   {  return nFail_; }
-
    #ifndef RPC_LM_BD_STEP_TPP
    // Suppress implicit instantiation
    extern template class LMBdStep<1>;

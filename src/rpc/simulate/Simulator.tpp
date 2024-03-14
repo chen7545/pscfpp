@@ -33,6 +33,7 @@ namespace Rpc {
    Simulator<D>::Simulator(System<D>& system)
    : random_(),
      iStep_(0),
+     iTotalStep_(0), 
      hasHamiltonian_(false),
      hasWc_(false),
      hasCc_(false),

@@ -34,8 +34,7 @@ namespace Rpc {
       dwc_(),
       etaNewPtr_(0),
       etaOldPtr_(0),
-      mobility_(0.0),
-      nFail_(0)
+      mobility_(0.0)
    {}
 
    /*
@@ -175,8 +174,9 @@ namespace Rpc {
       int compress = system().compressor().compress();
       if (compress != 0){
          simulator().restoreState();
-         nFail_++;
+         failConverge();
       } else {
+         successConverge();
          UTIL_CHECK(system().hasCFields());
          
          // Compute components and derivatives at wp_

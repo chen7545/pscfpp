@@ -89,10 +89,10 @@ namespace Rpc {
       */
       virtual void clearTimers();
       
-      /*
-      * Return number of moves that fail to converge.
+      /**
+      * Return converge status of current move.
       */
-      virtual long nFail() = 0;
+      bool isConverge() const;
 
       // Accessor Functions
 
@@ -103,6 +103,16 @@ namespace Rpc {
 
    protected:
 
+      /*
+      * Compressor fail to converge. Set isConverge_ to false.
+      */
+      void failConverge();
+      
+      /*
+      * Compressor converge successfully. Set isConverge_ to true.
+      */
+      void successConverge();
+      
       /**
       * Get parent System object.
       */
@@ -120,6 +130,9 @@ namespace Rpc {
 
    private:
 
+      /// Compress status.
+      bool  isConverge_;
+      
       /// Pointer to parent BdSimulator object
       BdSimulator<D>* simulatorPtr_;
 
@@ -132,6 +145,27 @@ namespace Rpc {
    };
 
    // Protected inline methods
+   
+   /*
+   * Return converge status of current move.
+   */
+   template <int D>
+   inline bool BdStep<D>::isConverge() const
+   {  return isConverge_; }
+   
+   /*
+   * Compressor fail to converge. Set isConverge_ to false.
+   */
+   template <int D>
+   inline void BdStep<D>::failConverge()
+   {  isConverge_ = false; }
+   
+   /*
+   * Compressor converge successfully. Set isConverge_ to true.
+   */
+   template <int D>
+   inline void BdStep<D>::successConverge()
+   {  isConverge_ = true; }
 
    /*
    * Get parent System object.

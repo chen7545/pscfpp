@@ -145,7 +145,6 @@ namespace Rpc {
             simulator().restoreState();
          }
          decisionTimer_.stop();
-
       }
 
       totalTimer_.stop();

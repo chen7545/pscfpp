@@ -151,9 +151,14 @@ namespace Rpc {
       virtual void clearTimers();
 
       /**
-      * Return the current simulation step index.
+      * Return the current converged simulation step index.
       */
       long iStep();
+      
+      /**
+      * Return the current simulation step index.
+      */
+      long iTotalStep();
 
       ///@}
       /// \name Projected Chi Matrix
@@ -546,9 +551,14 @@ namespace Rpc {
       double fieldHamiltonian_;
 
       /**
-      * Simulation step counter.
+      * Simulation converge step counter.
       */
       long iStep_;
+      
+      /**
+      * Simulation step counter.
+      */
+      long iTotalStep_;
 
       /**
       * Has the Hamiltonian been computed for the current w and c fields?
@@ -790,6 +800,10 @@ namespace Rpc {
    template <int D>
    inline long Simulator<D>::iStep()
    {  return iStep_; }
+   
+   template <int D>
+   inline long Simulator<D>::iTotalStep()
+   {  return iTotalStep_; }
 
    #ifndef RPC_SIMULATOR_TPP
    // Suppress implicit instantiation
