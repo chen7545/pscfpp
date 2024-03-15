@@ -141,7 +141,7 @@ namespace Rpc {
       Timer analyzerTimer;
       timer.start();
       iStep_ = 0;
-      for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iStep_) {
+      for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
 
          // Analysis (if any)
          analyzerTimer.start();
