@@ -330,12 +330,12 @@ namespace Rpc{
             kuhn = system().mixture().monomer(monomerId).kuhn();
             // Get the length (number of monomers) in this block.
             length = polymerPtr-> block(j).length();
-            rg2 = length * kuhn* kuhn /6.0;
+            rg2 = kuhn* kuhn /6.0;
             g = computeDebye(qSquare*rg2);
             omega += length * g/ vMonomer;
          }
       }
-      return omega/2;
+      return omega;
    }
 
    template<int D>

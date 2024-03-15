@@ -2059,22 +2059,26 @@ namespace Rpc {
       // Overall intramolecular correlation
       double omega = 0;
       int monomerId; int nBlock;
-      double kuhn; double length; double g; double rg2;
+      double phi; double kuhn; double length; 
+      double totalN; double avgKuhn; double g; double rg2;
       Polymer<D> const * polymerPtr;
 
       for (int i = 0; i < np; i++){
          polymerPtr = &mixture().polymer(i);
+         phi = polymerPtr->phi();
          nBlock = polymerPtr->nBlock();
+         totalN = 0;
+         avgKuhn = 0;
          for (int j = 0; j < nBlock; j++) {
             monomerId = polymerPtr-> block(j).monomerId();
             kuhn = mixture().monomer(monomerId).kuhn();
-            // Get the length (number of monomers) in this block.
             length = polymerPtr-> block(j).length();
-            rg2 = length * kuhn* kuhn /6.0;
-            g = computeDebye(qSquare*rg2);
-            omega += length * g/ vMonomer;
-            //Log::file()<< "length" << length<< std::endl;
+            totalN += length;
+            avgKuhn += kuhn/nBlock;
          }
+         rg2 = totalN* avgKuhn* avgKuhn /6.0;
+         g = computeDebye(qSquare*rg2);
+         omega += phi*totalN*g/ vMonomer;
       }
       return omega;
    }
