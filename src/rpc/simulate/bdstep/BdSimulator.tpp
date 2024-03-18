@@ -165,6 +165,7 @@ namespace Rpc {
                   }
                }
             }
+            analyzerTimer.stop();
          } else{
             Log::file() << "Step: "<< iTotalStep_<< " fail to converge" << "\n";
          }
