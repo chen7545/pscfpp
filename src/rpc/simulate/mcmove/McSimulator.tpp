@@ -133,22 +133,32 @@ namespace Rpc {
       Timer analyzerTimer;
       timer.start();
       iStep_ = 0;
-      for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
-         // Analysis (if any)
-         analyzerTimer.start();
-         if (Analyzer<D>::baseInterval != 0) {
-            if (iStep_ % Analyzer<D>::baseInterval == 0) {
-               if (analyzerManager_.size() > 0) {
-                  analyzerManager_.sample(iStep_);
-               }
+      // Analysis initial step (if any)
+      analyzerTimer.start();
+      if (Analyzer<D>::baseInterval != 0) {
+         if (iStep_ % Analyzer<D>::baseInterval == 0) {
+            if (analyzerManager_.size() > 0) {
+               analyzerManager_.sample(iStep_);
             }
          }
-         analyzerTimer.stop();
-
+      }
+      analyzerTimer.stop();
+      
+      for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
          // Choose and attempt an McMove
          mcMoveManager_.chooseMove().move();
          if (mcMoveManager_.chosenMove().isConverge()){
             iStep_++;
+            // Analysis (if any)
+            analyzerTimer.start();
+            if (Analyzer<D>::baseInterval != 0) {
+               if (iStep_ % Analyzer<D>::baseInterval == 0) {
+                  if (analyzerManager_.size() > 0) {
+                     analyzerManager_.sample(iStep_);
+                  }
+               }
+            }
+            analyzerTimer.stop();
          } else{
             Log::file() << "Step: "<< iTotalStep_<< " fail to converge" << "\n";
          }
