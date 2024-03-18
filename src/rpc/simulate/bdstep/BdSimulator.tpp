@@ -202,7 +202,7 @@ namespace Rpc {
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;
       if (iStep_ != nStep){
-         Log::file() << "nFail Step              " << (nStep - iStep_) << std::endl;
+         Log::file() << "nFail Step          " << (nStep - iStep_) << std::endl;
       }
       Log::file() << "Total run time      " << time
                   << " sec" << std::endl;
