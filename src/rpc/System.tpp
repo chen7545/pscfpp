@@ -2067,7 +2067,7 @@ namespace Rpc {
       double totalN; double avgKuhn; double g; double rg2;
       Polymer<D> const * polymerPtr;
       
-      for (int i = 0; i < np; i++){
+/*      for (int i = 0; i < np; i++){
          polymerPtr = &mixture().polymer(i);
          nBlock = polymerPtr->nBlock();
          for (int j = 0; j < nBlock; j++) {
@@ -2079,9 +2079,9 @@ namespace Rpc {
             g = computeDebye(qSquare*rg2);
             omega += length * g/ vMonomer;
          }
-      }
+      }*/
 
-/*      for (int i = 0; i < np; i++){
+      for (int i = 0; i < np; i++){
          polymerPtr = &mixture().polymer(i);
          phi = polymerPtr->phi();
          nBlock = polymerPtr->nBlock();
@@ -2097,7 +2097,7 @@ namespace Rpc {
          rg2 = totalN* avgKuhn* avgKuhn /6.0;
          g = computeDebye(qSquare*rg2);
          omega += phi*totalN*g/ vMonomer;
-      }*/
+      }
       return omega;
    }
    
