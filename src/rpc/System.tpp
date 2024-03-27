@@ -37,6 +37,7 @@
 #include <util/format/Dbl.h>
 #include <util/misc/ioUtil.h>
 #include <util/random/Random.h> 
+#include <util/accumulators/Average.h>            
 
 #include <string>
 #include <cmath>
@@ -713,10 +714,13 @@ namespace Rpc {
          } else
          if (command == "ESTIMATE_ERROR") {
             double stepSize;
+            double iStep;
             in >> stepSize;
-            Log::file()  << "Change of step size is: " << stepSize;
+            in >> iStep;
+            Log::file()  << "Change of step size is: " << stepSize << std::endl;
+            Log::file()  << "Total Step is : " << iStep;
             readEcho(in, filename);
-            estimateError(stepSize);
+            estimateError(stepSize, iStep);
             //domain_.fieldIo().writeFieldRGrid(filename, estimateError(), domain_.unitCell());
          } else {
             Log::file() << "Error: Unknown command  " 
@@ -2062,8 +2066,22 @@ namespace Rpc {
       double phi; double kuhn; double length; 
       double totalN; double avgKuhn; double g; double rg2;
       Polymer<D> const * polymerPtr;
-
+      
       for (int i = 0; i < np; i++){
+         polymerPtr = &mixture().polymer(i);
+         nBlock = polymerPtr->nBlock();
+         for (int j = 0; j < nBlock; j++) {
+            monomerId = polymerPtr-> block(j).monomerId();
+            kuhn = mixture().monomer(monomerId).kuhn();
+            // Get the length (number of monomers) in this block.
+            length = polymerPtr-> block(j).length();
+            rg2 = length * kuhn* kuhn /6.0;
+            g = computeDebye(qSquare*rg2);
+            omega += length * g/ vMonomer;
+         }
+      }
+
+/*      for (int i = 0; i < np; i++){
          polymerPtr = &mixture().polymer(i);
          phi = polymerPtr->phi();
          nBlock = polymerPtr->nBlock();
@@ -2079,7 +2097,7 @@ namespace Rpc {
          rg2 = totalN* avgKuhn* avgKuhn /6.0;
          g = computeDebye(qSquare*rg2);
          omega += phi*totalN*g/ vMonomer;
-      }
+      }*/
       return omega;
    }
    
@@ -2128,9 +2146,16 @@ namespace Rpc {
       }
       
       // Read w1 field
-      fieldIo().readFieldsRGrid("in/w1", w1, domain_.unitCell());
-      setWRGrid(w1);
+      //fieldIo().readFieldsRGrid("in/w1", w1, domain_.unitCell());
+      //setWRGrid(w1);
       compute();
+      compressor().compress();
+      for (int i = 0; i < nMonomer; ++i) {
+         for (int j = 0; j<  meshSize; j++){
+            w1[i][j] = w_.rgrid(i)[j];
+         }
+      }
+      
       RField<D> realError;
       realError.allocate(dimensions);
       for (int i = 0; i<  meshSize; i++){
@@ -2161,7 +2186,7 @@ namespace Rpc {
          }
       }
       setWRGrid(w2);
-      writeWRGrid("in/w2");
+      //writeWRGrid("in/w2");
       
       RField<D> resid_;
       RFieldDft<D> residK_;
@@ -2201,62 +2226,92 @@ namespace Rpc {
    }
    
    template<int D>
-   void System<D>::estimateError(double stepSize)
+   void System<D>::estimateError(double stepSize, double iStep)
    {
       RField<D> realError;
       RFieldDft<D> realErrorDft;
-      RField<D> estimateError = estimateLR(stepSize);
       RFieldDft<D> estimateDft;
       
       IntVec<D> kMeshDimensions;
+      int kSize;
       IntVec<D> const & dimensions = mesh().dimensions();
       const int nMonomer = mixture().nMonomer();
       const int meshSize = domain().mesh().size();
+      kSize = 1;
       for (int i = 0; i < D; ++i) {
          if (i < D - 1) {
             kMeshDimensions[i] = dimensions[i];
+            kSize *= dimensions[i];
          } else {
             kMeshDimensions[i] = dimensions[i]/2 + 1;
+            kSize *= (dimensions[i]/2 + 1);
          }
       }
       
+      // Average over iStep
+      // Define Array of Average objects 
+      DArray<Average> accumulators;
+      accumulators.allocate(kSize);
+      
+      // Clear accumulators
+      for (int i = 0; i < kSize; ++i) {
+         accumulators[i].setNSamplePerBlock(1);
+         accumulators[i].clear();
+      }
+      
+      // Define error variable
       realError.allocate(dimensions);
       realErrorDft.allocate(dimensions);
       estimateDft.allocate(dimensions);
-      computeIntraCorrelations();
-      compute();
-      for (int i = 0; i<  meshSize; i++){
-         double real = 1;
-         for (int j = 0; j <nMonomer ; j++){
-            real -=  c_.rgrid(j)[i];
-         }
-         realError[i] = real;
-      }
       
-      fft().forwardTransform(realError, realErrorDft);
-      fft().forwardTransform(estimateError, estimateDft);
-      
+      // Define iterator
       MeshIterator<D> iter;
       iter.setDimensions(kMeshDimensions);
       IntVec<D> G, Gmin;
       double Gsq;
+      
+      for (int i = 0; i < iStep; i++){
+         RField<D> estimateError = estimateLR(stepSize);
+         
+         // Compute real incompressibility error
+         compute();
+         for (int i = 0; i<  meshSize; i++){
+            double real = 1;
+            for (int j = 0; j <nMonomer ; j++){
+               real -=  c_.rgrid(j)[i];
+            }
+            realError[i] = real;
+         }
+         fft().forwardTransform(realError, realErrorDft);
+         fft().forwardTransform(estimateError, estimateDft);
+         for (iter.begin(); !iter.atEnd(); ++iter) {
+            G = iter.position();
+            Gmin = shiftToMinimum(G, mesh().dimensions(), unitCell());
+            Gsq = unitCell().ksq(Gmin);
+            std::complex<double> real(realErrorDft[iter.rank()][0], realErrorDft[iter.rank()][1]);
+            std::complex<double> estimate(estimateDft[iter.rank()][0], estimateDft[iter.rank()][1]);
+            accumulators[iter.rank()].sample(abs(real/estimate));
+         }
+         
+      }
+
       std::ofstream outputFile("out/error_K");
       if (!outputFile.is_open()) {
         std::cerr << "Failed to open the file for writing." << std::endl;
       }
-      outputFile <<  "k^2" << "     " << "phi_real/phi_LR" << std::endl;
+      outputFile <<  "k^2" << "     " << "phi_real/phi_LR";
+      outputFile << "     "<< "err"<< std::endl;
       for (iter.begin(); !iter.atEnd(); ++iter) {
          G = iter.position();
          Gmin = shiftToMinimum(G, mesh().dimensions(), unitCell());
          Gsq = unitCell().ksq(Gmin);
          outputFile << Gsq ;
-         std::complex<double> real(realErrorDft[iter.rank()][0], realErrorDft[iter.rank()][1]);
-         std::complex<double> estimate(estimateDft[iter.rank()][0], estimateDft[iter.rank()][1]);
-         outputFile << "    "<< abs(real/estimate) << std::endl;
+         outputFile << "    "<< accumulators[iter.rank()].average();
+         outputFile << "     "<< accumulators[iter.rank()].blockingError()<< std::endl;
       }
-       outputFile.close();
+      outputFile.close();
        
-      std::ofstream outputFile2("out/Lrerror");
+/*      std::ofstream outputFile2("out/Lrerror");
       if (!outputFile2.is_open()) {
         std::cerr << "Failed to open the file for writing." << std::endl;
       }
@@ -2264,7 +2319,7 @@ namespace Rpc {
       for (int i = 0; i < meshSize; i++) {
          outputFile2 << " "<< realError[i]<< "          " <<estimateError[i] << std::endl;
       }
-       outputFile2.close();
+       outputFile2.close();*/
    }
    
    

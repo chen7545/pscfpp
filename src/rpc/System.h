@@ -107,7 +107,7 @@ namespace Rpc {
       double computeIntraCorrelation(double qSquare);
       RField<D> computeIntraCorrelations();
       RField<D> estimateLR(double stepSize);
-      void estimateError(double stepSize);
+      void estimateError(double stepSize, double iStep);
       double a_;
       double f_;
 
