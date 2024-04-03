@@ -246,9 +246,16 @@ namespace Rpc{
 
       // Convert residual to Fourier Space
       system().fft().forwardTransform(resid_, residK_);
-      // Residual combine with Linear response factor
+      /*// Residual combine with Linear response factor
       MeshIterator<D> iter;
       iter.setDimensions(residK_.dftDimensions());
+      for (iter.begin(); !iter.atEnd(); ++iter) {
+         residK_[iter.rank()][0] *= 1.0 / (vMonomer * intraCorrelation_[iter.rank()]);
+         residK_[iter.rank()][1] *= 1.0 / (vMonomer * intraCorrelation_[iter.rank()]);
+      }*/
+      MeshIterator<D> iter;
+      iter.setDimensions(kMeshDimensions_);
+
       for (iter.begin(); !iter.atEnd(); ++iter) {
          residK_[iter.rank()][0] *= 1.0 / (vMonomer * intraCorrelation_[iter.rank()]);
          residK_[iter.rank()][1] *= 1.0 / (vMonomer * intraCorrelation_[iter.rank()]);
@@ -316,24 +323,29 @@ namespace Rpc{
    {
       const int np = system().mixture().nPolymer();
       const double vMonomer = system().mixture().vMonomer();
+      
       // Overall intramolecular correlation
       double omega = 0;
       int monomerId; int nBlock;
-      double kuhn; double length; double g; double rg2;
+      double phi; double kuhn; double length; 
+      double totalN; double avgKuhn; double g; double rg2;
       Polymer<D> const * polymerPtr;
-
       for (int i = 0; i < np; i++){
          polymerPtr = &system().mixture().polymer(i);
+         phi = polymerPtr->phi();
          nBlock = polymerPtr->nBlock();
+         totalN = 0;
+         avgKuhn = 0;
          for (int j = 0; j < nBlock; j++) {
             monomerId = polymerPtr-> block(j).monomerId();
             kuhn = system().mixture().monomer(monomerId).kuhn();
-            // Get the length (number of monomers) in this block.
             length = polymerPtr-> block(j).length();
-            rg2 = length * kuhn* kuhn /6.0;
-            g = computeDebye(qSquare*rg2);
-            omega += length * g/ vMonomer;
+            totalN += length;
+            avgKuhn += kuhn/nBlock;
          }
+         rg2 = totalN* avgKuhn* avgKuhn /6.0;
+         g = computeDebye(qSquare*rg2);
+         omega += phi*totalN*g/ vMonomer;
       }
       return omega;
    }
