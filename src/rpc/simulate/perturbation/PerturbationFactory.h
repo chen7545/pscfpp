@@ -14,7 +14,7 @@
 
 namespace Pscf {
 namespace Rpc {
-
+   
    template <int D> class Simulator;
 
    using namespace Util;

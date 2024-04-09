@@ -3,8 +3,8 @@
 
 #include "Perturbation.h"
 #include <rpc/simulate/Simulator.h>
+#include <rpc/System.h>
 #include <prdc/cpu/RField.h>
-
 #include <util/containers/DArray.h>
 #include <util/global.h>
 
@@ -19,7 +19,8 @@ namespace Rpc {
    template <int D>
    Perturbation<D>::Perturbation(Simulator<D>& simulator)
     : ParamComposite(),
-      simulatorPtr_(&simulator)
+      simulatorPtr_(&simulator),
+      systemPtr_(&(simulator.system()))
    {}
    
    /* 
@@ -47,14 +48,14 @@ namespace Rpc {
    * Compute and return perturbation, default implementation.
    */
    template <int D>
-   double Perturbation<D>::hamiltonian()
-   { return 0.0; }
+   double Perturbation<D>::modifyHamiltonian(double hamiltonian)
+   { return hamiltonian; }
 
    /*
    * Modify functional derivatives, empty default implementation.
    */
    template <int D>
-   void Perturbation<D>::incrementDc(DArray< RField<D> > & dc)
+   void Perturbation<D>::modifyDc(DArray< RField<D> > & dc)
    {}
 
 }

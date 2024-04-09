@@ -22,6 +22,7 @@ namespace Rpc {
    using namespace Prdc;
    using namespace Prdc::Cpu;
 
+   template <int D> class System;
    template <int D> class Simulator;
 
    /**
@@ -68,23 +69,29 @@ namespace Rpc {
       virtual void setup();
 
       /**
-      * Compute and return the perturbation to the Hamiltonian.
+      * Compute and return the perturbated to the Hamiltonian.
       *
-      * Default implementation returns 0. 
+      * Default implementation returns . 
       */
-      virtual double hamiltonian();
+      virtual double modifyHamiltonian(double hamiltonian);
 
       /**
       * Modify the generalized forces to include perturbation.
       *
       * Empty default implementation.
       */
-      virtual void incrementDc(DArray< RField<D> >& dc);
+      virtual void modifyDc(DArray< RField<D> >& dc);
 
       /**
       * Get parent Simulator<D> by const reference.
       */
       Simulator<D> const & simulator() const;
+      
+      /** 
+      * Get parent System<D> by non-const reference.
+      */      
+      System<D>& system();
+      
 
    protected:
 
@@ -92,11 +99,14 @@ namespace Rpc {
       * Get parent Simulator<D> by non-const reference.
       */
       Simulator<D>& simulator();
-
+      
    private:
 
       /// Pointer to parent Simulator.
       Simulator<D>* simulatorPtr_;
+      
+      /// Pointer to parent System.
+      System<D>* systemPtr_; 
 
    };
 
@@ -117,10 +127,18 @@ namespace Rpc {
       assert(simulatorPtr_);  
       return *simulatorPtr_; 
    }
+   
+   // Return parent simulator by non-const reference.
+   template <int D>
+   inline System<D> & Perturbation<D>::system() 
+   {  
+      assert(systemPtr_);  
+      return *systemPtr_; 
+   }
 
    // Method template
 
-   #ifndef RPC_PERTURBATION_TPP
+   #ifndef PC_PERTURBATION_TPP
    // Suppress implicit instantiation
    extern template class Perturbation<1>;
    extern template class Perturbation<2>;
