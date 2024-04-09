@@ -98,6 +98,10 @@ namespace Rpc {
       // Eigenanalysis of the projected chi matrix.
       analyzeChi();
 
+      if (hasPerturbation()) {
+         perturbation().setup();
+      }
+
       // Compute field components and MC Hamiltonian for initial state
       system().compute();
       computeWc();

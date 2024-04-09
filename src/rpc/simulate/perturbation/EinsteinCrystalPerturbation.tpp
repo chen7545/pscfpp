@@ -100,7 +100,7 @@ namespace Rpc {
       }
       
       hamiltonianBCP_ = hamiltonian;    
-      return lambda* hamiltonianBCP_ + (1-lambda) * hamiltonianEC_;
+      return lambda* hamiltonianBCP_ + (1.0-lambda) * hamiltonianEC_;
    
    }
    
@@ -128,7 +128,7 @@ namespace Rpc {
          prefactor = double(nMonomer)/simulator().chiEval(i)/vMonomer;
          // Loop over grid points
          for (int k = 0; k < meshSize; ++k) {
-            Dc[k] = lambda* Dc[k] + (1-lambda) * prefactor * (Wc[k] - wc0_[i][k]);
+            Dc[k] = lambda* Dc[k] + (1.0 -lambda) * prefactor * (Wc[k] - wc0_[i][k]);
          }
       }
    }
@@ -157,15 +157,21 @@ namespace Rpc {
          // Loop over monomer types (k is a monomer index)
          for (k = 0; k < nMonomer; ++k) {
             double vec = simulator().chiEvecs(j, k)/double(nMonomer);
-
             // Loop over grid points
             RField<D> const & Wr = w0_[k];
             for (i = 0; i < meshSize; ++i) {
                Wc[i] += vec*Wr[i];
             }
-
          }
       }
+      
+      #if 0
+      Log::file() << "wc " << wc0_.capacity() << "\n";
+      for (i = 0; i < 10; ++i) {
+         Log::file() << "wc_1 " << wc0_[0][i] << "\n";
+         Log::file() << "wc_2 " << wc0_[1][i] << "\n";
+      }
+      #endif
    }
    
    /*
@@ -182,6 +188,8 @@ namespace Rpc {
          if (simulator().iStep() % interval_ == 0) {
             outputFile_<< Dbl(lambda);
             outputFile_<< Dbl(f_/nMonomerSystem);
+            outputFile_<< "   ";
+            outputFile_<< Dbl(df_/nMonomerSystem);
             outputFile_ << "\n";
          }
    

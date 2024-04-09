@@ -110,10 +110,6 @@ namespace Rpc {
          state_.allocate(nMonomer, dimensions);
       }
       
-      if (hasPerturbation()) {
-         perturbation().setup();
-      }
-
       isAllocated_ = true;
    }
 
