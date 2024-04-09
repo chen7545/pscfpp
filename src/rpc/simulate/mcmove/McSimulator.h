@@ -125,6 +125,7 @@ namespace Rpc {
 
       using Simulator<D>::system;
       using Simulator<D>::compressor;
+      using Simulator<D>::perturbation;
       using Simulator<D>::random;
       using Simulator<D>::allocate;
       using Simulator<D>::analyzeChi;
@@ -143,6 +144,8 @@ namespace Rpc {
       using Simulator<D>::restoreState;
       using Simulator<D>::clearState;
       using Simulator<D>::outputMdeCounter;
+      using Simulator<D>::hasPerturbation;
+      
 
    protected:
 

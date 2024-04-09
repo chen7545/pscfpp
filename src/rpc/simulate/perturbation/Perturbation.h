@@ -81,6 +81,8 @@ namespace Rpc {
       * Empty default implementation.
       */
       virtual void modifyDc(DArray< RField<D> >& dc);
+      
+      virtual void updateDf();
 
       /**
       * Get parent Simulator<D> by const reference.

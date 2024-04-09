@@ -68,6 +68,8 @@ namespace Rpc {
       */
       virtual void modifyDc(DArray< RField<D> >& dc);
       
+      void updateDf();
+      
       /**
       * Compute Integral pver lambda
       */
@@ -119,7 +121,6 @@ namespace Rpc {
       // 
       void computeWcReference();
       
-      void updateDf();
       
    };
 

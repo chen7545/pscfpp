@@ -57,6 +57,10 @@ namespace Rpc {
    template <int D>
    void Perturbation<D>::modifyDc(DArray< RField<D> > & dc)
    {}
+   
+   template <int D>
+   void Perturbation<D>::updateDf()
+   {}
 
 }
 }

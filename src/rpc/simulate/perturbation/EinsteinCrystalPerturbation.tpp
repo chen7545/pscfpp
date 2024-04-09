@@ -43,8 +43,8 @@ namespace Rpc {
    void EinsteinCrystalPerturbation<D>::readParameters(std::istream& in)
    {
       // Readin
-      read<std::string>(in, "referenceFieldFileName", referenceFieldFileName_);
-      read<std::string>(in, "outputFileName", outputFileName_);
+      read(in, "referenceFieldFileName", referenceFieldFileName_);
+      read(in, "outputFileName", outputFileName_);
       read(in,"lambda", lambda_);
       read(in,"rampingRate", dLambda_);
       read(in, "outputInterval", interval_);
@@ -99,8 +99,7 @@ namespace Rpc {
          }
       }
       
-      hamiltonianBCP_ = hamiltonian;
-      updateDf();      
+      hamiltonianBCP_ = hamiltonian;    
       return lambda* hamiltonianBCP_ + (1-lambda) * hamiltonianEC_;
    
    }

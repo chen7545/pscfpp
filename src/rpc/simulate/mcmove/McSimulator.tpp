@@ -16,6 +16,7 @@
 #include <rpc/simulate/trajectory/TrajectoryReader.h>
 #include <rpc/simulate/trajectory/TrajectoryReaderFactory.h>
 #include <rpc/compressor/Compressor.h>
+#include <rpc/simulate/perturbation/Perturbation.h>
 
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
@@ -156,6 +157,10 @@ namespace Rpc {
                }
             }
             analyzerTimer.stop();
+            
+            if (hasPerturbation()) {
+               perturbation().updateDf();
+            }
 
          } else{
             Log::file() << "Step: "<< iTotalStep_<< " fail to converge" << "\n";
