@@ -132,7 +132,7 @@ namespace Rpc {
       for (int i = 0; i < nMonomer - 1; ++i) {
          RField<D>& Dc = dc[i];
          RField<D> const & Wc = simulator().wc(i);
-         prefactor = -double(nMonomer)/simulator().chiEval(i)/vMonomer;
+         prefactor = -1.0* double(nMonomer)/simulator().chiEval(i)/vMonomer;
          // Loop over grid points
          for (int k = 0; k < meshSize; ++k) {
             Dc[k] = lambda* Dc[k] + (1.0 -lambda) * prefactor * (Wc[k] - wc0_[i][k]);
