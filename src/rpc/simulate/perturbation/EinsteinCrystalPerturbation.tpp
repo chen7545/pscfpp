@@ -87,17 +87,24 @@ namespace Rpc {
       
       // Compute EC Hamiltonian
       double prefactor, w;
+      const double vSystem  = system().domain().unitCell().volume();
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       const double vMonomer = system().mixture().vMonomer();
+      const double nMonomerSystem = vSystem / vMonomer;
+      
       for (int j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & Wc = simulator().wc(j);
-         prefactor = 0.5*double(nMonomer)/simulator().chiEval(j)/vMonomer;
+         prefactor = -0.5*double(nMonomer)/simulator().chiEval(j);
          for (int i = 0; i < meshSize; ++i) {
             w = Wc[i] - wc0_[j][i];
             hamiltonianEC_ += prefactor*w*w;
          }
       }
+      
+      // Normalize hamiltonianEC to equal a value per monomer
+      hamiltonianEC_/= double(meshSize);
+      hamiltonianEC_ *= nMonomerSystem;
       
       hamiltonianBCP_ = hamiltonian;    
       return lambda* hamiltonianBCP_ + (1.0-lambda) * hamiltonianEC_;
@@ -125,7 +132,7 @@ namespace Rpc {
       for (int i = 0; i < nMonomer - 1; ++i) {
          RField<D>& Dc = dc[i];
          RField<D> const & Wc = simulator().wc(i);
-         prefactor = double(nMonomer)/simulator().chiEval(i)/vMonomer;
+         prefactor = -double(nMonomer)/simulator().chiEval(i)/vMonomer;
          // Loop over grid points
          for (int k = 0; k < meshSize; ++k) {
             Dc[k] = lambda* Dc[k] + (1.0 -lambda) * prefactor * (Wc[k] - wc0_[i][k]);
