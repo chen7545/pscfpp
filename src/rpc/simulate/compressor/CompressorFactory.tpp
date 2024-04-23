@@ -7,6 +7,7 @@
 #include "AmCompressor.h"
 #include "LrCompressor.h"
 #include "LrAmCompressor.h"
+#include "LrPostAmCompressor.h"
 
 namespace Pscf {
 namespace Rpc {
@@ -40,6 +41,8 @@ namespace Rpc {
       } else if (className == "LrCompressor") {
          ptr = new LrCompressor<D>(*sysPtr_);
       } else if (className == "LrAmCompressor") {
+         ptr = new LrAmCompressor<D>(*sysPtr_);
+      } else if (className == "LrPostAmCompressor") {
          ptr = new LrAmCompressor<D>(*sysPtr_);
       }
       
