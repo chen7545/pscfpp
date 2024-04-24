@@ -43,7 +43,7 @@ namespace Rpc {
       } else if (className == "LrAmCompressor") {
          ptr = new LrAmCompressor<D>(*sysPtr_);
       } else if (className == "LrPostAmCompressor") {
-         ptr = new LrAmCompressor<D>(*sysPtr_);
+         ptr = new LrPostAmCompressor<D>(*sysPtr_);
       }
       
       return ptr;
