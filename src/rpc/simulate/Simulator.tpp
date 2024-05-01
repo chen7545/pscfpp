@@ -687,6 +687,9 @@ namespace Rpc {
       out << std::endl;
       out << "MDE counter   "
           << compressor().mdeCounter() << std::endl;
+          
+      out << "Error up counter   "
+          << compressor().errorUpCounter() << std::endl;
       out << std::endl;
    }
 
