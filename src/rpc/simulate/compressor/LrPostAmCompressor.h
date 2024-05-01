@@ -91,6 +91,7 @@ namespace Rpc
       // Inherited protected members 
       using ParamComposite::readOptional;
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::adiCounter_;
 
    private:
    
@@ -240,6 +241,8 @@ namespace Rpc
       * Set mixing parameter lambda
       */
       double setLambda();
+      
+      void adiUpdate();
     
       // Inherited private members 
       using Compressor<D>::system;

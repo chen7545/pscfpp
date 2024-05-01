@@ -85,6 +85,8 @@ namespace Pscf {
       * Obtain error type
       */
       std::string errorType();
+      
+      int errorUp();
 
    protected:
 
@@ -191,6 +193,8 @@ namespace Pscf {
       */
       virtual double computeError(int verbose);
       
+      virtual void adiUpdate();
+      
       #ifdef PSCF_AM_TEST
       double computeError(T a);
       #endif
@@ -252,6 +256,9 @@ namespace Pscf {
       
       // Private member variables
 
+      /// Previous iteration error
+      double error0_;
+   
       /// Error
       double error_;
 

@@ -31,6 +31,7 @@ namespace Pscf
    template <typename Iterator, typename T>
    AmIteratorTmpl<Iterator,T>::AmIteratorTmpl()
     : errorType_("relNormResid"),
+      error0_(0),
       epsilon_(0),
       lambda_(0),
       maxItr_(200),
@@ -141,6 +142,14 @@ namespace Pscf
          
          // Output additional details of this iteration to the log file
          outputToLog();
+         
+         if (itr_ == 0){
+            error0_ = error_;
+         } else{
+            if (error_ > error0_){
+               adiUpdate();
+            }
+         }
          
          #ifdef PSCF_AM_TEST
          // Compute errors and ratios used for algorithm testing
@@ -707,6 +716,10 @@ namespace Pscf
       timerTotal_.clear();
       totalItr_ = 0;
    }
+   
+   template <typename Iterator, typename T>
+   void AmIteratorTmpl<Iterator,T>::adiUpdate()
+   {}
 
 }
 #endif

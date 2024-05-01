@@ -307,7 +307,7 @@ namespace Rpc{
    {
       return 1.0;
    }
-
+   
    template<int D>
    double LrAmCompressor<D>::computeError(int verbose)
    {

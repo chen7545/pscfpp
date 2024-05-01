@@ -102,7 +102,6 @@ namespace Rpc
       */
       double computeError(int verbose);
       
-      
       // Inherited public member functions
 
       using AmIteratorTmpl<Compressor<D>, DArray<double> >::setClassName;

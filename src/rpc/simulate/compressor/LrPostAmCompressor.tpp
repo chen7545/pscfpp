@@ -287,6 +287,44 @@ namespace Rpc{
       system().setWRGrid(wFieldTmp_);
    }
    
+   template <int D>
+   void LrPostAmCompressor<D>::adiUpdate()
+   {
+      const int nMonomer = system().mixture().nMonomer();
+      const int meshSize = system().domain().mesh().size();
+      
+      DArray<double> error_;
+      error_.allocate(meshSize);
+      
+      // Initialize residuals
+      for (int i = 0 ; i < meshSize; ++i) {
+         error_[i] = -1.0;
+      }
+
+      // Compute SCF residual vector elements
+      for (int j = 0; j < nMonomer; ++j) {
+         for (int k = 0; k < meshSize; ++k) {
+           error_[k] += system().c().rgrid(j)[k];
+         }
+      }
+      
+      for (int i = 0; i < nMonomer; ++i) {
+         for (int j = 0; j< meshSize; ++j){
+            w0_[i][j] = system().w().rgrid(i)[j];
+         }
+      }
+      
+      for (int i = 0; i < nMonomer; i++){
+         for (int k = 0; k < meshSize; k++){
+            wFieldTmp_[i][k] = w0_[i][k] + error_[k];
+         }
+      }
+      
+      system().setWRGrid(wFieldTmp_);
+      adiCounter_++;
+      
+   }
+   
    template<int D>
    void LrPostAmCompressor<D>::outputToLog()
    {}
@@ -306,6 +344,7 @@ namespace Rpc{
    {
       AmIteratorTmpl<Compressor<D>, DArray<double> >::clearTimers();
       mdeCounter_ = 0;
+      adiCounter_ = 0;
    }
    
 }

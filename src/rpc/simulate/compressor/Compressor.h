@@ -65,6 +65,8 @@ namespace Rpc
       * Get the number of times the MDE has been solved.
       */
       int mdeCounter();
+      
+      int errorUpCounter();
 
    protected:
 
@@ -90,6 +92,8 @@ namespace Rpc
       * Count how many times MDE has been solved.
       */
       int mdeCounter_;
+      
+      int adiCounter_;
 
    private:
 
@@ -104,6 +108,7 @@ namespace Rpc
    template <int D>
    Compressor<D>::Compressor(System<D>& system)
     : mdeCounter_(0),
+      adiCounter_(0),
       sysPtr_(&system)
    {  setClassName("Compressor"); }
 
@@ -116,6 +121,11 @@ namespace Rpc
    template <int D>
    inline int Compressor<D>::mdeCounter()
    {  return mdeCounter_; }
+   
+   template <int D>
+   inline int Compressor<D>::errorUpCounter()
+   {  return adiCounter_; }
+
 
 } // namespace Rpc
 } // namespace Pscf
