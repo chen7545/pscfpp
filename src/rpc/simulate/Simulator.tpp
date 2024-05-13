@@ -255,9 +255,7 @@ namespace Rpc {
       hamiltonian_ = idealHamiltonian_ + fieldHamiltonian_;
 
       if (hasPerturbation()) {
-        double perturbationHamiltonian;
-        perturbationHamiltonian = perturbation().hamiltonian();
-        hamiltonian_ += perturbationHamiltonian;
+        hamiltonian_ = perturbation().modifyHamiltonian(hamiltonian_);
       }
 
       hasHamiltonian_ = true;
@@ -559,7 +557,7 @@ namespace Rpc {
 
       // Add derivatives arising from a perturbation (if any).
       if (hasPerturbation()) {
-         perturbation().incrementDc(dc_);
+         perturbation().modifyDc(dc_);
       }
 
       hasDc_ = true;
