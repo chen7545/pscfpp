@@ -73,6 +73,26 @@ namespace Rpc {
       */ 
       void updateDf();
       
+      /**
+      * Return BCP Hamiltonian
+      */
+      virtual double bcpHamiltonian();
+      
+      /**
+      * Return EC Hamiltonian
+      */
+      virtual double ecHamiltonian();
+      
+      /**
+      * Modify BCP Hamiltonian
+      */
+      virtual void restoreBCPHamiltonian(double hamiltonian);
+      
+      /**
+      * Return EC Hamiltonian
+      */
+      virtual void restoreECHamiltonian(double hamiltonian);
+      
       using ParamComposite::setClassName;
       using ParamComposite::read;
       using Perturbation<D>::simulator;
@@ -80,6 +100,9 @@ namespace Rpc {
 
    private:
 
+      // Initial coupling parameter
+      double lambda0_;
+      
       // Coupling parameter
       double lambda_;
       
@@ -120,6 +143,36 @@ namespace Rpc {
       void computeWcReference();
    
    };
+   
+   // Inline functions
+
+   // Get the Block copolymer hamiltonian .
+   template <int D>
+   inline double EinsteinCrystalPerturbation<D>::bcpHamiltonian()
+   {
+      return hamiltonianBCP_; 
+   }
+   
+   // Get the parent System.
+   template <int D>
+   inline double EinsteinCrystalPerturbation<D>::ecHamiltonian()
+   {
+      return hamiltonianEC_; 
+   }
+   
+   template <int D>
+   inline void EinsteinCrystalPerturbation<D>::restoreBCPHamiltonian(double hamiltonian)
+   {
+      hamiltonianBCP_ = hamiltonian; 
+   }
+   
+   // Get the parent System.
+   template <int D>
+   inline void EinsteinCrystalPerturbation<D>::restoreECHamiltonian(double hamiltonian)
+   {
+      hamiltonianEC_ = hamiltonian; 
+   }
+   
 
    #ifndef RPC_EINSTEIN_CRYSTAL_PERTURBATION_TPP
    // Suppress implicit instantiation

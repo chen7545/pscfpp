@@ -142,7 +142,7 @@ namespace Rpc {
       analyzerTimer.start();
       analyzerManager_.sample(iStep_);
       analyzerTimer.stop();
-
+     
       for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
 
          // Choose and attempt an McMove

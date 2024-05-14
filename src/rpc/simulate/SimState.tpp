@@ -26,6 +26,8 @@ namespace Rpc {
        hamiltonian(0.0),
        idealHamiltonian(0.0),
        fieldHamiltonian(0.0),
+       bcpHamiltonian(0.0),
+       ecHamiltonian(0.0),
        needsCc(false),
        needsDc(false),
        needsHamiltonian(false), 

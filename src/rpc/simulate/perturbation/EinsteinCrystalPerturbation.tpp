@@ -20,6 +20,7 @@ namespace Rpc {
    template <int D>
    EinsteinCrystalPerturbation<D>::EinsteinCrystalPerturbation(Simulator<D>& simulator)
     : Perturbation<D>(simulator),
+      lambda0_(0.0),
       lambda_(0.0),
       dLambda_(0.0),
       f_(0.0),
@@ -45,7 +46,7 @@ namespace Rpc {
       // Readin
       read(in, "referenceFieldFileName", referenceFieldFileName_);
       read(in, "outputFileName", outputFileName_);
-      read(in,"lambda", lambda_);
+      read(in,"lambda", lambda0_);
       read(in,"rampingRate", dLambda_);
       read(in, "outputInterval", interval_);
       system().fileMaster().openOutputFile(outputFileName_, outputFile_);
@@ -84,7 +85,7 @@ namespace Rpc {
    template <int D>
    double EinsteinCrystalPerturbation<D>::modifyHamiltonian(double hamiltonian)
    {
-      double lambda = lambda_ + simulator().iStep()* dLambda_;
+      double lambda_ = lambda0_ + simulator().iStep()* dLambda_;
       
       // Compute EC Hamiltonian
       double prefactor, w, s;
@@ -93,7 +94,7 @@ namespace Rpc {
       const double vSystem  = system().domain().unitCell().volume();
       const double vMonomer = system().mixture().vMonomer();
       const double nMonomerSystem = vSystem / vMonomer;
-      hamiltonianEC_ = 0;
+      hamiltonianEC_ = 0.0;
       for (int j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & Wc = simulator().wc(j);
          prefactor = -0.5*double(nMonomer)/simulator().chiEval(j);
@@ -111,7 +112,7 @@ namespace Rpc {
       // Obtain hamiltonianBCP
       hamiltonianBCP_ = hamiltonian;  
   
-      return lambda* hamiltonianBCP_ + (1.0-lambda) * hamiltonianEC_;
+      return lambda_* hamiltonianBCP_ + (1.0-lambda_) * hamiltonianEC_;
    }
 
    /*
@@ -120,7 +121,34 @@ namespace Rpc {
    template <int D>
    void 
    EinsteinCrystalPerturbation<D>::modifyDc(DArray< RField<D> > & dc)
-   {}
+   {
+      double DcBCP, DcEC;
+      double prefactor, s;
+      const int meshSize = system().domain().mesh().size();
+      const int nMonomer = system().mixture().nMonomer();
+      const double vMonomer = system().mixture().vMonomer();
+      
+      // Loop over composition eigenvectors (exclude the last)
+      for (int i = 0; i < nMonomer - 1; ++i) {
+         RField<D>& Dc = dc[i];
+         RField<D> const & Wc = simulator().wc(i);
+         
+         // Loop over grid points
+         for (int k = 0; k < meshSize; ++k) {
+            // Copy block copolymer derivative
+            DcBCP = Dc[k];
+            
+            // Compute EC derivative
+            prefactor = -1.0*double(nMonomer)/simulator().chiEval(i)/vMonomer;
+            s = simulator().sc(i);
+            DcEC = prefactor * (Wc[k] - s - wc0_[i][k]);
+            
+            // Compute composite derivative
+            Dc[k] = lambda_* DcBCP + (1.0 - lambda_) * DcEC;
+         }
+      }
+      
+   }
    
    
    /*

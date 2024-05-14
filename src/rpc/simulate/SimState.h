@@ -85,6 +85,12 @@ namespace Rpc {
       
       /// Monte-Carlo field part contribution to Hamiltonian value.
       double fieldHamiltonian;
+      
+      /// BCP Hamiltonian value.
+      double bcpHamiltonian;
+      
+      /// EC Hamiltonian value.
+      double ecHamiltonian;
             
       /// If cc fields needs to be saved.
       bool needsCc;

@@ -86,6 +86,27 @@ namespace Rpc {
       * Update derivative of free energy with respective to variable
       */ 
       virtual void updateDf();
+      
+      /**
+      * Return BCP Hamiltonian
+      */
+      virtual double bcpHamiltonian();
+      
+      /**
+      * Return EC Hamiltonian
+      */
+      virtual double ecHamiltonian();
+      
+      /**
+      * Modify BCP Hamiltonian
+      */
+      virtual void restoreBCPHamiltonian(double hamiltonian);
+      
+      /**
+      * Return EC Hamiltonian
+      */
+      virtual void restoreECHamiltonian(double hamiltonian);
+
 
       /**
       * Get parent Simulator<D> by const reference.

@@ -609,6 +609,12 @@ namespace Rpc {
          state_.idealHamiltonian  = idealHamiltonian();
          state_.fieldHamiltonian  = fieldHamiltonian();
       }
+      
+      // Save BCP and EC Hamiltonian if has perturbation
+      if (hasPerturbation()){
+         state_.bcpHamiltonian  = perturbation().bcpHamiltonian();
+         state_.ecHamiltonian  = perturbation().ecHamiltonian();
+      }
 
       state_.hasData = true;
    }
@@ -635,6 +641,12 @@ namespace Rpc {
          idealHamiltonian_ = state_.idealHamiltonian;
          fieldHamiltonian_ = state_.fieldHamiltonian;
          hasHamiltonian_ = true;
+      }
+      
+      // Restore BCP and EC Hamiltonian if has perturbation
+      if (hasPerturbation()){
+         perturbation().restoreBCPHamiltonian(state_.bcpHamiltonian);
+         perturbation().restoreECHamiltonian(state_.ecHamiltonian);
       }
       
       for (int i = 0; i < nMonomer; ++i) {

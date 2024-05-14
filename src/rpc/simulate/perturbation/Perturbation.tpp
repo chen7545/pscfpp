@@ -64,7 +64,35 @@ namespace Rpc {
    template <int D>
    void Perturbation<D>::updateDf()
    {}
-
+   
+   /*
+   * Return BCP Hamiltonian
+   */
+   template <int D>
+   double Perturbation<D>::bcpHamiltonian()
+   { return 0;}
+   
+   /*
+   * Return BCP Hamiltonian
+   */
+   template <int D>
+   double Perturbation<D>::ecHamiltonian()
+   { return 0;}
+   
+   /**
+   * Modify BCP Hamiltonian
+   */
+   template <int D>
+   void Perturbation<D>::restoreBCPHamiltonian(double hamiltonian)
+   {}
+   
+   /**
+   * Modify EC Hamiltonian
+   */
+   template <int D>
+   void Perturbation<D>::restoreECHamiltonian(double hamiltonian)
+   {}
+      
 }
 }
 #endif 
