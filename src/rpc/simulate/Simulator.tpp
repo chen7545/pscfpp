@@ -95,16 +95,16 @@ namespace Rpc {
       // Allocate memory for eignevector components of w and c fields
       wc_.allocate(nMonomer);
       cc_.allocate(nMonomer);
-      const int meshSize = system().domain().mesh().size();
+      IntVec<D> const & dimensions = system().mesh().dimensions();
       for (int i = 0; i < nMonomer; ++i) {
-         wc_[i].allocate(meshSize);
-         cc_[i].allocate(meshSize);
+         wc_[i].allocate(dimensions);
+         cc_[i].allocate(dimensions);
       }
 
       // Allocate memory for components of d (functional derivative)
       dc_.allocate(nMonomer-1);
       for (int i = 0; i < nMonomer - 1; ++i) {
-         dc_[i].allocate(meshSize);
+         dc_[i].allocate(dimensions);
       }
       
       // Allocate state_, if necessary.

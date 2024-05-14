@@ -6,7 +6,8 @@ rpc_simulate_mcmove_= \
   rpc/simulate/mcmove/RealMove.cpp \
   rpc/simulate/mcmove/FourierMove.cpp \
   rpc/simulate/mcmove/ForceBiasMove.cpp \
-  rpc/simulate/mcmove/WcMove.cpp
+  rpc/simulate/mcmove/WcMove.cpp \
+  rpc/simulate/mcmove/WcFourierMove.cpp
   
 rpc_simulate_mcmove_OBJS=\
      $(addprefix $(BLD_DIR)/, $(rpc_simulate_mcmove_:.cpp=.o))

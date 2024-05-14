@@ -9,6 +9,7 @@
 #include "FourierMove.h"
 #include "ForceBiasMove.h"
 #include "WcMove.h"
+#include "WcFourierMove.h"
 
 namespace Pscf {
 namespace Rpc {
@@ -45,6 +46,8 @@ namespace Rpc {
          ptr = new ForceBiasMove<D>(*simulatorPtr_);
       } else if (className == "WcMove") {
          ptr = new WcMove<D>(*simulatorPtr_);
+      } else if (className == "WcFourierMove") {
+         ptr = new WcFourierMove<D>(*simulatorPtr_);
       }
 
       return ptr;
