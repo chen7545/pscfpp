@@ -25,7 +25,7 @@ namespace Rpc
    using namespace Pscf::Prdc::Cpu;
 
    /**
-   * WcFourierMove is a Monte Carlo move in fourier space
+   * WcFourierMove is a Monte Carlo move in Fourier space
    *
    * \ingroup Rpc_Simulate_McMove_Module
    */

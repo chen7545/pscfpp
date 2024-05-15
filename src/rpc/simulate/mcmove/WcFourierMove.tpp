@@ -83,23 +83,14 @@ namespace Rpc
          isAllocated_ = true;
       }
       structureFactors_.allocate(system().mesh().size());
-      computeRgSquare();
-      computeStructureFactor();
    }
    
    template <int D>
    void WcFourierMove<D>::setup()
    {  
       McMove<D>::setup();
-      
-      // Check array capacities
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      UTIL_CHECK(w_.capacity() == nMonomer);
-      for (int i=0; i < nMonomer; ++i) {
-         UTIL_CHECK(w_[i].capacity() == meshSize);
-      }
-     
+      computeRgSquare();
+      computeStructureFactor();
    }
    
    /**
@@ -176,6 +167,8 @@ namespace Rpc
       }
    }
    
+   
+   
    /*
    * Attempt unconstrained move
    */
@@ -215,7 +208,6 @@ namespace Rpc
       for (int i = 0; i < nMonomer - 1; ++i) {
          system().fft().inverseTransform(wck_[i], wc_[i]);
       }
-      
       // Convert eigenvector compositions to monomer fields
       double evec;
    
@@ -241,7 +233,6 @@ namespace Rpc
       system().setWRGrid(w_);
 
    }
-
 
    /*
    * Trivial default implementation - do nothing
