@@ -16,6 +16,7 @@
 #include <rpc/simulate/trajectory/TrajectoryReader.h>
 #include <rpc/simulate/trajectory/TrajectoryReaderFactory.h>
 #include <rpc/simulate/compressor/Compressor.h>
+#include <rpc/simulate/perturbation/Perturbation.h>
 
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
@@ -93,6 +94,11 @@ namespace Rpc {
    void McSimulator<D>::setup()
    {
       UTIL_CHECK(system().w().hasData());
+      
+      // Set up perturbation
+      if (hasPerturbation()) {
+         perturbation().setup();
+      }
 
       // Eigenanalysis of the projected chi matrix.
       analyzeChi();

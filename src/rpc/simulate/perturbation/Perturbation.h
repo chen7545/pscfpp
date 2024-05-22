@@ -22,6 +22,7 @@ namespace Rpc {
    using namespace Prdc;
    using namespace Prdc::Cpu;
 
+   template <int D> class System;
    template <int D> class Simulator;
 
    /**
@@ -68,18 +69,26 @@ namespace Rpc {
       virtual void setup();
 
       /**
-      * Compute and return the perturbation to the Hamiltonian.
+      * Modify and return Hamiltonian to include perturbation.
       *
-      * Default implementation returns 0. 
+      * Default implementation returns unperturbated hamiltonian. 
       */
-      virtual double hamiltonian();
-
+      virtual double modifyHamiltonian(double hamiltonian);
+      
       /**
       * Modify the generalized forces to include perturbation.
       *
       * Empty default implementation.
       */
-      virtual void incrementDc(DArray< RField<D> >& dc);
+      virtual void modifyDc(DArray< RField<D> >& dc);
+      
+      /**
+      * Compute and return derivative of free energy 
+      * with respective to specific variable per monomer.
+      * 
+      * Default implementation returns 0. 
+      */ 
+      virtual double df();
 
       /**
       * Save any required internal state variables.
@@ -104,14 +113,42 @@ namespace Rpc {
       */
       virtual void restoreState()
       {};
+      
+      /**
+      * Get the strength of the perturbation
+      */
+      double lambda() const;
+      
+      /**
+      * Get the mode of the thermodynamic integration
+      */
+      int mode() const;
 
       /**
       * Get parent Simulator<D> by const reference.
       */
       Simulator<D> const & simulator() const;
+      
+      /** 
+      * Get parent System<D> by non-const reference.
+      */      
+      System<D>& system();
 
    protected:
-
+      
+      /**
+      * Strength of the perturbation
+      */
+      double lambda_;
+   
+      /**
+      * The mode of thermodynamic integration
+      * mode = 0 correspond to a static parameter
+      * mode = 1 be continuous.
+      * 
+      */
+      int mode_;
+      
       /**
       * Get parent Simulator<D> by non-const reference.
       */
@@ -121,10 +158,23 @@ namespace Rpc {
 
       /// Pointer to parent Simulator.
       Simulator<D>* simulatorPtr_;
+      
+      /// Pointer to parent System.
+      System<D>* systemPtr_;
 
    };
 
    // Inline methods
+   
+   // Get the strength of the perturbation
+   template <int D>
+   inline double Perturbation<D>::lambda() const
+   { return lambda_; }
+   
+   // Get the mode of the thermodynamic integration
+   template <int D>
+   inline int Perturbation<D>::mode() const
+   { return mode_; }
 
    // Return parent simulator by const reference.
    template <int D>
@@ -140,6 +190,14 @@ namespace Rpc {
    {  
       assert(simulatorPtr_);  
       return *simulatorPtr_; 
+   }
+   
+   // Return parent simulator by non-const reference.
+   template <int D>
+   inline System<D> & Perturbation<D>::system() 
+   {  
+      assert(systemPtr_);  
+      return *systemPtr_; 
    }
 
    // Method template

@@ -125,6 +125,8 @@ namespace Rpc {
 
       using Simulator<D>::system;
       using Simulator<D>::compressor;
+      using Simulator<D>::perturbation;
+      using Simulator<D>::hasPerturbation;
       using Simulator<D>::random;
       using Simulator<D>::allocate;
       using Simulator<D>::analyzeChi;
