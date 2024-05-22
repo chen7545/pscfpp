@@ -95,18 +95,20 @@ namespace Rpc {
    {
       UTIL_CHECK(system().w().hasData());
       
-      // Set up perturbation
-      if (hasPerturbation()) {
-         perturbation().setup();
-      }
-
       // Eigenanalysis of the projected chi matrix.
       analyzeChi();
 
       // Compute field components and MC Hamiltonian for initial state
       system().compute();
       computeWc();
+      
+      // Set up perturbation
+      if (hasPerturbation()) {
+         perturbation().setup();
+      }
+      
       computeHamiltonian();
+      
       if (state_.needsCc || state_.needsDc) {
          computeCc();
       }
