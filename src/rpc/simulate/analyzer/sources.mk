@@ -8,7 +8,9 @@ rpc_simulate_analyzer_= \
   rpc/simulate/analyzer/HamiltonianAutoCorr.cpp \
   rpc/simulate/analyzer/BinaryStructureFactorGrid.cpp \
   rpc/simulate/analyzer/StepLogger.cpp \
-  rpc/simulate/analyzer/PerturbationDerivative.cpp
+  rpc/simulate/analyzer/PerturbationDerivative.cpp \
+  rpc/simulate/analyzer/ChiDerivative.cpp \
+  rpc/simulate/analyzer/ConcentrationDerivative.cpp
   
 rpc_simulate_analyzer_OBJS=\
      $(addprefix $(BLD_DIR)/, $(rpc_simulate_analyzer_:.cpp=.o))

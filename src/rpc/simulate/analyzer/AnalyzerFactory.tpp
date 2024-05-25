@@ -10,6 +10,8 @@
 #include "BinaryStructureFactorGrid.h"
 #include "StepLogger.h"
 #include "PerturbationDerivative.h"
+#include "ChiDerivative.h"
+#include "ConcentrationDerivative.h"
 
 namespace Pscf {
 namespace Rpc {
@@ -53,6 +55,10 @@ namespace Rpc {
          ptr = new StepLogger<D>();
       } else if (className == "PerturbationDerivative") {
          ptr = new PerturbationDerivative<D>(*simulatorPtr_, *sysPtr_);
+      } else if (className == "ChiDerivative") {
+         ptr = new ChiDerivative<D>(*simulatorPtr_, *sysPtr_);
+      } else if (className == "ConcentrationDerivative") {
+         ptr = new ConcentrationDerivative<D>(*simulatorPtr_, *sysPtr_);
       }
 
       return ptr;
