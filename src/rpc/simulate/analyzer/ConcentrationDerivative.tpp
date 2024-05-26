@@ -79,14 +79,14 @@ namespace Rpc
       if (!isAtInterval(iStep)) return;
       
       // Obteain Hamiltonian per monomer
-      double h = simulator().hamiltonian()/nMonomerSystem;
+      double h = simulator().hamiltonian();
       
       // Calculate derivative with respect to concentration
       double dfdc = h * vMonomer;
       
       // With N term
-      double Hh = meshSize/2/nMonomerSystem;
-      dfdc -= Hh;
+      //double Hh = meshSize/2/nMonomerSystem;
+      //dfdc -= Hh;
       accumulator_.sample(dfdc);
       
       if (nSamplePerBlock_ > 0) { 
