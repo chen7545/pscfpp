@@ -74,18 +74,22 @@ namespace Rpc {
          simulator().computeWc();
       }
       #endif
+      
+      const double vSystem  = system().domain().unitCell().volume();
+      const double vMonomer = system().mixture().vMonomer();
+      const double nMonomerSystem = vSystem / vMonomer;
 
       if (!simulator().hasHamiltonian()) {
          simulator().computeHamiltonian();
       }
 
-      double ideal = simulator().idealHamiltonian();
+      double ideal = simulator().idealHamiltonian()/nMonomerSystem;
       setValue(idealId_, ideal);
    
-      double field = simulator().fieldHamiltonian();
+      double field = simulator().fieldHamiltonian()/nMonomerSystem;
       setValue(fieldId_, field);
    
-      double total = simulator().hamiltonian();
+      double total = simulator().hamiltonian()/nMonomerSystem;
       setValue(totalId_, total);
    }
    
