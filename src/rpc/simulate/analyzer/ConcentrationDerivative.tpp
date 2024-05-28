@@ -78,7 +78,7 @@ namespace Rpc
       
       if (!isAtInterval(iStep)) return;
       
-      // Obteain Hamiltonian per monomer
+      // Obteain Hamiltonian
       double h = simulator().hamiltonian();
       
       // Calculate derivative with respect to concentration
