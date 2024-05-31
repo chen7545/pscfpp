@@ -88,7 +88,7 @@ namespace Rpc
       double dfdchi = -(hField - 0.5*simulator().sc(nMonomer - 1))/chi + 1.0/4.0;
       
       // With N term
-      //dfdchi += meshSize/(2* nMonomerSystem* chi);
+      dfdchi += meshSize/(2* nMonomerSystem* chi);
       accumulator_.sample(dfdchi*nMonomerSystem);
       
       if (nSamplePerBlock_ > 0) { 
