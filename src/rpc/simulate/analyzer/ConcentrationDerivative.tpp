@@ -86,7 +86,7 @@ namespace Rpc
       
       // With N term
       double Hh = meshSize/2;
-      dfdc -= Hh* vMonomer;
+      dfdc -= Hh;
       accumulator_.sample(dfdc);
       
       if (nSamplePerBlock_ > 0) { 
