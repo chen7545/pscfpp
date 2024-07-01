@@ -19,6 +19,8 @@
 #include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>
 
+#include <string>
+
 namespace Pscf {
 namespace Rpc 
 {
@@ -54,7 +56,7 @@ namespace Rpc
    {
       readInterval(in);
       readOptional(in, "hasAverage", hasAverage_);
-      readOptional<std::string>(in, "outputFileName", outputFileName_);
+      readOptional(in, "outputFileName", outputFileName_);
       
       if (!outputFileName_.empty()) {
          hasOutputFile_ = true;
