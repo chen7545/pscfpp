@@ -20,6 +20,7 @@
 #include <util/misc/ioUtil.h>
 
 #include <string>
+#include <algorithm>
 
 namespace Pscf {
 namespace Rpc 
