@@ -124,7 +124,10 @@ namespace Rpc
       if (hasAverage_){
          
          std::string fileName;
-         fileName = "out/" + parameterType() +  ".ave";
+         std::string type;
+         type = parameterType();
+         type.erase(std::remove(type.begin(), type.end(), ' '), type.end());
+         fileName = "out/" + type +  ".ave";
          system().fileMaster().openOutputFile(fileName, outputFile_);
          
          double ave, err;
