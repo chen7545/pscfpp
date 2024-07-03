@@ -95,7 +95,7 @@ namespace Rpc {
       /**
       * Constructor that stores a pointer to parent Simulator.
       *
-      * \param system  parent Simulator
+      * \param simulator  parent Simulator
       */
       RampParameter(Simulator<D>& simulator);
 
