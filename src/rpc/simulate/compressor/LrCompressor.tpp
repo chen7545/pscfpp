@@ -12,6 +12,7 @@
 #include <rpc/System.h>
 #include <rpc/simulate/compressor/intra/IntraCorrelation.h> 
 #include <util/global.h>
+#include <util/format/Dbl.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/iterator/NanException.h>
 #include <prdc/crystal/shiftToMinimum.h>
@@ -29,6 +30,7 @@ namespace Rpc{
       epsilon_(0.0),
       itr_(0),
       maxItr_(0),
+      totalItr_(0),
       errorType_("rmsResid"),
       verbose_(0),
       isAllocated_(false),
@@ -147,7 +149,8 @@ namespace Rpc{
                computeError(2);
             }
             //mdeCounter_ += itr_;
-
+            totalItr_ += itr_;
+            
             return 0; // Success
 
          } else{
@@ -225,8 +228,17 @@ namespace Rpc{
    void LrCompressor<D>::outputTimers(std::ostream& out)
    {
       // Output timing results, if requested.
+      double total = timerTotal_.time();
       out << "\n";
-      out << "Lr Compressor times contributions:\n";
+      out << "LrCompressor time contributions:\n";
+      out << "                          ";
+      out << "Total" << std::setw(22)<< "Per Iteration"
+          << std::setw(9) << "Fraction" << "\n";
+      out << "MDE solution:             "
+          << Dbl(timerMDE_.time(), 9, 3)  << " s,  "
+          << Dbl(timerMDE_.time()/totalItr_, 9, 3)  << " s,  "
+          << Dbl(timerMDE_.time()/total, 9, 3) << "\n";
+      out << "\n";
    }
 
    template<int D>
@@ -235,6 +247,7 @@ namespace Rpc{
       timerTotal_.clear();
       timerMDE_.clear();
       mdeCounter_ = 0;
+      totalItr_ = 0;
    }
 
    template <int D>

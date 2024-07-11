@@ -708,7 +708,10 @@ namespace Rpc {
    */
    template<int D>
    void Simulator<D>::outputTimers(std::ostream& out)
-   {  outputMdeCounter(out); }
+   {  
+      outputMdeCounter(out); 
+      compressor().outputTimers(out);
+   }
 
    /*
    * Output modified diffusion equation (MDE) counter.
