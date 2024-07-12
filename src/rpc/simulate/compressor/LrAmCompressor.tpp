@@ -295,7 +295,6 @@ namespace Rpc{
       AmIteratorTmpl<Compressor<D>, DArray<double> >::outputTimers(out);
    }
 
-
    template<int D>
    void LrAmCompressor<D>::clearTimers()
    {
