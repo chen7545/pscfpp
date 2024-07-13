@@ -135,7 +135,7 @@ namespace Rpc {
       
       for (itr.begin(); !itr.atEnd(); ++itr) {
          std::complex<double> wK(wK_[itr.rank()][0], wK_[itr.rank()][1]);
-         psi[itr.rank()] = 1/(vSystem*vSystem) * std::norm(wK);
+         psi[itr.rank()] = std::norm(wK);
       }
       
       auto maxOrderParameterPtr = std::max_element(psi.begin(), psi.end());

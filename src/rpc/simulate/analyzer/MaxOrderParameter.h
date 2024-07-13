@@ -35,7 +35,7 @@ namespace Rpc {
    * 
    * The order parameter defined as
    * \f[
-   *     psi(k)  = 1/V^2 max[W_(k)W_(-k)]
+   *     psi(k)  = max[W_(k)W_(-k)]
    * \f]
    * where, V is system volume, and \f$W_(k)\f$ is a Fourier mode of 
    * fluctuating field 
