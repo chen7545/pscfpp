@@ -1,7 +1,7 @@
-#ifndef RPC_MAX_ORDER_PARAMETER_TPP
-#define RPC_MAX_ORDER_PARAMETER_TPP
+#ifndef RPC_FOURTH_ORDER_PARAMETER_TPP
+#define RPC_FOURTH_ORDER_PARAMETER_TPP
 
-#include "MaxOrderParameter.h"
+#include "FourthOrderParameter.h"
 
 #include <rpc/simulate/Simulator.h>
 #include <rpc/System.h>
@@ -23,7 +23,8 @@
 #include <iostream>
 #include <complex>
 #include <vector>
-#include <algorithm>
+#include <numeric>
+#include <cmath>
 
 namespace Pscf {
 namespace Rpc {
@@ -35,7 +36,7 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   MaxOrderParameter<D>::MaxOrderParameter(Simulator<D>& simulator, System<D>& system) 
+   FourthOrderParameter<D>::FourthOrderParameter(Simulator<D>& simulator, System<D>& system) 
     : Analyzer<D>(),
       simulatorPtr_(&simulator),
       systemPtr_(&(simulator.system())),
@@ -43,14 +44,14 @@ namespace Rpc {
       hasAverage_(true),
       nSamplePerBlock_(1),
       isInitialized_(false)
-   {  setClassName("MaxOrderParameter"); }
+   {  setClassName("FourthOrderParameter"); }
 
 
    /*
    * Read parameters from file, and allocate memory.
    */
    template <int D>
-   void MaxOrderParameter<D>::readParameters(std::istream& in) 
+   void FourthOrderParameter<D>::readParameters(std::istream& in) 
    {
       readInterval(in);
       readOptional(in, "hasAverage", hasAverage_);
@@ -58,19 +59,19 @@ namespace Rpc {
       readOptional(in,"nSamplePerBlock", nSamplePerBlock_);
       
       system().fileMaster().openOutputFile(outputFileName(), outputFile_);
-      outputFile_ << "    chi       " << "MaxOrderParameter" << "\n";
+      outputFile_ << "    chi       " << "FourthOrderParameter" << "\n";
    }
    
    /*
-   * MaxOrderParameter setup
+   * FourthOrderParameter setup
    */
    template <int D>
-   void MaxOrderParameter<D>::setup() 
+   void FourthOrderParameter<D>::setup() 
    {
       //Check if the system is AB diblock copolymer
       const int nMonomer = system().mixture().nMonomer();
       if (nMonomer != 2) {
-         UTIL_THROW("The MaxOrderParameter Analyzer is designed specifically for diblock copolymer system. Please verify the number of monomer types in your system.");
+         UTIL_THROW("The FourthOrderParameter Analyzer is designed specifically for diblock copolymer system. Please verify the number of monomer types in your system.");
       }
       
       //Allocate variables
@@ -106,24 +107,24 @@ namespace Rpc {
    * Increment structure factors for all wavevectors and modes.
    */
    template <int D>
-   void MaxOrderParameter<D>::sample(long iStep) 
+   void FourthOrderParameter<D>::sample(long iStep) 
    {
       if (!isAtInterval(iStep)) return;
-      computeMaxOrderParameter();
+      computeFourthOrderParameter();
       
       if (hasAverage_){
-         accumulator_.sample(maxOrderParameter_);
+         accumulator_.sample(FourthOrderParameter_);
       }
       
       double chi =  system().interaction().chi(0,1);
       UTIL_CHECK(outputFile_.is_open());
       outputFile_ << Dbl(chi);
-      outputFile_ << Dbl(maxOrderParameter_);
+      outputFile_ << Dbl(FourthOrderParameter_);
       outputFile_<< "\n";
    }
    
    template <int D>
-   void MaxOrderParameter<D>::computeMaxOrderParameter()
+   void FourthOrderParameter<D>::computeFourthOrderParameter()
    {
       MeshIterator<D> itr;
       itr.setDimensions(kMeshDimensions_);
@@ -134,23 +135,24 @@ namespace Rpc {
       
       for (itr.begin(); !itr.atEnd(); ++itr) {
          std::complex<double> wK(wK_[itr.rank()][0], wK_[itr.rank()][1]);
-         psi[itr.rank()] = std::norm(wK);
+         psi[itr.rank()] = std::norm(wK) * std::norm(wK);
       }
       
-      auto maxOrderParameterPtr = std::max_element(psi.begin(), psi.end());
-      maxOrderParameter_ = *maxOrderParameterPtr;
+      // Get sum over all wavevectors
+      FourthOrderParameter_ = std::accumulate(psi.begin(), psi.end(), 0.0);
+      FourthOrderParameter_ = std::pow(FourthOrderParameter_, 0.25);
    }
    
    /*
    * Output final results to output file.
    */
    template <int D>  
-   void MaxOrderParameter<D>::output() 
+   void FourthOrderParameter<D>::output() 
    {
       if (hasAverage_){
          Log::file() << std::endl;
          Log::file() << "At chi = " << system().interaction().chi(0,1) << "\n";
-         Log::file() << "Time average of the maxOrderParameter is: "
+         Log::file() << "Time average of the FourthOrderParameter is: "
                      << Dbl(accumulator_.average())
                      << " +- " << Dbl(accumulator_.blockingError(), 9, 2) 
                      << "\n";
