@@ -114,7 +114,8 @@ namespace Rpg{
       
       // Copy to device (gpu) memory
       cudaMemcpy(intraCorrelations.cField(), temp, kSize_*sizeof(cudaReal), cudaMemcpyHostToDevice);
-      
+      delete[] temp;
+   
       return intraCorrelations;
    }
 
