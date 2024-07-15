@@ -38,7 +38,7 @@ namespace Rpg
    */
    template <int D>
    class LrPostAmCompressor 
-         : public AmIteratorTmpl<Compressor<D>, DArray<double> >
+         : public AmIteratorTmpl<Compressor<D>, Field<cudaReal> >
    {
 
    public:
