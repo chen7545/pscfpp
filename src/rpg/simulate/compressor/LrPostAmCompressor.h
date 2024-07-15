@@ -91,7 +91,7 @@ namespace Rpg
       void clearTimers();
       
       // Inherited public member functions
-      using AmIteratorTmpl<Compressor<D>, DArray<double> >::setClassName;
+      using AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::setClassName;
       
    protected:
   
