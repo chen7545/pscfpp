@@ -1,5 +1,5 @@
-#ifndef RPC_AM_COMPRESSOR_H
-#define RPC_AM_COMPRESSOR_H
+#ifndef RPG_LR_POST_AM_COMPRESSOR_H
+#define RPG_LR_POST_AM_COMPRESSOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field Theory
@@ -10,25 +10,34 @@
 
 #include "Compressor.h"
 #include <prdc/cpu/RField.h>
+#include <prdc/cpu/RFieldDft.h>
 #include <pscf/iterator/AmIteratorTmpl.h>                 
+#include <rpg/simulate/compressor/intra/IntraCorrelation.h> 
 
 namespace Pscf {
-namespace Rpc
+namespace Rpg
 {
 
-   template <int D>
-   class System;
+   template <int D> class System;
+   template <int D> class IntraCorrelation;
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Pscf::Prdc;
+   using namespace Pscf::Prdc::Cuda;
 
    /**
-   * Rpc implementation of the Anderson Mixing compressor.
+   * Anderson Mixing compressor with linear-response mixing step.
    *
-   * \ingroup Rpc_Compressor_Module
+   * Class LrPostAmCompressor implements an Anderson mixing algorithm 
+   * which modifies the second mixing step, estimating Jacobian by linear 
+   * response of homogenous liquid instead of unity. The residual is a 
+   * vector in which each that represents a deviations 
+   * in the sum of volume fractions from unity.
+   *
+   * \ingroup Rpg_Compressor_Module
    */
    template <int D>
-   class AmCompressor 
+   class LrPostAmCompressor 
          : public AmIteratorTmpl<Compressor<D>, DArray<double> >
    {
 
@@ -39,12 +48,12 @@ namespace Rpc
       * 
       * \param system System object associated with this compressor.
       */
-      AmCompressor(System<D>& system);
+      LrPostAmCompressor(System<D>& system);
 
       /**
       * Destructor.
       */
-      ~AmCompressor();
+      ~LrPostAmCompressor();
 
       /**
       * Read all parameters and initialize.
@@ -110,13 +119,37 @@ namespace Rpc
       /**
       * Template w Field used in update function
       */
-      
       DArray< RField<D> > wFieldTmp_;
       
       /**
       * New Basis variable used in updateBasis function 
       */
-      DArray<double> newBasis_;
+      DArray<cudaReal> newBasis_;
+      
+      /**
+      * Residual in real space used for linear response anderson mixing.
+      */
+      RField<D> resid_;
+      
+      /**
+      * Residual in Fourier space used for linear response anderson mixing.
+      */
+      RFieldDft<D> residK_;
+     
+      /**
+      * IntraCorrelation in fourier space calculated by IntraCorrlation class
+      */
+      RField<D> intraCorrelationK_;
+      
+      /**
+      * Dimensions of wavevector mesh in real-to-complex transform
+      */ 
+      IntVec<D> kMeshDimensions_;
+      
+      /**
+      * Number of points in k-space grid
+      */
+      int kSize_;
 
       /**
       * Assign one field to another.
@@ -124,17 +157,17 @@ namespace Rpc
       * \param a the field to be set (lhs of assignment)
       * \param b the field for it to be set to (rhs of assigment)
       */
-      void setEqual(DArray<double>& a, DArray<double> const & b);
+      void setEqual(Field<cudaReal>& a, Field<cudaReal> const & b);
 
       /**
       * Compute the inner product of two vectors
       */
-      double dotProduct(DArray<double> const & a, DArray<double> const & b);
+      double dotProduct(Field<cudaReal> const & a, Field<cudaReal> const & b);
 
       /**
       * Find the maximum magnitude element of a residual vector.
       */
-      double maxAbs(DArray<double> const & hist);
+      double maxAbs(Field<cudaReal> const & hist);
 
       /**
       * Update the basis for residual or field vectors.
@@ -142,8 +175,8 @@ namespace Rpc
       * \param basis RingBuffer of residual or field basis vectors
       * \param hists RingBuffer of past residual or field vectors
       */
-      void updateBasis(RingBuffer<DArray<double> > & basis, 
-                       RingBuffer<DArray<double> > const & hists);
+      void updateBasis(RingBuffer<Field<cudaReal> > & basis, 
+                       RingBuffer<Field<cudaReal> > const & hists);
 
       /**
       * Add linear combination of basis vectors to trial field.
@@ -153,8 +186,8 @@ namespace Rpc
       * \param coeffs array of coefficients of basis vectors
       * \param nHist number of histories stored at this iteration
       */
-      void addHistories(DArray<double>& trial, 
-                        RingBuffer<DArray<double> > const & basis, 
+      void addHistories(Field<cudaReal>& trial, 
+                        RingBuffer<Field<cudaReal> > const & basis, 
                         DArray<double> coeffs, 
                         int nHist);
 
@@ -165,8 +198,8 @@ namespace Rpc
       * \param resTrial predicted error for current trial
       * \param lambda Anderson-Mixing mixing 
       */
-      void addPredictedError(DArray<double>& fieldTrial, 
-                             DArray<double> const & resTrial, 
+      void addPredictedError(Field<cudaReal>& fieldTrial, 
+                             Field<cudaReal> const & resTrial, 
                              double lambda);
 
       /**
@@ -186,7 +219,7 @@ namespace Rpc
       * 
       * \param curr current field vector
       */ 
-      void getCurrent(DArray<double>& curr);
+      void getCurrent(Field<cudaReal>& curr);
 
       /**
       * Have the system perform a computation using new field.
@@ -201,30 +234,40 @@ namespace Rpc
       *
       * \param resid current residual vector value
       */
-      void getResidual(DArray<double>& resid);
+      void getResidual(Field<cudaReal>& resid);
 
       /**
       * Updates the system field with the new trial field.
       *
       * \param newGuess trial field vector
       */
-      void update(DArray<double>& newGuess);
+      void update(Field<cudaReal>& newGuess);
 
       /**
       * Outputs relevant system details to the iteration log.
       */
       void outputToLog();
+      
+      /**
+      * Set mixing parameter lambda
+      */
+      double setLambda();
+      
+      /**
+      * IntraCorrelation (homopolymer) object
+      */
+      IntraCorrelation<D> intraCorrelation_;
     
       // Inherited private members 
       using Compressor<D>::system;
 
    };
    
-   #ifndef RPC_AM_COMPRESSOR_TPP
+   #ifndef RPG_LR_POST_AM_COMPRESSOR_TPP
    // Suppress implicit instantiation
-   extern template class AmCompressor<1>;
-   extern template class AmCompressor<2>;
-   extern template class AmCompressor<3>;
+   extern template class LrPostAmCompressor<1>;
+   extern template class LrPostAmCompressor<2>;
+   extern template class LrPostAmCompressor<3>;
    #endif
 
 } // namespace Rpc

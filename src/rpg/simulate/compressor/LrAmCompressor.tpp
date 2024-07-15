@@ -31,7 +31,7 @@ namespace Rpg{
    // Destructor
    template <int D>
    LrAmCompressor<D>::~LrAmCompressor()
-   {  setClassName("LrAmCompressor"); }
+   {}
 
    // Read parameters from file
    template <int D>
@@ -49,6 +49,7 @@ namespace Rpg{
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       IntVec<D> const & dimensions = system().mesh().dimensions();
+      
       // Allocate memory required by AM algorithm if not done earlier.
       AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::setup(isContinuation);
       
@@ -87,7 +88,8 @@ namespace Rpg{
       // GPU resources
       int nBlocks, nThreads;
       ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
-      // Pointer to fields on system
+
+      // Store current fields
       DArray<RField<D>> const * currSys = &system().w().rgrid();
       for (int i = 0; i < nMonomer; ++i) {
          assignReal<<<nBlocks,nThreads>>>(w0_[i].cField(), 
@@ -151,9 +153,10 @@ namespace Rpg{
       const int n = hists[0].capacity();
       
       // GPU resources
-      // New basis vector is difference between two most recent states
       int nBlocks, nThreads;
       ThreadGrid::setThreadsLogical(n, nBlocks, nThreads);
+
+      // New basis vector is difference between two most recent states
       pointWiseBinarySubtract<<<nBlocks,nThreads>>>
             (hists[0].cField(), hists[1].cField(), newBasis_.cField(),n);
 
@@ -180,8 +183,8 @@ namespace Rpg{
 
    template <int D>
    void LrAmCompressor<D>::addPredictedError(Field<cudaReal>& fieldTrial,
-                                           Field<cudaReal> const & resTrial,
-                                           double lambda)
+                                             Field<cudaReal> const & resTrial,
+                                             double lambda)
    {
       // GPU resources
       int nBlocks, nThreads;
@@ -247,6 +250,7 @@ namespace Rpg{
       
       // Initialize residuals to -1
       assignUniformReal<<<nBlocks, nThreads>>>(resid_.cField(), -1, meshSize);
+
       // Compute incompressibility constraint error vector elements
       for (int i = 0; i < nMonomer; i++) {
          pointWiseAdd<<<nBlocks, nThreads>>>
@@ -280,13 +284,13 @@ namespace Rpg{
       int nBlocks, nThreads;
       ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
       
-      //New field is the w0_ + the newGuess for the Lagrange multiplier field
+      // New field is the w0_ + the newGuess for the Lagrange multiplier field
       for (int i = 0; i < nMonomer; i++){
          pointWiseBinaryAdd<<<nBlocks, nThreads>>>
             (w0_[i].cField(), newGuess.cField(), wFieldTmp_[i].cField(), meshSize);
       }
       
-      // set system r grid
+      // Set system r grid
       system().setWRGrid(wFieldTmp_);
    }
 
