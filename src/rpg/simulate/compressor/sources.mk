@@ -7,7 +7,7 @@ rpg_simulate_compressor_= \
   rpg/simulate/compressor/AmCompressor.cu \
   rpg/simulate/compressor/LrAmCompressor.cu \
   rpg/simulate/compressor/LrCompressor.cu \
-  rpg/simulate/compressor/LrPostCompressor.cu \
+  rpg/simulate/compressor/LrPostAmCompressor.cu \
   
 
 rpg_simulate_compressor_OBJS=\

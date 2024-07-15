@@ -270,6 +270,6 @@ namespace Rpg
    extern template class LrPostAmCompressor<3>;
    #endif
 
-} // namespace Rpc
+} // namespace Rpg
 } // namespace Pscf
 #endif
