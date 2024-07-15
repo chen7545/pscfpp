@@ -124,7 +124,7 @@ namespace Rpg
       /**
       * New Basis variable used in updateBasis function 
       */
-      DArray<cudaReal> newBasis_;
+      Field<cudaReal> newBasis_;
       
       /**
       * Residual in real space used for linear response anderson mixing.

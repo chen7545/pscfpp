@@ -159,7 +159,6 @@ namespace Rpg{
             (hists[0].cField(), hists[1].cField(), newBasis_.cField(),n);
 
       basis.append(newBasis_);
-      
    }
 
    template <int D>
@@ -199,7 +198,7 @@ namespace Rpg{
       ThreadGrid::setThreadsLogical(fieldTrial.capacity(), nBlocks, nThreads);
       
       // Convert resTrial to RField<D> type
-      assignReal<<<nBlocks, nThreads>>>(resid_.cField(), resTrial.cField(), meshSize)
+      assignReal<<<nBlocks, nThreads>>>(resid_.cField(), resTrial.cField(), meshSize);
       
       // Convert residual to Fourier Space
       system().fft().forwardTransform(resid_, residK_);
