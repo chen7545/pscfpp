@@ -2,7 +2,7 @@
 include $(SRC_DIR)/rpg/simulate/compressor/intra/sources.mk
 
 rpg_simulate_compressor_= \
-  $(rpc_simulate_compressor_intra_) \
+  $(rpg_simulate_compressor_intra_) \
   rpg/simulate/compressor/CompressorFactory.cu \
   rpg/simulate/compressor/AmCompressor.cu \
   rpg/simulate/compressor/LrAmCompressor.cu \
