@@ -108,7 +108,7 @@ namespace Rpg{
 
    // Assign one array to another
    template <int D>
-   void LrAmCompressor<D>::setEqual(Field<cudaReal>& a, Field<cudaReal> const & b)
+   void LrPostAmCompressor<D>::setEqual(Field<cudaReal>& a, Field<cudaReal> const & b)
    {
       // GPU resources
       int nBlocks, nThreads;
@@ -120,8 +120,8 @@ namespace Rpg{
    
    // Compute and return inner product of two vectors.
    template <int D>
-   double LrAmCompressor<D>::dotProduct(Field<cudaReal> const & a, 
-                                      Field<cudaReal> const & b)
+   double LrPostAmCompressor<D>::dotProduct(Field<cudaReal> const & a, 
+                                            Field<cudaReal> const & b)
    {
       const int n = a.capacity();
       UTIL_CHECK(b.capacity() == n);
@@ -132,7 +132,7 @@ namespace Rpg{
 
    // Compute and return maximum element of a vector.
    template <int D>
-   double LrAmCompressor<D>::maxAbs(Field<cudaReal> const & a)
+   double LrPostAmCompressor<D>::maxAbs(Field<cudaReal> const & a)
    {
       int n = a.capacity();
       cudaReal max = gpuMaxAbs(a.cField(), n);
@@ -142,8 +142,8 @@ namespace Rpg{
    // Update basis
    template <int D>
    void 
-   LrAmCompressor<D>::updateBasis(RingBuffer< Field<cudaReal> > & basis,
-                                RingBuffer< Field<cudaReal> > const & hists)
+   LrPostAmCompressor<D>::updateBasis(RingBuffer< Field<cudaReal> > & basis,
+                                      RingBuffer< Field<cudaReal> > const & hists)
    {
       // Make sure at least two histories are stored
       UTIL_CHECK(hists.size() >= 2);
@@ -164,10 +164,10 @@ namespace Rpg{
 
    template <int D>
    void
-   LrAmCompressor<D>::addHistories(Field<cudaReal>& trial,
-                                 RingBuffer<Field<cudaReal> > const & basis,
-                                 DArray<double> coeffs,
-                                 int nHist)
+   LrPostAmCompressor<D>::addHistories(Field<cudaReal>& trial,
+                                       RingBuffer<Field<cudaReal> > const & basis,
+                                       DArray<double> coeffs,
+                                       int nHist)
    {
       // GPU resources
       int nBlocks, nThreads;
@@ -227,7 +227,7 @@ namespace Rpg{
 
    // Get the current field from the system
    template <int D>
-   void LrAmCompressor<D>::getCurrent(Field<cudaReal>& curr)
+   void LrPostAmCompressor<D>::getCurrent(Field<cudaReal>& curr)
    {
       // Straighten out fields into  linear arrays
       const int meshSize = system().domain().mesh().size();
@@ -281,7 +281,7 @@ namespace Rpg{
 
    // Update the current system field coordinates
    template <int D>
-   void LrAmCompressor<D>::update(Field<cudaReal>& newGuess)
+   void LrPostAmCompressor<D>::update(Field<cudaReal>& newGuess)
    {
       // Convert back to field format
       const int nMonomer = system().mixture().nMonomer();
