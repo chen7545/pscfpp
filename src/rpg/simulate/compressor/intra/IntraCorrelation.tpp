@@ -82,6 +82,7 @@ namespace Rpg{
       IntVec<D> const & dimensions = system().mesh().dimensions();
       
       // Compute Fourier space kMeshDimensions_
+      kSize_ = 1;
       for (int i = 0; i < D; ++i) {
          if (i < D - 1) {
             kMeshDimensions_[i] = dimensions[i];

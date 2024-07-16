@@ -10,6 +10,7 @@
 
 #include "LrAmCompressor.h"
 #include <rpg/System.h>
+#include <rpg/simulate/compressor/intra/IntraCorrelation.h>  
 #include <pscf/chem/Monomer.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <prdc/crystal/shiftToMinimum.h>
@@ -97,7 +98,7 @@ namespace Rpg{
       }
       
       // Compute intramolecular correlation
-      computeIntraCorrelation();
+      intraCorrelation_ = intra_.computeIntraCorrelation();
    }
   
    // Iterative solver (AM algorithm) 
