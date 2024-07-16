@@ -26,7 +26,8 @@ namespace Rpg{
    template <int D>
    LrAmCompressor<D>::LrAmCompressor(System<D>& system)
     : Compressor<D>(system),
-      isAllocated_(false)
+      isAllocated_(false),
+      intra_(system)
    {  setClassName("LrAmCompressor"); }
 
    // Destructor
