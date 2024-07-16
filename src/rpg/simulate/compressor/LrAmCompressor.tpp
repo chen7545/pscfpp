@@ -99,7 +99,7 @@ namespace Rpg{
       }
       
       // Compute intramolecular correlation
-      intraCorrelation_ = intra_.computeIntraCorrelation();
+      intraCorrelation_ = intra_.computeIntraCorrelations();
    }
   
    // Iterative solver (AM algorithm) 
