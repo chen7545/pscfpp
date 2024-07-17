@@ -85,11 +85,6 @@ namespace Rpg {
       */
       virtual void outputTimers(std::ostream& out);
 
-      /**
-      * Clear timers
-      */
-      virtual void clearTimers();
-
       ///@}
       /// \name Miscellaneous
       ///@{
@@ -137,6 +132,7 @@ namespace Rpg {
       using Simulator<D>::saveState;
       using Simulator<D>::restoreState;
       using Simulator<D>::clearState;
+      using Simulator<D>::clearTimers;
 
    protected:
 
