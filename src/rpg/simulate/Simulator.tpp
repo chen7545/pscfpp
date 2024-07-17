@@ -474,8 +474,7 @@ namespace Rpg {
       // Debugging output
       std::string filename = "wc";
       system().fieldIo().writeFieldsRGrid(filename, wc_, 
-                                          system().domain().unitCell(),
-                                          w_.isSymmetric());
+                                          system().domain().unitCell());
       #endif
 
       hasWc_ = true;
