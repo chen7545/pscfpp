@@ -148,12 +148,7 @@ namespace Rpg
       * Residual in Fourier space used for linear response anderson mixing.
       */
       RFieldDft<D> residK_;
-
-      /**
-      * Current values of the fields
-      */
-      DArray< RField<D> > w0_;
-
+      
       /**
       * Template w Field used in update function
       */

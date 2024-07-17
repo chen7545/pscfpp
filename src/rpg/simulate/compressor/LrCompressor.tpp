@@ -83,7 +83,6 @@ namespace Rpg{
       if (!isAllocated_){
          resid_.allocate(dimensions);
          residK_.allocate(dimensions);
-         w0_.allocate(nMonomer);
          wFieldTmp_.allocate(nMonomer);
          intraCorrelationK_.allocate(kMeshDimensions_);
          for (int i = 0; i < nMonomer; ++i) {
@@ -91,13 +90,6 @@ namespace Rpg{
             wFieldTmp_[i].allocate(meshSize);
          }
          isAllocated_ = true;
-      }
-      
-      // Store current fields
-      DArray<RField<D>> const * currSys = &system().w().rgrid();
-      for (int i = 0; i < nMonomer; ++i) {
-         assignReal<<<nBlocks,nThreads>>>(w0_[i].cField(), 
-                                          (*currSys)[i].cField(), meshSize);
       }
       
       // Compute intraCorrelation (homopolymer)
@@ -232,7 +224,7 @@ namespace Rpg{
       // Update new fields
       for (int i = 0; i < nMonomer; i++){
          pointWiseBinaryAdd<<<nBlocks, nThreads>>>
-            (w0_[i].cField(), resid_.cField(), wFieldTmp_[i].cField(), meshSize);
+            (system().w().rgrid(i).cField(), resid_.cField(), wFieldTmp_[i].cField(), meshSize);
       }
       
       // Set system r grid
