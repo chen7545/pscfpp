@@ -81,7 +81,7 @@ namespace Rpg {
    EinsteinCrystalPerturbation<D>::hamiltonian(double unperturbedHamiltonian)
    {
       // Compute Einstein crystal Hamiltonian
-      double prefactor, w, s;
+      double prefactor, s;
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       const double vSystem  = system().domain().unitCell().volume();
@@ -90,6 +90,10 @@ namespace Rpg {
       RField<D> wcs;
       wcs.allocate(meshSize);
       ecHamiltonian_ = 0.0;
+      
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
       
       for (int j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & Wc = simulator().wc(j);
@@ -208,14 +212,14 @@ namespace Rpg {
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
 
-         // Loop over grid points to zero out field wc_[i]
+         // Loop over grid points to zero out field wc0_[i]
          RField<D>& Wc = wc0_[i];
          assignUniformReal<<<nBlocks, nThreads>>>(Wc.cField(), 0, meshSize);
          
          // Loop over monomer types (j is a monomer index)
          for (j = 0; j < nMonomer; ++j) {
             cudaReal vec;
-            vec = (cudaReal) chiEvecs_(i, j)/nMonomer;
+            vec = (cudaReal) simulator().chiEvecs(i, j)/nMonomer;
 
             // Loop over grid points
             pointWiseAddScale<<<nBlocks, nThreads>>>
@@ -226,7 +230,7 @@ namespace Rpg {
       
       // Debugging output
       std::string filename = "wc";
-      system().fieldIo().writeFieldsRGrid(filename, wc_, 
+      system().fieldIo().writeFieldsRGrid(filename, wc0_, 
                                           system().domain().unitCell());
    }
 
