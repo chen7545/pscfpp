@@ -126,6 +126,7 @@ namespace Rpg {
       return compH - unperturbedHamiltonian;
    }
 
+   #if 0
    /*
    * Modify functional derivatives, empty default implementation.
    */
@@ -167,6 +168,7 @@ namespace Rpg {
       
       }
    }
+   #endif
    
    /*
    * Compute and return derivative of free energy with respect to lambda.
