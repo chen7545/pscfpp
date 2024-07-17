@@ -16,6 +16,8 @@
 #include <rpg/simulate/trajectory/TrajectoryReader.h>
 #include <rpg/simulate/trajectory/TrajectoryReaderFactory.h>
 #include <rpg/simulate/compressor/Compressor.h>
+#include <rpg/simulate/perturbation/Perturbation.h>
+#include <rpg/simulate/perturbation/PerturbationFactory.h>
 
 #include <util/random/Random.h>
 #include <pscf/cuda/CudaRandom.h>
@@ -102,6 +104,11 @@ namespace Rpg {
       // Compute field components and MC Hamiltonian for initial state
       system().compute();
       computeWc();
+      
+      if (hasPerturbation()) {
+         perturbation().setup();
+      }
+      
       computeHamiltonian();
       if (state_.needsCc || state_.needsDc) {
          computeCc();

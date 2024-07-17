@@ -316,69 +316,7 @@ namespace Rpg{
       AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::clearTimers();
       mdeCounter_ = 0;
    }
-   
-   template<int D>
-   double LrAmCompressor<D>::computeDebye(double x)
-   {
-      if (x == 0){
-         return 1.0;
-      } else {
-         return 2.0 * (std::exp(-x) - 1.0 + x) / (x * x);
-      }
-   }
-   
-   template<int D>
-   double LrAmCompressor<D>::computeIntraCorrelation(double qSquare)
-   {
-      const int np = system().mixture().nPolymer();
-      const double vMonomer = system().mixture().vMonomer();
-      // Overall intramolecular correlation
-      double omega = 0;
-      int monomerId; int nBlock; 
-      double kuhn; double length; double g; double rg2; 
-      Polymer<D> const * polymerPtr;
       
-      for (int i = 0; i < np; i++){
-         polymerPtr = &system().mixture().polymer(i);
-         nBlock = polymerPtr->nBlock();
-         double totalLength = 0;
-         for (int j = 0; j < nBlock; j++) {
-            totalLength += polymerPtr->block(j).length();
-         }
-         for (int j = 0; j < nBlock; j++) {
-            monomerId = polymerPtr-> block(j).monomerId();
-            kuhn = system().mixture().monomer(monomerId).kuhn();
-            // Get the length (number of monomers) in this block.
-            length = polymerPtr-> block(j).length();
-            rg2 = length/totalLength * kuhn* kuhn /6.0;
-            g = computeDebye(qSquare*rg2);
-            omega += length * g/ vMonomer;
-         }
-      }
-      return omega;
-   }
-   
-   template<int D>
-   void LrAmCompressor<D>::computeIntraCorrelation()
-   {
-      // convert into a cudaReal array
-      cudaReal* temp = new cudaReal[kSize_];
-      MeshIterator<D> iter;
-      iter.setDimensions(kMeshDimensions_);
-      IntVec<D> G, Gmin;
-      double Gsq;
-      for (iter.begin(); !iter.atEnd(); ++iter) {
-         G = iter.position();
-         Gmin = shiftToMinimum(G, system().mesh().dimensions(), 
-                                  system().unitCell());
-         Gsq = system().unitCell().ksq(Gmin);
-         temp[iter.rank()] = (cudaReal) computeIntraCorrelation(Gsq);
-      }
-      // Copy parameters to the end of the curr array
-      cudaMemcpy(intraCorrelation_.cField(), temp, kSize_*sizeof(cudaReal), cudaMemcpyHostToDevice);
-      delete[] temp;
-   }
-   
    template<int D>
    double LrAmCompressor<D>::setLambda()
    {

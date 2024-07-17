@@ -773,8 +773,6 @@ namespace Rpc {
       }
    }
 
-   // Functions associated with associated Ramp
-
    /*
    * Set the associated Perturbation<D> object.
    */
@@ -784,6 +782,8 @@ namespace Rpc {
       UTIL_CHECK(ptr != 0);
       perturbationPtr_ = ptr;
    }
+
+   // Functions associated with associated Ramp
 
    /*
    * Optionally read a parameter file block for an associated Ramp.

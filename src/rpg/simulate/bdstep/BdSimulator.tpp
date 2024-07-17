@@ -15,6 +15,8 @@
 #include <rpg/simulate/analyzer/AnalyzerFactory.h>
 #include <rpg/simulate/trajectory/TrajectoryReader.h>
 #include <rpg/simulate/trajectory/TrajectoryReaderFactory.h>
+#include <rpg/simulate/perturbation/PerturbationFactory.h>
+#include <rpg/simulate/perturbation/Perturbation.h>
 #include <rpg/simulate/compressor/Compressor.h>
 #include <rpg/System.h>
 
@@ -66,7 +68,7 @@ namespace Rpg {
    void BdSimulator<D>::readParameters(std::istream &in)
    {
 
-      // Read compressor block, and optionally random seed
+      // Read compressor block, and optionally random seed, optional perturbation
       Simulator<D>::readParameters(in);
 
       #if 0
@@ -119,6 +121,11 @@ namespace Rpg {
       system().compute();
       computeWc();
       computeCc();
+      
+      if (hasPerturbation()) {
+         perturbation().setup();
+      }
+      
       computeDc();
       computeHamiltonian();
 
