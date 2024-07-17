@@ -206,7 +206,9 @@ namespace Rpg {
       Log::file() << "Analyzer run time   " << analyzerTime
                   << " sec" << std::endl;
       Log::file() << std::endl;
-
+      
+      // Output compressor timer results
+      compressor().outputTimers(Log::file());
    }
 
    /*
@@ -282,13 +284,6 @@ namespace Rpg {
    template<int D>
    void BdSimulator<D>::outputTimers(std::ostream& out)
    {}
-
-   /*
-   * Clear all timers.
-   */
-   template<int D>
-   void BdSimulator<D>::clearTimers()
-   { }
 
 }
 }
