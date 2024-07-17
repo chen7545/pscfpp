@@ -2,18 +2,9 @@
 #define RPG_EINSTEIN_CRYSTAL_PERTURBATION_H
 
 #include "Perturbation.h"      // base class
-
-namespace Util {
-   template <typename T> class DArray;
-}
-
-namespace Pscf {
-namespace Prdc{
-namespace Cuda{
-   template <int D> class RField;
-}
-}
-}
+#include <prdc/cuda/RField.h>
+#include <prdc/cuda/Field.h>
+#include <util/containers/DArray.h> 
 
 namespace Pscf {
 namespace Rpg {

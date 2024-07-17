@@ -5,6 +5,7 @@
 #include <rpg/simulate/Simulator.h>
 #include <rpg/System.h>
 #include <prdc/cuda/RField.h>
+#include <prdc/cuda/Field.h>
 #include <util/containers/DArray.h>
 #include <util/global.h>
 
