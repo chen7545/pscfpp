@@ -137,9 +137,10 @@ namespace Rpg {
       const int meshSize = system().domain().mesh().size();
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();   
-      RField<D> DcBCP, DcEC;
+      RField<D> DcBCP, DcEC, wRef;
       DcBCP.allocate(meshSize);
       DcEC.allocate(meshSize);
+      wRef.allocate(meshSize);
       b = 1.0;
       
       // GPU resources
@@ -153,19 +154,20 @@ namespace Rpg {
          s = simulator().sc(i);
          prefactor = -1.0*double(nMonomer)/simulator().chiEval(i)/vMonomer;
          
-         #if 0
          // Copy block copolymer derivative
          assignReal<<<nBlocks,nThreads>>>(DcBCP.cField(), 
                                           Dc.cField(), meshSize);
-         
+         // Substract Reference field 
+         assignReal<<<nBlocks,nThreads>>>(wRef.cField(), 
+                                          wc0_[i].cField(), meshSize);
+         scaleReal<<<nBlocks,nThreads>>>(wRef.cField(), -1.0, meshSize);
          // Compute EC derivative
          computeDField<<<nBlocks, nThreads>>>
-            (DcEC.cField(), Wc.cField(), -wc0_[i].cField(), prefactor, b, s, meshSize);
-         
+            (DcEC.cField(), Wc.cField(), wRef.cField(), prefactor, b, s, meshSize);
+       
          // Compute composite derivative
          scaleReal<<<nBlocks, nThreads>>>(Dc.cField(), lambda_, meshSize);
          pointWiseAddScale<<<nBlocks, nThreads>>>(Dc.cField(), DcEC.cField(), 1.0 - lambda_, meshSize);
-      #endif
       }
    }
    
