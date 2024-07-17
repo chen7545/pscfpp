@@ -55,12 +55,10 @@ namespace Rpg {
       */
       virtual double hamiltonian(double unperturbedHamiltonian);
       
-      #if 0
       /**
       * Modify the generalized forces to include perturbation.
       */
       virtual void incrementDc(DArray< RField<D> >& dc);
-      #endif
       
       /**
       * Compute and return derivative of free energy.

@@ -126,7 +126,6 @@ namespace Rpg {
       return compH - unperturbedHamiltonian;
    }
 
-   #if 0
    /*
    * Modify functional derivatives, empty default implementation.
    */
@@ -142,7 +141,7 @@ namespace Rpg {
       DcBCP.allocate(meshSize);
       DcEC.allocate(meshSize);
       b = 1.0;
-       
+      #if 0
       // GPU resources
       int nBlocks, nThreads;
       ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
@@ -167,8 +166,8 @@ namespace Rpg {
          pointWiseAddScale<<<nBlocks, nThreads>>>(Dc.cField(), DcEC.cField(), 1.0 - lambda_, meshSize);
       
       }
+      #endif
    }
-   #endif
    
    /*
    * Compute and return derivative of free energy with respect to lambda.
