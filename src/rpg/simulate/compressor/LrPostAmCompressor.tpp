@@ -129,7 +129,6 @@ namespace Rpg{
       return product;
    }
 
-
    // Compute and return maximum element of a vector.
    template <int D>
    double LrPostAmCompressor<D>::maxAbs(Field<cudaReal> const & a)
@@ -268,7 +267,7 @@ namespace Rpg{
       ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
 
       // Initialize residuals
-      assignUniformReal<<<nBlocks, nThreads>>>(resid_.cField(), -1, meshSize);
+      assignUniformReal<<<nBlocks, nThreads>>>(resid.cField(), -1.0, meshSize);
 
       // Compute SCF residual vector elements
       for (int i = 0; i < nMonomer; i++) {

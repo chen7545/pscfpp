@@ -126,7 +126,7 @@ namespace Rpg{
    // Compute and return inner product of two vectors.
    template <int D>
    double LrAmCompressor<D>::dotProduct(Field<cudaReal> const & a, 
-                                      Field<cudaReal> const & b)
+                                        Field<cudaReal> const & b)
    {
       const int n = a.capacity();
       UTIL_CHECK(b.capacity() == n);
@@ -147,7 +147,7 @@ namespace Rpg{
    template <int D>
    void 
    LrAmCompressor<D>::updateBasis(RingBuffer< Field<cudaReal> > & basis,
-                                RingBuffer< Field<cudaReal> > const & hists)
+                                  RingBuffer< Field<cudaReal> > const & hists)
    {
       // Make sure at least two histories are stored
       UTIL_CHECK(hists.size() >= 2);
@@ -169,9 +169,9 @@ namespace Rpg{
    template <int D>
    void
    LrAmCompressor<D>::addHistories(Field<cudaReal>& trial,
-                                 RingBuffer<Field<cudaReal> > const & basis,
-                                 DArray<double> coeffs,
-                                 int nHist)
+                                   RingBuffer<Field<cudaReal> > const & basis,
+                                   DArray<double> coeffs,
+                                   int nHist)
    {
       // GPU resources
       int nBlocks, nThreads;

@@ -182,8 +182,8 @@ namespace Rpc{
 
    template <int D>
    void LrPostAmCompressor<D>::addPredictedError(DArray<double>& fieldTrial,
-                                         DArray<double> const & resTrial,
-                                         double lambda)
+                                                 DArray<double> const & resTrial,
+                                                 double lambda)
    {
       int n = fieldTrial.capacity();
       const double vMonomer = system().mixture().vMonomer();
