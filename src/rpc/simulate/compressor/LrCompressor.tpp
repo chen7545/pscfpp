@@ -73,21 +73,14 @@ namespace Rpc{
       if (!isAllocated_){
          resid_.allocate(dimensions);
          residK_.allocate(dimensions);
-         w0_.allocate(nMonomer);
          wFieldTmp_.allocate(nMonomer);
          intraCorrelationK_.allocate(kMeshDimensions_);
          for (int i = 0; i < nMonomer; ++i) {
-            w0_[i].allocate(meshSize);
             wFieldTmp_[i].allocate(meshSize);
          }
          isAllocated_ = true;
       }
-      for (int i = 0; i < nMonomer; ++i) {
-         for (int j = 0; j< meshSize; ++j){
-            w0_[i][j] = system().w().rgrid(i)[j];
-         }
-      }
-      
+
       // Compute intraCorrelation (homopolymer)
       intraCorrelationK_ = intraCorrelation_.computeIntraCorrelations();
    }

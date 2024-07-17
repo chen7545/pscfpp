@@ -86,7 +86,6 @@ namespace Rpg{
          wFieldTmp_.allocate(nMonomer);
          intraCorrelationK_.allocate(kMeshDimensions_);
          for (int i = 0; i < nMonomer; ++i) {
-            w0_[i].allocate(meshSize);
             wFieldTmp_[i].allocate(meshSize);
          }
          isAllocated_ = true;
