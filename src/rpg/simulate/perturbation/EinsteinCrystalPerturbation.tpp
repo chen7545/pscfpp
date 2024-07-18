@@ -157,10 +157,12 @@ namespace Rpg {
          // Copy block copolymer derivative
          assignReal<<<nBlocks,nThreads>>>(DcBCP.cField(), 
                                           Dc.cField(), meshSize);
-         // Substract Reference field 
+         
+         // Multiply reference field by -1.0
          assignReal<<<nBlocks,nThreads>>>(wRef.cField(), 
                                           wc0_[i].cField(), meshSize);
          scaleReal<<<nBlocks,nThreads>>>(wRef.cField(), -1.0, meshSize);
+         
          // Compute EC derivative
          computeDField<<<nBlocks, nThreads>>>
             (DcEC.cField(), Wc.cField(), wRef.cField(), prefactor, b, s, meshSize);
@@ -232,10 +234,12 @@ namespace Rpg {
          
       }
       
+      #if 0
       // Debugging output
       std::string filename = "wc";
       system().fieldIo().writeFieldsRGrid(filename, wc0_, 
                                           system().domain().unitCell(), false);
+      #endif
    }
 
 }
