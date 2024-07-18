@@ -18,6 +18,8 @@
 #include <rpg/simulate/compressor/Compressor.h>
 #include <rpg/simulate/perturbation/Perturbation.h>
 #include <rpg/simulate/perturbation/PerturbationFactory.h>
+#include <rpg/simulate/ramp/RampFactory.h>
+#include <rpg/simulate/ramp/Ramp.h>
 
 #include <util/random/Random.h>
 #include <pscf/cuda/CudaRandom.h>
@@ -130,8 +132,13 @@ namespace Rpg {
    void McSimulator<D>::simulate(int nStep)
    {
       UTIL_CHECK(mcMoveManager_.size() > 0);
-
+      
+      // Initial setup
       setup();
+      if (hasRamp()) {
+         ramp().setup(nStep);
+      }
+      
       Log::file() << std::endl;
 
       // Main Monte Carlo loop
@@ -139,6 +146,9 @@ namespace Rpg {
       Timer analyzerTimer;
       timer.start();
       iStep_ = 0;
+      if (hasRamp()) {
+         ramp().setParameters(iStep_);
+      }
 
       // Analysis initial step (if any)
       analyzerTimer.start();
@@ -152,6 +162,10 @@ namespace Rpg {
 
          if (converged){
             iStep_++;
+            
+            if (hasRamp()) {
+               ramp().setParameters(iStep_);               
+            }
 
             // Analysis (if any)
             analyzerTimer.start();
@@ -178,12 +192,22 @@ namespace Rpg {
       if (Analyzer<D>::baseInterval > 0){
          analyzerManager_.output();
       }
-
+      
+      // Output results of ramp
+      if (hasRamp()){
+         ramp().output();
+      }
+      
+      // Output number of times MDE has been solved for the simulation run
+      outputMdeCounter(Log::file());
+      
+      #if 0
       // Output number of times MDE has been solved for the simulation run
       Log::file() << std::endl;
       Log::file() << "MDE counter   "
                   << compressor().mdeCounter() << std::endl;
       Log::file() << std::endl;
+      #endif
 
       // Output times for the simulation run
       Log::file() << std::endl;
@@ -288,7 +312,7 @@ namespace Rpg {
 
       // Output results of all analyzers to output files
       analyzerManager_.output();
-
+   
       // Output number of frames and times
       Log::file() << std::endl;
       Log::file() << "# of frames   " << nFrames << std::endl;

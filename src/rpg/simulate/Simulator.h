@@ -25,7 +25,8 @@ namespace Rpg {
    template <int D> class CompressorFactory;
    template <int D> class Perturbation;
    template <int D> class PerturbationFactory;
-
+   template <int D> class Ramp;
+   template <int D> class RampFactory;
 
    using namespace Util;
    using namespace Pscf::Prdc::Cuda;
@@ -519,6 +520,21 @@ namespace Rpg {
       * Get the perturbation factory by non-const reference.
       */
       Perturbation<D>& perturbation();
+      
+      /**
+      * Does this Simulator have a Ramp?
+      */
+      bool hasRamp() const;
+
+      /**
+      * Get the associated Ramp by const reference.
+      */
+      Ramp<D> const & ramp() const;
+      
+      /**
+      * Get the ramp by non-const reference.
+      */
+      Ramp<D>& ramp();
 
       ///@}
 
@@ -553,6 +569,25 @@ namespace Rpg {
       * \param ptr pointer to a new Perturbation<D> object.
       */
       void setPerturbation(Perturbation<D>* ptr);
+      
+      /**
+      * Get the ramp factory by reference.
+      */
+      RampFactory<D>& rampFactory();
+
+      /**
+      * Optionally read an associated ramp.
+      *
+      * \param in input parameter stream
+      */
+      void readRamp(std::istream& in);
+
+      /**
+      * Set the associated ramp.
+      *
+      * \param ptr pointer to a new Ramp<D> object.
+      */
+      void setRamp(Ramp<D>* ptr);
 
       // Protected data members
   
@@ -720,6 +755,16 @@ namespace Rpg {
       * Pointer to the perturbation (if any)
       */
       Perturbation<D>* perturbationPtr_;
+      
+      /**
+      * Pointer to the Ramp Factory.
+      */
+      RampFactory<D>* rampFactoryPtr_;
+
+      /**
+      * Pointer to the Ramp (if any)
+      */
+      Ramp<D>* rampPtr_;
 
       /**
       * Has required memory been allocated?
@@ -761,6 +806,30 @@ namespace Rpg {
    {
       UTIL_CHECK(perturbationFactoryPtr_);  
       return *perturbationFactoryPtr_; 
+   }
+   
+   // Get the ramp (if any) by const reference.
+   template <int D>
+   inline Ramp<D> const & Simulator<D>::ramp() const
+   {
+      UTIL_CHECK(rampPtr_);  
+      return *rampPtr_; 
+   }
+
+   // Get the ramp (if any) by non-const reference.
+   template <int D>
+   inline Ramp<D>& Simulator<D>::ramp()
+   {
+      UTIL_CHECK(rampPtr_);  
+      return *rampPtr_; 
+   }
+
+   // Get the ramp factory.
+   template <int D>
+   inline RampFactory<D>& Simulator<D>::rampFactory()
+   {
+      UTIL_CHECK(rampFactoryPtr_);  
+      return *rampFactoryPtr_; 
    }
 
    // Get the parent System.
@@ -897,6 +966,11 @@ namespace Rpg {
    template <int D>
    inline bool Simulator<D>::hasPerturbation() const
    {  return (perturbationPtr_ != 0); }
+   
+   // Does this Simulator have an associated Ramp?
+   template <int D>
+   inline bool Simulator<D>::hasRamp() const
+   {  return (rampPtr_ != 0); }
 
    // Clear all data (eigen-components of w field and Hamiltonian)
    template <int D>

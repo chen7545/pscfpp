@@ -14,6 +14,8 @@
 #include <rpg/simulate/compressor/CompressorFactory.h>
 #include <rpg/simulate/perturbation/Perturbation.h>
 #include <rpg/simulate/perturbation/PerturbationFactory.h>
+#include <rpg/simulate/ramp/Ramp.h>
+#include <rpg/simulate/ramp/RampFactory.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
@@ -48,11 +50,14 @@ namespace Rpg {
       compressorPtr_(0),
       perturbationFactoryPtr_(0),
       perturbationPtr_(0),
+      rampFactoryPtr_(0),
+      rampPtr_(0),
       isAllocated_(false)
    {  
       setClassName("Simulator"); 
       compressorFactoryPtr_ = new CompressorFactory<D>(system);
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
+      rampFactoryPtr_ = new RampFactory<D>(*this);
    }
 
    /*
@@ -72,6 +77,12 @@ namespace Rpg {
       }
       if (perturbationPtr_) {
          delete perturbationPtr_;
+      }
+      if (rampFactoryPtr_) {
+         delete rampFactoryPtr_;
+      }
+      if (rampPtr_) {
+         delete rampPtr_;
       }
    }
 
@@ -139,6 +150,9 @@ namespace Rpg {
       
       // Optionally read a Perturbation
       readPerturbation(in);
+      
+      // Optionally read a Ramp
+      readRamp(in);
    }
 
    /*
@@ -708,7 +722,10 @@ namespace Rpg {
    */ 
    template<int D>
    void Simulator<D>::outputTimers(std::ostream& out)
-   {  outputMdeCounter(out); }
+   {  
+      outputMdeCounter(out); 
+      compressor().outputTimers(out);
+   }
  
    /*
    * Output modified diffusion equation (MDE) counter.
@@ -778,6 +795,35 @@ namespace Rpg {
    {
       UTIL_CHECK(ptr != 0);
       perturbationPtr_ = ptr;
+   }
+   
+   /*
+   * Optionally read a parameter file block for an associated Ramp.
+   */
+   template<int D>
+   void Simulator<D>::readRamp(std::istream& in)
+   {
+      UTIL_CHECK(!rampPtr_);
+
+      std::string className;
+      bool isEnd = false;
+
+      rampPtr_ =
+         rampFactory().readObjectOptional(in, *this, className, isEnd);
+      UTIL_CHECK(!isEnd);
+      if (!rampPtr_ && ParamComponent::echo()) {
+         Log::file() << indent() << "  Ramp{ [absent] }\n";
+      }
+   }
+
+   /*
+   * Set the associated Ramp<D> object.
+   */
+   template<int D>
+   void Simulator<D>::setRamp(Ramp<D>* ptr)
+   {
+      UTIL_CHECK(ptr != 0);
+      rampPtr_ = ptr;
    }
 
 }
