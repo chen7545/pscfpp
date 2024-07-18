@@ -130,6 +130,7 @@ namespace Rpg {
       using Simulator<D>::fieldHamiltonian;
       using Simulator<D>::hasHamiltonian;
       using Simulator<D>::hasPerturbation;
+      using Simulator<D>::hasRamp;
       using Simulator<D>::saveState;
       using Simulator<D>::restoreState;
       using Simulator<D>::clearState;
@@ -147,6 +148,9 @@ namespace Rpg {
       using Simulator<D>::perturbation;
       using Simulator<D>::perturbationFactory;
       using Simulator<D>::setPerturbation;
+      using Simulator<D>::ramp;
+      using Simulator<D>::rampFactory;
+      using Simulator<D>::setRamp;
 
       // Inherited protected data members
 

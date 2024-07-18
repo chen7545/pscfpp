@@ -17,6 +17,8 @@
 #include <rpg/simulate/trajectory/TrajectoryReaderFactory.h>
 #include <rpg/simulate/perturbation/PerturbationFactory.h>
 #include <rpg/simulate/perturbation/Perturbation.h>
+#include <rpg/simulate/ramp/RampFactory.h>
+#include <rpg/simulate/ramp/Ramp.h>
 #include <rpg/simulate/compressor/Compressor.h>
 #include <rpg/System.h>
 
@@ -145,12 +147,18 @@ namespace Rpg {
 
       // Initial setup
       setup();
+      if (hasRamp()) {
+         ramp().setup(nStep);
+      }
 
       // Main simulation loop
       Timer timer;
       Timer analyzerTimer;
       timer.start();
       iStep_ = 0;
+      if (hasRamp()) {
+         ramp().setParameters(iStep_);
+      }
 
       // Analysis initial step (if any)
       analyzerTimer.start();
@@ -165,6 +173,10 @@ namespace Rpg {
 
          if (converged){
             iStep_++;
+            
+            if (hasRamp()) {
+               ramp().setParameters(iStep_);               
+            }
 
             // Analysis (if any)
             analyzerTimer.start();
@@ -190,6 +202,12 @@ namespace Rpg {
       // Output results analyzers to files
       if (Analyzer<D>::baseInterval > 0){
          analyzerManager_.output();
+      }
+      
+      // Output results of ramp
+      if (hasRamp()){
+         Log::file() << std::endl;
+         ramp().output();
       }
 
       // Output number of times MDE has been solved for the simulation run
