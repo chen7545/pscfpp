@@ -76,6 +76,7 @@ namespace Rpg {
       //Allocate variables
       IntVec<D> const & dimensions = system().mesh().dimensions();
       if (!isInitialized_){
+         wc0_.allocate(dimensions);
          wK_.allocate(dimensions);
       }
       
@@ -130,13 +131,19 @@ namespace Rpg {
       
       // GPU resources
       int nBlocks, nThreads;
-      ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
+      ThreadGrid::setThreadsLogical(kSize_, nBlocks, nThreads);
       
       // Conver W_(r) to fourier mode W_(k)
-      system().fft().forwardTransform(simulator().wc(0), wK_);
+      assignReal<<<nBlocks, nThreads>>>
+            (wc0_.cField(), simulator().wc(0).cField(), kSize_);
       
+      system().fft().forwardTransform(wc0_, wK_);
+      
+      // Comput W_(k)^2
       squaredMagnitudeComplex<<<nBlocks,nThreads>>>
             (wK_.cField(), psi.cField(), kSize_);
+            
+      // Obtain max[W_(k)^2]
       maxOrderParameter_ = (double)gpuMaxAbs(psi.cField(), kSize_);
    }
    

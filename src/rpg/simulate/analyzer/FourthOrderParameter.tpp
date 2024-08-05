@@ -131,7 +131,7 @@ namespace Rpg {
       
       // GPU resources
       int nBlocks, nThreads;
-      ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
+      ThreadGrid::setThreadsLogical(kSize_, nBlocks, nThreads);
       
       // Conver W_(r) to fourier mode W_(k)
       system().fft().forwardTransform(simulator().wc(0), wK_);

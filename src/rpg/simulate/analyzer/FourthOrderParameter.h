@@ -156,7 +156,10 @@ namespace Rpg {
       bool isInitialized_;
       
       /// W_ in Fourier mode
-      RFieldDft<D>  wK_;
+      RFieldDft<D> wK_;
+      
+      /// W_ in Real space
+      RField<D> wc0_;
 
    };
    
