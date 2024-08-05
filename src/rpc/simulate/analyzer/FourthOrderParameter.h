@@ -155,7 +155,7 @@ namespace Rpc {
       bool isInitialized_;
       
       /// W_ in Fourier mode
-      RFieldDft<D>  wK_;
+      RFieldDft<D> wK_;
 
    };
    
