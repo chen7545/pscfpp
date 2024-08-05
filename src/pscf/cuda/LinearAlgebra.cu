@@ -94,7 +94,7 @@ __global__ void inPlacePointwiseDivComplex(cudaComplex* a, const cudaReal* b, in
    }
 }
 
-__global__ void squaredMagnitudeComplex(cudaComplex* a, const cudaReal* result, int size) 
+__global__ void squaredMagnitudeComplex(const cudaComplex* a, cudaReal* result, int size) 
 {
    int nThreads = blockDim.x * gridDim.x;
    int startID = blockIdx.x * blockDim.x + threadIdx.x;
