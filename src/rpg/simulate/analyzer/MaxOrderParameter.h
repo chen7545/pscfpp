@@ -12,6 +12,7 @@
 
 #include <util/containers/DArray.h>               // member
 #include <util/accumulators/Average.h>            // member
+#include <prdc/cuda/RField.h>                     // member
 #include <prdc/cuda/RFieldDft.h>                  // member
 #include <map>                                    // member
 

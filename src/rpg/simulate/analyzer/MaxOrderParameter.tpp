@@ -136,7 +136,6 @@ namespace Rpg {
       // Conver W_(r) to fourier mode W_(k)
       assignReal<<<nBlocks, nThreads>>>
             (wc0_.cField(), simulator().wc(0).cField(), kSize_);
-      
       system().fft().forwardTransform(wc0_, wK_);
       
       // Comput W_(k)^2
