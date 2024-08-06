@@ -140,7 +140,6 @@ namespace Rpg {
       system().fft().forwardTransform(wc0_, wK_);
       
       // GPU resources
-      int nBlocks, nThreads;
       ThreadGrid::setThreadsLogical(kSize_, nBlocks, nThreads);
       
       // Comput W_(k)^2
