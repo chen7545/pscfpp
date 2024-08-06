@@ -137,7 +137,7 @@ namespace Rpg {
       
       // Conver W_(r) to fourier mode W_(k)
       assignReal<<<nBlocks, nThreads>>>
-            (wc0_.cField(), simulator().wc(0).cField(), kSize_);
+            (wc0_.cField(), simulator().wc(0).cField(), meshSize);
       system().fft().forwardTransform(wc0_, wK_);
       
       // GPU resources with kSize threads
