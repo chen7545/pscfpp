@@ -126,17 +126,22 @@ namespace Rpg {
    template <int D>
    void MaxOrderParameter<D>::computeMaxOrderParameter()
    {
+      const int meshSize = system().domain().mesh().size();
       RField<D> psi;
       psi.allocate(kSize_);
       
       // GPU resources
       int nBlocks, nThreads;
-      ThreadGrid::setThreadsLogical(kSize_, nBlocks, nThreads);
+      ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
       
       // Conver W_(r) to fourier mode W_(k)
       assignReal<<<nBlocks, nThreads>>>
-            (wc0_.cField(), simulator().wc(0).cField(), kSize_);
+            (wc0_.cField(), simulator().wc(0).cField(), meshSize);
       system().fft().forwardTransform(wc0_, wK_);
+      
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadGrid::setThreadsLogical(kSize_, nBlocks, nThreads);
       
       // Comput W_(k)^2
       squaredMagnitudeComplex<<<nBlocks,nThreads>>>
