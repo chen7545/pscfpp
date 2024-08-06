@@ -130,7 +130,7 @@ namespace Rpg {
       RField<D> psi;
       psi.allocate(kSize_);
       
-      // GPU resources
+      // GPU resources with meshSize threads
       int nBlocks, nThreads;
       ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
       
@@ -139,7 +139,7 @@ namespace Rpg {
             (wc0_.cField(), simulator().wc(0).cField(), meshSize);
       system().fft().forwardTransform(wc0_, wK_);
       
-      // GPU resources
+      // GPU resources with kSize threads
       ThreadGrid::setThreadsLogical(kSize_, nBlocks, nThreads);
       
       // Comput W_(k)^2
