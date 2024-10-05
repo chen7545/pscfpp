@@ -712,6 +712,10 @@ namespace Rpc {
    void Simulator<D>::outputTimers(std::ostream& out)
    {  
       outputMdeCounter(out); 
+      out << std::endl;
+      out << "Total iteration  "
+          << compressor().totalItr() << std::endl;
+      out << std::endl;
       compressor().outputTimers(out);
    }
 

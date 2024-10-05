@@ -55,6 +55,9 @@ namespace Rpg {
    template <int D>
    BdSimulator<D>::~BdSimulator()
    {
+      if (bdStepPtr_) {
+         delete bdStepPtr_;
+      }
       if (bdStepFactoryPtr_) {
          delete bdStepFactoryPtr_;
       }

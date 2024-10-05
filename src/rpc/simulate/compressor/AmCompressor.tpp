@@ -53,6 +53,7 @@ namespace Rpc{
          newBasis_.allocate(meshSize);
          w0_.allocate(nMonomer);
          wFieldTmp_.allocate(nMonomer);
+         error_.allocate(meshSize);
          for (int i = 0; i < nMonomer; ++i) {
             w0_[i].allocate(meshSize);
             wFieldTmp_[i].allocate(meshSize);
@@ -73,10 +74,12 @@ namespace Rpc{
    int AmCompressor<D>::compress()
    {
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
-      //mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      stepOneRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepOneRatioVector();
+      stepTwoRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
       return solve;
    }
-
+   
    // Assign one array to another
    template <int D>
    void AmCompressor<D>::setEqual(DArray<double>& a, DArray<double> const & b)
@@ -240,6 +243,12 @@ namespace Rpc{
       }
       system().setWRGrid(wFieldTmp_);
    }
+   
+/*   template<int D>
+   double AmCompressor<D>::setLambda()
+   {
+      return 1.0;
+   }*/
 
    template<int D>
    void AmCompressor<D>::outputToLog()
@@ -260,6 +269,52 @@ namespace Rpc{
    {
       AmIteratorTmpl<Compressor<D>, DArray<double> >::clearTimers();
       mdeCounter_ = 0;
+      totalItr_ = 0;
+   }
+   
+   template<int D>
+   double AmCompressor<D>::computeInCompressError()
+   {
+      errorType_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::errorType();
+      double error = 0.0;
+      const int n = nElements();
+      const int nMonomer = system().mixture().nMonomer();
+      const int meshSize = system().domain().mesh().size();
+
+      // Initialize residuals
+      for (int i = 0 ; i < n; ++i) {
+         error_[i] = -1.0;
+      }
+
+      // Compute SCF residual vector elements
+      for (int j = 0; j < nMonomer; ++j) {
+         for (int k = 0; k < meshSize; ++k) {
+           error_[k] += system().c().rgrid(j)[k];
+         }
+      }
+
+      // Find max residual vector element
+      double maxRes  = maxAbs(error_);
+
+      // Find norm of residual vector
+      double normRes = AmIteratorTmpl<Compressor<D>, DArray<double> >::norm(error_);
+
+      // Find root-mean-squared residual element value
+      double rmsRes = normRes/sqrt(n);
+      
+      // Set error value
+      if (errorType_ == "maxResid") {
+         error = maxRes;
+      } else if (errorType_ == "normResid") {
+         error = normRes;
+      } else if (errorType_ == "rmsResid") {
+         error = rmsRes;
+      } else {
+         UTIL_THROW("Invalid iterator error type in parameter file.");
+      }
+         //Log::file() << ",  error  = " << Dbl(error, 15) << "\n";
+
+      return error;
    }
    
 }

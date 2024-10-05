@@ -30,7 +30,6 @@ namespace Rpc{
       epsilon_(0.0),
       itr_(0),
       maxItr_(0),
-      totalItr_(0),
       errorType_("rmsResid"),
       verbose_(0),
       isAllocated_(false),
@@ -100,6 +99,8 @@ namespace Rpc{
       system().compute();
       ++mdeCounter_;
       timerMDE_.stop();
+      
+      stepTwoRatioVector_.clear();
 
       // Iterative loop
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
@@ -124,6 +125,12 @@ namespace Rpc{
          if (verbose_ > 0) {
             Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
          }
+         
+         if (itr_ > 0) {
+            stepTwoRatioVector_.push_back(error /preError_);
+         }
+         
+         preError_ = error;
 
          // Check for convergence
          if (error < epsilon_) {
@@ -147,7 +154,7 @@ namespace Rpc{
             return 0; // Success
 
          } else{
-
+            
             // Not yet converged.
             updateWFields();
             timerMDE_.start();

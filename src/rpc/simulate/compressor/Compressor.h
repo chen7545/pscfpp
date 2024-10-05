@@ -10,6 +10,8 @@
 
 #include <util/param/ParamComposite.h>    // base class
 #include <util/global.h>
+#include <iostream>
+#include <vector>
 
 namespace Pscf {
 namespace Rpc
@@ -60,11 +62,26 @@ namespace Rpc
       * Clear timers.
       */
       virtual void clearTimers() = 0;
+      
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      virtual std::vector<double> stepOneRatioVector() = 0;
+      
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      virtual std::vector<double> stepTwoRatioVector() = 0;
 
       /**
       * Get the number of times the MDE has been solved.
       */
       int mdeCounter();
+      
+      /**
+      * Get the total number of iterations 
+      */
+      int totalItr();
 
    protected:
 
@@ -90,6 +107,11 @@ namespace Rpc
       * Count how many times MDE has been solved.
       */
       int mdeCounter_;
+      
+      /**
+      * Count the total of iteration required to converge
+      */
+      int totalItr_;
 
    private:
 
@@ -116,6 +138,12 @@ namespace Rpc
    template <int D>
    inline int Compressor<D>::mdeCounter()
    {  return mdeCounter_; }
+   
+   // Get number of times MDE has been solved.
+   template <int D>
+   inline int Compressor<D>::totalItr()
+   {  return totalItr_; }
+
 
 } // namespace Rpc
 } // namespace Pscf

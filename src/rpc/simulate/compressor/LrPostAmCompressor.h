@@ -90,6 +90,22 @@ namespace Rpc
       */
       void clearTimers();
       
+      /**
+      * Compute each step of error
+      */
+      double computeInCompressError();
+
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      std::vector<double> stepOneRatioVector();
+      
+      /**
+      * Get the ratio of error reduction by AM step 2
+      */
+      std::vector<double> stepTwoRatioVector();
+      
+      
       // Inherited public member functions
       using AmIteratorTmpl<Compressor<D>, DArray<double> >::setClassName;
       
@@ -98,13 +114,29 @@ namespace Rpc
       // Inherited protected members 
       using ParamComposite::readOptional;
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::totalItr_;
 
    private:
    
+      
+      std::vector<double> stepOneRatioVector_; 
+      
+      std::vector<double> stepTwoRatioVector_;
+      
+      /**
+      * Type of error criterion used to test convergence 
+      */ 
+      std::string errorType_;
+      
       /**
       * How many times MDE has been solved for each mc move 
       */
       int itr_;
+      
+      /**
+      * Incompressibility constraint error
+      */
+      DArray<double> error_;
       
       /**
       * Current values of the fields
@@ -257,6 +289,20 @@ namespace Rpc
       using Compressor<D>::system;
 
    };
+   
+   // Inline functions
+    
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   inline std::vector<double> LrPostAmCompressor<D>::stepOneRatioVector()
+   { return stepOneRatioVector_; }
+   
+   // Get the ratio of error reduction by AM step 2
+   template <int D>
+   inline std::vector<double> LrPostAmCompressor<D>::stepTwoRatioVector()
+   { return stepTwoRatioVector_; }
+   
+   
    
    #ifndef RPC_LR_POST_AM_COMPRESSOR_TPP
    // Suppress implicit instantiation

@@ -15,8 +15,10 @@
 #include <util/misc/Timer.h>            // member template
 #include <util/accumulators/Average.h>  // member template
 
+#include <iostream>
+#include <vector>
+
 // Uncomment to test details of Anderson-Mixing algorithm performance
-//#define PSCF_AM_TEST
 
 namespace Pscf {
 
@@ -85,7 +87,17 @@ namespace Pscf {
       * Obtain error type
       */
       std::string errorType();
-
+      
+      /**
+      * Obtain projection step error reduction for each iteration 
+      */
+      std::vector<double> stepOneRatioVector();
+      
+      /**
+      * Obtain second step of AM error reduction for each iteration 
+      */
+      std::vector<double> stepTwoRatioVector();
+      
    protected:
 
       /// Type of error criterion used to test convergence 
@@ -191,9 +203,11 @@ namespace Pscf {
       */
       virtual double computeError(int verbose);
       
-      #ifdef PSCF_AM_TEST
+      virtual double computeInCompressError(){return computeError(0);};
+      
+/*      #ifdef PSCF_AM_TEST
       double computeError(T a);
-      #endif
+      #endif*/
 
       /**
       * Set mixing parameter for correction step of Anderson Mixing.
@@ -324,14 +338,16 @@ namespace Pscf {
       Timer timerOmega_;
       Timer timerTotal_;
 
-      #ifdef PSCF_AM_TEST
+      //#ifdef PSCF_AM_TEST
       double preError_{0};
+      double projectionError_{0};
       double mixingError_{0};
-      double correctionError_{0};
+      double projectionRatio_{0};
       double mixingRatio_{0};
-      double correctionRatio_{0};
       int testCounter{0};
-      #endif
+      std::vector<double> stepOneRatioVector_;
+      std::vector<double> stepTwoRatioVector_;
+      //#endif
       
       // --- Non-virtual private functions (implemented here) ---- //
 
@@ -580,6 +596,21 @@ namespace Pscf {
    template <typename Iterator, typename T>
    double AmIteratorTmpl<Iterator,T>::timerTotal() 
    {  return timerTotal_.time(); }
+   
+   /*
+   * Return first step of AM error reduction for each iteration 
+   */
+   template <typename Iterator, typename T>
+   std::vector<double> AmIteratorTmpl<Iterator,T>::stepOneRatioVector() 
+   {  return stepOneRatioVector_; }
+   
+   /*
+   * Return second step of AM error reduction for each iteration 
+   */
+   template <typename Iterator, typename T>
+   std::vector<double> AmIteratorTmpl<Iterator,T>::stepTwoRatioVector() 
+   {  return stepTwoRatioVector_; }
+   
    
 }
 #include "AmIteratorTmpl.tpp"

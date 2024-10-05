@@ -81,6 +81,21 @@ namespace Rpc
       */
       void clearTimers();
       
+      /**
+      * Compute each step of error
+      */
+      double computeInCompressError();
+      
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      std::vector<double> stepOneRatioVector();
+      
+      /**
+      * Get the ratio of error reduction by AM step 2
+      */
+      std::vector<double> stepTwoRatioVector();
+      
       // Inherited public member functions
       using AmIteratorTmpl<Compressor<D>, DArray<double> >::setClassName;
       
@@ -89,13 +104,28 @@ namespace Rpc
       // Inherited protected members 
       using ParamComposite::readOptional;
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::totalItr_;
 
    private:
    
+      
+      std::vector<double> stepOneRatioVector_; 
+      std::vector<double> stepTwoRatioVector_; 
+      
+      /**
+      * Type of error criterion used to test convergence 
+      */ 
+      std::string errorType_;
+      
       /**
       * How many times MDE has been solved for each mc move 
       */
       int itr_;
+      
+      /**
+      * Incompressibility constraint error
+      */
+      DArray<double> error_;
       
       /**
       * Current values of the fields
@@ -214,11 +244,28 @@ namespace Rpc
       * Outputs relevant system details to the iteration log.
       */
       void outputToLog();
-    
+            
+      /**
+      * Set mixing parameter lambda
+      */
+      //double setLambda();
+   
       // Inherited private members 
       using Compressor<D>::system;
 
    };
+   
+   // Inline functions
+
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   inline std::vector<double> AmCompressor<D>::stepOneRatioVector()
+   { return stepOneRatioVector_; }
+   
+   // Get the ratio of error reduction by AM step 2
+   template <int D>
+   inline std::vector<double> AmCompressor<D>::stepTwoRatioVector()
+   { return stepTwoRatioVector_; }
    
    #ifndef RPC_AM_COMPRESSOR_TPP
    // Suppress implicit instantiation

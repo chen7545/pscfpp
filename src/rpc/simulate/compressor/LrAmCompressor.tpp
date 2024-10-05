@@ -89,12 +89,27 @@ namespace Rpc{
       intraCorrelationK_ = intraCorrelation_.computeIntraCorrelations();
    }
 
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   std::vector<double> LrAmCompressor<D>::stepOneRatioVector()
+   {
+      return AmIteratorTmpl<Compressor<D>, DArray<double> >::stepOneRatioVector();
+   }
+   
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   std::vector<double> LrAmCompressor<D>::stepTwoRatioVector()
+   {
+      return AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
+   }
+
+
    // Iterative solver (AM algorithm)
    template <int D>
    int LrAmCompressor<D>::compress()
    {
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
-      //mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
       return solve;
    }
 
@@ -301,6 +316,7 @@ namespace Rpc{
    {
       AmIteratorTmpl<Compressor<D>, DArray<double> >::clearTimers();
       mdeCounter_ = 0;
+      totalItr_ = 0;
    }
 
    template<int D>

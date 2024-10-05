@@ -98,6 +98,11 @@ namespace Pscf
 
       // Iterative loop
       nBasis_ = fieldBasis_.size();
+      
+      // Clear error ratio for each iteration vectors
+      stepOneRatioVector_.clear();
+      stepTwoRatioVector_.clear();
+      
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
          
          // Append current field to fieldHists_ ringbuffer
@@ -142,28 +147,30 @@ namespace Pscf
          // Output additional details of this iteration to the log file
          outputToLog();
          
-         #ifdef PSCF_AM_TEST
+        // #ifdef PSCF_AM_TEST
          // Compute errors and ratios used for algorithm testing
-         correctionError_ = computeError(0);
+         mixingError_ = computeError(0);
          if (itr_ > 0) {
+            projectionRatio_ += projectionError_/preError_;
+            stepOneRatioVector_.push_back(projectionError_ /preError_);
             mixingRatio_ += mixingError_/preError_;
-            correctionRatio_ += correctionError_/preError_;
+            stepTwoRatioVector_.push_back(mixingError_ /preError_);
             testCounter ++;
             #if 0
-            //Log::file() << "   nBasis          = " << nBasis_ << "\n";
-            //Log::file() << "   preError        = " << preError_ << "\n";
-            //Log::file() << "   mixingError     = " << mixingError_ 
+            // Log::file() << "   nBasis          = " << nBasis_ << "\n";
+            // Log::file() << "   preError        = " << preError_ << "\n";
+            // Log::file() << "   projectionError     = " << projectionError_ 
             //            << "\n";
-            Log::file() << "   correctionError = " << correctionError_ 
+            // Log::file() << "   mixingError = " << mixingError_ 
                         << "\n" ;
-            Log::file() << "   mixingRatio     = "
+            Log::file() << "   projectionRatio     = "
+                        << projectionError_/preError_ << "\n";
+            Log::file() << "   mixingRatio = " 
                         << mixingError_/preError_ << "\n";
-            Log::file() << "   correctionRatio = " 
-                        << correctionError_/preError_ << "\n";
             #endif
          }
-         preError_ = correctionError_;
-         #endif
+         preError_ = mixingError_;
+         //#endif
 
          // Check for convergence
          if (error_ < epsilon_) {
@@ -187,7 +194,7 @@ namespace Pscf
             }
 
             totalItr_ += itr_;
-
+            
             // Successful completion (i.e., converged within tolerance)
             return 0;
 
@@ -449,7 +456,7 @@ namespace Pscf
 
       }
       
-      #ifdef PSCF_AM_TEST
+     // #ifdef 
       // Additional computation of error after linear mixing step
       timerOmega_.stop();
 
@@ -463,19 +470,18 @@ namespace Pscf
       timerResid_.stop();
 
       timerError_.start();
-      mixingError_ = computeError(0);
+      projectionError_ = computeInCompressError();
       timerError_.stop();
 
       timerOmega_.start();
-      #endif
+      // #endif
 
       // Correct for predicted error
       addPredictedError(fieldTrial_, resTrial_,lambda_);
 
       // Update system using new trial field
       update(fieldTrial_);
-
-
+      
       return;
    }
 
@@ -628,31 +634,6 @@ namespace Pscf
       return error;
    }
    
-   #ifdef PSCF_AM_TEST
-   template <typename Iterator, typename T>
-   double AmIteratorTmpl<Iterator,T>::computeError(T a)
-   { 
-      double error = 0;
-      if (errorType_ == "maxResid") {
-         // Maximum residual vector element
-         error = maxAbs(a);
-      } else if (errorType_ == "normResid") {
-         // L2 norm of residual vector
-         error = norm(a);
-      } else if (errorType_ == "rmsResid") {
-         // Root-mean-squared residual element value
-         error = norm(a)/sqrt(nElem_);
-      } else if (errorType_ == "relNormResid") {
-         double normRes = norm(a);
-         double normField = norm(fieldHists_[0]);
-         error = normRes/normField;
-      } else {
-         UTIL_THROW("Invalid iterator error type.");
-      }
-      return error; 
-   }
-   #endif
-   
    template <typename Iterator, typename T>
    void AmIteratorTmpl<Iterator,T>::outputTimers(std::ostream& out)
    {
@@ -687,12 +668,12 @@ namespace Pscf
           << Dbl(total/totalItr_, 9, 3) << " s  \n";
       out << "\n";
       
-      #ifdef PSCF_AM_TEST
-      out << "Average Mixing Step Ratio:     "
+     // #ifdef PSCF_AM_TEST
+      out << "Average AM Step One Error Reduction Ratio:     "
+           << Dbl(projectionRatio_/testCounter, 3, 3)<< "\n";
+      out << "Average AM Step Two Error Reduction Ratio:     "
            << Dbl(mixingRatio_/testCounter, 3, 3)<< "\n";
-      out << "Average Correction Step Ratio:     "
-           << Dbl(correctionRatio_/testCounter, 3, 3)<< "\n";
-      #endif
+      //#endif
    }
 
    template <typename Iterator, typename T>

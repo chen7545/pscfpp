@@ -13,7 +13,8 @@ rpc_simulate_analyzer_= \
   rpc/simulate/analyzer/ChiDerivative.cpp \
   rpc/simulate/analyzer/ConcentrationDerivative.cpp \
   rpc/simulate/analyzer/MaxOrderParameter.cpp \
-  rpc/simulate/analyzer/FourthOrderParameter.cpp
+  rpc/simulate/analyzer/FourthOrderParameter.cpp \
+  rpc/simulate/analyzer/AmErrorAnalyzer.cpp
   
   
 rpc_simulate_analyzer_OBJS=\

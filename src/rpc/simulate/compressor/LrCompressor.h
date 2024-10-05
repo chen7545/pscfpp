@@ -80,6 +80,13 @@ namespace Rpc
       double subspacePercent(){return 0;};
 
       double correctionPercent(){return 0;};
+      
+      std::vector<double> stepOneRatioVector(){return {0};}
+      
+      /**
+      * Get the ratio of error reduction by each step (AM step 2)
+      */
+      std::vector<double> stepTwoRatioVector();
 
       /**
       * Return compressor times contributions.
@@ -92,15 +99,22 @@ namespace Rpc
 
       // Inherited protected members
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::totalItr_;
       using ParamComposite::read;
       using ParamComposite::readOptional;
       using ParamComposite::setClassName;
 
    private:
-
+      
+      // Ratio of error reduction by each step (AM step 2)
+      std::vector<double> stepTwoRatioVector_;
+      
+      // Error of previoius iteration
+      double preError_{0};
+      
       // Error tolerance.
       double epsilon_;
-
+   
       // Current iteration counter.
       int itr_;
 
@@ -108,7 +122,7 @@ namespace Rpc
       int maxItr_;
 
       // Total iteration counter.
-      int totalItr_;
+      //int totalItr_;
 
       // Timers for analyzing performance.
       Timer timerTotal_;
@@ -205,6 +219,12 @@ namespace Rpc
       using Compressor<D>::system;
 
    };
+   
+   // Inline functions
+   // Get the ratio of error reduction by each step (Am step 2)
+   template <int D>
+   inline std::vector<double> LrCompressor<D>::stepTwoRatioVector()
+   { return stepTwoRatioVector_; }
    
    #ifndef RPC_LR_COMPRESSOR_TPP
    // Suppress implicit instantiation
