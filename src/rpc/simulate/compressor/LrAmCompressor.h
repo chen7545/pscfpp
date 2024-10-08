@@ -98,11 +98,17 @@ namespace Rpc
       void clearTimers();
 
       /**
-      * Compute and return the scalar error.
+      * Compute and return error used to test for convergence.
       *
-      * \param verbose  verbosity level (higher is more verbose)
+      * \param resid  current residual vector
+      * \param field  current field vector    
+      * \param errorType  type of error 
+      * \param verbose  verbosity level of output report.
+      * \return error  measure used to test for convergence.
       */
-      double computeError(int verbose);
+      double computeError(DArray<double> resid, DArray<double> field,
+                          std::string errorType,
+                          int verbose);
       
       
       // Inherited public member functions
@@ -271,9 +277,9 @@ namespace Rpc
       void outputToLog();
       
       /**
-      * Set mixing parameter lambda
+      * Compute mixing parameter lambda
       */
-      double setLambda();
+      double computeLambda(double r);
       
       /**
       * IntraCorrelation (homopolymer) object
