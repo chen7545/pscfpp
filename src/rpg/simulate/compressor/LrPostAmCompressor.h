@@ -128,6 +128,17 @@ namespace Rpg
       std::vector<double> stepTwoRatioVector_;
       
       /**
+      * Type of error criterion used to test convergence 
+      */ 
+      std::string errorType_;
+      
+      /**
+      * Incompressibility constraint error.
+      */ 
+      RField<D> error_;
+      
+      
+      /**
       * How many times MDE has been solved for each mc move 
       */
       int itr_;

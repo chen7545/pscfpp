@@ -73,6 +73,7 @@ namespace Rpg{
       
       // Allocate memory required by compressor if not done earlier.
       if (!isAllocated_){
+         error_.allocate(meshSize);
          newBasis_.allocate(meshSize);
          w0_.allocate(nMonomer);
          wFieldTmp_.allocate(nMonomer);

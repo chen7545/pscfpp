@@ -124,7 +124,7 @@ namespace Rpg
       int maxItr_;
 
       // Total iteration counter.
-      int totalItr_;
+      //int totalItr_;
 
       // Timers for analyzing performance.
       Timer timerTotal_;

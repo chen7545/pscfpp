@@ -30,7 +30,6 @@ namespace Rpg{
       epsilon_(0.0),
       itr_(0),
       maxItr_(0),
-      totalItr_(0),
       errorType_("rmsResid"),
       verbose_(0),
       isAllocated_(false),
