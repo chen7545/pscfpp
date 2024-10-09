@@ -16,7 +16,7 @@
 #include <util/accumulators/Average.h>  // member template
 
 // Uncomment to test details of Anderson-Mixing algorithm performance
-#define PSCF_AM_TEST
+//#define PSCF_AM_TEST
 
 namespace Pscf {
 

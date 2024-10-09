@@ -476,7 +476,6 @@ namespace Pscf
       // Update system using new trial field
       update(fieldTrial_);
 
-
       return;
    }
 
