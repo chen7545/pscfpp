@@ -110,6 +110,8 @@ namespace Rpg{
       system().compute();
       ++mdeCounter_;
       timerMDE_.stop();
+      
+      stepTwoRatioVector_.clear();
 
       // Iterative loop
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
@@ -134,6 +136,12 @@ namespace Rpg{
          if (verbose_ > 0) {
             Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
          }
+         
+         if (itr_ > 0) {
+            stepTwoRatioVector_.push_back(error /preError_);
+         }
+         
+         preError_ = error;
 
          // Check for convergence
          if (error < epsilon_) {

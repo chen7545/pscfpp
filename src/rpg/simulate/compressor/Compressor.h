@@ -56,10 +56,30 @@ namespace Rpg {
       virtual int compress() = 0;
       
       /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      virtual std::vector<double> stepOneRatioVector() = 0;
+      
+      /**
+      * Get the predicted of error reduction by AM step 1
+      */
+      virtual std::vector<double> predictRatioVector() = 0;
+      
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      virtual std::vector<double> stepTwoRatioVector() = 0;
+      
+      /**
       * Get the number of times the MDE has been solved.
       */
       int mdeCounter();
       
+      /**
+      * Get the total number of iterations 
+      */
+      int totalItr();
+     
       /**
       * Log output timing results 
       */
@@ -88,6 +108,11 @@ namespace Rpg {
       * Count how many times MDE has been solved.
       */
       int mdeCounter_;
+      
+      /**
+      * Count the total of iteration required to converge
+      */
+      int totalItr_;
 
    private:
 
@@ -120,6 +145,12 @@ namespace Rpg {
    template <int D>
    inline int Compressor<D>::mdeCounter()
    {  return mdeCounter_; }
+   
+   // Get number of times MDE has been solved.
+   template <int D>
+   inline int Compressor<D>::totalItr()
+   {  return totalItr_; }
+
 
 } // namespace Rpg
 } // namespace Pscf

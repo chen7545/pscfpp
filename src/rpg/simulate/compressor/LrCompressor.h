@@ -81,6 +81,14 @@ namespace Rpg
       double subspacePercent(){return 0;};
 
       double correctionPercent(){return 0;};
+      
+      std::vector<double> stepOneRatioVector(){return {0};}
+      std::vector<double> predictRatioVector(){return {0};}
+      
+      /**
+      * Get the ratio of error reduction by each step (AM step 2)
+      */
+      std::vector<double> stepTwoRatioVector();
 
       /**
       * Return compressor times contributions.
@@ -93,12 +101,19 @@ namespace Rpg
 
       // Inherited protected members
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::totalItr_;
       using ParamComposite::read;
       using ParamComposite::readOptional;
       using ParamComposite::setClassName;
 
    private:
 
+      // Ratio of error reduction by each step (AM step 2)
+      std::vector<double> stepTwoRatioVector_;
+      
+      // Error of previoius iteration
+      double preError_{0};
+      
       // Error tolerance.
       double epsilon_;
 
@@ -206,6 +221,13 @@ namespace Rpg
       using Compressor<D>::system;
 
    };
+   
+   // Inline functions
+   
+   // Get the ratio of error reduction by each step (Am step 2)
+   template <int D>
+   inline std::vector<double> LrCompressor<D>::stepTwoRatioVector()
+   { return stepTwoRatioVector_; }
    
    #ifndef RPG_LR_COMPRESSOR_TPP
    // Suppress implicit instantiation

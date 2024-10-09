@@ -107,6 +107,21 @@ namespace Rpg
       */
       double computeError(int verbose);
       
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      std::vector<double> stepOneRatioVector();
+      
+      /**
+      * Get the predicted of error reduction by AM step 1
+      */
+      std::vector<double> predictRatioVector();
+      
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      std::vector<double> stepTwoRatioVector();
+      
       
       // Inherited public member functions
 
@@ -118,6 +133,7 @@ namespace Rpg
       using ParamComposite::readOptional;
       using Compressor<D>::system;
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::totalItr_;
 
    private:
 

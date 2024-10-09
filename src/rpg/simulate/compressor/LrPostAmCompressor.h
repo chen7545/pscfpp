@@ -90,6 +90,26 @@ namespace Rpg
       */
       void clearTimers();
       
+      /**
+      * Compute each step of error
+      */
+      double computeInCompressError();
+
+      /**
+      * Get the ratio of error reduction by AM step 1
+      */
+      std::vector<double> stepOneRatioVector();
+      
+      /**
+      * Get the predicted of error reduction by AM step 1
+      */
+      std::vector<double> predictRatioVector();
+      
+      /**
+      * Get the ratio of error reduction by AM step 2
+      */
+      std::vector<double> stepTwoRatioVector();
+      
       // Inherited public member functions
       using AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::setClassName;
       
@@ -98,9 +118,15 @@ namespace Rpg
       // Inherited protected members 
       using ParamComposite::readOptional;
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::totalItr_;
 
    private:
    
+           
+      std::vector<double> stepOneRatioVector_; 
+      std::vector<double> predictRatioVector_; 
+      std::vector<double> stepTwoRatioVector_;
+      
       /**
       * How many times MDE has been solved for each mc move 
       */
@@ -262,6 +288,21 @@ namespace Rpg
       using Compressor<D>::system;
 
    };
+   
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   inline std::vector<double> LrPostAmCompressor<D>::stepOneRatioVector()
+   { return stepOneRatioVector_; }
+   
+   // Get the ratio of error reduction by AM step 2
+   template <int D>
+   inline std::vector<double> LrPostAmCompressor<D>::stepTwoRatioVector()
+   { return stepTwoRatioVector_; }
+   
+   // Get the ratio of error reduction by AM step 2
+   template <int D>
+   inline std::vector<double> LrPostAmCompressor<D>::predictRatioVector()
+   { return predictRatioVector_; }
    
    #ifndef RPG_LR_POST_AM_COMPRESSOR_TPP
    // Suppress implicit instantiation

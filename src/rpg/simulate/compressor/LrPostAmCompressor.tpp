@@ -103,6 +103,10 @@ namespace Rpg{
    {
       int solve = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::solve();
       //mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      stepOneRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepOneRatioVector();
+      predictRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::predictRatioVector();
+      stepTwoRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
       return solve;
    }
 
@@ -318,6 +322,52 @@ namespace Rpg{
    {
       AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::clearTimers();
       mdeCounter_ = 0;
+   }
+   
+   template<int D>
+   double LrPostAmCompressor<D>::computeInCompressError()
+   {
+      errorType_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::errorType();
+      double error = 0.0;
+      const int n = nElements();
+      const int nMonomer = system().mixture().nMonomer();
+      const int meshSize = system().domain().mesh().size();
+      
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadGrid::setThreadsLogical(meshSize, nBlocks, nThreads);
+      
+      // Initialize residuals to -1
+      assignUniformReal<<<nBlocks, nThreads>>>(error_.cField(), -1.0, meshSize);
+     
+      // Add composition of each monomer
+      for (int i = 0; i < nMonomer; i++) {
+         pointWiseAdd<<<nBlocks, nThreads>>>
+            (error_.cField(), system().c().rgrid(i).cField(), meshSize);
+      }
+      
+      // Find max residual vector element
+      double maxRes  = maxAbs(error_);
+     
+      // Find norm of residual vector
+      double normRes = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::norm(error_);
+      
+      // Find root-mean-squared residual element value
+      double rmsRes = normRes/sqrt(n);
+
+      // Set error value
+      if (errorType_ == "maxResid") {
+         error = maxRes;
+      } else if (errorType_ == "normResid") {
+         error = normRes;
+      } else if (errorType_ == "rmsResid") {
+         error = normRes/sqrt(n);
+      } else {
+         UTIL_THROW("Invalid iterator error type in parameter file.");
+      }
+      //Log::file() << ",  error  = " << Dbl(error, 15) << "\n";
+
+      return error;
    }
    
 }

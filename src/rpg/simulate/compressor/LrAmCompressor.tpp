@@ -108,6 +108,7 @@ namespace Rpg{
    {
       int solve = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::solve();
       //mdeCounter_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal>>::totalItr();
+      totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
       return solve;
    }
 
@@ -321,6 +322,27 @@ namespace Rpg{
    double LrAmCompressor<D>::setLambda()
    {
       return 1.0;
+   }
+   
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   std::vector<double> LrAmCompressor<D>::stepOneRatioVector()
+   {
+      return AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::stepOneRatioVector();
+   }
+   
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   std::vector<double> LrAmCompressor<D>::stepTwoRatioVector()
+   {
+      return AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::stepTwoRatioVector();
+   }
+   
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   std::vector<double> LrAmCompressor<D>::predictRatioVector()
+   {
+      return AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::predictRatioVector();
    }
    
    template<int D>
