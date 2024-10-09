@@ -108,7 +108,7 @@ namespace Rpg{
    {
       int solve = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::solve();
       //mdeCounter_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal>>::totalItr();
-      totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
+      totalItr_ = AmIteratorTmpl<Compressor<D>,Field<cudaReal>::totalItr();
       return solve;
    }
 

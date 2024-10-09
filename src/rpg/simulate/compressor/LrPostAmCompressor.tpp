@@ -103,10 +103,10 @@ namespace Rpg{
    {
       int solve = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::solve();
       //mdeCounter_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
-      totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
-      stepOneRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepOneRatioVector();
-      predictRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::predictRatioVector();
-      stepTwoRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
+      totalItr_ = AmIteratorTmpl<Compressor<D>,Field<cudaReal>>::totalItr();
+      stepOneRatioVector_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::stepOneRatioVector();
+      predictRatioVector_ = AmIteratorTmpl<Compressor<D>,Field<cudaReal> >::predictRatioVector();
+      stepTwoRatioVector_ = AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::stepTwoRatioVector();
       return solve;
    }
 
