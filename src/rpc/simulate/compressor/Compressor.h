@@ -69,6 +69,11 @@ namespace Rpc
       virtual std::vector<double> stepOneRatioVector() = 0;
       
       /**
+      * Get the predicted of error reduction by AM step 1
+      */
+      virtual std::vector<double> predictRatioVector() = 0;
+      
+      /**
       * Get the ratio of error reduction by AM step 1
       */
       virtual std::vector<double> stepTwoRatioVector() = 0;

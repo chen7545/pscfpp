@@ -94,6 +94,11 @@ namespace Pscf {
       std::vector<double> stepOneRatioVector();
       
       /**
+      * Obtain predicted step error reduction for each iteration 
+      */
+      std::vector<double> predictRatioVector();
+      
+      /**
       * Obtain second step of AM error reduction for each iteration 
       */
       std::vector<double> stepTwoRatioVector();
@@ -202,6 +207,9 @@ namespace Pscf {
       * \return error  measure used to test for convergence.
       */
       virtual double computeError(int verbose);
+      virtual double computeError(T resid, T field, 
+                                  std::string errorType, 
+                                  int verbose);
       
       virtual double computeInCompressError(){return computeError(0);};
       
@@ -341,12 +349,14 @@ namespace Pscf {
       //#ifdef PSCF_AM_TEST
       double preError_{0};
       double projectionError_{0};
+      double predictError_{0};
       double mixingError_{0};
       double projectionRatio_{0};
       double mixingRatio_{0};
       int testCounter{0};
       std::vector<double> stepOneRatioVector_;
       std::vector<double> stepTwoRatioVector_;
+      std::vector<double> predictRatioVector_;
       //#endif
       
       // --- Non-virtual private functions (implemented here) ---- //
@@ -605,12 +615,18 @@ namespace Pscf {
    {  return stepOneRatioVector_; }
    
    /*
+   * Return predict error reduction for each iteration 
+   */
+   template <typename Iterator, typename T>
+   std::vector<double> AmIteratorTmpl<Iterator,T>::predictRatioVector() 
+   {  return predictRatioVector_; }
+   
+   /*
    * Return second step of AM error reduction for each iteration 
    */
    template <typename Iterator, typename T>
    std::vector<double> AmIteratorTmpl<Iterator,T>::stepTwoRatioVector() 
    {  return stepTwoRatioVector_; }
-   
    
 }
 #include "AmIteratorTmpl.tpp"

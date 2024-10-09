@@ -110,6 +110,11 @@ namespace Rpc
       std::vector<double> stepOneRatioVector();
       
       /**
+      * Get the predicted of error reduction by AM step 1
+      */
+      std::vector<double> predictRatioVector();
+      
+      /**
       * Get the ratio of error reduction by AM step 1
       */
       std::vector<double> stepTwoRatioVector();

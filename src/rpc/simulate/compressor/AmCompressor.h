@@ -92,6 +92,11 @@ namespace Rpc
       std::vector<double> stepOneRatioVector();
       
       /**
+      * Get the predicted of error reduction by AM step 1
+      */
+      std::vector<double> predictRatioVector();
+      
+      /**
       * Get the ratio of error reduction by AM step 2
       */
       std::vector<double> stepTwoRatioVector();
@@ -110,6 +115,7 @@ namespace Rpc
    
       
       std::vector<double> stepOneRatioVector_; 
+      std::vector<double> predictRatioVector_; 
       std::vector<double> stepTwoRatioVector_; 
       
       /**
@@ -244,6 +250,11 @@ namespace Rpc
       * Outputs relevant system details to the iteration log.
       */
       void outputToLog();
+      
+      /**
+      * Set mixing parameter lambda
+      */
+      double setLambda();
             
       /**
       * Set mixing parameter lambda
@@ -266,6 +277,11 @@ namespace Rpc
    template <int D>
    inline std::vector<double> AmCompressor<D>::stepTwoRatioVector()
    { return stepTwoRatioVector_; }
+   
+   // Get the ratio of error reduction by AM step 2
+   template <int D>
+   inline std::vector<double> AmCompressor<D>::predictRatioVector()
+   { return predictRatioVector_; }
    
    #ifndef RPC_AM_COMPRESSOR_TPP
    // Suppress implicit instantiation

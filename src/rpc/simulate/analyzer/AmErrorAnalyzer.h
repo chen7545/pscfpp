@@ -118,6 +118,9 @@ namespace Rpc
       /// Array of AM prejection step error Average objects for each iteration
       DArray<Average> projectionRatioAccumulators_;
       
+      /// Array of AM predicted step error Average objects for each iteration
+      DArray<Average> predictRatioAccumulators_;
+      
       /// Array of AM mixing step error Average objects for each iteration
       DArray<Average> mixingRatioAccumulators_;
 

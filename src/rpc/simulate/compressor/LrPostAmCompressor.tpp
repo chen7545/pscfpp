@@ -95,6 +95,7 @@ namespace Rpc{
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
       totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
       stepOneRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepOneRatioVector();
+      predictRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::predictRatioVector();
       stepTwoRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
       return solve;
    }

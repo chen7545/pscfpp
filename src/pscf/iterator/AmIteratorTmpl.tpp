@@ -102,6 +102,7 @@ namespace Pscf
       // Clear error ratio for each iteration vectors
       stepOneRatioVector_.clear();
       stepTwoRatioVector_.clear();
+      predictRatioVector_.clear();
       
       for (itr_ = 0; itr_ < maxItr_; ++itr_) {
          
@@ -153,6 +154,7 @@ namespace Pscf
          if (itr_ > 0) {
             projectionRatio_ += projectionError_/preError_;
             stepOneRatioVector_.push_back(projectionError_ /preError_);
+            predictRatioVector_.push_back(predictError_ /preError_);
             mixingRatio_ += mixingError_/preError_;
             stepTwoRatioVector_.push_back(mixingError_ /preError_);
             testCounter ++;
@@ -475,6 +477,9 @@ namespace Pscf
 
       timerOmega_.start();
       // #endif
+      
+      // Predicted Error
+      predictError_ = computeError(resTrial_, fieldTrial_, errorType_,0);
 
       // Correct for predicted error
       addPredictedError(fieldTrial_, resTrial_,lambda_);
@@ -674,6 +679,54 @@ namespace Pscf
       out << "Average AM Step Two Error Reduction Ratio:     "
            << Dbl(mixingRatio_/testCounter, 3, 3)<< "\n";
       //#endif
+   }
+   
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::computeError(T resid, T field, 
+                                                   std::string errorType, 
+                                                   int verbose)
+   { 
+      double error = 0.0;
+      
+      // Find max residual vector element
+      double maxRes  = maxAbs(resid);
+      
+      // Find norm of residual vector
+      double normRes = norm(resid);
+      
+      // Check if calculation has diverged (normRes will be NaN)
+      UTIL_CHECK(!std::isnan(normRes));
+      
+      // Find root-mean-squared residual element value
+      double rmsRes = normRes/sqrt(nElements());
+      
+      // Find norm of residual vector relative to field
+      double normField = norm(field);
+      double relNormRes = normRes/normField;
+      
+      // Set error value
+      if (errorType == "maxResid") {
+         error = maxRes;
+      } else if (errorType == "normResid") {
+         error = normRes;
+      } else if (errorType == "rmsResid") {
+         error = rmsRes;
+      } else if (errorType == "relNormResid") {
+         error = relNormRes;
+      } else {
+         UTIL_THROW("Invalid iterator error type in parameter file.");
+      }
+
+      if (verbose > 1) {
+         Log::file() << "\n";
+         Log::file() << "Max Residual  = " << Dbl(maxRes,15) << "\n";
+         Log::file() << "Residual Norm = " << Dbl(normRes,15) << "\n";
+         Log::file() << "RMS Residual  = " << Dbl(rmsRes,15) << "\n";
+         Log::file() << "Relative Norm = " << Dbl(relNormRes,15) 
+                     << std::endl;
+      }
+
+      return error;
    }
 
    template <typename Iterator, typename T>

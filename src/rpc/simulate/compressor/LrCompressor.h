@@ -82,6 +82,7 @@ namespace Rpc
       double correctionPercent(){return 0;};
       
       std::vector<double> stepOneRatioVector(){return {0};}
+      std::vector<double> predictRatioVector(){return {0};}
       
       /**
       * Get the ratio of error reduction by each step (AM step 2)

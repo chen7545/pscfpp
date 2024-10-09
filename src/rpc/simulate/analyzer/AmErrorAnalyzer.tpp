@@ -56,11 +56,14 @@ namespace Rpc
       UTIL_CHECK(nSamplePerBlock_ >= 0);
       projectionRatioAccumulators_.allocate(nValue_);
       mixingRatioAccumulators_.allocate(nValue_);
+      predictRatioAccumulators_.allocate(nValue_);
       for (int i = 0; i < nValue_; ++i) {
          projectionRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
          projectionRatioAccumulators_[i].clear();
          mixingRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
          mixingRatioAccumulators_[i].clear();
+         predictRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
+         predictRatioAccumulators_[i].clear();
       }
    }
    
@@ -74,6 +77,7 @@ namespace Rpc
       for (int i = 0; i < nValue_; ++i) {
          projectionRatioAccumulators_[i].clear();
          mixingRatioAccumulators_[i].clear();
+         predictRatioAccumulators_[i].clear();
       }
       
       hasAccumulators_ = true;
@@ -89,11 +93,17 @@ namespace Rpc
       if (!isAtInterval(iStep)) return;
       
       std::vector<double> stepOneRatio = simulator().compressor().stepOneRatioVector();
+      std::vector<double> predictRatio = simulator().compressor().predictRatioVector();
       std::vector<double> stepTwoRatio = simulator().compressor().stepTwoRatioVector();
       // Update accumulators.
       for (int i = 0; i < stepOneRatio.size(); ++i) {
          double data = stepOneRatio[i];
          projectionRatioAccumulators_[i].sample(data);
+      }
+      
+      for (int i = 0; i < predictRatio.size(); ++i) {
+         double data = predictRatio[i];
+         predictRatioAccumulators_[i].sample(data);
       }
       
       for (int i = 0; i < stepTwoRatio.size(); ++i) {
@@ -143,21 +153,26 @@ namespace Rpc
       fileName = outputFileName;
       fileName += ".ave";
       system().fileMaster().openOutputFile(fileName, outputFile_);
-      double aveOne, errOne, aveTwo, errTwo;
-       outputFile_ << " " << std::left << std::setw(nameWidth) 
+      double aveOne, errOne, aveTwo, errTwo, avePred, errPred;
+      outputFile_ << " " << std::left << std::setw(nameWidth) 
                       << "#itr" << "    " << "stepOneRatio" << "  " 
-                      << " +- " << "error" << "             " 
+                      << " +- " << "error" << "          " 
                       << "stepTwoRatio" << "  " 
+                      << " +- " << "error" << "          " 
+                      << "stepOnePredRatio" << "  " 
                       << " +- " << "error" << std::endl;
       for (int i = 0; i < nValue_; ++i) {
          aveOne = projectionRatioAccumulators_[i].average();
          errOne = projectionRatioAccumulators_[i].blockingError();
+         avePred = predictRatioAccumulators_[i].average();
+         errPred = predictRatioAccumulators_[i].blockingError();
          aveTwo = mixingRatioAccumulators_[i].average();
          errTwo = mixingRatioAccumulators_[i].blockingError();
          outputFile_ << " " << std::left << std::setw(nameWidth) 
                       << i + 1 << "   ";
-         outputFile_ << Dbl(aveOne) << " +- " << Dbl(errOne, 9, 2)<< "    ";
-         outputFile_ << Dbl(aveTwo) << " +- " << Dbl(errTwo, 9, 2) << "\n";
+         outputFile_ << Dbl(aveOne) << " +- " << Dbl(errOne, 6, 2)<< "    ";
+         outputFile_ << Dbl(aveTwo) << " +- " << Dbl(errTwo, 6, 2) << "    ";
+         outputFile_ << Dbl(avePred) << " +- " << Dbl(errPred, 6, 2)<< "\n";
       }
       outputFile_.close();
 
@@ -175,6 +190,8 @@ namespace Rpc
          outputFile_ << "   ";
          mixingRatioAccumulators_[i].output(outputFile_);
          outputFile_ << std::endl;
+         predictRatioAccumulators_[i].output(outputFile_);
+         outputFile_ << "   ";
       }
       outputFile_.close();
       

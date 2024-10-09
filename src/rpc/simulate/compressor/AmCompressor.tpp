@@ -76,6 +76,7 @@ namespace Rpc{
       int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
       totalItr_ = AmIteratorTmpl<Compressor<D>,DArray<double>>::totalItr();
       stepOneRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepOneRatioVector();
+      predictRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::predictRatioVector();
       stepTwoRatioVector_ = AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
       return solve;
    }
@@ -271,6 +272,13 @@ namespace Rpc{
       mdeCounter_ = 0;
       totalItr_ = 0;
    }
+   
+   template<int D>
+   double AmCompressor<D>::setLambda()
+   {
+      return 1.0;
+   }
+
    
    template<int D>
    double AmCompressor<D>::computeInCompressError()

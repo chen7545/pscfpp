@@ -102,6 +102,14 @@ namespace Rpc{
    {
       return AmIteratorTmpl<Compressor<D>, DArray<double> >::stepTwoRatioVector();
    }
+   
+   // Get the ratio of error reduction by AM step 1
+   template <int D>
+   std::vector<double> LrAmCompressor<D>::predictRatioVector()
+   {
+      return AmIteratorTmpl<Compressor<D>, DArray<double> >::predictRatioVector();
+   }
+
 
 
    // Iterative solver (AM algorithm)
