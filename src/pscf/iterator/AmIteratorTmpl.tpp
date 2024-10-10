@@ -689,10 +689,10 @@ namespace Pscf
       double error = 0.0;
       
       // Find max residual vector element
-      double maxRes  = maxAbs(resid);
+      double maxRes  = maxAbs(residTrial);
       
       // Find norm of residual vector
-      double normRes = norm(resid);
+      double normRes = norm(residTrial);
       
       // Check if calculation has diverged (normRes will be NaN)
       UTIL_CHECK(!std::isnan(normRes));
