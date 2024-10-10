@@ -682,7 +682,7 @@ namespace Pscf
    }
    
    template <typename Iterator, typename T>
-   double AmIteratorTmpl<Iterator,T>::computeError(T resid, T field, 
+   double AmIteratorTmpl<Iterator,T>::computeError(T&residTrial, T&fieldTrial, 
                                                    std::string errorType, 
                                                    int verbose)
    { 
@@ -701,7 +701,7 @@ namespace Pscf
       double rmsRes = normRes/sqrt(nElements());
       
       // Find norm of residual vector relative to field
-      double normField = norm(field);
+      double normField = norm(fieldTrial);
       double relNormRes = normRes/normField;
       
       // Set error value

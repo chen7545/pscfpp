@@ -207,7 +207,7 @@ namespace Pscf {
       * \return error  measure used to test for convergence.
       */
       virtual double computeError(int verbose);
-      double computeError(T resid, T field, 
+      double computeError(T& residTrial, T& fieldTrial, 
                           std::string errorType, 
                           int verbose);
       

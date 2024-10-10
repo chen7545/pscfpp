@@ -325,7 +325,6 @@ namespace Rpg{
       mdeCounter_ = 0;
    }
    
-   #if 0
    template<int D>
    double LrPostAmCompressor<D>::computeInCompressError()
    {
@@ -371,7 +370,6 @@ namespace Rpg{
 
       return error;
    }
-   #endif
    
 }
 }
