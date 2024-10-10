@@ -9,8 +9,8 @@
 */
 
 #include "Compressor.h"
-#include <prdc/cpu/RField.h>
-#include <prdc/cpu/RFieldDft.h>
+#include <prdc/cuda/RField.h>
+#include <prdc/cuda/RFieldDft.h>
 #include <pscf/iterator/AmIteratorTmpl.h>                 
 #include <rpg/simulate/compressor/intra/IntraCorrelation.h> 
 
@@ -136,7 +136,6 @@ namespace Rpg
       * Incompressibility constraint error.
       */ 
       RField<D> error_;
-      
       
       /**
       * How many times MDE has been solved for each mc move 
