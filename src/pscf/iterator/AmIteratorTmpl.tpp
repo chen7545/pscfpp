@@ -151,6 +151,7 @@ namespace Pscf
         // #ifdef PSCF_AM_TEST
          // Compute errors and ratios used for algorithm testing
          mixingError_ = computeError(0);
+         double precondError = computeError(resHists_[0], fieldHists_[0], errorType_,0);
          if (itr_ > 0) {
             projectionRatio_ += projectionError_/preError_;
             stepOneRatioVector_.push_back(projectionError_ /preError_);
@@ -171,7 +172,8 @@ namespace Pscf
                         << mixingError_/preError_ << "\n";
             #endif
          }
-         preError_ = mixingError_;
+         preError_ = precondError;
+         //prePrecondError_ = precondError_;
          //#endif
 
          // Check for convergence
