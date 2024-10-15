@@ -124,13 +124,6 @@ namespace Rpc
       /// Array of AM mixing step error Average objects for each iteration
       DArray<Average> mixingRatioAccumulators_;
       
-      /// Array of AM prejection step error Average objects for each iteration
-      DArray<int> projectionStepCounter_;
-      
-      /// Array of AM predicted step error Average objects for each iteration
-      DArray<int> predictStepCounter_;
-      
-      /// Array of AM mixing step error Average objects for each iteration
       DArray<int> mixingStepCounter_;
 
       /// Number of samples per block average output.

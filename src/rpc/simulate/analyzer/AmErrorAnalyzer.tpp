@@ -57,8 +57,6 @@ namespace Rpc
       projectionRatioAccumulators_.allocate(nValue_);
       mixingRatioAccumulators_.allocate(nValue_);
       predictRatioAccumulators_.allocate(nValue_);
-      projectionStepCounter_.allocate(nValue_);
-      predictStepCounter_.allocate(nValue_);
       mixingStepCounter_.allocate(nValue_);
       for (int i = 0; i < nValue_; ++i) {
          projectionRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
@@ -81,11 +79,6 @@ namespace Rpc
          projectionRatioAccumulators_[i].clear();
          mixingRatioAccumulators_[i].clear();
          predictRatioAccumulators_[i].clear();
-      }
-      
-      for (int i = 0; i < nValue_; ++i) {
-         projectionStepCounter_[i] = 0;
-         predictStepCounter_[i] = 0;
          mixingStepCounter_[i] = 0;
       }
       
@@ -108,13 +101,11 @@ namespace Rpc
       for (int i = 0; i < stepOneRatio.size(); ++i) {
          double data = stepOneRatio[i];
          projectionRatioAccumulators_[i].sample(data);
-         projectionStepCounter_[i]++;
       }
       
       for (int i = 0; i < predictRatio.size(); ++i) {
          double data = predictRatio[i];
          predictRatioAccumulators_[i].sample(data);
-         predictStepCounter_[i]++;
       }
       
       for (int i = 0; i < stepTwoRatio.size(); ++i) {

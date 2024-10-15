@@ -123,7 +123,9 @@ namespace Rpg
       
       /// Array of AM mixing step error Average objects for each iteration
       DArray<Average> mixingRatioAccumulators_;
-
+      
+      DArray<int> mixingStepCounter_;
+ 
       /// Number of samples per block average output.
       int nSamplePerBlock_;
       

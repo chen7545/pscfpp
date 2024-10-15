@@ -57,6 +57,7 @@ namespace Rpg
       projectionRatioAccumulators_.allocate(nValue_);
       mixingRatioAccumulators_.allocate(nValue_);
       predictRatioAccumulators_.allocate(nValue_);
+      mixingStepCounter_.allocate(nValue_);
       for (int i = 0; i < nValue_; ++i) {
          projectionRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
          projectionRatioAccumulators_[i].clear();
@@ -78,6 +79,7 @@ namespace Rpg
          projectionRatioAccumulators_[i].clear();
          mixingRatioAccumulators_[i].clear();
          predictRatioAccumulators_[i].clear();
+         mixingStepCounter_[i] = 0;
       }
       
       hasAccumulators_ = true;
@@ -109,6 +111,7 @@ namespace Rpg
       for (int i = 0; i < stepTwoRatio.size(); ++i) {
          double data = stepTwoRatio[i];
          mixingRatioAccumulators_[i].sample(data);
+         mixingStepCounter_[i]++;
       }
 
    }
@@ -154,13 +157,13 @@ namespace Rpg
       fileName += ".ave";
       system().fileMaster().openOutputFile(fileName, outputFile_);
       double aveOne, errOne, aveTwo, errTwo, avePred, errPred;
-      outputFile_ << " " << std::left << std::setw(nameWidth) 
-                      << "#itr" << "    " << "stepOneRatio" << "  " 
-                      << " +- " << "error" << "          " 
-                      << "stepTwoRatio" << "  " 
-                      << " +- " << "error" << "          " 
-                      << "stepOnePredRatio" << "  " 
-                      << " +- " << "error" << std::endl;
+     outputFile_ << " " << std::left << std::setw(nameWidth) 
+                      << "#itr" << "   " << "stepOneRatio"
+                      << " +- " << "error" << "         "
+                      << "stepTwoRatio"
+                      << " +- " << "error" << "         " 
+                      << "stepOnePredRatio"  
+                      << " +- " << "error" << "      " << "times" << std::endl;
       for (int i = 0; i < nValue_; ++i) {
          aveOne = projectionRatioAccumulators_[i].average();
          errOne = projectionRatioAccumulators_[i].blockingError();
@@ -170,9 +173,10 @@ namespace Rpg
          errTwo = mixingRatioAccumulators_[i].blockingError();
          outputFile_ << " " << std::left << std::setw(nameWidth) 
                       << i + 1 << "   ";
-         outputFile_ << Dbl(aveOne) << " +- " << Dbl(errOne, 6, 2)<< "    ";
-         outputFile_ << Dbl(aveTwo) << " +- " << Dbl(errTwo, 6, 2) << "    ";
-         outputFile_ << Dbl(avePred) << " +- " << Dbl(errPred, 6, 2)<< "\n";
+         outputFile_ << Dbl(aveOne, 11, 3) << " +- " << Dbl(errOne, 11, 2)<< "    ";
+         outputFile_ << Dbl(aveTwo, 11, 3) << " +- " << Dbl(errTwo, 11, 2) << "    ";
+         outputFile_ << Dbl(avePred, 11, 3) << " +- " << Dbl(errPred, 11, 2)<< "    " 
+         << mixingStepCounter_[i] << "\n";
       }
       outputFile_.close();
 
