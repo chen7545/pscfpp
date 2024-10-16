@@ -58,6 +58,7 @@ namespace Rpc
       mixingRatioAccumulators_.allocate(nValue_);
       predictRatioAccumulators_.allocate(nValue_);
       mixingStepCounter_.allocate(nValue_);
+      
       for (int i = 0; i < nValue_; ++i) {
          projectionRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
          projectionRatioAccumulators_[i].clear();
@@ -66,6 +67,9 @@ namespace Rpc
          predictRatioAccumulators_[i].setNSamplePerBlock(nSamplePerBlock_);
          predictRatioAccumulators_[i].clear();
       }
+      
+      errorItr0Accumulator_.setNSamplePerBlock(nSamplePerBlock_);
+      errorItr0Accumulator_.clear();
    }
    
    /*
@@ -82,6 +86,8 @@ namespace Rpc
          mixingStepCounter_[i] = 0;
       }
       
+      errorItr0Accumulator_.clear();
+      
       hasAccumulators_ = true;
    }
 
@@ -97,6 +103,8 @@ namespace Rpc
       std::vector<double> stepOneRatio = simulator().compressor().stepOneRatioVector();
       std::vector<double> predictRatio = simulator().compressor().predictRatioVector();
       std::vector<double> stepTwoRatio = simulator().compressor().stepTwoRatioVector();
+      double errorItr0 = simulator().compressor().errorItr0();
+      
       // Update accumulators.
       for (int i = 0; i < stepOneRatio.size(); ++i) {
          double data = stepOneRatio[i];
@@ -112,6 +120,11 @@ namespace Rpc
          double data = stepTwoRatio[i];
          mixingRatioAccumulators_[i].sample(data);
          mixingStepCounter_[i]++;
+      }
+      
+      if (errorItr0 > 1e-4){
+         errorItr0Accumulator_.sample(errorItr0);
+         Log::file()<< errorItr0<<std::endl;
       }
 
    }
@@ -199,6 +212,13 @@ namespace Rpc
       }
       outputFile_.close();
       
+      // Write itr0 error file 
+      std::string fileNameItr0 = "out/errorItr0";
+      fileNameItr0 += ".aer";
+      system().fileMaster().openOutputFile(fileNameItr0, outputFile_);
+      outputFile_ << line << std::endl;
+      errorItr0Accumulator_.output(outputFile_);
+      outputFile_.close();
    }
    
    

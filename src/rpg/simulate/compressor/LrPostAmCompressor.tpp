@@ -371,6 +371,13 @@ namespace Rpg{
       return error;
    }
    
+   // Return error at Itr 0
+   template <int D>
+   double LrPostAmCompressor<D>::errorItr0()
+   {
+      return AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::errorItr0();
+   }
+   
 }
 }
 #endif

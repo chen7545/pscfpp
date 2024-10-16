@@ -125,6 +125,9 @@ namespace Rpg
       DArray<Average> mixingRatioAccumulators_;
       
       DArray<int> mixingStepCounter_;
+      
+      /// Average object for itr0 error;
+      Average errorItr0Accumulator_;
  
       /// Number of samples per block average output.
       int nSamplePerBlock_;

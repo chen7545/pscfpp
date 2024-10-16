@@ -345,6 +345,13 @@ namespace Rpg{
       return AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::predictRatioVector();
    }
    
+   // Return error at Itr 0
+   template <int D>
+   double LrAmCompressor<D>::errorItr0()
+   {
+      return AmIteratorTmpl<Compressor<D>, Field<cudaReal> >::errorItr0();
+   }
+   
    template<int D>
    double LrAmCompressor<D>::computeError(int verbose)
    {

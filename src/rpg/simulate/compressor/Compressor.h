@@ -56,19 +56,24 @@ namespace Rpg {
       virtual int compress() = 0;
       
       /**
-      * Get the ratio of error reduction by AM step 1
+      * Get the ratio of error reduction by AM step 1.
       */
       virtual std::vector<double> stepOneRatioVector() = 0;
       
       /**
-      * Get the predicted of error reduction by AM step 1
+      * Get the predicted of error reduction by AM step 1.
       */
       virtual std::vector<double> predictRatioVector() = 0;
       
       /**
-      * Get the ratio of error reduction by AM step 1
+      * Get the ratio of error reduction by AM step 1.
       */
       virtual std::vector<double> stepTwoRatioVector() = 0;
+      
+      /**
+      * Return error after sampling step, error at compressor Itr0.
+      */
+      virtual double errorItr0() = 0;
       
       /**
       * Get the number of times the MDE has been solved.

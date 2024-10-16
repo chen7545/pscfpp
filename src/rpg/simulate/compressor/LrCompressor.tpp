@@ -132,8 +132,13 @@ namespace Rpg{
             Log::file() << ",  error  =             NaN" << std::endl;
             break; // Exit loop if a NanException is caught
          }
+         
          if (verbose_ > 0) {
             Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
+         }
+         
+         if (itr_ == 0 ){
+            errorItr0_ = error;
          }
          
          if (itr_ > 0) {

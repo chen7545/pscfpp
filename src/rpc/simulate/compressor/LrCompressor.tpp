@@ -126,6 +126,10 @@ namespace Rpc{
             Log::file() << ",  error  = " << Dbl(error, 15) << std::endl;
          }
          
+         if (itr_ == 0 ){
+            errorItr0_ = error;
+         }
+         
          if (itr_ > 0) {
             stepTwoRatioVector_.push_back(error /preError_);
          }

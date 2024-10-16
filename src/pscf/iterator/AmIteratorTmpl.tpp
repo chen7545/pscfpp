@@ -148,9 +148,15 @@ namespace Pscf
          // Output additional details of this iteration to the log file
          outputToLog();
          
-        // #ifdef PSCF_AM_TEST
+         // #ifdef PSCF_AM_TEST
          // Compute errors and ratios used for algorithm testing
          mixingError_ = computeError(0);
+         
+         // Store 0 iteration's error
+         if (itr_ == 0){
+            errorItr0_= error_;
+         }
+         
          if (itr_ > 0) {
             projectionRatio_ += projectionError_/preError_;
             stepOneRatioVector_.push_back(projectionError_ /preError_);
@@ -201,7 +207,7 @@ namespace Pscf
             return 0;
 
          } else {
-
+            
             // Compute optimal coefficients for basis vectors
             timerCoeff_.start();
             computeResidCoeff();

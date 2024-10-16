@@ -122,6 +122,10 @@ namespace Rpg
       */
       std::vector<double> stepTwoRatioVector();
       
+      /**
+      * Return error at itr 0 
+      */
+      double errorItr0();
       
       // Inherited public member functions
 

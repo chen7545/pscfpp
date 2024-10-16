@@ -77,6 +77,11 @@ namespace Rpc
       * Get the ratio of error reduction by AM step 1
       */
       virtual std::vector<double> stepTwoRatioVector() = 0;
+      
+      /**
+      * Return error after sampling step, error at compressor Itr0.
+      */
+      virtual double errorItr0() = 0;
 
       /**
       * Get the number of times the MDE has been solved.

@@ -89,6 +89,11 @@ namespace Rpg
       * Get the ratio of error reduction by each step (AM step 2)
       */
       std::vector<double> stepTwoRatioVector();
+      
+      /**
+      * Return error at itr 0 
+      */
+      double errorItr0();
 
       /**
       * Return compressor times contributions.
@@ -113,6 +118,9 @@ namespace Rpg
       
       // Error of previoius iteration
       double preError_{0};
+      
+      // Error of Itr0 
+      double errorItr0_{0};
       
       // Error tolerance.
       double epsilon_;
@@ -228,6 +236,11 @@ namespace Rpg
    template <int D>
    inline std::vector<double> LrCompressor<D>::stepTwoRatioVector()
    { return stepTwoRatioVector_; }
+   
+   // Return error at itr 0
+   template <int D>
+   inline double LrCompressor<D>::errorItr0()
+   { return errorItr0_; }
    
    #ifndef RPG_LR_COMPRESSOR_TPP
    // Suppress implicit instantiation

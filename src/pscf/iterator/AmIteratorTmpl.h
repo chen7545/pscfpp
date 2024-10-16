@@ -103,6 +103,11 @@ namespace Pscf {
       */
       std::vector<double> stepTwoRatioVector();
       
+      /**
+      * Return error at itr 0 
+      */
+      double errorItr0();
+      
    protected:
 
       /// Type of error criterion used to test convergence 
@@ -347,6 +352,7 @@ namespace Pscf {
       Timer timerTotal_;
 
       //#ifdef PSCF_AM_TEST
+      double errorItr0_{0};
       double preError_{0};
       double projectionError_{0};
       double predictError_{0};
@@ -627,6 +633,13 @@ namespace Pscf {
    template <typename Iterator, typename T>
    std::vector<double> AmIteratorTmpl<Iterator,T>::stepTwoRatioVector() 
    {  return stepTwoRatioVector_; }
+   
+   /*
+   * Return initial error (error at itr 0)
+   */
+   template <typename Iterator, typename T>
+   double AmIteratorTmpl<Iterator,T>::errorItr0() 
+   {  return errorItr0_; }
    
 }
 #include "AmIteratorTmpl.tpp"

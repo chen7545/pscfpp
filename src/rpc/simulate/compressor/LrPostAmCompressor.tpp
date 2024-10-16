@@ -358,6 +358,13 @@ namespace Rpc{
       return error;
    }
    
+   // Return error at Itr 0
+   template <int D>
+   double LrPostAmCompressor<D>::errorItr0()
+   {
+      return AmIteratorTmpl<Compressor<D>, DArray<double> >::errorItr0();
+   }
+   
 }
 }
 #endif
