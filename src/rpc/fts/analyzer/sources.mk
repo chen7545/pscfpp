@@ -13,7 +13,8 @@ rpc_fts_analyzer_= \
   rpc/fts/analyzer/ChiDerivative.cpp \
   rpc/fts/analyzer/ConcentrationDerivative.cpp \
   rpc/fts/analyzer/MaxOrderParameter.cpp \
-  rpc/fts/analyzer/FourthOrderParameter.cpp
+  rpc/fts/analyzer/FourthOrderParameter.cpp \
+  rpc/fts/analyzer/ChiNormalization.cpp
   
   
 rpc_fts_analyzer_OBJS=\

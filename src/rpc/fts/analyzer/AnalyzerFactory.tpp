@@ -14,6 +14,7 @@
 #include "ConcentrationDerivative.h"
 #include "MaxOrderParameter.h"
 #include "FourthOrderParameter.h"
+#include "ChiNormalization.h"
 
 namespace Pscf {
 namespace Rpc {
@@ -65,6 +66,8 @@ namespace Rpc {
          ptr = new MaxOrderParameter<D>(*simulatorPtr_, *sysPtr_);
       } else if (className == "FourthOrderParameter") {
          ptr = new FourthOrderParameter<D>(*simulatorPtr_, *sysPtr_);
+      } else if (className == "ChiNormalization") {
+         ptr = new ChiNormalization<D>(*simulatorPtr_, *sysPtr_);
       }
 
       return ptr;
