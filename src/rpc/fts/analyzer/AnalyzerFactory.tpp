@@ -14,6 +14,7 @@
 #include "ConcentrationDerivative.h"
 #include "MaxOrderParameter.h"
 #include "FourthOrderParameter.h"
+#include "OneLoopAnalyzer.h"
 
 namespace Pscf {
 namespace Rpc {
@@ -65,8 +66,9 @@ namespace Rpc {
          ptr = new MaxOrderParameter<D>(*simulatorPtr_, *sysPtr_);
       } else if (className == "FourthOrderParameter") {
          ptr = new FourthOrderParameter<D>(*simulatorPtr_, *sysPtr_);
+      }else if (className == "OneLoopAnalyzer") {
+         ptr = new OneLoopAnalyzer<D>(*simulatorPtr_, *sysPtr_);
       }
-
       return ptr;
    }
 
