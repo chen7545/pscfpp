@@ -6,22 +6,22 @@
 
 This page discusses several types of algorithm that are used to perform and
 analyze PS-FTS calculations, but that are not needed for SCFT calculations.
-We focus here on explaining the different types of algorithm that are 
-required to perform a PS-FTS calculation, and on listing the available 
-choices among sets of algorithms that serve the same or similar purposes 
+We focus here on explaining the different types of algorithm that are
+required to perform a PS-FTS calculation, and on listing the available
+choices among sets of algorithms that serve the same or similar purposes
 (such as different Brownian dynamics step algorithms).  The
 \ref psfts_param_page "following page" focuses instead on describing the
-format of parameter file required to initialize a PS-FTS calculation, 
+format of parameter file required to initialize a PS-FTS calculation,
 including the sections that specify choices of algorithms.
 
 \section psfts_algorithm_types_sec Types of Algorithm
 
-The pscf_pc and pscf_pg programs can perform PS-FTS calculations 
+The pscf_pc and pscf_pg programs can perform PS-FTS calculations
 using either a Brownian dynamics (BD) or Monte Carlo (MC) method to
 stochastically sample a fluctuating field or fields.  BD and MC sampling
-algorithms for PS-FTS have a similar structure.  A single BD step or MC 
+algorithms for PS-FTS have a similar structure.  A single BD step or MC
 move generally involves generation of a random change in one or more
-exchange fields, followed by use of an iterative algorithm to identify 
+exchange fields, followed by use of an iterative algorithm to identify
 a new partial-saddle point field configuration. Throughout the PSCF
 documentation and source code, iterative algorithms that are used to
 identify partial saddle-point configurations, and thus satisfy the
@@ -152,17 +152,17 @@ mesh.  Other authors have sometimes referred to what we call a "mobility"
 as a time step, sometimes indicated by a symbol such \f$ \Delta t \f$ or
 \f$ \delta t \f$.
 
-After this random in \f$ W_{-} \f$, the chosen compressor algorithm is 
+After this random in \f$ W_{-} \f$, the chosen compressor algorithm is
 applied to adjust the pressure-like field \f$$ W_{+} \f$ until the
 partial saddle-point condition is again satisfied, completing the BD
 move.
 
 The meaning of the mobility parameter in other BD step algorithms is
 analogous to its meaning in the explicit Euler algorithm described above:
-The mobility always appears as a prefactor of the "force" (or functional 
-derivative) \f$ -\delta H/\delta W_{-}({\bf r}) \f$ in expressions for 
+The mobility always appears as a prefactor of the "force" (or functional
+derivative) \f$ -\delta H/\delta W_{-}({\bf r}) \f$ in expressions for
 changes in \f$ W_{-}({\bf r}) \f$ over a single time step. A mobility
-parameter is the only required parameter for any of the available BD 
+parameter is the only required parameter for any of the available BD
 step algorithms.
 
 PSCF currently allows users to choose from among three BD step
@@ -180,7 +180,7 @@ that implement them:
 More details about each of these algorithms can be obtained by clicking
 on the associated link.
 
-We recommend the Leimkuhler-Matthews (LM) algorithm for general use in 
+We recommend the Leimkuhler-Matthews (LM) algorithm for general use in
 all BD simulations.  The LM step algorithm is found to provide much
 more accurate results than the competing predictor-corrector algorithm,
 allowing the use of larger time steps.  The explicit Euler algorithm is
@@ -201,7 +201,7 @@ simulation is thus as follows:
    - Use the chosen MC move to generate a random change in the fields.
 
    - Apply the chosen compressor algorithm to adjust the real pressure-like
-     field \f$ W_{+}({\bf r}) \f$ so as to again satisfy the partial 
+     field \f$ W_{+}({\bf r}) \f$ so as to again satisfy the partial
      saddle-point (i.e., SCF incompressibility) condition.
 
    - Evaluate the Hamiltonian in the new partial saddle point state.
@@ -293,11 +293,11 @@ parameter file block.
         An Anderson-mixing algorithm </li>
 </ul>
 The LrAmCompressor is the default choice, and is recommended for general
-use. 
+use.
 
-The AmCompressor algorithm is similar to the Anderson mixing algorithm 
-used in most previously published PS-FTS calculations.  This algorithm 
-uses information from previous iterations to guide the choice of a new 
+The AmCompressor algorithm is similar to the Anderson mixing algorithm
+used in most previously published PS-FTS calculations.  This algorithm
+uses information from previous iterations to guide the choice of a new
 field configuration during each iteration after the first.
 
 The LrAmCompressor and LrCompressor algorithms both use a quasi-Newton
@@ -315,7 +315,7 @@ compared in the following reference:
 
 <a href="https://doi.org/10.1063/5.0264036">
 "Improved algorithm for identifying partial saddle-points in polymer
-field theoretic simulations", K. Chen and D.C. Morse, 
+field theoretic simulations", K. Chen and D.C. Morse,
 <em> J. Chem. Phys. </em> <b> 162 </b>, 243901 (2025). </a>,
 
 \section psfts_algorithm_analyzer_sec Analyzer Algorithms

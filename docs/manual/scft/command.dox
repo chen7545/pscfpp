@@ -1,11 +1,11 @@
 /*! \page scft_command_page Command Files
 
- \ref user_field_page   (Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
- \ref scft_thermo_page (Next) 
+ \ref user_field_page   (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
+ \ref scft_thermo_page (Next)
 <BR>
 
 <h2> Contents: </h2>
-The following subpages gives more detailed information about 
+The following subpages gives more detailed information about
 commands available for each of the PSCF programs:
 
 <ol>
@@ -14,7 +14,7 @@ commands available for each of the PSCF programs:
 </ol>
 
  <BR>
- \ref user_field_page   (Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
- \ref scft_page         (Up) &nbsp; &nbsp; &nbsp; &nbsp; 
- \ref scft_thermo_page  (Next) 
+ \ref user_field_page   (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
+ \ref scft_page         (Up) &nbsp; &nbsp; &nbsp; &nbsp;
+ \ref scft_thermo_page  (Next)
 */

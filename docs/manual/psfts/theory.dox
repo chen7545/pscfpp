@@ -5,11 +5,11 @@
 <BR>
 
 The PS-FTS simulation method used in PSCF is derived by applying a
-partial saddle-point approximation to an exact fully-fluctuating field 
+partial saddle-point approximation to an exact fully-fluctuating field
 theory formulation for an incompressible polymer fluid.  The fully
 fluctuating field theory is discussed on this page, while the partial
-saddle-point approximation is considered on the next page. Throughout 
-this discussion, as elsewhere, we use units for energy in which 
+saddle-point approximation is considered on the next page. Throughout
+this discussion, as elsewhere, we use units for energy in which
 \f$ k_{B} T = 1 \f$.
 
 \section psfts_theory_model_sec Incompressible Particle-Based Model
@@ -32,7 +32,7 @@ mononer concentration. Let
 \f[
    v = 1/c_{0}
 \f]
-denote the corresponding monomer reference volume. A value for 
+denote the corresponding monomer reference volume. A value for
 \f$ v \f$ is given in the PSCF parameter file by the parameter vMonomer.
 
 The potential energy in any mechanical microstate that satisfies the
@@ -41,16 +41,16 @@ incompressibility constraint is taken to be of the form
    U = U_{\rm id} + U_{\rm int}
    \quad,
 \f]
-in which \f$ U_{\rm id} \f$ is the intramolecular potential energy of a 
+in which \f$ U_{\rm id} \f$ is the intramolecular potential energy of a
 gas of non-interacting molecules, while
 \f[
    U_{\rm int}
-    =  \frac{v}{2}\sum_{i,j=1}^{M} 
+    =  \frac{v}{2}\sum_{i,j=1}^{M}
    \int d{\bf r} \; \chi_{ij} c_{i}({\bf r}) c_{j}({\bf r})
 \f]
 is a non-bonded pair interaction energy with local interactions.  Here,
 \f$ \chi_{ij} \f$ denotes an element of a symmetric \f$ M \times M \f$
-matrix of dimensionless Flory-Huggins interaction parameters.  
+matrix of dimensionless Flory-Huggins interaction parameters.
 
 The partition function \f$ Z \f$ for such an incompressible fluid can be
 expressed to within an irrelevant multiplicative constant as a
@@ -135,15 +135,15 @@ off-diagonal element,
      \chi = \chi_{12} = \chi_{21} \quad.
 \f]
 We hereafter refer to such systems (with two monomer types and vanishing
-interaction matrix elements) as standard AB systems.  The interaction 
+interaction matrix elements) as standard AB systems.  The interaction
 potential energy of such a system is given by
 \f[
    U_{\rm int}
-   =  v 
+   =  v
    \int d{\bf r} \; \chi c_{1}({\bf r}) c_{2}({\bf r})
    \quad.
 \f]
-At the time of writing of these notes (March 2024), all published PS-FTS 
+At the time of writing of these notes (March 2024), all published PS-FTS
 calculations had simulated such a standard AB systems.
 
 For such systems, it is convenient to define concentration components
@@ -153,7 +153,7 @@ For such systems, it is convenient to define concentration components
   C_{+}({\bf r}) = c_{1}({\bf r}) + c_{2}({\bf r}) \quad.
 \f]
 Note that the incompressibility constraint requires that
-\f$ C_{+}({\bf r}) = c_{0} \f$ for all \f$ {\bf r} \f$, but allows 
+\f$ C_{+}({\bf r}) = c_{0} \f$ for all \f$ {\bf r} \f$, but allows
 \f$ C_{-}({\bf r}) \f$ to fluctuate.
 Rewriting \f$ U_{\rm int} \f$ in terms of these variables yields
 \f[
@@ -163,15 +163,15 @@ Rewriting \f$ U_{\rm int} \f$ in terms of these variables yields
    [ \; c_{0}^{2} - C_{-}^{2}({\bf r}) \; ]
    \quad,
 \f]
-where we have set \f$ C_{+}({\bf r}) = c_{0} \f$ within the integrand 
+where we have set \f$ C_{+}({\bf r}) = c_{0} \f$ within the integrand
 for states that satisfy the incompressibility constraint.
 
 <b> Particle-Field Transformation: </b>
 
-We restrict our attention in the remainder of this section to standard 
+We restrict our attention in the remainder of this section to standard
 AB systems with \f$ \chi > 0 \f$. For such systems, a Hubbard-Stratonivich
-transformation may be used to rewrite the factor of 
-\f$ \exp( -U_{\rm int} ) \f$ in the configurational integral that defines 
+transformation may be used to rewrite the factor of
+\f$ \exp( -U_{\rm int} ) \f$ in the configurational integral that defines
 \f$ Z \f$ as a functional integral
 \f[
    e^{-U_{\rm int} }
@@ -185,7 +185,7 @@ transformation may be used to rewrite the factor of
    \right ] \right \}
    \; ,
 \f]
-in which \f$ \int {\cal D} W_{-} \f$ denotes a functional integral over 
+in which \f$ \int {\cal D} W_{-} \f$ denotes a functional integral over
 a real-valued auxiliary field \f$ W_{-}({\bf r}) \f$, and where
 \f[
    N \equiv
@@ -212,8 +212,8 @@ Lagrange multplier field that imposes the constraint, and
 this field.
 
 By substituting the above functional integral expressions for the
-\f$ e^{-U_{\rm int}} \f$ and the \f$ \delta \f$-function into the 
-definition of the \f$ Z \f$, we obtain a functional integral over 
+\f$ e^{-U_{\rm int}} \f$ and the \f$ \delta \f$-function into the
+definition of the \f$ Z \f$, we obtain a functional integral over
 both \f$ W_{-} \f$ and \f$ \omega_{+} \f$, giving
 \f[
    Z = N^{-1}
@@ -241,7 +241,7 @@ auxiliary fields (so that the subscript f denotes "field"), while
 the monomer concentrations (so that the subscript c denotes
 "concentration" or "coupling").
 
-It is convenient for some purposes to defined a "Wick rotated" 
+It is convenient for some purposes to defined a "Wick rotated"
 pressure-like field
 \f[
    W_{+}({\bf r}) \equiv i \omega_{+}({\bf r})
@@ -337,33 +337,33 @@ Saddle-point field configurations thus correspond to SCFT solutions.
 
 \section psfts_theory_general_sec Field Theory: General Case (\f$ M \geq 2 \f$)
 
-The software implementation of PS-FTS in PSCF is based on a "symmetric" 
-formulation of the field theory for incompressible models that is designed 
-to allow generalization to systems with \f$ M > 2 \f$. This formulation is 
+The software implementation of PS-FTS in PSCF is based on a "symmetric"
+formulation of the field theory for incompressible models that is designed
+to allow generalization to systems with \f$ M > 2 \f$. This formulation is
 presented in the following reference:
 
 \anchor psfts_theory_MYC_article
 "Polymer Field Theory for Multimonomer Incompressible Systems:
 Symmetric Formation and ABC Systems",
-D. Morse, D. Yong, K. Chen, <em> Macromolecules </em> <b> 58 </b>, 
+D. Morse, D. Yong, K. Chen, <em> Macromolecules </em> <b> 58 </b>,
 816-825 (2025).
 <https://pubs.acs.org/doi/10.1021/acs.macromol.4c02636>
 
-When this general formulation is applied to a standard AB system, it 
-\ref psfts_theory_general_AB_sub "can be shown" to reduce to the formulation 
-for AB systems that is described above.  The use of the more general 
-symmetric formulation of field theory within the implementation of PSCF 
-is intended to facilitate later development of PS-FTS methods for some 
-systems with \f$ M > 2 \f$.  The current version of PSCF has, however, 
-thus been used and tested primarily with standard AB systems, and some 
-algorithms for \f$ M > 2 \f$ remain incomplete. The current status of 
-PS-FTS algorithms for systems with \f$ M > 2 \f$ is discussed on the 
+When this general formulation is applied to a standard AB system, it
+\ref psfts_theory_general_AB_sub "can be shown" to reduce to the formulation
+for AB systems that is described above.  The use of the more general
+symmetric formulation of field theory within the implementation of PSCF
+is intended to facilitate later development of PS-FTS methods for some
+systems with \f$ M > 2 \f$.  The current version of PSCF has, however,
+thus been used and tested primarily with standard AB systems, and some
+algorithms for \f$ M > 2 \f$ remain incomplete. The current status of
+PS-FTS algorithms for systems with \f$ M > 2 \f$ is discussed on the
 \ref psfts_psa_status "following page".
 
-The basic working equations of this symmetric formulation are summarized 
-below. This summary is provided primarily as a theory reference for users 
-who examine the source code. Further details, including analyses of the 
-special cases of AB and ABC systems, are given in the article cited 
+The basic working equations of this symmetric formulation are summarized
+below. This summary is provided primarily as a theory reference for users
+who examine the source code. Further details, including analyses of the
+special cases of AB and ABC systems, are given in the article cited
 above.
 
 <b> Matrix Notation: </b>
@@ -371,12 +371,12 @@ above.
 Throughout the following discussion, we use bold-faced symbols to denote
 column vectors and matrices in which column and row indices are associated
 with monomer types. Specifically, let \f$ {\bf c}({\bf r}) \f$ denote the
-\f$ M \times 1 \f$ column vector with elements given by the monomer 
-concentrations \f$ c_{1}({\bf r}), \ldots, c_{M}({\bf r}) \f$ at position 
-\f$ {\bf r} \f$, and let \f$ {\boldsymbol \chi} \f$ denote the symmetric 
+\f$ M \times 1 \f$ column vector with elements given by the monomer
+concentrations \f$ c_{1}({\bf r}), \ldots, c_{M}({\bf r}) \f$ at position
+\f$ {\bf r} \f$, and let \f$ {\boldsymbol \chi} \f$ denote the symmetric
 \f$ M \times M \f$ matrix of Flory-Huggins interaction parameters.
 
-The incompressibility constraint can be expressed in matrix notation as a 
+The incompressibility constraint can be expressed in matrix notation as a
 requirement that
 \f[
    {\bf e}^{T} {\bf c}({\bf r}) = c_{0} \quad,
@@ -390,14 +390,14 @@ in which
 is an \f$ M \f$-component column vector with equal element values
 \f$ e_{i}=1 \f$ for all \f$ i = 1, \cdots, M \f$. Here \f${\bf e}^{T} \f$
 is the corresponding row vector \f$ {\bf e}^{T} = [1 \ldots 1] \f$,
-where a superscript \f$ T \f$ is used to denote a matrix transpose. 
-Fluctuations of \f$ {\bf c}({\bf r})\f$ within the subspace orthogonal 
+where a superscript \f$ T \f$ is used to denote a matrix transpose.
+Fluctuations of \f$ {\bf c}({\bf r})\f$ within the subspace orthogonal
 to \f$ {\bf e} \f$ thus preserve the incompressibility constraint.
 
-The formulation of field theory for incompressible systems used in PSCF 
-is based on a a decomposition of \f$ {\bf c}({\bf r}) \f$ into components 
-parallel and orthogonal to \f$ {\bf e} \f$.  Let \f$ {\bf Q} \f$ and 
-\f$ {\bf P} \f$ denote the \f$ M \times M \f$ orthogonal projection 
+The formulation of field theory for incompressible systems used in PSCF
+is based on a a decomposition of \f$ {\bf c}({\bf r}) \f$ into components
+parallel and orthogonal to \f$ {\bf e} \f$.  Let \f$ {\bf Q} \f$ and
+\f$ {\bf P} \f$ denote the \f$ M \times M \f$ orthogonal projection
 matrices
 \f[
    {\bf Q} \equiv \frac{1}{M}{\bf e}{\bf e}^{T}
@@ -407,11 +407,11 @@ matrices
 \f]
 where \f$ {\bf I} \f$ is the \f$ M \times M \f$ identity matrix.
 Note that \f$ {\bf Q}{\bf e} = {\bf e} \f$, \f$ {\bf P}{\bf e} = 0 \f$.
-Also note that \f$ {\bf Q} \f$ and \f$ {\bf P} \f$ are both idempotent 
-(i.e., that \f$ {\bf Q}{\bf Q} = {\bf Q} \f$, 
+Also note that \f$ {\bf Q} \f$ and \f$ {\bf P} \f$ are both idempotent
+(i.e., that \f$ {\bf Q}{\bf Q} = {\bf Q} \f$,
 \f$ {\bf P}{\bf P} = {\bf P} \f$),
 and that \f$ {\bf Q}{\bf P} = {\bf P}{\bf Q} = 0 \f$.
-Multiplying any M-component column vector by \f$ {\bf Q} \f$ yields the 
+Multiplying any M-component column vector by \f$ {\bf Q} \f$ yields the
 orthogonal projection of the original vector onto \f$ {\bf e} \f$.
 Multiplying such a vector by \f$ {\bf P} \f$ instead yields the
 projection of the vector into the \f$ M-1 \f$ dimensional subspace
@@ -427,9 +427,9 @@ matrix defined by the matrix product
    \quad.
 \f]
 We refer to this as the projected \f$ \chi \f$ matrix.
-Let \f$ \tilde{\chi}_{ij} \f$ denote the element in row i and column j 
+Let \f$ \tilde{\chi}_{ij} \f$ denote the element in row i and column j
 of the matrix \f$ \tilde{\boldsymbol \chi} \f$ .  Note that
-\f$ \tilde{\boldsymbol{\chi}} {\bf e} = 0\f$, implying that 
+\f$ \tilde{\boldsymbol{\chi}} {\bf e} = 0\f$, implying that
 \f$ \tilde{\boldsymbol{\chi}} \f$ is a singular matrix for which
 \f$ {\bf e} \f$ is an eigenvector with a zero eigenvalue.
 
@@ -448,7 +448,7 @@ the list, so that
 \f[
    {\bf v}_{M} = {\bf e}
 \f]
-and \f$ \lambda_{M}=0 \f$. We choose a normalization convention for 
+and \f$ \lambda_{M}=0 \f$. We choose a normalization convention for
 which
 \f[
    {\bf v}_{\alpha}^{T} {\bf v}_{\beta}
@@ -493,21 +493,21 @@ while setting \f$ C_{M}({\bf r}) = c_{0} \f$ and noting that
    \frac{v \lambda_{\alpha} }{2M} C_{\alpha}^{2} ({\bf r})
    + S_{\alpha} C_{\alpha}({\bf r})
    \right \}
-   + U_{\rm int}^{(0)} 
+   + U_{\rm int}^{(0)}
 \f]
 where we have defined
 \f[
    S_{\alpha} \equiv
    \frac{1}{M^2} {\bf v}_{\alpha}^{T} {\boldsymbol \chi} {\bf e}
 \f]
-for all \f$ \alpha = 1, \ldots, M \f$, 
+for all \f$ \alpha = 1, \ldots, M \f$,
 \f[
-    U_{\rm int}^{(0)} = VS_{M}/2v 
+    U_{\rm int}^{(0)} = VS_{M}/2v
 \f]
 and \f$ V \f$ is total system volume.
 
-Field components associated with positive and negative eigenvalues 
-of \f$ \tilde{\boldsymbol \chi} \f$ must be treated differently when 
+Field components associated with positive and negative eigenvalues
+of \f$ \tilde{\boldsymbol \chi} \f$ must be treated differently when
 constructing a functional integral representation of \f$ Z \f$ .
 For each \f$ \alpha = 1, \ldots, M - 1\f$, let
 \f[
@@ -527,8 +527,8 @@ eigenvalues \f$ L+1, \ldots, M - 1 \f$ to be non-negative, while
 <b> Particle-Field Transformation: </b>
 
 A Hubbard-Stratonovich transformation may used to transform the
-Boltzmann factor \f$ \exp( -U_{\rm int} ) \f$ given above into a 
-functional integral over \f$ M - 1 \f$ real-valued auxiliary fields 
+Boltzmann factor \f$ \exp( -U_{\rm int} ) \f$ given above into a
+functional integral over \f$ M - 1 \f$ real-valued auxiliary fields
 \f$ \omega_{1}({\bf r}), \ldots, \omega_{M-1}({\bf r}) \f$, of the
 form
 \f[
@@ -543,8 +543,8 @@ form
    \right ] \right \}
    \; ,
 \f]
-where \f$ \int {\cal D} \omega' \f$ denotes a functional integral over 
-the \f$ M-1 \f$ auxiliary fields \f$ \omega_{1}, \ldots, \omega_{M-1} \f$, 
+where \f$ \int {\cal D} \omega' \f$ denotes a functional integral over
+the \f$ M-1 \f$ auxiliary fields \f$ \omega_{1}, \ldots, \omega_{M-1} \f$,
 \f[
    N \equiv
    \int {\cal D}\omega'
@@ -660,41 +660,41 @@ generalizing the definitions of both \f$ H_{\rm f} \f$ and
 \f$ H_{\rm c} \f$.
 
 <em> Comment (for users that read the source code) </em>: Many of the data
-structures and algorithms that are required to implement this symmetric 
-formulation of polymer field theory, but that are not needed for SCFT, are 
-provided by the Simulator class template defined in either the Pscf::Rpc 
-and Pscf::Rpg namespaces.  These two closely analogous class templates each 
-takes the dimension D of space as a template parameter, and only differ in 
-that Pscf::Rpc::Simulator is designed for a CPU, while Pscf::Rpg::Simulator 
+structures and algorithms that are required to implement this symmetric
+formulation of polymer field theory, but that are not needed for SCFT, are
+provided by the Simulator class template defined in either the Pscf::Rpc
+and Pscf::Rpg namespaces.  These two closely analogous class templates each
+takes the dimension D of space as a template parameter, and only differ in
+that Pscf::Rpc::Simulator is designed for a CPU, while Pscf::Rpg::Simulator
 is designed to use a GPU.  In either namespace, the Simulator class template
-provides code to construct and diagonalize the projected chi matrix, and 
-to compute the field theoretic Hamiltonian \f$ H \f$ and its functional 
-derivatives. Instances of the Simulator template are used as base classes 
-for \ref rpc_BdSimulator_page "BdSimulator" and 
-\ref rpc_McSimulator_page "McSimulator" classes that provide more specialized 
-algorithms and data structures that are needed for Brownian dynamics (BD) or 
+provides code to construct and diagonalize the projected chi matrix, and
+to compute the field theoretic Hamiltonian \f$ H \f$ and its functional
+derivatives. Instances of the Simulator template are used as base classes
+for \ref rpc_BdSimulator_page "BdSimulator" and
+\ref rpc_McSimulator_page "McSimulator" classes that provide more specialized
+algorithms and data structures that are needed for Brownian dynamics (BD) or
 Monte Carlo (MC) samplying algorithms, respectively.
 
 \anchor psfts_theory_general_AB_sub
 <b> Standard AB Systems (Revisited): </b>
 
-For any system with \f$ M = 2 \f$, the fact that 
+For any system with \f$ M = 2 \f$, the fact that
 \f$ {\bf v}_{M} = {\bf v}_{2} = {\bf e} \f$, and that distinct eigenvectors
 of \f$ \tilde{\boldsymbol \chi} \f$ must be orthogonal, immediately implies
 that \f$ {\bf v}_{1} = [1 -1]^{T} \f$. For a standard AB system with
 \f$ \chi_{11} = \chi_{22} = 0 \f$, it is straightforward to use knowledge
 of eigenvector \f$ {\bf v}_{1} \f$ to show that
 \f[
-    \lambda_1 = -\chi \quad\quad 
+    \lambda_1 = -\chi \quad\quad
     S_{1} = 0  \quad,
 \f]
 and that \f$ U^{(0)}_{\rm int} = V \chi /(4 v) \f$.
 For \f$ \chi > 0 \f$, this yields \f$ \lambda_{1} < 0 \f$ and thus
 \f$ \sigma_{1} = 1 \f$. Substituting these values into the general
-expressions for \f$ H_{\rm f} \f$ and \f$ H_{\rm c} \f$ is then found to 
-reproduce the expressions given previously for a standard AB system.  The 
-general symmetric formulation for incompressible systems thus includes 
-the above formulation for standard AB systems with \f$ \chi > 0 \f$ as 
+expressions for \f$ H_{\rm f} \f$ and \f$ H_{\rm c} \f$ is then found to
+reproduce the expressions given previously for a standard AB system.  The
+general symmetric formulation for incompressible systems thus includes
+the above formulation for standard AB systems with \f$ \chi > 0 \f$ as
 a special case.
 
 <BR>

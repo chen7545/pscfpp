@@ -5,19 +5,19 @@
 <BR>
 
 Every PSCF programs can perform a sequence of SCFT simulations at a sequence
-of different conditions that correspond to points on a line through the space 
-of possible input parameter values. We refer to this kind of calculation as a 
-parameter "sweep".  
+of different conditions that correspond to points on a line through the space
+of possible input parameter values. We refer to this kind of calculation as a
+parameter "sweep".
 
 \section scft_sweep_concept_sec Sweep concept
 
 To perform a sweep, the program attempts to solve a sequence of SCFT problems
 for choices of input parameters (e.g., block lengths, chi parameters, species
-volume fractions, etc.) that lie along a line through the space of possible 
-values for these parameters. During a sweep, the resulting SCFT problems are 
-solved in the sequence that they appear along this line. An initial guess 
-for the vector of unknown variables for every point after the first one is 
-obtained by extrapolating from solutions obtained at one or more immediately 
+volume fractions, etc.) that lie along a line through the space of possible
+values for these parameters. During a sweep, the resulting SCFT problems are
+solved in the sequence that they appear along this line. An initial guess
+for the vector of unknown variables for every point after the first one is
+obtained by extrapolating from solutions obtained at one or more immediately
 preceding points along this line.
 
 To define a sweep, a path through parameter space is defined by defining
@@ -44,7 +44,7 @@ sweep of this type.
 The parameter file for a calculation in which a sweep will be performed
 must include an optional block that describes the nature of the sweep.
 This block, when present, must appear after the block that specifies the
-iterator algorithm. The minimal skeleton structure for a paramater file 
+iterator algorithm. The minimal skeleton structure for a paramater file
 for a calculation that performs a sweep is shown below:
 \code
 System{
@@ -66,12 +66,12 @@ System{
 }
 \endcode
 In this description, the Iterator and Sweep blocks include a #* suffix
-to indicate that these are both optional selectable blocks. Different 
+to indicate that these are both optional selectable blocks. Different
 options for the Sweep block can define different types of paths through
 parameter space.
 
 Below, we show an example of a pscf_1d parameter file that extends the
-example parameter file shown \ref user_param_example_page "previously" by 
+example parameter file shown \ref user_param_example_page "previously" by
 appending a Sweep parameter file block to the end of the main System
 block, using the default algorithm.
 \code
@@ -131,23 +131,23 @@ below.
 
 \section scft_sweep_command_sec SWEEP command
 
-A sweep is actually performed by including a command named "SWEEP" in the 
-command file. The SWEEP command does not take any parameters, and performs 
-the sequence of calculations described in the Sweep block of the parameter 
-file. The SWEEP block must appear after a command that initializes the w 
-files with an initial guess for the solution of the first point of the 
+A sweep is actually performed by including a command named "SWEEP" in the
+command file. The SWEEP command does not take any parameters, and performs
+the sequence of calculations described in the Sweep block of the parameter
+file. The SWEEP block must appear after a command that initializes the w
+files with an initial guess for the solution of the first point of the
 sweep, e.g., by reading an initial guess from a file.
 
 \section scft_sweep_linear_sec Class LinearSweep
 
 The default implementation of sweep for all PSCF programs is a general
 linear sweep algorithm. This algorithm may be selected by using the
-label "Sweep" preceding a curly bracket in the first line of a sweep 
-block, as in the above example. A version of this algorithm is implemented 
-for each PSCF program by a class named LinearSweep. This algorithm can 
-thus be selected by including a Sweep block with the appropriate format 
-that starts either with a line containing the generic name Sweep (to 
-select the default algorithm) or LinearSweep (to explicitly select the 
+label "Sweep" preceding a curly bracket in the first line of a sweep
+block, as in the above example. A version of this algorithm is implemented
+for each PSCF program by a class named LinearSweep. This algorithm can
+thus be selected by including a Sweep block with the appropriate format
+that starts either with a line containing the generic name Sweep (to
+select the default algorithm) or LinearSweep (to explicitly select the
 algorithm provided by a class with this name).
 
 <em>Technical note: </em>
@@ -200,10 +200,10 @@ explained below:
     <td> historyCapacity* </td>
     <td>
     integer that gives the maximum number of previous states to use to
-    compute initial guesses by extrapolation.  Optional, and equal to 3 
-    by default. Set to 1 to use zeroth-order extrapolation, in which the 
-    fields from the previous state along the sweep are used as the initial 
-    guess for the next step, or 2 for linear linar extrapolation from the 
+    compute initial guesses by extrapolation.  Optional, and equal to 3
+    by default. Set to 1 to use zeroth-order extrapolation, in which the
+    fields from the previous state along the sweep are used as the initial
+    guess for the next step, or 2 for linear linar extrapolation from the
     previous two states.</td>
   </tr>
   <tr>
@@ -398,83 +398,83 @@ The uid index for a cell_parameter is a zero based integer index
 that identifies which parameter in such a list is being varied.
 
 The chi_top and chi_bottom parameters are only applicable to
-simulations of thin films performed with thepscf_pc or pscf_pg program, 
-as discussed \ref scft_thin_films_page "here". These are used to vary the 
-effective interaction parameters for interactions of a specific monomer 
+simulations of thin films performed with thepscf_pc or pscf_pg program,
+as discussed \ref scft_thin_films_page "here". These are used to vary the
+effective interaction parameters for interactions of a specific monomer
 type with the top or bottom surface of a thin film.
 
 \section scft_sweep_output_sec Output files
 
 A parameter sweep will output several files for each state point in
-the sweep. The names of all output files associated with a particular 
+the sweep. The names of all output files associated with a particular
 state include an integer index for that state point within the sweep,
 numbered starting from 0. The name of each such file name is given
 by a concatenation of the baseFileName string given in the Sweep block
-(if any), the integer index of the relevant state point, and a postfix 
-string or file extension that indicates the file type. If the optional 
-baseFileName parameter is absent, the default value of this variable 
-is any empty string, in which case these file names all start with an 
-integer index. 
+(if any), the integer index of the relevant state point, and a postfix
+string or file extension that indicates the file type. If the optional
+baseFileName parameter is absent, the default value of this variable
+is any empty string, in which case these file names all start with an
+integer index.
 
-The first type of file that is output for each state in a parameter 
-sweep is a "state file", which contains values for both the input 
+The first type of file that is output for each state in a parameter
+sweep is a "state file", which contains values for both the input
 parameters and the output thermodynamic properties for that state.
 Names for state files end with a file name extension ".stt", giving
 names of the form "0.stt", "1.stt", etc. See the linked page on
-\ref scft_thermo_state_sec "state files" for more information about 
+\ref scft_thermo_state_sec "state files" for more information about
 the format of these files.
 
-The other files output for each state in a parameter sweep are field 
-files. These always include a converged chemical potential field file 
-(a w field file) and somtimes include a file containing monomer 
-concentration (a c field file).  Formats and file name extensions for 
+The other files output for each state in a parameter sweep are field
+files. These always include a converged chemical potential field file
+(a w field file) and somtimes include a file containing monomer
+concentration (a c field file).  Formats and file name extensions for
 these files are different for different programs.
 
-In the case of the pscf_1d program, both a chemical potential field 
-and a monomer concentration field are always output, and are both 
-output in the \ref user_field_r1d_page "1D field file" used by 
-pscf_1d. Names for these files end with filename extension ".w" for 
+In the case of the pscf_1d program, both a chemical potential field
+and a monomer concentration field are always output, and are both
+output in the \ref user_field_r1d_page "1D field file" used by
+pscf_1d. Names for these files end with filename extension ".w" for
 chemical potential fields and ".c" for monomer concentration fields.
 
-In the case of the pscf_pc and pscf_pg programs, only the converged 
-chemical potential fields are output by default. If these converged 
-fields were obtained using an iterator that preserves space group 
-symmetry, such as AmIteratorBasis, they are output in 
-\ref user_field_basis_page "basis format", to files with names that 
+In the case of the pscf_pc and pscf_pg programs, only the converged
+chemical potential fields are output by default. If these converged
+fields were obtained using an iterator that preserves space group
+symmetry, such as AmIteratorBasis, they are output in
+\ref user_field_basis_page "basis format", to files with names that
 begin with an integer state index end with a suffix "_w.bf", such as
-"0_w.bf", "1_w.bf", etc. Otherwise, the w fields are output in 
-\ref user_field_rgrid_page "r-rgrid format" to files with names that 
-end in a suffix "_w.rf".  Chemical potential fields in rgrid format 
+"0_w.bf", "1_w.bf", etc. Otherwise, the w fields are output in
+\ref user_field_rgrid_page "r-rgrid format" to files with names that
+end in a suffix "_w.rf".  Chemical potential fields in rgrid format
 and/or monomer concentration fields in basis or rgrid format can also
-be output at each state point by adding the optional boolean input 
-parameters writeWRGrid, writeCBasis, and writeCRGrid with values of 1, 
-as described \ref scft_sweep_linear_param_sub "above". Names for these 
-files, when they are created, end with postfixes "_w.rf", "_c.bf" and 
-"_c.rf", respectively, where "_w" or "_c" is used to indicate a 
-chemical potential (w) or monomer concentration (c) field, while 
+be output at each state point by adding the optional boolean input
+parameters writeWRGrid, writeCBasis, and writeCRGrid with values of 1,
+as described \ref scft_sweep_linear_param_sub "above". Names for these
+files, when they are created, end with postfixes "_w.rf", "_c.bf" and
+"_c.rf", respectively, where "_w" or "_c" is used to indicate a
+chemical potential (w) or monomer concentration (c) field, while
 ".bf" or ".rf" is used to indicate a basis or rgrid field file format.
 
 In addition to files that are output for each state, a sweep command
-creates a single log file named "sweep.log" that contains a small table 
+creates a single log file named "sweep.log" that contains a small table
 with one row for each state point in the sweep. Each row in this file
 contains an integer index for a state point, the fractional position
-along the parameter sweep (denoted "ds"), the Helmholtz free energy and 
-the non-dimensionalized pressure. Values for the Helmholtz free energy 
-and pressure are reported using the same conventions as those used for 
+along the parameter sweep (denoted "ds"), the Helmholtz free energy and
+the non-dimensionalized pressure. Values for the Helmholtz free energy
+and pressure are reported using the same conventions as those used for
 the variables "fHelmholtz" and "pressure" reported in the
 \ref scft_thermo_page "thermo file block" of a state file.
 
-The PSCF package includes a set of Python data analysis tools that 
-are particularly useful for analysis of parameter sweeps. After a 
-sweep is completed, the Python class pscfpp.output.sweep can be used 
-to parse all of the state files produced by a sweep and produce 
-Python lists or tables of data that contain any combination of input 
-and output variables that the user wishes. See the manual page on 
-\ref analysis_python_page "Python Tools" for documentation of this 
+The PSCF package includes a set of Python data analysis tools that
+are particularly useful for analysis of parameter sweeps. After a
+sweep is completed, the Python class pscfpp.output.sweep can be used
+to parse all of the state files produced by a sweep and produce
+Python lists or tables of data that contain any combination of input
+and output variables that the user wishes. See the manual page on
+\ref analysis_python_page "Python Tools" for documentation of this
 and other Python postprocessing tools.
 
 <BR>
-\ref scft_iterator_page   (Prev)   &nbsp; &nbsp; &nbsp; &nbsp; 
+\ref scft_iterator_page   (Prev)   &nbsp; &nbsp; &nbsp; &nbsp;
 \ref scft_page            (Up)     &nbsp; &nbsp; &nbsp; &nbsp;
 \ref scft_param_page      (Next)
 

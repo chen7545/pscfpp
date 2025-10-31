@@ -4,9 +4,9 @@
 \ref developer_page (Next)
 <BR>
 
-The PSCF repository contains a package of python tools that allow 
-the user to read, parse and modify several different types of input 
-and output files used by the package.  These tools can be used to 
+The PSCF repository contains a package of python tools that allow
+the user to read, parse and modify several different types of input
+and output files used by the package.  These tools can be used to
 create workflows to analyze output files or to prepare or modify
 input files.
 

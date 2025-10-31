@@ -6,53 +6,53 @@
 
 In a field theoretic treatment of an incompressible system, the
 partial-saddle approximation (PSA) is an approximation for the
-treatment of the pressure like field that acts to constrain the 
+treatment of the pressure like field that acts to constrain the
 total density. When it is applicable, the approximation yields a
-theory with real statistical weights for all allowed field 
+theory with real statistical weights for all allowed field
 configurations.
 
 \section psfts_psa_ab_sec AB Systems (\f$ M = 2 \f$)
 
-We first consider the PSA for an incompressible standard AB system with 
-\f$ \chi > 0 \f$.  In the fully fluctuating theory for such a system, 
-the partition function can be expressed as an functional integral over 
-a real exchange field \f$ W_{-} \f$ and an imaginary pressure-like 
-field \f$ W_{-}({\bf r}) = i\omega_{+} \f$.  
+We first consider the PSA for an incompressible standard AB system with
+\f$ \chi > 0 \f$.  In the fully fluctuating theory for such a system,
+the partition function can be expressed as an functional integral over
+a real exchange field \f$ W_{-} \f$ and an imaginary pressure-like
+field \f$ W_{-}({\bf r}) = i\omega_{+} \f$.
 
 In the PSA for such a system, \f$ Z \f$ is approximated by functional
-integral with respect to \f$ W_{-} \f$ in which the Hamiltonian 
-\f$ H \f$ is evaluated in a configuration in which \f$ W_{+} \f$ is 
+integral with respect to \f$ W_{-} \f$ in which the Hamiltonian
+\f$ H \f$ is evaluated in a configuration in which \f$ W_{+} \f$ is
 chosen so as to give a vanishing partial functional derivative of
-\f$ H \f$ with respect to \f$ W_{+}({\bf r}) \f$. 
+\f$ H \f$ with respect to \f$ W_{+}({\bf r}) \f$.
 This yields an approximate for the partition function as an integal
 \f[
    Z = \frac{1}{N} \int DW_{-} \; e^{-H[ W_{-}, W_{+}^{*}]}
 \f]
-in which \f$ \int D W_{-} \f$ denotes a functional integral over 
-the exchange field \f$ W_{-} \f$, while \f$ W_{+}^{*} \f$ denotes 
-a configuration of \f$ W_{+}({\bf r}) \f$ that is chosen to satisfy 
+in which \f$ \int D W_{-} \f$ denotes a functional integral over
+the exchange field \f$ W_{-} \f$, while \f$ W_{+}^{*} \f$ denotes
+a configuration of \f$ W_{+}({\bf r}) \f$ that is chosen to satisfy
 the so-called partial-saddle point condition
 \f[
-    0 = \left .  \frac{ \delta H } { \delta W_{+}({\bf r}) } 
+    0 = \left .  \frac{ \delta H } { \delta W_{+}({\bf r}) }
     \right |_{W_{-}}
-    =  \frac{1}{v} 
+    =  \frac{1}{v}
    \left [ \phi_{1}{\bf r}) + \phi_{2}({\bf r}) - 1\right ]
 \f]
 for all \f$ {\bf r} \f$.
 Note that this condition is satisfied if and only if
-\f$ \phi_{1}({\bf r}) + \phi_{2}({\bf r}) = 1 \f$. 
+\f$ \phi_{1}({\bf r}) + \phi_{2}({\bf r}) = 1 \f$.
 Partial saddle-point field configurations thus satisfy a mean-field
-version of the incompressibility constraint that is identical to 
+version of the incompressibility constraint that is identical to
 the form of this constraint used in SCFT. SCFT solutions also satisfy
-the requirement that \f$ \delta H/\delta W_{-}({\bf r}) = 0 \f$, 
-however, while PS-FTS methods allow \f$ W_{-}({\bf r}) \f$ to 
+the requirement that \f$ \delta H/\delta W_{-}({\bf r}) = 0 \f$,
+however, while PS-FTS methods allow \f$ W_{-}({\bf r}) \f$ to
 fluctuate.
 
 Partial saddle-point field configuration for states characterized
 by a real-valued exchange field \f$ W_{-}({\bf r}) \f$ always have
-a real-valued field \f$ W_{+}({\bf r}) \f$, corresponding to a pure 
+a real-valued field \f$ W_{+}({\bf r}) \f$, corresponding to a pure
 imaginary value of \f$ \omega_{+}({\bf r}) \f$.
-Such a field configurations always yield real monomer w-fields fields, 
+Such a field configurations always yield real monomer w-fields fields,
 given by
 \f[
    w_{1}({\bf r}) =  W^{*}_{+}({\bf r}) + W_{-}({\bf r})  \quad
@@ -61,102 +61,102 @@ given by
    w_{2}({\bf r}) =  W^{*}_{+}({\bf r}) - W_{-}({\bf r})  \quad.
 \f]
 Partial saddle-point field configurations are also characterized
-by real values for \f$ \ln Z_{\rm id}[w] \f$ and the Hamiltonian 
-\f$ H \f$. 
+by real values for \f$ \ln Z_{\rm id}[w] \f$ and the Hamiltonian
+\f$ H \f$.
 
 \section psfts_psa_general_sec General Case (\f$ M \geq 2 \f$)
 
-The current version of PSCF allows PS-FTS simulations of some 
-systems with M > 2, subject to a constraint on allowed values of the 
-\f$ \chi \f$ parameters:  The implementation of the PSA in the current 
-version of PSCF is applicable if and only if the nontrivial eigenvalues 
-of the projected \f$ \chi \f$ matrix, 
+The current version of PSCF allows PS-FTS simulations of some
+systems with M > 2, subject to a constraint on allowed values of the
+\f$ \chi \f$ parameters:  The implementation of the PSA in the current
+version of PSCF is applicable if and only if the nontrivial eigenvalues
+of the projected \f$ \chi \f$ matrix,
 \f$ \lambda_{1}, \ldots , \lambda_{M-1} \f$,
-are all negative.  When applied a standard AB system, this is 
+are all negative.  When applied a standard AB system, this is
 equivalent to a requirement that \f$ \chi > 0 \f$. In general, when
 this condition is satisfied, then \f$ \sigma_{i} = 1 \f$, and thus
-\f[ 
+\f[
    W_{\alpha}({\bf r}) = \omega_{\alpha}({\bf r}) + S_{\alpha}
 \f]
-for all \f$ \alpha = 1, \ldots, M - 1 \f$, giving real values for all 
+for all \f$ \alpha = 1, \ldots, M - 1 \f$, giving real values for all
 these fields. Because \f$ W_{\alpha} \f$ and \f$ \omega_{\alpha} \f$
-then only differ by a constant shift for these fields, any 
-functional integrals with respect to \f$ \omega_{\alpha} \f$ with 
-\f$ \alpha < M \f$ can be re-written as an integral with respect 
+then only differ by a constant shift for these fields, any
+functional integrals with respect to \f$ \omega_{\alpha} \f$ with
+\f$ \alpha < M \f$ can be re-written as an integral with respect
 to \f$ W_{\alpha} \f$ without changing the integral.
 
-To discuss the generalized PSA for such systems, it is convenient to 
+To discuss the generalized PSA for such systems, it is convenient to
 adopt a modified notation analogous to that used for AB systems, in
 which we use \f$ W_{-} \f$ as short-hand for the list of fields
 \f[
    W_{-} = [W_{1}, \ldots, W_{M-1}] \quad,
 \f]
-which we refer to collectively as exchange fields, while using 
-\f$ W_{+} \f$ as an alternate symbol for the pressure-like field 
-\f$ W_{M} \f$. Using this notation, we may express the generalized 
-PSA for such systems as an integral 
+which we refer to collectively as exchange fields, while using
+\f$ W_{+} \f$ as an alternate symbol for the pressure-like field
+\f$ W_{M} \f$. Using this notation, we may express the generalized
+PSA for such systems as an integral
 \f[
    Z = \frac{1}{N} \int D W_{-} \; e^{-H[W_{-}, W_{+}^{*}]}
 \f]
-in which \f$ \int DW_{-} \f$ denotes a functional integral over 
-the \f$ M - 1 \f$ real exchange fields 
-\f$ W_{-} = [W_1, \ldots, W_{M-1}] \f$, and in which 
-\f$ W_{+}^{*} \f$ denotes a real-valued configuration of 
+in which \f$ \int DW_{-} \f$ denotes a functional integral over
+the \f$ M - 1 \f$ real exchange fields
+\f$ W_{-} = [W_1, \ldots, W_{M-1}] \f$, and in which
+\f$ W_{+}^{*} \f$ denotes a real-valued configuration of
 \f$ W_{+}({\bf r}) \f$ that is chosen to satisfy a partial
 saddle-point condition requiring that
 \f[
-    0 = \left . 
+    0 = \left .
     \frac{ \delta H }
-         { \delta W_{+}({\bf r}) } 
+         { \delta W_{+}({\bf r}) }
     \right |_{W_{-}}
 \f]
 for all \f$ {\bf r} \f$.
-This partial saddle-point criterion can be shown to be equivalent 
-to a requirement that 
+This partial saddle-point criterion can be shown to be equivalent
+to a requirement that
 \f[
     \sum_{i=}^{M} \phi_{i}({\bf r}) = 1
     \quad.
 \f]
-In the case considered here, for which 
-\f$ \lambda_{1}, \ldots, \lambda_{M-1} \f$ are all negative, the 
-partial saddle-point approximation yields real values for all average 
+In the case considered here, for which
+\f$ \lambda_{1}, \ldots, \lambda_{M-1} \f$ are all negative, the
+partial saddle-point approximation yields real values for all average
 monomer fields \f$ \phi_{1}({\bf r}), \ldots \phi_{M}({\bf r}) \f$ and
 for the Hamiltonian \f$ H \f$ in all allowed field configurations.
 
 \anchor psfts_psa_status
 <b> Status of Algorithms for \f$ M > 2 \f$: </b>
 
-The BD and MC algorithms currently provided PSCF can perform simulations 
-of systems with \f$ M \geq 2 \f$ if and only if the projected chi matrix 
-has no positive eigenvalues. This statement applies both to the actual BD 
-and MC algorithms used to generate random changes in exchange fields and 
-to the \ref psfts_algorithm_compressor_sec "compressor" algorithms used 
-to identify partial saddle points. For ABC systems, this requirement 
-imposes several constraints on the allowed ranges of values of the chi 
+The BD and MC algorithms currently provided PSCF can perform simulations
+of systems with \f$ M \geq 2 \f$ if and only if the projected chi matrix
+has no positive eigenvalues. This statement applies both to the actual BD
+and MC algorithms used to generate random changes in exchange fields and
+to the \ref psfts_algorithm_compressor_sec "compressor" algorithms used
+to identify partial saddle points. For ABC systems, this requirement
+imposes several constraints on the allowed ranges of values of the chi
 parameters, as discussed in the article by
 <a href="https://pubs.acs.org/doi/10.1021/acs.macromol.4c02636">
 Morse, Yong and Chen </a>.
 
-Some of the data analysis algorithms provided in the current version of 
-PSCF were, however, designed specifically for systems with \f$ M = 2 \f$ 
-and are only usable with such systems.  The "analyzer" class that implements 
-each such restricted algorithm checks whether \f$ M = 2 \f$, and will print 
+Some of the data analysis algorithms provided in the current version of
+PSCF were, however, designed specifically for systems with \f$ M = 2 \f$
+and are only usable with such systems.  The "analyzer" class that implements
+each such restricted algorithm checks whether \f$ M = 2 \f$, and will print
 an error message and then halt execution before entering the main simulation
-loop if a user attempts to apply it to a system with \f$ M > 2 \f$. 
-Currently, it is thus possible to perform PS-FTS calculations on some ABC 
+loop if a user attempts to apply it to a system with \f$ M > 2 \f$.
+Currently, it is thus possible to perform PS-FTS calculations on some ABC
 systems, but some data analysis algorithms cannot be used for this purpose.
 
-Morse, Yong and Chen have proposed a further generalization of the PSA 
-so as to treat cases in which one or more of the \f$ M - 1 \f$ nontrival 
-eigenvalues of the projected \f$ \chi \f$ matrix are positive. 
-Specificially, they proposed treating the auxiliary fields associated with 
-such eigenvalues in a PSA, in addition to the use of the PSA for the 
-pressure-like field \f$ W_{M} \f$.  This generalized version of the PSA 
-is not implemented in the current version of PSCF, in which the PSA is 
+Morse, Yong and Chen have proposed a further generalization of the PSA
+so as to treat cases in which one or more of the \f$ M - 1 \f$ nontrival
+eigenvalues of the projected \f$ \chi \f$ matrix are positive.
+Specificially, they proposed treating the auxiliary fields associated with
+such eigenvalues in a PSA, in addition to the use of the PSA for the
+pressure-like field \f$ W_{M} \f$.  This generalized version of the PSA
+is not implemented in the current version of PSCF, in which the PSA is
 currently only applied to \f$ W_{M} \f$.
 
 <BR>
-\ref psfts_theory_page         (Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
+\ref psfts_theory_page         (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref psfts_page             (Up)   &nbsp; &nbsp; &nbsp; &nbsp;
 \ref psfts_algorithm_page   (Next)
 

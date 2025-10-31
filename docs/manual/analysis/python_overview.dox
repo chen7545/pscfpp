@@ -5,19 +5,19 @@
 <BR>
 
 All Python source code files that are provided with PSCF are located
-within the lib/python/pscfpp directory of the repository directory tree.  
-Every Python file in in this directory defines a module that belongs to 
-a Python package named 'pscfpp'. The full name of each such module thus 
+within the lib/python/pscfpp directory of the repository directory tree.
+Every Python file in in this directory defines a module that belongs to
+a Python package named 'pscfpp'. The full name of each such module thus
 begins with a package name prefix 'pscfpp' followed by the dot and the
-base name of the source file.  For example, to use a class or function 
-that that is defined in the file 'lib/python/pscfpp/param.py', one must 
-import the contents of module pscfpp.param from within a Python 
+base name of the source file.  For example, to use a class or function
+that that is defined in the file 'lib/python/pscfpp/param.py', one must
+import the contents of module pscfpp.param from within a Python
 interpreter.
 
-\section analysis_python_parser_sec Parser classes 
+\section analysis_python_parser_sec Parser classes
 
 The pscfpp package contains a set of class that are each designed to read
-and parse one of the file formats used by PSCF for input or output files.  
+and parse one of the file formats used by PSCF for input or output files.
 Python classes have been created to parse the following data file formats:
 
    - Parameter files (class pscfpp.param.Composite)
@@ -29,10 +29,10 @@ Python classes have been created to parse the following data file formats:
 
 The fully qualified name of each parser class is given in parentheses in
 the above list.  To streamline discussion, we will refer to these classes
-primarily by short names in the remainder of this section of the manual. 
-These short class names are constructed by dropping the common pscfpp 
-package prefix and dropping the module name in all but one case. In the 
-remainder of the discussion, we refer to these parser classes by the 
+primarily by short names in the remainder of this section of the manual.
+These short class names are constructed by dropping the common pscfpp
+package prefix and dropping the module name in all but one case. In the
+remainder of the discussion, we refer to these parser classes by the
 following short names:
 
    - \ref analysis_python_param_page "param.Composite"
@@ -42,8 +42,8 @@ following short names:
    - \ref analysis_python_command_page "Script"
    - \ref analysis_python_field_page  "Field"
 
-We retain the module name "param" in the short name param.Composite 
-because we regard the module name param as an informative part of 
+We retain the module name "param" in the short name param.Composite
+because we regard the module name param as an informative part of
 the class name in this case.
 
 \section analysis_python_overview_usage_sec Usage
@@ -59,15 +59,15 @@ python3 on a system in which Python 2.7 is still the default (which is
 becoming increasingly rare).
 
 Rather than opening a interactive interpreter, one can write a python
-script that imports and uses one or more modules from the pscfpp package, 
-and then execute that script by passing it as an argument to the "python" 
+script that imports and uses one or more modules from the pscfpp package,
+and then execute that script by passing it as an argument to the "python"
 or "python3" command.
 
-The \ref install_environment_page 
-"instructions for compiling the PSCF C++/CUDA code" require each user 
-to add the directory pscfpp/lib/python to their Python module search 
-path (i.e., to their PYTHONPATH environment variable). As long as this 
-directory is in the Python path, a Python interpreter should be able to 
+The \ref install_environment_page
+"instructions for compiling the PSCF C++/CUDA code" require each user
+to add the directory pscfpp/lib/python to their Python module search
+path (i.e., to their PYTHONPATH environment variable). As long as this
+directory is in the Python path, a Python interpreter should be able to
 find any module in the pscfpp package.
 
 \section analysis_python_overview_doc_sec Python API documentation

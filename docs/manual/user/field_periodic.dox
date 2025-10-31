@@ -28,22 +28,22 @@ following three field file formats:
 Each of these file formats for periodic structures contains a header
 section that includes a information about the dimension of space,
 the crystal lattice system, unit cell parameters, and the number of
-monomer types, among other information. 
+monomer types, among other information.
 
 The dimensions of the mesh used by the program that reads a file in
 r-grid or k-grid format (as given in the parameter file) must match
 the dimensions of the mesh used by the program that wrote the file
-(as declared in the field file header for these formats). The 
-dimensions of this mesh are included in the header section of files 
+(as declared in the field file header for these formats). The
+dimensions of this mesh are included in the header section of files
 written in r-grid and k-grid format.
 
 The basis format is instead designed to allow users to change mesh
 dimensions: A instance of a program for which a particular list of
 mesh dimensions is declared in the parameter file can usually read
 and correctly intepret a field file that was created using a basis
-designed for a different mesh.  The basis format can thus usually be 
-used to change resolution by, for example, using a converged solution 
-obtained with a coarse mesh as an initial guess for the solution on 
+designed for a different mesh.  The basis format can thus usually be
+used to change resolution by, for example, using a converged solution
+obtained with a coarse mesh as an initial guess for the solution on
 a refined mesh.
 
 The current C++ version of PSCF can also read the basis and r-grid
@@ -58,8 +58,8 @@ field file format.
 
 \section user_field_periodic_contents_sub Contents
 
-The format of the header section and of the data section used by 
-each field file type are described in more detail in the sub-pages 
+The format of the header section and of the data section used by
+each field file type are described in more detail in the sub-pages
 linked below:
 
 <ol>

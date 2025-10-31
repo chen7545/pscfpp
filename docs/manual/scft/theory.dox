@@ -7,10 +7,10 @@
 Below, we summarize a few of the working equations underlying the
 form of self-consistent field theory (SCFT) used by PSCF. This is not
 intended to be an introduction to the field theory itself, and we do
-not provide a derivation of the SCFT equations. We assume readers 
-are familiar with the principles of polymer physics and statistical 
-mechanics. Several recommended references for information about SCFT 
-are given \ref about_methods_page "here". 
+not provide a derivation of the SCFT equations. We assume readers
+are familiar with the principles of polymer physics and statistical
+mechanics. Several recommended references for information about SCFT
+are given \ref about_methods_page "here".
 
 \section scft_theory_setup_sec Model and notation
 
@@ -19,7 +19,7 @@ number of block polymer species and point-like solvent molecular
 species.
 
 In what follows, we consider a system with \f$ C \f$ distinct monomer
-types, \f$ P \f$ block polymer species, and \f$ S\f$ solvent species. We 
+types, \f$ P \f$ block polymer species, and \f$ S\f$ solvent species. We
 use a convention in which the symbols \f$ \alpha, \beta = 0, \ldots, C-1\f$
 are used as indices for monomer types, symbols \f$ a, b \f$ are used to
 denote indices for blocks within a specific block polymer species, and
@@ -90,7 +90,7 @@ for all \f$ \alpha = 0,\ldots,C-1 \f$, in which \f$ \chi_{\alpha\beta}\f$
 is a binary Flory-Huggins dimensionless interaction parameter, defined
 such that \f$ \chi_{\alpha\beta} = \chi_{\beta\alpha} \f$.
 Here, \f$ \xi({\bf r}) \f$ is a dimensionless Lagrange multiplier
-pressure field that must be chosen so that the average monomer 
+pressure field that must be chosen so that the average monomer
 concentrations in the ideal gas reference system satisfy the
 \ref scft_theory_incompressibility_eqn "incompressibility constraint"
 given above.

@@ -28,12 +28,12 @@ and a command file named "command", using the command
 \code
    pscf_pc -e -p param -c command > log
 \endcode
-Also suppose that the current working directory has subdirectories named 
-"in" and "out", such that the "in" directory contains an initial w-field 
-file named w.bf that is written in symmetry-adapted basis format, while 
-all output files are written to the "out" directory.  
+Also suppose that the current working directory has subdirectories named
+"in" and "out", such that the "in" directory contains an initial w-field
+file named w.bf that is written in symmetry-adapted basis format, while
+all output files are written to the "out" directory.
 
-An example of a minimal command file for a SCFT calculation of a structure 
+An example of a minimal command file for a SCFT calculation of a structure
 with a specified space group symmetry is shown below:
 \code
 READ_W_BASIS    in/w.bf
@@ -42,9 +42,9 @@ WRITE_W_BASIS   out/w.bf
 WRITE_C_RGRID   out/c.rf
 FINISH
 \endcode
-This command file could also be used by the GPU accelerated pscf_pg 
+This command file could also be used by the GPU accelerated pscf_pg
 program, which accepts the same set of commands and input file formats
-as scf_pc.  This command file instructs the program to perform the 
+as scf_pc.  This command file instructs the program to perform the
 following actions:
 
 - READ_W_BASIS: Read in an initial set of chemical potential fields
@@ -116,11 +116,11 @@ to the name given for any input file, such as in/w.bf, while the
 prefix "out/" is prepended to the name of any output file, such as
 out/w.bf and out/c.rf.
 
-Input and output file prefixes that are given as arguments of the 
--i and -o options are automatically applied to the names of input 
-and output files that are specified either in the command file or 
-in the parameter file. The input prefix is not, however, applied 
-to the parameter and command file names that are given as arguments 
+Input and output file prefixes that are given as arguments of the
+-i and -o options are automatically applied to the names of input
+and output files that are specified either in the command file or
+in the parameter file. The input prefix is not, however, applied
+to the parameter and command file names that are given as arguments
 of the -p and -o command line options.
 
 <BR>

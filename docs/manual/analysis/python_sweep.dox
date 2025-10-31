@@ -5,17 +5,17 @@
 <BR>
 
 Class Sweep (pscfpp.output.Sweep) is different from the other pscfpp
-parser classes in that it is designed to parse and store the contents 
-of multiple data files, rather than a single file or file block.  This 
+parser classes in that it is designed to parse and store the contents
+of multiple data files, rather than a single file or file block.  This
 class is designed to parse all of the state files created by an SCFT
-parameter sweep, and store their contents in a Python list in which 
-each element is an instance of class State (pscfpp.output.State). Each 
-State object in this list contains all of the data contained in an 
-associated state file that describes one physical state (i.e., one 
-choice of input parameters) within a path through parameter space that 
-was traversed by the sweep.  The Sweep class is among the most useful 
+parameter sweep, and store their contents in a Python list in which
+each element is an instance of class State (pscfpp.output.State). Each
+State object in this list contains all of the data contained in an
+associated state file that describes one physical state (i.e., one
+choice of input parameters) within a path through parameter space that
+was traversed by the sweep.  The Sweep class is among the most useful
 of the parser classes, because it enormously simplifies analyses that
-would otherwise require manual inspection of the multiple output files 
+would otherwise require manual inspection of the multiple output files
 produced by a sweep.
 
 <b> Reading state files: </b>
@@ -39,23 +39,23 @@ files named
 \endcode
 Each of these state files contain the input parameters and output
 variables for an SCFT calculation peformed at a single state along
-the specified path through parameter space. We assume in what 
+the specified path through parameter space. We assume in what
 follows that a Python interpreter was launched from the parent
 directory of the directory 'out/' that contains these state files.
 
-To parse and store the contents of all of the numbered state files 
+To parse and store the contents of all of the numbered state files
 produced by such a sweep, one could enter the Python commands
 \code
     from pscfpp.output import *
     s = Sweep('out/')
 \endcode
-Here, we assign the resulting Sweep object to a variable named s. 
+Here, we assign the resulting Sweep object to a variable named s.
 The Sweep constructor takes a single string argument, which is a
-prefix string that appended to all of the output state files 
+prefix string that appended to all of the output state files
 created by the sweep, which is used here to specify files in the
-'out/' directory. The constructor reads and stores the contents 
+'out/' directory. The constructor reads and stores the contents
 of files with names given by this prefix, followed by an integer,
-followed by the file extension '.stt'. 
+followed by the file extension '.stt'.
 
 <b> Accessing State Objects and Variable Values: </b>
 
@@ -75,7 +75,7 @@ thus given by the quantities
     s[n-1]
 \endcode
 where n is the number of State objects contained in the parent Sweep.
-The integer index used to access each State object corresponds to the 
+The integer index used to access each State object corresponds to the
 integer that appears the name of the corresponding state file.
 
 The syntax for accessing variables stored with a State object can then
@@ -89,13 +89,13 @@ state) within a sweep. Similarly,
 \code
     s[1].param.Interaction.chi[0][1]
 \endcode
-is the chi parameter for interactions between monomer types 0 and 1 
+is the chi parameter for interactions between monomer types 0 and 1
 in the same state. Values of other input and output variables can be
 accessed similarly.
 
 <b> Generating a Summary Report: </b>
 
-The methods 'summary' and 'summaryString' of class Sweep can be 
+The methods 'summary' and 'summaryString' of class Sweep can be
 used to generate summary reports that contain a list of values for
 selected variables at each state point of a sweep. Both of these
 functions takes a list of strings as an argument, in which each string
@@ -103,7 +103,7 @@ in the list gives the name of a input or output variable using the
 syntax for accessing variables stored in a State function. The two
 methods differ in the form in which the resulting data is returned:
 The summary method returns the resulting report as a list of lists,
-while the summaryString method returns the report as a multi-line 
+while the summaryString method returns the report as a multi-line
 string suitable for printing.
 
 * *Table of values*: In our example, the expression

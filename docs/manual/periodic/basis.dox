@@ -11,16 +11,16 @@ invariant under all symmetry operations of a specified space group.
 We refer to the resulting basis as a symmetry-adapted Fourier basis,
 and the expansion as a symmetry-adapted Fourier series. This page
 discusses the mathematics underlying the construction of such a basis.
-The discussion of symmetry-adapted basis functions given here uses 
+The discussion of symmetry-adapted basis functions given here uses
 concepts and notation introduced in a separate appendix about
-\ref prdc_symmetry_page "crystal symmetry", which should be read 
+\ref prdc_symmetry_page "crystal symmetry", which should be read
 before this page.
 
-The discussion given here uses a notation appropriate to periodic 
-fields that are continuous functions of position within a 
-D-dimensional vector space. We discuss below how all of the main 
-results can also be interpreted so as to apply to symmetry-adapted 
-basis functions that are defined on the nodes of a regular mesh, 
+The discussion given here uses a notation appropriate to periodic
+fields that are continuous functions of position within a
+D-dimensional vector space. We discuss below how all of the main
+results can also be interpreted so as to apply to symmetry-adapted
+basis functions that are defined on the nodes of a regular mesh,
 subject to a few restrictions that we discuss.
 
 \section prdc_basis_mesh_sec Continuous vs. discretized functions
@@ -62,14 +62,14 @@ following assumptions and constraints are understood to apply:
      a crystal wavevector in a reciprocal basis is defined only
      modulo the number of grid points along the associated direction.
      When the wavevectors are said to be "distinct" or "inequivalent",
-     this must be understood to imply in this context that they are 
+     this must be understood to imply in this context that they are
      not aliases of one another.
 
    - The norm \f$ |{\bf G} |\f$ of a reciprocal lattice wavevector
      \f$ {\bf G} \f$, when needed, is defined to be the norm of
      a \ref prdc_fourier_minindex_sub "minimal image" of
-     \f$ {\bf G} \f$, i.e., the norm of an alias with integer 
-     components chosen so as to minimize the usual definition of the 
+     \f$ {\bf G} \f$, i.e., the norm of an alias with integer
+     components chosen so as to minimize the usual definition of the
      norm as \f$ |{\bf G}| = \sqrt{{\bf G}\cdot{\bf G}} \f$.
 
    - Some expressions that involve an integral over a unit cell of
@@ -78,33 +78,33 @@ following assumptions and constraints are understood to apply:
      of the mesh used to represent a single unit cell.
 
 If interpreted using these assumptions and constraints, all of the
-definitions and theorems presented in this appendix can be applied to 
+definitions and theorems presented in this appendix can be applied to
 periodic functions that are defined on the nodes of an appropriate
 mesh, as well as for continuous periodic functions.
 
 The requirement that the computational mesh be invariant under all
-elements of the relevant space group imposes constraints on allowed 
-choices for the dimensions of the mesh (i.e., the number of grid points 
-along each direction) used to describe a structure with a known 
-symmetry.  As a simple example, this requirement implies that one must 
-use equal numbers of grid points along the three orthogonal direction 
-of a mesh used to simulate a cubic crystal.  The existence of symmetry 
-operations that involve translations by fractions of a unit cell imposes 
+elements of the relevant space group imposes constraints on allowed
+choices for the dimensions of the mesh (i.e., the number of grid points
+along each direction) used to describe a structure with a known
+symmetry.  As a simple example, this requirement implies that one must
+use equal numbers of grid points along the three orthogonal direction
+of a mesh used to simulate a cubic crystal.  The existence of symmetry
+operations that involve translations by fractions of a unit cell imposes
 other constraints that can require the number of grid points along some
-directions to be multiples of some small integer. For example, a mesh 
-for a BCC crystal must use equal even numbers of grid points in all 
-directions in order to correctly represent operations that map the 
-origin to the body-centered point.  These constraints on mesh dimensions 
-are discussed in somewhat more detail \ref prdc_symmetry_invariant_def 
+directions to be multiples of some small integer. For example, a mesh
+for a BCC crystal must use equal even numbers of grid points in all
+directions in order to correctly represent operations that map the
+origin to the body-centered point.  These constraints on mesh dimensions
+are discussed in somewhat more detail \ref prdc_symmetry_invariant_def
 "here".
 
 The algorithm that PSCF uses to construct symmetry-adapted basis functions
-will fail if the parameter file contains a list of mesh dimensions and a 
-space group identifier that are incompatible, because the mesh would not 
+will fail if the parameter file contains a list of mesh dimensions and a
+space group identifier that are incompatible, because the mesh would not
 be invariant under all operations of the chosen space group.
-If the mesh dimensions and space group are found to be incompatible, the 
-pscf_pc and pscf_pg programs will write a message to the log file that 
-explains the nature of the error, and then halt execution. 
+If the mesh dimensions and space group are found to be incompatible, the
+pscf_pc and pscf_pg programs will write a message to the log file that
+explains the nature of the error, and then halt execution.
 
 \section prdc_basis_star_sec Wavevector stars
 
@@ -393,10 +393,10 @@ the factor \f$ e^{i {\bf G}'\cdot{\bf t}_{B}} \f$ generated by applying
 \f$ B \f$ to \f$ {\bf G}' \f$.
 
 <em>Proof</em>: Recall that, for \f$ C = AB \f$,
-\f$ R_{C} =  R_{A}R_{B} \f$ and 
-\f$ {\bf t}_{C} = {\bf t}_{A} + R_{A}{\bf t}_{B} \f$. 
-Using the fact that \f$ {\bf G}A = R_{A}^{\dagger}{\bf G} \f$, where 
-\f$ R_{A}^{\dagger} \f$ is the \ref prdc_symmetry_adjoint_def_eqn 
+\f$ R_{C} =  R_{A}R_{B} \f$ and
+\f$ {\bf t}_{C} = {\bf t}_{A} + R_{A}{\bf t}_{B} \f$.
+Using the fact that \f$ {\bf G}A = R_{A}^{\dagger}{\bf G} \f$, where
+\f$ R_{A}^{\dagger} \f$ is the \ref prdc_symmetry_adjoint_def_eqn
 "adjoint" of \f$ R_{A} \f$, observe that
 \f[
    {\bf G}'\cdot {\bf t}_{B}
@@ -509,21 +509,21 @@ by two different symmetry operations \f$ A, B \in S \f$, such that
 \f]
 where \f$ A = (R_{A}, {\bf t}_{A}) \f$ and
 \f$ B = (R_{B}, {\bf t}_{B}) \f$.
-The phase relationships generated by applying these symmetry 
-operations to a wave with wavevector \f${\bf G}\f$ are said to 
-yield a <em>binary contradiction</em> if application of \f$ A \f$ 
+The phase relationships generated by applying these symmetry
+operations to a wave with wavevector \f${\bf G}\f$ are said to
+yield a <em>binary contradiction</em> if application of \f$ A \f$
 and \f$ B \f$ to \f${\bf G}\f$ yield unequal phase factors
 \f[
    e^{i{\bf G}\cdot{\bf t}_{A}} \neq e^{i{\bf G}\cdot {\bf t}_{B}}
    \quad.
 \f]
-The existence of one or more such binary contradictions among the 
-phase relationships associated with a star implies that the star 
+The existence of one or more such binary contradictions among the
+phase relationships associated with a star implies that the star
 is cancelled.
 
 <b> Theorem D.9 (Binary contradictions imply unary contradictions) </b>:
 If the phase relationships among the wavevectors in a star contain
-one or more binary contradictions, then there also exists a unary 
+one or more binary contradictions, then there also exists a unary
 contradiction for every wavevector in the star.
 
 <em>Proof</em>:
@@ -714,15 +714,15 @@ nonzero vectors of equal magnitude, and \f$ T \f$ is closed under
 inversion if \f$ {\bf G}' = -{\bf G} \f$ and open otherwise. Now
 consider the case of a star that contains three or more nonzero
 wavevectors.  Suppose that a star \f$ T \f$ of space group \f$ S \f$
-contains three or more nonzero wavevectors, and that \f$ T \f$ is not 
-open, so that there exists at least one wavevector \f$ {\bf G} \in T \f$ 
+contains three or more nonzero wavevectors, and that \f$ T \f$ is not
+open, so that there exists at least one wavevector \f$ {\bf G} \in T \f$
 for which \f$ -{\bf G} \in T \f$.  Let \f$ {\bf G}' \f$ be any other
 wavevector in \f$ T \f$, for which \f$ {\bf G}' \neq {\bf G} \f$ and
 \f$ {\bf G}' \neq -{\bf G} \f$. There must exist a symmetry operation
 \f$ A = (R, {\bf t}) \f$ in \f$ S \f$ such that
-\f$ {\bf G}' = R^{\dagger}{\bf G} \f$ (where \f$ R^{\dagger} \f$ is the 
-\ref prdc_symmetry_adjoint_def_eqn "adjoint" of \f$ R \f$ and 
-\f$ {\bf G}A = R^{\dagger}{\bf G} \f$). 
+\f$ {\bf G}' = R^{\dagger}{\bf G} \f$ (where \f$ R^{\dagger} \f$ is the
+\ref prdc_symmetry_adjoint_def_eqn "adjoint" of \f$ R \f$ and
+\f$ {\bf G}A = R^{\dagger}{\bf G} \f$).
 Closure of the star under symmetry operations then implies that
 \f$ - {\bf G}' \f$ is also in \f$ T \f$, because
 \f$ -{\bf G}' = R^{\dagger}(-{\bf G}) \f$. This implies that a star
@@ -805,7 +805,7 @@ The following theorem allows a particularly simple treatment of star
 functions of centro-symmetric groups:
 
 \anchor prdc_basis_centro_closed_thrm
-<b> Theorem D.16 (Stars of centrosymmetric groups) </b>: All stars of 
+<b> Theorem D.16 (Stars of centrosymmetric groups) </b>: All stars of
 a centro-symmetric group are closed under inversion.
 
 <em>Proof</em>: An inversion operation \f$ i = (-I, 2{\bf c}) \f$
@@ -823,40 +823,40 @@ that a real star function can be defined for every star of any
 centro-symmetric group.
 
 \anchor prdc_basis_centro_origin_thrm
-<b> Theorem D.17 (Star functions of groups with  an inversion center at the origin) </b>: 
-If a group \f$ S \f$ has an inversion center at the origin of space, then 
-it is possible to define a star function for every star of \f$ S \f$ in 
-which the coefficients of all waves are real, and in which coefficients of 
+<b> Theorem D.17 (Star functions of groups with  an inversion center at the origin) </b>:
+If a group \f$ S \f$ has an inversion center at the origin of space, then
+it is possible to define a star function for every star of \f$ S \f$ in
+which the coefficients of all waves are real, and in which coefficients of
 waves with wavevectors \f${\bf G}\f$ and \f$-{\bf G}\f$ are equal.
 
-<em>Proof</em>: If the group has an inversion center at the origin, it 
-has a symmetry operation \f$ i = (-I,0) \f$ that relates an vector 
-\f${\bf G}\f$ to \f$-{\bf G} = {\bf G}i\f$. The associated phase 
-relationship requires that the coefficients of the two associated waves 
-must be equal. By Theorem D.16, it is always possible to define a real 
-star function associated with every star of such a group, in which 
-coefficients of waves with wavevectors \f${\bf G}\f$ and \f$-{\bf G}\f$ 
-must be complex conjugates. A pair of coefficients that are both equal 
+<em>Proof</em>: If the group has an inversion center at the origin, it
+has a symmetry operation \f$ i = (-I,0) \f$ that relates an vector
+\f${\bf G}\f$ to \f$-{\bf G} = {\bf G}i\f$. The associated phase
+relationship requires that the coefficients of the two associated waves
+must be equal. By Theorem D.16, it is always possible to define a real
+star function associated with every star of such a group, in which
+coefficients of waves with wavevectors \f${\bf G}\f$ and \f$-{\bf G}\f$
+must be complex conjugates. A pair of coefficients that are both equal
 and complex conjugates must both be real.
 
 Comment: The conclusion that coefficients of all waves can be chosen
 to be real for star functions of groups that have an inversion center
-at the origin does not mean that the the coefficients of different 
-waves within a star are necessarily all of the same sign, or that 
-they can thus all be chosen to be equal positive numbers. In a group 
-that has an inversion center at the origin but that also contains 
-contain non-symmorphic glide plane or screw axis symmetries, it possible 
-for phase relationships arising from these other symmetry operations to 
-require coefficients of different waves within the same star to be 
-of opposite sign. This occurs, for example, in star functions of the 
-space group \f$ Ia\overline{3}d\f$ of the double gyroid phase. 
+at the origin does not mean that the the coefficients of different
+waves within a star are necessarily all of the same sign, or that
+they can thus all be chosen to be equal positive numbers. In a group
+that has an inversion center at the origin but that also contains
+contain non-symmorphic glide plane or screw axis symmetries, it possible
+for phase relationships arising from these other symmetry operations to
+require coefficients of different waves within the same star to be
+of opposite sign. This occurs, for example, in star functions of the
+space group \f$ Ia\overline{3}d\f$ of the double gyroid phase.
 
-Comment: The simplest case is that of a symmorphic group with an 
-inversion center at the origin, such as the \f$ I m\overline{3}m \f$ 
+Comment: The simplest case is that of a symmorphic group with an
+inversion center at the origin, such as the \f$ I m\overline{3}m \f$
 space group of a BCC crystal. (Recall: The symmetry operations of a
 symmorphic group are all point group operations, without any nonzero
-translations). In this special case, all stars are closed, and 
-coefficients of all waves in each star must all have equal values 
+translations). In this special case, all stars are closed, and
+coefficients of all waves in each star must all have equal values
 that can all be chosen to be positive by convention.
 
 <BR>

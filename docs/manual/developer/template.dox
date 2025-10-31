@@ -207,14 +207,14 @@ following locations:
      ideal gas problems in every PSCF program.
 
    - The directories src/prdc/field, src/prdc/solvers, and src/prdc/system
-     contain templates for a variety of class templates that are each 
+     contain templates for a variety of class templates that are each
      designed to be used as base classes for a pair of closely analogous
-     classes used in pscf_pc and pscf_pg, respectively, to treat problems 
+     classes used in pscf_pc and pscf_pg, respectively, to treat problems
      with periodic boundary conditions.
 
 \section developer_template_types_sec Implicit vs. Explicit Instantiation
 
-For some purposes, it is useful to divide class templates used by PSCF into 
+For some purposes, it is useful to divide class templates used by PSCF into
 two categories that differ in how they are treated by the build system:
 <ol type="A">
    <li>
@@ -227,8 +227,8 @@ two categories that differ in how they are treated by the build system:
    </li>
 
    <li>
-   <b> Explicitly instantiated templates </b>: These are templates for 
-   which there exist only a few possible valid specializations, and for 
+   <b> Explicitly instantiated templates </b>: These are templates for
+   which there exist only a few possible valid specializations, and for
    which all valid specializations are compiled by explicit instantiation.
    </li>
 
@@ -254,7 +254,7 @@ The class definition for each standard class template is contained in a
 header file that ends with file suffix .h. The base name of this header
 file is generally the same as the name of the class template. This header
 file should also always include definitions of any inline member functions.
-Definitions of non-inline member functions for a standard class templates 
+Definitions of non-inline member functions for a standard class templates
 may be organized in either of two ways:
 
    - Definition of all class member functions may also be placed in the
@@ -278,9 +278,9 @@ In this usage, the \*.tpp implementation file is treated by the compiler
 as a part of the header file, because the implementation file is included
 into the header file by the preprocessor, and thus will be indirectly
 indirectly included by any file that includes the header file. In this
-case, the division of the source code into two files is simply a 
+case, the division of the source code into two files is simply a
 convenience for human readers. For either way of organizing code for a
-standard template, the compiler sees a translation unit that contains 
+standard template, the compiler sees a translation unit that contains
 the class definition and all member function definitions.
 
 \subsection developer_template_explicit_sub B. Explicitly instantiated templates
@@ -288,23 +288,23 @@ the class definition and all member function definitions.
 The source code for PSCF contains some types of class templates for which
 there exist only a few valid values for the template parameters, and thus
 only a few possible valid specializations.  For some such classes, the
-PSCF build system relies heavily on the use of explicit instantiation to 
-compile all valid specializations.  Use of explicit instantiation allows 
+PSCF build system relies heavily on the use of explicit instantiation to
+compile all valid specializations.  Use of explicit instantiation allows
 the build system to treat these template specializations in a manner very
-similar to that used for non-templated classes, in which valid 
+similar to that used for non-templated classes, in which valid
 specializations are compiled to form object code modules that are placed
 in an object file, incorporated into a library file, and later linked to
-create executables. The conventions used by PSCF for such classes require 
-the use of "extern template" explicit instantiation declarations in header 
-files to suppress unwanted implicit instantiation of these templates, as 
-well as explicit instantiation definitions in source files that are 
+create executables. The conventions used by PSCF for such classes require
+the use of "extern template" explicit instantiation declarations in header
+files to suppress unwanted implicit instantiation of these templates, as
+well as explicit instantiation definitions in source files that are
 compiled by the build system.
 
 The use of explicit instantiation for many classes reduces some potential
-disadvantages of the heavy use of templates by PSCF. Use of explicit 
-instantiation signficantly reduces compilation times, because it reduces 
-the amount of source code that must be included into other files that 
-include the header for a such a class template. It also tends to simplify 
+disadvantages of the heavy use of templates by PSCF. Use of explicit
+instantiation signficantly reduces compilation times, because it reduces
+the amount of source code that must be included into other files that
+include the header for a such a class template. It also tends to simplify
 debugging of errors during development, because it tends to break the
 compilation process into smaller steps, and often allows the compiler to
 generate more easily interpretable error messages in response to syntax
@@ -314,24 +314,24 @@ The classes that the PSCF build system compiles by explicit instantiation
 generally fall into one of two categories:
 <ol type="1">
    <li>
-   Class templates for which the dimension D of space is the the only 
+   Class templates for which the dimension D of space is the the only
    template parameter.
    </li>
 
    <li>
-   Class templates that are used only as base classes for a few closely 
+   Class templates that are used only as base classes for a few closely
    analogous classes used by different programs.
    </li>
 </ol>
-The way that source code is organized into files is slightly different for 
+The way that source code is organized into files is slightly different for
 the two use cases listed above, which are thus described separately below:
 
 <b> B.1: Class templates for which D is the only template parameter</b> :
 
 Class templates for which the dimension of space D is the only template
 parameter appear throughout the source code for periodic system that is
-located in subdirectories src/prdc, src/rpc, and src/prg.  The source code 
-for each such class template is usually divided among three files with the 
+located in subdirectories src/prdc, src/rpc, and src/prg.  The source code
+for each such class template is usually divided among three files with the
 same base name but different file name suffixs:
 
    - A header file with suffix .h contains the class definition
@@ -552,7 +552,7 @@ src/prdc/cuda.
 
 Note that the header for the base class template does not contain any
 "extern template" explicit instantiation declarations. The required
-declarations are instead placed in the header file for each derived 
+declarations are instead placed in the header file for each derived
 class template.
 
 <em> Derived class template </em>

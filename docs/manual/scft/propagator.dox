@@ -14,7 +14,7 @@ familiar with the principles of polymer physics and statistical mechanics.
 
 \section scft_propagator_setup_sec Model and notation
 
-PSCF solves the SCFT equations for an incompressible mixture of any number 
+PSCF solves the SCFT equations for an incompressible mixture of any number
 of block polymer species and point-like solvent molecular species.
 
 In what follows, we consider a system with \f$ C \f$ distinct monomer

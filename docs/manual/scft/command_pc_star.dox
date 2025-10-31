@@ -1,83 +1,83 @@
 /*! \page scft_command_pc_star_page Command for pscf_pc: WRITE_STARS
-\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
-\ref scft_thermo_page      (Next) 
+\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp;
+\ref scft_thermo_page      (Next)
 <BR>
 
 THE WRITE_STARS command accepted by pscf_pc and pscf_pg programs writes
 a compact report of information about the stars of wavevectors that are
 related by space group symmetries. A more detailed report that contains
 information about individual wavevectors within each such star may be
-obtained by invoking the \ref scft_command_pc_wave_page "WRITE_WAVES" 
+obtained by invoking the \ref scft_command_pc_wave_page "WRITE_WAVES"
 command.
 
-<em> Conceptual background </em>: As background, before reading this 
+<em> Conceptual background </em>: As background, before reading this
 description of the output of the WRITE_STARS, we strongly recommend
-that users read the discussion of the relationships between "stars" 
-and basis functions given in the documentation of the 
-\ref user_field_basis_page "basis file format". 
-Users who would like a more complete discussion can also consult 
-appendices that discuss crystallographic space group 
-\ref prdc_symmetry_page "symmetry operations" and 
+that users read the discussion of the relationships between "stars"
+and basis functions given in the documentation of the
+\ref user_field_basis_page "basis file format".
+Users who would like a more complete discussion can also consult
+appendices that discuss crystallographic space group
+\ref prdc_symmetry_page "symmetry operations" and
 \ref prdc_basis_page "symmetry-adapted bases".
 
 <em> For users who examine the source code </em>:
-The format of this report is defined by the outputStars function of 
-class template Basis<int D>, which is defined in the file 
+The format of this report is defined by the outputStars function of
+class template Basis<int D>, which is defined in the file
 src/pscf/crystal/Basis.tpp.
 
 \section scft_command_pc_star_format_sec File Format (Overview)
 
-The file created by the WRITE_STARS command contains a header section 
+The file created by the WRITE_STARS command contains a header section
 similar to that used for field files, followed by a long data section.
-The last line of the header section contains the value for N_basis, 
-which is equal to both the total number of uncancelled stars and the 
-number of independent basis functions in the symmetry-adapated Fourier 
-expansion used by the program that wrote the file. 
+The last line of the header section contains the value for N_basis,
+which is equal to both the total number of uncancelled stars and the
+number of independent basis functions in the symmetry-adapated Fourier
+expansion used by the program that wrote the file.
 
-The data section contains one line per uncancelled star. Stars are 
+The data section contains one line per uncancelled star. Stars are
 listed in order of increasing eigenvalue of the Laplacian as computed
 using the unit cell parameters that were available when the basis was
-constructed.  A large section of the data section that has been removed 
-from this example, as indicated by vertical dots. 
+constructed.  A large section of the data section that has been removed
+from this example, as indicated by vertical dots.
 
 The format of each row of the data section is as follows
 \code
-   basisId   starId   size  beginId   endId  starInvert  wave[D]  
+   basisId   starId   size  beginId   endId  starInvert  wave[D]
 \endcode
 in which:
 
-   - basisId is an integer index for each uncancelled star, or basis 
-     function. This index increases by 1 for each row in the data 
+   - basisId is an integer index for each uncancelled star, or basis
+     function. This index increases by 1 for each row in the data
      section.
 
    - starId is an integer index for each star. Values for this
      index are assigned to both cancelled and uncancelled stars,
      but only uncancelled stars are included in this report. The
-     starId is the star index reported for each wavevector in the 
+     starId is the star index reported for each wavevector in the
      file created by the WRITE_WAVES command.
 
-   - size is the number of waves in the star. 
+   - size is the number of waves in the star.
 
-   - beginId is the wave index (waveId) of the first wave in the star 
+   - beginId is the wave index (waveId) of the first wave in the star
 
-   - endId is one greater than the the wave index of the last wave in 
-     the star. 
+   - endId is one greater than the the wave index of the last wave in
+     the star.
 
    - starInvert is a integer that can have allowed values of 0, 1, -1.
      A value starInvert = 0 indicates that the star is closed under
-     inversion. A value of starInvert = +1 or -1 indicates that the 
-     star is the first star (for starInvert = 1) or the second star 
-     (for starInvert = -1) in a pair of open stars that are related 
-     to one another by inversion. 
- 
+     inversion. A value of starInvert = +1 or -1 indicates that the
+     star is the first star (for starInvert = 1) or the second star
+     (for starInvert = -1) in a pair of open stars that are related
+     to one another by inversion.
+
    - wave[D] is a vector of D integer wave components of a
      characteristic wave that belongs to the star, which can
      be used as an identifier for the star.
 
-The indices beginId and endId list indices of waves in an ordered list 
-of all waves, including those that belong to cancelled stars, in which 
-the waves that belong to a particular star are listed as a consecutive 
-block with indices beginId, ...., endId - 1. Only non-cancelled stars 
+The indices beginId and endId list indices of waves in an ordered list
+of all waves, including those that belong to cancelled stars, in which
+the waves that belong to a particular star are listed as a consecutive
+block with indices beginId, ...., endId - 1. Only non-cancelled stars
 are listed in this file format.
 
 Stars are listed in this file output in order of increasing starId.
@@ -86,21 +86,21 @@ always assigned sequential values for the starId, and thus always
 appear sequentially in this format, with the star with starInvert = +1
 listed first.
 
-\section scft_command_pc_star_gyroid_sec Example (Double Gyroid) 
+\section scft_command_pc_star_gyroid_sec Example (Double Gyroid)
 
-An example of the file created by a WRITE_STARS command is shown below 
+An example of the file created by a WRITE_STARS command is shown below
 for a system with space group \f$ I a\overline{3} d \f$, or PSCF space
 group identifier I_a_-3_d. This is the space group of the double gyroid
 phase of a diblock copolymer. Because this space group is centrosymmetric
 (i.e., has an inversion center), all stars are closed under inversion,
-and so a value of starInvert = 0 is thus listed for every star. An 
-example of the output file created by the MAKE_WAVES command for the 
-same system is shown \ref scft_command_pc_star_gyroid_sec "here". 
+and so a value of starInvert = 0 is thus listed for every star. An
+example of the output file created by the MAKE_WAVES command for the
+same system is shown \ref scft_command_pc_star_gyroid_sec "here".
 
-Because \f$ I a \overline{3} \f$ space group has an inversion center, 
-every star of this space group is closed under inversion. For this 
+Because \f$ I a \overline{3} \f$ space group has an inversion center,
+every star of this space group is closed under inversion. For this
 reason, a value of starInvert = 0 is listed for every star in this
-example. 
+example.
 
 \code
 format   1   0
@@ -110,7 +110,7 @@ crystal_system
               cubic
 N_cell_param
               1
-cell_param    
+cell_param
       3.5985168166e+00
 group_name
           I_a_-3_d
@@ -139,33 +139,33 @@ N_basis
    356   968    1   32767   32768   0    16    16    16
 \endcode
 
-\section scft_command_pc_star_altgyr_sec Example (Alternating Gyroid) 
+\section scft_command_pc_star_altgyr_sec Example (Alternating Gyroid)
 
-An example of the file created by a WRITE_STARS command is shown below 
-for a triblock copolymer system with space group \f$ I 4_{1} 3 2 \f$, 
-or PSCF space group identifier I_41_3_2. This is the space group of the 
-alternating gyroid phase of an ABC triblock copolymer. 
+An example of the file created by a WRITE_STARS command is shown below
+for a triblock copolymer system with space group \f$ I 4_{1} 3 2 \f$,
+or PSCF space group identifier I_41_3_2. This is the space group of the
+alternating gyroid phase of an ABC triblock copolymer.
 
-Unlike the space group of the double gyroid, this space group is not 
-centrosymmetric.  As a result, the stars of this space group can include 
+Unlike the space group of the double gyroid, this space group is not
+centrosymmetric.  As a result, the stars of this space group can include
 open as well as closed stars. Open stars of a non-centrosymmetric group
 always exist in pairs that are related by inversion - the wavevectors in
 one member of the pair are just the inverses of the wavevectors in the
-other. 
+other.
 
-By convention, open stars that are related by inversion are always 
-assigned consecutive indices. The first member of each such pair is 
+By convention, open stars that are related by inversion are always
+assigned consecutive indices. The first member of each such pair is
 assigned a value of starInvert = 1, while the second is assigned
-a value starInvert = -1. These pairs of open stars thus show up as 
+a value starInvert = -1. These pairs of open stars thus show up as
 consecutive rows with starInvert values of 1 and -1, in that order.
-The first such pair in this listing is the pair with basisId values 
-6 and 7, starId values 14 and 15.  By convention, characteristic waves 
-of stars that are related by inversion are chosen to be inverses of 
-one another.  Consistent with this, these two stars have characteristic 
+The first such pair in this listing is the pair with basisId values
+6 and 7, starId values 14 and 15.  By convention, characteristic waves
+of stars that are related by inversion are chosen to be inverses of
+one another.  Consistent with this, these two stars have characteristic
 waves {3 2 -1} and {-3 -2 1}, respectively.
 
-All of the rows in this file in which starInvert = 0 are associated 
-with starts that are closed under inversion despite the fact that 
+All of the rows in this file in which starInvert = 0 are associated
+with starts that are closed under inversion despite the fact that
 this symmetry group does not contain an inversion symmetry operation.
 
 \code
@@ -176,7 +176,7 @@ crystal_system
               cubic
 N_cell_param
               1
-cell_param    
+cell_param
       2.2348701435e+00
 group_name
           I_41_3_2
@@ -235,6 +235,6 @@ N_basis
 \endcode
 
 <BR>
-\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
-\ref scft_thermo_page      (Next) 
+\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp;
+\ref scft_thermo_page      (Next)
 */

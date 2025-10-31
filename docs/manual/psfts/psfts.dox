@@ -1,25 +1,25 @@
 /*! \page psfts_page Partial Saddle-Point Field Theoretic Simulation (PS-FTS)
 
-\ref scft_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
+\ref scft_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref developer_page (Next)
 <BR>
 
-The pscf_pc and pscf_pg programs can both be used to perform stochastic 
-field theoretic simulation (FTS) calculations using a partial saddle-point 
-(PS) approximation. Both programs can use either Brownian dynamics (BD) 
-or Monte Carlo (MC) sampling algorithms. The resulting type of partial 
-saddle-point field theoretic simulation (PS-FTS) yields a statistical 
-ensemble for fluctuating monomer chemical potential fields ("w fields") 
+The pscf_pc and pscf_pg programs can both be used to perform stochastic
+field theoretic simulation (FTS) calculations using a partial saddle-point
+(PS) approximation. Both programs can use either Brownian dynamics (BD)
+or Monte Carlo (MC) sampling algorithms. The resulting type of partial
+saddle-point field theoretic simulation (PS-FTS) yields a statistical
+ensemble for fluctuating monomer chemical potential fields ("w fields")
 in which the fields are real-valued functions of position (as in SCFT),
 and in which each field configuration is assigned a real-valued
-statistical weight. The resulting theory yields field configurations 
-that tend to fluctuate around an SCFT solution when applied to systems 
-of very long, strongly overlapping polymers, corresponding to large 
+statistical weight. The resulting theory yields field configurations
+that tend to fluctuate around an SCFT solution when applied to systems
+of very long, strongly overlapping polymers, corresponding to large
 values of the invariant degrees of polymerization \f$ \overline{N} \f$.
-PS-FTS yields predictions for intensive thermodynamic properties that 
-approach those of SCFT in the limit of infinitely long chains 
-(\f$ \overline{N} \rightarrow \infty \f$), and that accurately describe 
-some of the most important effects of composition fluctuations that are 
+PS-FTS yields predictions for intensive thermodynamic properties that
+approach those of SCFT in the limit of infinitely long chains
+(\f$ \overline{N} \rightarrow \infty \f$), and that accurately describe
+some of the most important effects of composition fluctuations that are
 neglected by SCFT.
 
 Instructions for performing PS-FTS calculations given in this manual
@@ -40,7 +40,7 @@ offer identical capabilities and interfaces for such calculations.
    </ol>
 
 <BR>
-\ref scft_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
+\ref scft_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref index "Main Page" (Up) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref developer_page (Next)
 

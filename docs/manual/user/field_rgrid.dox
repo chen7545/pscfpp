@@ -92,9 +92,9 @@ the number of monomer types, so that data in column \f$\alpha\f$,
 with columns numbered as \f$ \alpha = 0, 1, \ldots \f$, contains the
 values of the field associated with monomer type index \f$\alpha\f$.
 
-Grid points are listed in order using the first index \f$n_{0}\f$ as the 
-most rapidly varying (innermost) loop index.  The order in which grid 
-points are listed for a three-dimensional crystal can be expressed in 
+Grid points are listed in order using the first index \f$n_{0}\f$ as the
+most rapidly varying (innermost) loop index.  The order in which grid
+points are listed for a three-dimensional crystal can be expressed in
 pseudo-code as a nested loop of the form:
 \code
    for (n2 = 0; n2 < N2; ++n2) {
@@ -106,22 +106,22 @@ pseudo-code as a nested loop of the form:
    }
 \endcode
 in which capitalized symbols (N0, N1, N2) denote the number of grid
-points in each direction and lower case-variables (n0, n1, n2) 
+points in each direction and lower case-variables (n0, n1, n2)
 denote indices for a particular grid point. Note that the innermost
-loop iterates over index values for the first index, n0, while the 
+loop iterates over index values for the first index, n0, while the
 outerm the outermost loop iterates over values for the last index,
 n2.
 
 Note that this convention for the order in which grid points are listed
-in an r-grid file is completely different from order in which elements 
+in an r-grid file is completely different from order in which elements
 of a multi-dimensional array are stored in memory by C/C++ programs. For
-multi-dimensional C arrays, the most rapidly varying (or innermost) 
-index is always the last index, rather than the first.  The convention 
-described above was chosen, however, to maintain backwards compatbility 
-with the r-grid file format that was defined for the older Fortran 
-version of PSCF. The ordering of grid points in the r-grid format 
-reflects the order in which elements of multidimensional arrays are 
-stored in memory by Fortran programs, which is different from the 
+multi-dimensional C arrays, the most rapidly varying (or innermost)
+index is always the last index, rather than the first.  The convention
+described above was chosen, however, to maintain backwards compatbility
+with the r-grid file format that was defined for the older Fortran
+version of PSCF. The ordering of grid points in the r-grid format
+reflects the order in which elements of multidimensional arrays are
+stored in memory by Fortran programs, which is different from the
 order used by C/C++ programs.
 
 <BR>

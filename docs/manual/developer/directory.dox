@@ -3,29 +3,12 @@
 \ref developer_filetypes_page  (Next)
 <BR>
 
-This page provides a description of the directory structure of the PSCF 
+This page provides a description of the directory structure of the PSCF
 repository, focusing on the contents of the src directory.
 
-A user's local copy of the PSCF repository is normally created by
-\ref source_getcode_sec "cloning project dmorse/pscfpp" from github.com. 
-The required git clone command should use use the --recursive option to 
-download and install the contents of two other github repositories into 
-subdirectories as \ref source_submodules_sec "git submodules". By default, 
-this operation creates a directory named pscfpp as a subdirectory of the 
-directory from which the git clone command was issued. In what follows, 
-we refer to the resulting directory, which contains the contents of the 
-entire PSCF repository, as the PSCF root directory.
-
-The PSCF root directory can be renamed or moved by the user after it 
-is created. If a user does so, however, they must then run or rerun the
-\ref install_configure_page "configure" script in order to allow this
-script to assign new values for some makefile variables that contains
-absolute paths to the PSCF root directory and some of its subdirectories,
-as discussed \ref developer_build_config_page "elsewhere".
-
-In what follows, we describe file name patterns and standard file
-extension using the \* (asterisk) symbol to represent a wildcard that can
-represent any string of characters.  For example, the pattern \*.h can
+In what follows, we describe file name patterns and standard file name
+suffixes by using the \* (asterisk) symbol to represent a wildcard that
+can represent any string of characters.  For example, the pattern \*.h can
 represent any file name that ends in extension .h, which is a standard
 file name extension for C++ header files. We sometimes also use this as
 as a shorthand to refer to types of file, thus referring to files with
@@ -33,12 +16,30 @@ names that end with a suffix .h as \*.h files, for example.
 
 \section developer_directory_summary_sec PSCF root directory
 
-The names and purposes of all of the top-level subdirectories of the PSCF 
-root directory are given briefly below:
+A user's local copy of the PSCF repository is normally created by
+\ref source_getcode_sec "cloning project dmorse/pscfpp" from github.com.
+The required git clone command should use use the --recursive option to
+download and install the contents of two other github repositories into
+subdirectories as \ref source_submodules_sec "git submodules". By default,
+this operation creates a directory named pscfpp as a subdirectory of the
+directory from which the git clone command was issued. In what follows,
+we refer to the resulting directory, which contains the contents of the
+entire PSCF repository, as the PSCF root directory.
+
+The PSCF root directory can be renamed or moved by the user after it
+is created. If a user does so, however, they must then run (or rerun)
+the \ref install_configure_page "configure" script from the new location
+in order to allow this script to assign new values for some makefile
+variables that contains absolute paths to the PSCF root directory and
+some of its subdirectories, as discussed in detail
+\ref developer_build_config_page "here".
+
+The names and purposes of all of the top-level subdirectories of the PSCF
+root directory are listed below:
 
 <table>
 <tr>
-   <th> Directory </th>
+   <th> Name </th>
    <th> Purpose </th>
 </tr>
 <tr>
@@ -77,7 +78,7 @@ root directory are given briefly below:
 
 \section developer_directory_src_sec Source file (src) directory
 
-The src directory contains all of the C++ and CUDA C++ source code files 
+The src directory contains all of the C++ and CUDA C++ source code files
 for PSCF.  The structure of subdirectories of src reflects the organization
 of entities defined in the source code (i.e., classes and functions) into
 several C++ namespaces.
@@ -88,16 +89,16 @@ The source code for PSCF is divided between two top-level C++ namespaces,
 named Util and Pscf.
 
 The Util namespace contains a collection of general utilities for
-scientific computation that are also used by projects other than PSCF. The 
-code is maintained in a separate github repository (project dmorse/util) 
-and imported into the pscfpp repository as a git submodule.  All source 
-code files for entities that are defined in the Util namespace are located 
+scientific computation that are also used by projects other than PSCF. The
+code is maintained in a separate github repository (project dmorse/util)
+and imported into the pscfpp repository as a git submodule.  All source
+code files for entities that are defined in the Util namespace are located
 in the src/util directory.
 
-The Pscf namespace contains all of source code files that are contained in 
-the dmorse/pscfpp github repository, all of which are specific to the PSCF 
-package.  The Pscf namespace contains several enclosed sub-namespaces. 
-All source code for each such enclosed namespace is located within a 
+The Pscf namespace contains all of source code files that are contained in
+the dmorse/pscfpp github repository, all of which are specific to the PSCF
+package.  The Pscf namespace contains several enclosed sub-namespaces.
+All source code for each such enclosed namespace is located within a
 specific subdirectory of the src directory, as discussed below.
 
 * **Namespace-level directories:**
@@ -144,39 +145,39 @@ These six namespace-level subdirectories are listed below:
   <td> Code used only by the pscf_pg GPU program for periodic structures </td>
 </tr>
 </table>
-The src/pscf directory contains files that contain code for class and 
-functions that are defined directly in the Pscf namespace, rather than 
-in one of the enclosed sub namespaces of Pscf. The src/prdc, src/r1d, 
-src/rpc, and src/rpg instead each contain code for entities that are 
+The src/pscf directory contains files that contain code for class and
+functions that are defined directly in the Pscf namespace, rather than
+in one of the enclosed sub namespaces of Pscf. The src/prdc, src/r1d,
+src/rpc, and src/rpg instead each contain code for entities that are
 defined in a specific sub-namespace of Pscf.
 
-The PSCF makefile system constructs a static library in each of these 
-six namespace level directories. Each static library file is a file with 
-a name of the form lib[namespace].a, where [namespace] represents the 
-name of the relevant subdirectory. For example, the build system creates 
+The PSCF makefile system constructs a static library in each of these
+six namespace level directories. Each static library file is a file with
+a name of the form lib[namespace].a, where [namespace] represents the
+name of the relevant subdirectory. For example, the build system creates
 a library file named libprdc.a in the src/prdc directory.
 
 * **Program-level namespaces and directories:**
 
 The Pscf::R1d, Pscf::Rpc and Pscf::Rpg namespaces and the corresponding
-r1d, rpc and rpg subdirectories of src each contain code is only used 
-within one associated executable program.  These three namespaces and 
-corresponding directories are referred to hereafter as program-level 
-namespaces and program-level directories, respectively. Subdirectory r1d 
-contains code that is only used by pscf_1d, rpc contains code that is 
-only used by pscf_pc, and rpg contains code that is only used by pscf_pg.  
-By convention, code within in one program-level PSCF namespace may not 
-use entities such classes or functions that are defined in any other 
+r1d, rpc and rpg subdirectories of src each contain code is only used
+within one associated executable program.  These three namespaces and
+corresponding directories are referred to hereafter as program-level
+namespaces and program-level directories, respectively. Subdirectory r1d
+contains code that is only used by pscf_1d, rpc contains code that is
+only used by pscf_pc, and rpg contains code that is only used by pscf_pg.
+By convention, code within in one program-level PSCF namespace may not
+use entities such classes or functions that are defined in any other
 program-level namespace.
 
-Each of these three program-level directories contains a main program 
-file that defines the main function for the associated program. The base 
-name of each such file is the same as the executable name, followed by a 
-suffix .cpp or .cu. For example, the main function for program pscf_1d 
-is defined in the file src/r1d/pscf_1d.cpp. 
+Each of these three program-level directories contains a main program
+file that defines the main function for the associated program. The base
+name of each such file is the same as the executable name, followed by a
+suffix .cpp or .cu. For example, the main function for program pscf_1d
+is defined in the file src/r1d/pscf_1d.cpp.
 
 Subdirectories util, pscf and prdc are namespace-level directories but
-are not program-level directories. These contain code for classes and 
+are not program-level directories. These contain code for classes and
 functions that can be used in more than program, and do not contain any
 main program files.
 
@@ -184,10 +185,10 @@ main program files.
 
 PSCF imposes a set of rules for dependencies among the various namespace
 level directories. A namespace level directory named A is said to **depend**
-on another such directory named B if source code files in directory A are 
+on another such directory named B if source code files in directory A are
 allowed to use named entities (i.e., classes, class templates, functions,
-etc.) that are defined by files in directory B.  The following table lists 
-the other directories that each namespace level directory depends upon in 
+etc.) that are defined by files in directory B.  The following table lists
+the other directories that each namespace level directory depends upon in
 this sense:
 <table>
 <tr>
@@ -219,43 +220,48 @@ this sense:
   <td> prdc, pscf, util </td>
 </tr>
 </table>
-Note that every directory other than util depends on util, and every 
-directory other than util and pscf depends on both util and pscf. These 
+Note that every directory other than util depends on util, and every
+directory other than util and pscf depends on both util and pscf. These
 two directories thus contain code that is available for use through the
-PSCF source code. The prdc directory contains code that is only used in 
-the pscf_pc and pscf_pg programs for systems with periodic boundary 
-conditions, and so is listed as a dependency of the rpc and rpg 
+PSCF source code. The prdc directory contains code that is only used in
+the pscf_pc and pscf_pg programs for systems with periodic boundary
+conditions, and so is listed as a dependency of the rpc and rpg
 directories. None of the three program-level directories (r1d, rpc, and
 rpg) depends on any other program-level directories
 
-* **Unit test directories:**
+* **Unit test framework:**
 
 In addition to these namespace level subdirectories, the src directory
 has one additional top-level subdirectory named "test". This directory
-contains files that define a C++ unit test framework that is used 
-throughout PSCF to construct unit tests. This framework contains only 
-header (\*.h) files, and thus does not need to be compiled or linked.
+contains files that define a C++ unit test framework that is used
+throughout PSCF to construct unit tests. This framework contains only
+header (\*.h) files, and thus does not contain any source files that need
+to be compiled or linked.
+
 The unit test framework used by PSCF is maintained on github in a
 separate repository (dmorse/test) and is imported into the src/test
 directory of the PSCF repository as a submodule.
 
-Each of the six namespace level subdirectories of the src directory 
-also contains a subdirectory named "tests" that contains unit tests for
-classes and functions defined in the associated namespace. These unit
-tests are not automatically compiled or run by the makefile targets that 
-build the PSCF executable programs. 
+* **Namespace-level unit test directories:**
 
-All of the PSCF unit tests can be compiled and run by changing directory 
-to the desired build directory (src or bld) and entering the command
+Each of the six namespace level subdirectories of the src directory
+contains a subdirectory named "tests". Each such director contains unit
+tests for classes and functions defined in the parent namespace-level
+directory.  These unit tests are not automatically compiled or run by
+the makefile targets that build the PSCF executable programs.
+
+All of the PSCF unit tests can be compiled and run by changing directory
+to the desired build directory (i.e., src or bld) and entering the
+command
 \code
 make test
 \endcode
-All of the tests associated with any single namespace level directory
-can be compiled and run by changing directory to the corresponding 
-tests subdirectory within that namespace directory in the relevant 
-build directory (i.e., within a namespace level subdirectory of the 
-bld directory for an out-of source build, or within a namespace level 
-subdirectory of src for an in-source-build) and entering 
+All of the tests associated with any single namespace-level directory
+can be compiled and run by changing directory to the corresponding
+tests subdirectory within that namespace directory in the relevant
+build directory (i.e., within a namespace level subdirectory of the
+bld directory for an out-of source build, or within a namespace level
+subdirectory of src for an in-source-build), and then entering
 \code
 make run
 \endcode

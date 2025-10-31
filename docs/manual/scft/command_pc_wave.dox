@@ -1,64 +1,64 @@
 /*! \page scft_command_pc_wave_page Command for pscf_pc: WRITE_WAVES
-\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
-\ref scft_thermo_page      (Next) 
+\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp;
+\ref scft_thermo_page      (Next)
 <BR>
 
-THE WRITE_WAVES command accepted by pscf_pc and pscf_pg programs writes a 
-detailed description of the symmetry-adapted basis used by these programs. 
+THE WRITE_WAVES command accepted by pscf_pc and pscf_pg programs writes a
+detailed description of the symmetry-adapted basis used by these programs.
 Closely related information about the basis is also provided by the
 \ref scft_command_pc_star_page "WRITE_STARS" command.
 
-<em> Conceptual background </em>: As background, before reading this 
+<em> Conceptual background </em>: As background, before reading this
 description of the output of the WRTIE_WAVES command, we strongly recommend
-that users read the discussion of the relationships between "stars" and 
-basis functions given in the documentation of the 
-\ref user_field_basis_page "basis file format". 
-Users who seek a more complete discussion can also consult appendices 
+that users read the discussion of the relationships between "stars" and
+basis functions given in the documentation of the
+\ref user_field_basis_page "basis file format".
+Users who seek a more complete discussion can also consult appendices
 that discuss crystallographic space group
 \ref prdc_symmetry_page "symmetry operations" and
 \ref prdc_basis_page "symmetry-adapted bases".
 
 The type of symmetry-adapated Fourier basis used by the pscf_pc and
 pscf_pg programs is constructed by grouping all of the reciprocal lattice
-wavevectors used in a discrete Fourier transform of periodic functions 
-into subsets of wavevectors that are related to one another by space 
-group symmetry operations. 
-We refer to each such subset of symmetry-related wavevectors as a 
+wavevectors used in a discrete Fourier transform of periodic functions
+into subsets of wavevectors that are related to one another by space
+group symmetry operations.
+We refer to each such subset of symmetry-related wavevectors as a
 \ref user_field_basis_star_sec "star" of wavevectors.
-A basis function that is invariant under all operations of the space group, 
-known as a \ref user_field_basis_starfunc_defn "star function", is created 
-as a linear superposition of waves with wavevectors that belong to each 
-\ref user_field_basis_uncancelled_sub "uncancelled" star. 
-The report created by the WRITE_WAVES command writes a list of all of 
-wavevectors that belong to uncancelled stars, in which the row associated 
-with each wavevector gives integer indices for the wavevector, the integer 
-index of the star to which that wavevector belongs, and the coefficients 
-of the corresponding wave within the associated star function 
+A basis function that is invariant under all operations of the space group,
+known as a \ref user_field_basis_starfunc_defn "star function", is created
+as a linear superposition of waves with wavevectors that belong to each
+\ref user_field_basis_uncancelled_sub "uncancelled" star.
+The report created by the WRITE_WAVES command writes a list of all of
+wavevectors that belong to uncancelled stars, in which the row associated
+with each wavevector gives integer indices for the wavevector, the integer
+index of the star to which that wavevector belongs, and the coefficients
+of the corresponding wave within the associated star function
 
 <em> For users who examine the source code </em>:
-The format of this report is defined by the outputWaves function of class 
-template Basis<int D>, which is defined in the file 
-src/pscf/crystal/Basis.tpp. 
+The format of this report is defined by the outputWaves function of class
+template Basis<int D>, which is defined in the file
+src/pscf/crystal/Basis.tpp.
 
 \section scft_command_pc_wave_format_sec File Format
 
-The file created by the MAKE_WAVES command contains a header section 
+The file created by the MAKE_WAVES command contains a header section
 similar to that used for field files followed by a long data section.
-The last line of the data section contains the value for N_wave, which 
+The last line of the data section contains the value for N_wave, which
 is the total number of wavevectors listed in the data section.
 
-The data section contains one row for each reciprocal lattice wavevector 
-that belongs to an uncancelled star. 
+The data section contains one row for each reciprocal lattice wavevector
+that belongs to an uncancelled star.
 Wavevectors that belong to \ref user_field_basis_cancelled_sub "cancelled"
 stars are omitted.
-Waves that belong to the same star are are assigned a continuous block of 
-values for the index waveId, and are listed as a consecutive block within 
-this file. 
-Because all of the wavevectors in a star are related by symmetry 
+Waves that belong to the same star are are assigned a continuous block of
+values for the index waveId, and are listed as a consecutive block within
+this file.
+Because all of the wavevectors in a star are related by symmetry
 operations such as rotations and reflections, they are all reciprocal
-lattice vectors of equal magnitude. 
+lattice vectors of equal magnitude.
 Stars appear in increasing (or non-decreasing) order of the magnitude
-of the constituent wavevectors, as computed using the unit cell 
+of the constituent wavevectors, as computed using the unit cell
 parameters that were available when the basis was constructed.
 
 The format of each row of the data section is as follows
@@ -66,21 +66,21 @@ The format of each row of the data section is as follows
      i  waveId  components[D]  starId  Re(c)   Im(c)
 \endcode
 in which:
-   
-   - i is an integer index that increases by one for each row in the 
+
+   - i is an integer index that increases by one for each row in the
      data section. This is thus an integer index for uncancelled
      waves.
 
-   - waveId is a unique integer index for each wavevector that is 
-     assigned to waves that belong to both cancelled and uncancelled 
-     stars.  Because the output created by MAKE_WAVES only includes 
-     wavevectors that belong to uncancelled stars, the lsting of 
-     values of this index has gaps that correspond to sets of waves 
+   - waveId is a unique integer index for each wavevector that is
+     assigned to waves that belong to both cancelled and uncancelled
+     stars.  Because the output created by MAKE_WAVES only includes
+     wavevectors that belong to uncancelled stars, the lsting of
+     values of this index has gaps that correspond to sets of waves
      that belong to cancelled stars.
 
-   - components[D] is a vector of D integer wave components of the 
+   - components[D] is a vector of D integer wave components of the
      wave in a basis of reciprocal lattice basis vectors, where
-     D = 1, 2 or 3 is the dimension of space. 
+     D = 1, 2 or 3 is the dimension of space.
 
    - starId is the index of the star to which the wave belong
 
@@ -91,50 +91,50 @@ in which:
 Please see the resources recommended above for definitions of what
 we mean by a star, a cancelled star, and a star function.
 
-\section scft_command_pc_wave_gyroid_sec Example (Gyroid Phase) 
+\section scft_command_pc_wave_gyroid_sec Example (Gyroid Phase)
 
-An example of the file created by a WRITE_WAVES command is shown below 
-for a system with space group \f$ I a\overline{3} d \f$, or PSCF space 
-group identifier I_a_-3_d. This is the space group of the double gyroid 
+An example of the file created by a WRITE_WAVES command is shown below
+for a system with space group \f$ I a\overline{3} d \f$, or PSCF space
+group identifier I_a_-3_d. This is the space group of the double gyroid
 phase of a diblock copolymer. A long section has been removed from the
-data section of this file, as indicated by vertical dots. 
+data section of this file, as indicated by vertical dots.
 
-The first row of the data section in this example (waveId = 0) represents 
-the zero wavevector, with integer components (0,0,0). This is the only 
+The first row of the data section in this example (waveId = 0) represents
+the zero wavevector, with integer components (0,0,0). This is the only
 wave in the first star, which has a starId = 0. Every space group has a
 star consisting of just the zero vector, which is always the first line
 in the output of the WRITE_WAVES command.
 
-The next 24 rows (with i = 1, ..., 24 and waveId = 57, ..., 80) represent 
-wavevectors that belong to the {2,1,1} family of wavevectors, which all 
-belong to a star with starId = 6. This is the first star of nonzero 
+The next 24 rows (with i = 1, ..., 24 and waveId = 57, ..., 80) represent
+wavevectors that belong to the {2,1,1} family of wavevectors, which all
+belong to a star with starId = 6. This is the first star of nonzero
 wavevectors that is allowed by the rules for systematic cancellations
 in crystals with this space group.
 
-The next 12 rows (with i = 25, ..., 36 and waveId = 81, ..., 92) represent 
-wavevectors that belong to the {2,2,0} family of wavevectors, which all 
-belong to a star with starId = 6. This is the first star of nonzero 
+The next 12 rows (with i = 25, ..., 36 and waveId = 81, ..., 92) represent
+wavevectors that belong to the {2,2,0} family of wavevectors, which all
+belong to a star with starId = 6. This is the first star of nonzero
 wavevectors that is allowed by the rules for systematic cancellations
 in crystals with this space group.
 
 Stars of wavevectors for a cubic crystal are always sets of wavevectors
 with indices that are related to a list (h, k, l) by permutation and
-changes in sign of the indices. The number of wavevectors in such a star 
+changes in sign of the indices. The number of wavevectors in such a star
 is equal to 48 if h, k, l and all distinct and nonzero, and can be less
 than 48 if some of the indices are equal and/or zero, as is true for the
 {211} and {220} stars.
 
 Waves belonging to stars with starId values 1,...,5, which have waveId
-values 1, ..., 56, are not listed in this file because these stars are 
+values 1, ..., 56, are not listed in this file because these stars are
 all cancelled stars (corresponding to families of wavevectors that
-exhibit systematic cancellation in scattering experiments), and thus 
-cannot be used to construct symmetry-adapted basis functions. 
+exhibit systematic cancellation in scattering experiments), and thus
+cannot be used to construct symmetry-adapted basis functions.
 
-The space group used in this example has an inversion center at the 
-origin. The existence of an inversion center at the origin can be 
-shown to always leads to star functions for which the coefficient of 
-every star is a real number. This is why the last column, which gives 
-the imaginary part of this coefficient for each wave, is zero in every 
+The space group used in this example has an inversion center at the
+origin. The existence of an inversion center at the origin can be
+shown to always leads to star functions for which the coefficient of
+every star is a real number. This is why the last column, which gives
+the imaginary part of this coefficient for each wave, is zero in every
 row of the data section.
 
 \code
@@ -145,7 +145,7 @@ crystal_system
               cubic
 N_cell_param
               1
-cell_param    
+cell_param
       3.5985168166e+00
 group_name
           I_a_-3_d
@@ -219,6 +219,6 @@ N_wave
 \endcode
 
 <BR>
-\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp; 
-\ref scft_thermo_page      (Next) 
+\ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp;
+\ref scft_thermo_page      (Next)
 */

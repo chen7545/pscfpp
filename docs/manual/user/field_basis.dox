@@ -93,8 +93,8 @@ files given below for a \ref user_field_basis_lamellar_sec "lamellar" and
 
 <b> Header section </b>:
 The header section contains information about the crystallographic unit
-cell, space group, the number of monomer types, as described on a 
-\ref user_field_header_page "previous page" .  The last entry of the 
+cell, space group, the number of monomer types, as described on a
+\ref user_field_header_page "previous page" .  The last entry of the
 header section for a basis field file also contains a value for the
 parameter N_basis, which is the number of basis functions used to expand
 each field, also denoted by \f$ N_{\rm b} \f$ on this page.
