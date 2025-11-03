@@ -2,84 +2,148 @@ Proposal for how to allow definition of "non-standard" Bravais lattice
 definitions, including but not limited to body- and face-centered lattices
 based on 2D or 3D orthogonal conventional lattices. 
 
-New Data Structures in UnitCell<D>
+Strategy: 
+
+    * Have most of the existing data structures in UnitCell<D>
+      refer to the Bravais lattice of the nonStandard unit cell. 
+
+    * Have the UnitCell<D> contain a pointer standardCellPtr_ to
+      a UnitCell<D> that is one of the standard types. Use this
+      child object for all parameter IO. 
+
+    * Whenever parameter values are set, use the standard unit cell 
+      to compute properties of the nonStandard unit cell.
+
+    * All operations other than file IO use the non-standard Bravais
+      lattice.
+
+New Data Structures in UnitCell<D>:
 
  - bool isStandard_
 
    Set true if the unit cell is one of the standard types used in the
-   way we have defined space groups, and false otherwise:
+   way we have defined space groups, and false otherwise.
 
- - nonStdBasis_ : FArray<D, Rational>
+ - FArray<D, Vec<D, Rational> > nonStdBasis_
 
-   Components of basis vectors of non-standard cell (e.g., BCC) in a 
-   basis of Bravais basis vectors for the standard cell (e.g,. simple
-   cubic). In order to allow for the possibility that the standard cell 
-   is not a primitive cell, we must allow these components to be fractions 
-   (Util::Rational)
+   If isStandard_ is false, this arrays contains components of basis 
+   vectors of non-standard cell (e.g., primitive BCC) in a basis of 
+   Bravais basis vectors for the standard cell (e.g,. simple cubic). 
+   In order to allow for the possibility that the standard cell is not 
+   a primitive cell, we must allow these components to be fractions 
+   (Util::Rational). If isStandard_ is true, this is unused and set
+   to the identity.
 
- - stdBasis_ : FArrayVec<D, int>
+ - FArray<D, Vec<D, int> > stdBasis_
 
-   Components of basis of standard cell in a basis of Bravais basis
-   vectors for the non-standard cell. In order for the conventional
-   Bravais lattice to be a subset of the non-standard Bravais lattice, 
-   these components must all be integers. If interpreted as matrix this 
-   must be the inverse of nonStdBasis_. If inversion of nonStdBasis_
-   doesn't yield a matrix of integers, throw and Exception with an
-   error message.
+   If isStandard_ is false, this array contains components of basis of 
+   standard cell in a basis of Bravais basis vectors for the non-standard 
+   cell. In order for the conventional Bravais lattice to be a subset of 
+   the non-standard Bravais lattice, these components must all be 
+   integers. If interpreted as a matrix this must be the inverse of 
+   nonStdBasis_. If inversion of nonStdBasis_ doesn't yield a matrix of 
+   integers, throw an Exception with an error message.
 
- - UnitCell<D>: standardCell_
+ - UnitCell<D>* standardCellPtr_
 
    When creating a non-standard unit cell, create a private unit cell
    of the related conventional type (e.g., square, cubic, orthorhombic).
    We could consider making this read-only accessible through a public
    function.
 
+Basis<D> class:
+
+   This requires more thought. The real question has to do with the basis
+   field file format : Should this use labelling scheme for characteristic
+   waves of each start that are based on components defined using a 
+   standard basis, or based on components in the non-standard basis?
+   It appears that this would only effect the identification of a 
+   characteristic wave for each star, and the ordering within each star.
+   Labelling based on a standard basis would be convenient (no change in 
+   file format, interconvertibility between files that did equivalent 
+   calculations in different ways), but requires that the basis keep 
+   track of more information. 
+
+  Two options:
+
+  A) Use a scheme for identifying characteristic waves of each star and
+  for ordering of waves within a star that is based on a non-standard
+  basis, and modify the field file header format to optionally contain 
+  information about the non-standard basis.
+
+  B) Use a labelling scheme for characteristic waves of each start and
+  ordering of waves within a star that is based a standard basis, and 
+  modify the field file header to optionally contain information about 
+  the non-standard.
+
+  Possible algorithm for option (B): 
+
+    - Add member bool isStandardUnitCell_ to basis to keep track of 
+      whether a standard unit cell was used to construct the basis.
+
+    - Sort waves and construct the basis using the nonStandard unit cell
+      and space group operations based on the non-standard unit cell.
+
+    - Modify each Basis::Wave to contain indices defined using a standard 
+      basis (stdWave) as well as indices defined using the non-standard 
+      basis. Base all operations involving ordering of waves within a 
+      star and identification of a characteristic wave-of-star on the 
+      indices defined using the standard unit cell.
+
 Algorithm:
 
   When a non-standard basis is somehow declared:
 
-     - Create nonStdBasis_ (hard coded or user input)
+     - Fill array nonStdBasis_ using user input from parameter file.
 
      - Compute stdBasis by inversion using Rational math. Check that
        all elements are integers, convert to int variables and store.
 
+     - Create UnitCell<D> assigned to nonStdBasisPtr_ 
+
   When space group is declared:
 
-      - Convert all operations of the space group to new basis, via
-        matrix transformations. Check that resulting rotation matrices
-        are all integers.
+     - Convert all operations of the space group to new basis, via
+       matrix transformations. Check that resulting rotation matrices
+       are all integers.
 
-      - Shift all translation vectors to range 0 <= t_i < 1
+     - Shift all translation vectors to range 0 <= t_i < 1
 
-      - Remove equivalent symmetry elements, keeping only one of
-        each set.
+     - Remove symmetry operations that have been converted to 
+       translations by Bravais lattice vectors in non-standard basis
+       
+     - Remove equivalent symmetry elements, keeping only one of each 
+       set.
 
-      - Check that the remaining set of operations is actually a group.
+     - Check that the remaining set of operations is actually a group.
 
   When standard unit cell parameters are initialized or changed:
 
-  - Create private standardCell_ with conventional parameters
+  - Use *standardUnitCellPtr_ to read the new parameters
 
   - Compute all private data for the non-standard unit cell from that
     of enclosed standard unit cell, by matrix transformations
 
 Interface (first proposal, subject to reconsideration and modification):
 
-  In the parameter file, allow optional parameter basis in which the 
-  user can enter a non-standard set of Bravais lattice basis vectors as 
-  vectors of rational number (fractions), using the Util::Rational class.
+  In Domain block of the parameter file, allow optional parameter basis 
+  in which the user can enter a non-standard set of Bravais lattice basis 
+  vectors as vectors of rational number (fractions), using the 
+  Util::Rational class.
 
   Parameter file format:
 
-  nonStdBasis[
-      -1/2   1/2   1/2
-       1/2  -1/2   1/2
-       1/2   1/2  -1/2
-  ]
+     nonStdBasis[
+         -1/2   1/2   1/2
+          1/2  -1/2   1/2
+          1/2   1/2  -1/2
+     ]
 
-  In the file header, allow for an optional element which lists these
-  basis components, in a similar format.
+  In field file headers and SET_UNIT_CELL command, simply give parameters 
+  for standard unit cell, and read these using *standardUnitCellPtr_. 
 
-  A field file is compatible with a parameter file if it has the same
-  lattice type (cubic, etc.) and, if any non-standard basis is declared,
-  exactly the same non-standard basis.
+  The stream insertion operator for UnitCell<D> will be designed to read
+  parameters using the format for a standard unit cell, and do any
+  necessary conversions immediately after reading into the child standard
+  unit cell. 
+
