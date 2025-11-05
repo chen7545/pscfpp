@@ -26,7 +26,7 @@
 #include <pscf/chem/PolymerSpecies.h>
 #include <pscf/chem/SolventSpecies.h>
 #include <pscf/chem/Edge.h>
-#include <pscf/chem/Debye.h>
+#include <pscf/correlation/Debye.h>
 #include <pscf/chem/EdgeIterator.h>
 //#include <pscf/chem/PolymerType.h>
 #include <pscf/cuda/HostDArray.h>
@@ -130,7 +130,7 @@ namespace Rpg{
                   rank = iter.rank();
                   ksq = Gsq[rank];
                   correlations_h[rank] +=
-                                 cPolymer * Debye::dt(ksq, length, kuhn);
+                                 cPolymer * Correlation::dt(ksq, length, kuhn);
                }
             } else {
                length = (double) polymer.edge(j).nBead();
@@ -138,7 +138,7 @@ namespace Rpg{
                   rank = iter.rank();
                   ksq = Gsq[rank];
                   correlations_h[rank] +=
-                                 cPolymer * Debye::db(ksq, length, kuhn);
+                                 cPolymer * Correlation::db(ksq, length, kuhn);
                }
             }
 
@@ -208,8 +208,8 @@ namespace Rpg{
                         rank = iter.rank();
                         ksq = Gsq[rank];
                         x = std::exp( -rsqAB * ksq / 6.0);
-                        eA = Debye::et(ksq, lengthA, kuhnA);
-                        eB = Debye::et(ksq, lengthB, kuhnB);
+                        eA = Correlation::et(ksq, lengthA, kuhnA);
+                        eB = Correlation::et(ksq, lengthB, kuhnB);
                         correlations_h[rank] += prefactor * x * eA * eB;
                      }
                   } else {
@@ -217,8 +217,8 @@ namespace Rpg{
                         rank = iter.rank();
                         ksq = Gsq[rank];
                         x = std::exp( -rsqAB * ksq / 6.0);
-                        eA = Debye::eb(ksq, lengthA, kuhnA);
-                        eB = Debye::eb(ksq, lengthB, kuhnB);
+                        eA = Correlation::eb(ksq, lengthA, kuhnA);
+                        eB = Correlation::eb(ksq, lengthB, kuhnB);
                         correlations_h[rank] += prefactor * x * eA * eB;
                      }
                   }

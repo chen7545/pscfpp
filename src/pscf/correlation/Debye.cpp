@@ -9,7 +9,7 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Debye {
+namespace Correlation {
 
    /*
    * Intrablock correlation function (thread model)
@@ -81,5 +81,5 @@ namespace Debye {
       return e;
    }
 
-} // namespace Debye
+} // namespace Correlation
 } // namespace Pscf

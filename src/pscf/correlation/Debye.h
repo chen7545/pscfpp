@@ -9,13 +9,7 @@
 */
 
 namespace Pscf {
-
-/**
-* Functions used to compute intramolecular correlation functions.
-* 
-* \ingroup Pscf_Chem_Module
-*/
-namespace Debye {
+namespace Correlation {
 
    /**
    * Compute and return intrablock correlation function (thread model)
@@ -32,7 +26,7 @@ namespace Debye {
    * \f]
    * is the Debye function.
    *
-   * \ingroup Pscf_Chem_Module
+   * \ingroup Pscf_Omega_Module
    *
    * \param ksq  square of wavenumber
    * \param length  contour length of polymer or block
@@ -51,7 +45,7 @@ namespace Debye {
    * \f]
    * where y =  ksq * kuhn * kuhn / 6 and
    *
-   * \ingroup Pscf_Chem_Module
+   * \ingroup Pscf_Omega_Module
    *
    * \param ksq  square of wavenumber
    * \param nBead  number of beads in the block (converted to double)
@@ -72,7 +66,7 @@ namespace Debye {
    * \f]
    * is another dimensionless function of x.
    *
-   * \ingroup Pscf_Chem_Module
+   * \ingroup Pscf_Omega_Module
    *
    * \param ksq  square of wavenumber
    * \param length  contour length of block
@@ -89,7 +83,7 @@ namespace Debye {
    * \f]
    * where y =  ksq * kuhn * kuhn / 6 and
    *
-   * \ingroup Pscf_Chem_Module
+   * \ingroup Pscf_Omega_Module
    *
    * \param ksq  square of wavenumber
    * \param nBead  number of beads in the block (converted to double)
@@ -97,6 +91,6 @@ namespace Debye {
    */
    double eb(double ksq, double nBead, double kuhn);
 
-} // namespace Debye
+} // namespace Correlation
 } // namespace Pscf
 #endif

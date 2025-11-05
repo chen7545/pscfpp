@@ -8,7 +8,6 @@ pscf_chem_= \
   pscf/chem/PolymerType.cpp \
   pscf/chem/PolymerModel.cpp \
   pscf/chem/MixtureBase.cpp \
-  pscf/chem/Debye.cpp \
   pscf/chem/VertexIterator.cpp \
   pscf/chem/EdgeIterator.cpp 
 

@@ -7,6 +7,7 @@ include $(SRC_DIR)/pscf/inter/sources.mk
 include $(SRC_DIR)/pscf/math/sources.mk
 include $(SRC_DIR)/pscf/mesh/sources.mk
 include $(SRC_DIR)/pscf/floryHuggins/sources.mk
+include $(SRC_DIR)/pscf/correlation/sources.mk
 include $(SRC_DIR)/pscf/environment/sources.mk
 include $(SRC_DIR)/pscf/iterator/sources.mk
 include $(SRC_DIR)/pscf/sweep/sources.mk
@@ -16,7 +17,8 @@ include $(SRC_DIR)/pscf/sweep/sources.mk
 pscf_CPP= \
   $(pscf_chem_) $(pscf_inter_) $(pscf_math_) \
   $(pscf_mesh_) $(pscf_crystal_) $(pscf_floryHuggins_) \
-  $(pscf_environment_) $(pscf_iterator_) $(pscf_sweep_)
+  $(pscf_correlation_) $(pscf_environment_) $(pscf_iterator_) \
+  $(pscf_sweep_)
 
 pscf_CPP_OBJS=\
     $(addprefix $(BLD_DIR)/, $(pscf_CPP:.cpp=.o))
