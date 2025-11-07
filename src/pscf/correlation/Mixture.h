@@ -32,9 +32,14 @@ namespace Correlation {
    public:
 
       /**
+      * Default constructor.
+      */
+      Mixture();
+
+      /**
       * Constructor.
       *
-      * \param mixture parent System object
+      * \param mixture  assocated MixtureBase object
       */
       Mixture(MixtureBase const& mixture);
 
@@ -42,6 +47,13 @@ namespace Correlation {
       * Destructor.
       */
       ~Mixture();
+
+      /**
+      * Create an association with a Mixture.
+      *
+      * \param mixture  associated MixtureBase
+      */
+      void associate(MixtureBase const& mixture);
 
       /**
       * Allocate private data structures, construct immutable data.

@@ -120,15 +120,21 @@ public:
       correlationsTot.allocate(nk);
       c.computeOmegaTotal(prefactor, kSq, correlationsTot);
 
-      double ks, value;
+      double ks, x, g, value;
       for (int i = 0; i < nk; ++i) {
          ks = kSq[i];
+         x = ks*RgSq;
+         g = 2.0*(std::exp(-x) - 1 + x)/(x*x);
+         g = prefactor*length*length*g;
          value = c.computeOmega(0, 0, prefactor, ks);
-         if (verbose() > 0) {
-            std::cout << "\n " << Dbl(ks*RgSq) << Dbl(correlations[i]);
+         if (i > 0) {
+            TEST_ASSERT(eq(value, g));
          }
          TEST_ASSERT(eq(value, correlations[i]));
-         TEST_ASSERT(eq(correlations[i], correlationsTot[i]));
+         TEST_ASSERT(eq(value, correlationsTot[i]));
+         if (verbose() > 0) {
+            std::cout << "\n " << Dbl(ks*RgSq) << Dbl(value);
+         }
       }
 
    }
@@ -200,6 +206,10 @@ public:
       correlationsH.allocate(nk);
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
+      double l0, l1;
+      l0 = p.block(0).length();
+      l1 = p.block(1).length();
+      TEST_ASSERT(eq( length, l0 + l1));
       double ks, x, c00, c01, c10, c11, cTot, sum;
       for (int i = 0; i < nk; ++i) {
          c00 = correlations00[i];
@@ -207,17 +217,23 @@ public:
          c10 = correlations10[i];
          c11 = correlations11[i];
          cTot = correlationsTot[i];
+         sum = c00 + c01 + c10 + c11;
+         TEST_ASSERT(eq(c10, c01));
+         if (i == 0) {
+            TEST_ASSERT(eq(c00, prefactor*l0*l0));
+            TEST_ASSERT(eq(c11, prefactor*l1*l1));
+            TEST_ASSERT(eq(c01, prefactor*l0*l1));
+         }
+         TEST_ASSERT(eq(sum, cTot));
+         TEST_ASSERT(eq(sum, correlationsH[i]));
          if (verbose() > 0) {
             ks = kSq[i];
             x = ks*RgSq;
             std::cout << "\n"  << x
                       << Dbl(c00) << Dbl(c01)
-                      << Dbl(c10) << Dbl(c11);
+                      << Dbl(c10) << Dbl(c11)
+                      << Dbl(cTot);
          }
-         TEST_ASSERT(eq(c10, c01));
-         sum = c00 + c01 + c10 + c11;
-         TEST_ASSERT(eq(sum, cTot));
-         TEST_ASSERT(eq(sum, correlationsH[i]));
       }
 
    }

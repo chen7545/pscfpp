@@ -23,6 +23,13 @@ namespace Correlation {
    using namespace Util;
 
    /*
+   * Default constructor.
+   */
+   Mixture::Mixture()
+    : mixturePtr_(nullptr)
+   {}
+
+   /*
    * Constructor.
    */
    Mixture::Mixture(MixtureBase const & mixture)
@@ -34,6 +41,12 @@ namespace Correlation {
    */
    Mixture::~Mixture()
    {}
+
+   /*
+   * Create an association with a Mixture.
+   */
+   void Mixture::associate(MixtureBase const & mixture)
+   {  mixturePtr_ = &mixture; }
 
    /*
    * Allocate memory.
