@@ -1,5 +1,5 @@
-#ifndef PSCF_DEBYE_H
-#define PSCF_DEBYE_H
+#ifndef PSCF_CORRELATION_DEBYE_H
+#define PSCF_CORRELATION_DEBYE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field

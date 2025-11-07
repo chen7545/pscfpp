@@ -1,5 +1,5 @@
-#ifndef PSCF_OMEGA_POLYMER_H
-#define PSCF_OMEGA_POLYMER_H
+#ifndef PSCF_CORRELATION_POLYMER_H
+#define PSCF_CORRELATION_POLYMER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -36,7 +36,7 @@ namespace Correlation {
       Polymer();
 
       /**
-      * Constructor (creates association).
+      * Constructor (creates association with a PolymeSpecies).
       *
       * \param polymer  associated PolymerSpecies object
       */
@@ -55,28 +55,46 @@ namespace Correlation {
       void associate(PolymerSpecies const& polymer);
 
       /**
-      * Allocate private memory.
+      * Allocate memory and initialize immutable data.
       *
-      * \pre nBlock must have been set for associated PolymerSpecies
+      * This function must be called exactly once, at any point after the
+      * Mixture block of the parameter file has been processes. It performs
+      * memory allocation and variable initialization operations that require
+      * knowledge of the number of monomer types in the mixture, plus the 
+      * number of blocks per polymer and their monomer type indexes for the
+      * associated polymer species. 
+      *
+      * \param nMonomer  number of monomer types in the mixture
       */
       void allocate(int nMonomer);
 
       /**
-      * Setup private data.
+      * Set private mutable data.
+      *
+      * This function must be called after allocate and before performing
+      * any computations of correlation functions. It sets internal 
+      * variables that depend on the polymer volume fraction phi, block 
+      * lengths and statistical segment lengths. These variables are all
+      * mutable insofar as they may all change during a SCFT sweep or FTS 
+      * ramp, and phi may change in an open statistical ensemble. This 
+      * function may be called multiple times.
+      *
+      * \param kuhn  array of segment lengths, indexed by monomer type id
       */
       void setup(Array<double> const & kuhn);
 
       /**
       * Compute intramolecular correlation function for a pair of blocks.
       *
-      * This function evaluates the intramolecular correlation function
-      * Omega for a pair of blocks with block indices ia and ib at a 
-      * value of the squared wavenumber given by input parameter kSq, 
-      * and returns the result. The return value is given by the product 
-      * of a dimensionless single-chain correlation function omega and the 
-      * input parameter prefactor. To obtain the contribution of this 
-      * species to the correlation function for a homogeneous ideal gas
-      * mixture, set prefactor equal to the species chain concentration 
+      * This function evaluates and returns the intramolecular correlation 
+      * function Omega(k) for a pair of blocks with block indices ia and 
+      * ib at a value of the squared wavenumber given by parameter "kSq". 
+      * Monomer type indexes ia and ib may be either equal or unequal.
+      * The return value is given by the product of a dimensionless 
+      * single-chain correlation function omega(k) and the input parameter 
+      * "prefactor". To obtain the contribution of this function to a
+      * correlation function for a homogeneous ideal gas mixture, set 
+      * the prefactor parameter equal to the species chain concentration,
       * prefactor = phi/(v*totalLength), where v is the monomer reference 
       * volume. 
       *
@@ -94,19 +112,21 @@ namespace Correlation {
       * 
       * This function evaluates the intramolecular correlation function
       * Omega for a pair of blocks with block indices ia and ib at a list
-      * of values for the squared wavenumber give by elements of input
-      * array parameter kSq and adds each result to the corresponding 
-      * element of array correlation. The value for each wavenumber is 
+      * of values for the squared wavenumber given by values of elements 
+      * of input array parameter "kSq". Results are added to corresponding 
+      * elements of array "correlations". The value for each wavenumber is 
       * given by the product of a dimensionless single-chain correlation 
       * function omega(k) and the input parameter "prefactor". To obtain 
-      * the contribution of this species to correlation function for an
+      * the contribution of this species to a correlation function for an
       * ideal gas mixture, set prefactor = phi/(v*totalLength), where v 
       * is the monomer reference volume. 
       *
-      * Resulting values of Omega are added to elements of the array 
-      * correlation. This is to calculations in which results of multiple 
-      * polymer species are added. All elements of array correlation 
-      * should thus be set to zero before beginning such a calculation.
+      * Resulting values of Omega are added to prior values of elements of 
+      * the array correlation. This is done to simplify calculations in 
+      * which results of multiple polymer species are added to obtain a
+      * correlation function for a mixture. All elements of the array 
+      * correlations should thus be set to zero at the beginning any such 
+      * calculation.
       *
       * \param ia  block index of first block
       * \param ib  block index of second block
@@ -121,27 +141,27 @@ namespace Correlation {
       /**
       * Compute total intramolecular correlation function.
       * 
-      * This function computes the total density-density correlation 
-      * function for a list of values for the squared wavenumber give
-      * by elements of input array parameter kSq and adds the result 
-      * for each to the corresponding element of array "correlation". 
-      * The value for each wavenumber is given by the product of a 
-      * dimensionless single-chain correlation function omega(k) and
-      * the "prefactor" input parameter. To obtain the contribution 
-      * of this species to the correlation function for an ideal gas 
-      * mixture, set the prefactor = phi/(v*totalLength), where v is 
-      * the monomer reference volume. 
+      * This function computes the a total density-density correlation 
+      * function for a list of values for the squared wavenumber given
+      * as elements of input array parameter "kSq". Results are added
+      * to corresponding elements of array parameter "correlations". 
+      * Each computed value is given by the product of a dimensionless
+      * single-chain correlation function omega(k) and the "prefactor" 
+      * input parameter. To obtain the contribution of this species to 
+      * the total density-density correlation function for an ideal gas 
+      * mixture, set prefactor = phi/(v*totalLength), where v is the
+      * monomer reference volume. 
       *
       * Resulting values of Omega are added to elements of output array 
       * correlation.
       *
-      * \param prefactor  prefactor multiplying omega(q)
+      * \param prefactor  prefactor multiplying single-chain correlation
       * \param kSq  array of squared wavenumbers (in)
-      * \param correlation  array of correlation functions (out)
+      * \param correlations  array of correlation function values (out)
       */
       void computeOmegaTotal(double prefactor,
                              Array<double> const & kSq, 
-                             Array<double> & correlation) const;
+                             Array<double> & correlations) const;
 
       /**
       * Return the volume fraction of this polymer species.
@@ -159,7 +179,14 @@ namespace Correlation {
       int nBlock() const;
 
       /**
-      * Get a list of block ids for blocks of specified monomer type.
+      * Get a GArray of block ids for all blocks of one monomer type.
+      *
+      * This function returns a GArray<int> container that contains a
+      * list of block indices for all blocks of the specified monomer 
+      * type i.  The number of blocks of a monomer type i is given by 
+      * the return value of the "size()" member function of this 
+      * container.  If this polymer species does not contain any blocks 
+      * of monomer type i, this size will be zero. 
       *
       * \param i  monomer type index
       */
@@ -167,6 +194,13 @@ namespace Correlation {
 
       /**
       * Get the mean-squared length of path between blocks i and j.
+      *
+      * This function returns the sum of the mean-squared end-to-end
+      * lengths of all of the blocks (for the thread model) or bonds
+      * (for the bead model) along the path connecting the two blocks
+      * with block indices i and j. For the bead model, this includes
+      * the two "half bonds" that connect blocks i and j to a common
+      * vertex or two distinct vertices that lie along this path. 
       *
       * \param i  block index of 1st block.
       * \param j  block index of 2nd block.
@@ -177,6 +211,10 @@ namespace Correlation {
      
       /*
       * Block lengths, indexed by block index.
+      *
+      * For the thread model, each element contains the length parameter 
+      * for associated block. For the bead model, each element contains
+      * a double precision representation of nBead, the number of beads.
       */
       DArray<double> length_;
 
@@ -187,6 +225,8 @@ namespace Correlation {
     
       /* 
       * Symmetric matrix of values of rSq for paths between blocks.
+      * 
+      * Diagonal elements are zero.
       */
       DMatrix<double> rSq_;
 
@@ -194,8 +234,8 @@ namespace Correlation {
       * Identifiers for blocks of specified monomer type.
       *
       * Elements of the outer DArray are indexed by monomer type id. 
-      * Each element is a GArray of blocks ids for all blocks of one 
-      * monomer type.
+      * Each element is a GArray<int> container containing a list of 
+      * blocks ids for all blocks of the relevant monomer type, if any.
       */
       DArray< GArray<int> > blockIds_;
 
@@ -204,16 +244,24 @@ namespace Correlation {
       */
       PolymerSpecies const * speciesPtr_;
 
-      /// Volume fraction of this polymer
+      /*
+      * Volume fraction of this polymer.
+      */
       double phi_;
 
-      /// Sum of lengths of all blocks in the polymer
+      /*
+      * Sum of lengths of all blocks in the polymer.
+      */
       double totalLength_;
 
-      /// Number of blocks in this polymer.
+      /*
+      * Number of blocks in this polymer.
+      */
       int nBlock_;
 
-      /// Number of monomer types in the mixture.
+      /*
+      * Number of monomer types in the mixture.
+      */
       int nMonomer_;
 
       /** 

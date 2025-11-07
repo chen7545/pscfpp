@@ -1,6 +1,3 @@
-#ifndef PSCF_OMEGA_POLYMER_CPP
-#define PSCF_OMEGA_POLYMER_CPP
-
 /*
 * PSCF - Polymer Self-Consistent Field
 *
@@ -15,8 +12,9 @@
 #include <pscf/chem/EdgeIterator.h>
 #include <pscf/chem/PolymerModel.h>
 #include <pscf/correlation/Debye.h>
-
 #include <util/global.h>
+
+#include <cmath>
 
 namespace Pscf {
 namespace Correlation{
@@ -56,7 +54,7 @@ namespace Correlation{
    {  speciesPtr_ = &polymer; }
 
    /*
-   * Allocate memory for private data structures.
+   * Allocation and initialization that depend on immutable data.
    */
    void Polymer::allocate(int nMonomer)
    {
@@ -71,10 +69,10 @@ namespace Correlation{
       rSq_.allocate(nBlock_, nBlock_);
       blockIds_.allocate(nMonomer_);
 
+      // Construct blocksIds_ container
       int monomerId;
-      for (int i = 1; i < nBlock_; ++i) {
-         Edge const & edge = species().edge(i);
-         monomerId = edge.monomerId();
+      for (int i = 0; i < nBlock_; ++i) {
+         monomerId = species().edge(i).monomerId();
          UTIL_CHECK(monomerId >= 0);
          UTIL_CHECK(monomerId < nMonomer_);
          blockIds_[monomerId].append(i);
@@ -82,7 +80,7 @@ namespace Correlation{
    }
 
    /*
-   * Compute state-dependent variables.
+   * Set member variables that depends on mutable system data.
    */
    void Polymer::setup(Array<double> const & kuhn)
    {
@@ -91,28 +89,37 @@ namespace Correlation{
       UTIL_CHECK(nBlock_ > 0);
       UTIL_CHECK(kuhn.capacity() == nMonomer_);
 
-      // Get block properties (length and kuhn)
+      /*
+      * Note: Array parameter kuhn contains statistical segment lengths
+      * indexed by monomer type id. Member variable kuhn_ contains segment
+      * length values for specific blocks, indexed by block id.
+      */
+
+      // Set block properties (arrays length_ and kuhn_) and totalLength_
       int monomerId;
       totalLength_ = 0.0;
-      for (int i = 1; i < nBlock_; ++i) {
+      for (int i = 0; i < nBlock_; ++i) {
          Edge const & edge = species().edge(i);
          if (PolymerModel::isThread()) {
             length_[i] = edge.length();
          } else {
             length_[i] = (double) edge.nBead();
          }
+         totalLength_ += length_[i];
          monomerId = edge.monomerId();
+         // std::cout << "\n i, momonomerId, length = " 
+         //          << i << "  " <<  monomerId << " " << length_[i];
          UTIL_CHECK(monomerId >= 0);
          UTIL_CHECK(monomerId < nMonomer_);
          kuhn_[i] = kuhn[monomerId];
-         totalLength_ += length_[i];
       }
+      // std::cout << "\n totalLength = " << totalLength_;
 
-      // Set species volume fraction
+      // Set species volume fraction phi_
       phi_ = species().phi();
 
-      // Set diagonal elements of RSq_ matrix to zero
-      for (int ia = 1; ia < nBlock_; ++ia) {
+      // Set all diagonal elements of rSq_ matrix to zero
+      for (int ia = 0; ia < nBlock_; ++ia) {
          rSq_(ia, ia) = 0.0; 
       }
 
@@ -200,9 +207,10 @@ namespace Correlation{
    }
 
    /*
-   * Increment k-space array of intramolecular correlation functions.
+   * Compute array of intramolecular correlation functions values.
    */
-   void Polymer::computeOmega(int ia, int ib, double prefactor, 
+   void Polymer::computeOmega(int ia, int ib, 
+                              double prefactor, 
                               Array<double> const & kSq,
                               Array<double> & correlation) const
    {
@@ -210,45 +218,45 @@ namespace Correlation{
       UTIL_CHECK(speciesPtr_);
       UTIL_CHECK(nBlock_ > 0);
       UTIL_CHECK(totalLength_ > 0.0);
-      UTIL_CHECK(kSq.capacity() == correlation.capacity());
+      const int nk = kSq.capacity();
+      UTIL_CHECK(correlation.capacity() == nk);
 
-      int const n = kSq.capacity();
-      double const lengthA = length_[ia];
-      double const kuhnA = kuhn_[ia];
+      const double lengthA = length_[ia];
+      const double kuhnA = kuhn_[ia];
 
       if (ia == ib) {
          double d;
          if (PolymerModel::isThread()) {
-            for (int i=0; i < n; ++i) {
-               d = Correlation::dt(kSq[i], lengthA, kuhnA);
-               correlation[i] += prefactor * d;
+            for (int j = 0; j < nk; ++j) {
+               d = Correlation::dt(kSq[j], lengthA, kuhnA);
+               correlation[j] += prefactor * d;
             }
          } else {
-            for (int i=0; i < n; ++i) {
-               d = Correlation::db(kSq[i], lengthA, kuhnA);
-               correlation[i] += prefactor * d;
+            for (int j = 0; j < nk; ++j) {
+               d = Correlation::db(kSq[j], lengthA, kuhnA);
+               correlation[j] += prefactor * d;
             }
          }
       } else {
-         double const lengthB = length_[ib];
-         double const kuhnB = kuhn_[ib];
-         double const alpha = -1.0*rSq_(ia, ib)/6.0;
+         const double lengthB = length_[ib];
+         const double kuhnB = kuhn_[ib];
+         const double alpha = -1.0*rSq_(ia, ib)/6.0;
          double ks, x, eA, eB;
          if (PolymerModel::isThread()) {
-            for (int i=0; i < n; ++i) {
-               ks = kSq[i];
+            for (int j = 0; j < nk; ++j) {
+               ks = kSq[j];
                x = std::exp(alpha*ks);
                eA = Correlation::et(ks, lengthA, kuhnA);
                eB = Correlation::et(ks, lengthB, kuhnB);
-               correlation[i] += prefactor * x * eA * eB;
+               correlation[j] += prefactor * x * eA * eB;
             }
          } else {
-            for (int i=0; i < n; ++i) {
-               ks = kSq[i];
+            for (int j = 0; j < nk; ++j) {
+               ks = kSq[j];
                x = std::exp(alpha*ks);
                eA = Correlation::eb(ks, lengthA, kuhnA);
                eB = Correlation::eb(ks, lengthB, kuhnB);
-               correlation[i] += prefactor * x * eA * eB;
+               correlation[j] += prefactor * x * eA * eB;
             }
          }
       }
@@ -274,9 +282,9 @@ namespace Correlation{
          lengthA = length_[ia];
          kuhnA = kuhn_[ia];
          if (PolymerModel::isThread()) {
-            for (int i=0; i < nk; ++i) {
-               d = Correlation::dt(kSq[i], lengthA, kuhnA);
-               correlation[i] += prefactor * d;
+            for (int j = 0; j < nk; ++j) {
+               d = Correlation::dt(kSq[j], lengthA, kuhnA);
+               correlation[j] += prefactor * d;
             }
          } else {
             for (int j = 0; j < nk; ++j) {
@@ -290,7 +298,7 @@ namespace Correlation{
       if (nBlock_ > 0) {
          double lengthB, kuhnB, alpha, c, ks, x, eA, eB;
          int ia, ib;
-         for (ia = 0; ia < nBlock_; ++ia) {
+         for (ia = 1; ia < nBlock_; ++ia) {
             lengthA = length_[ia];
             kuhnA = kuhn_[ia];
             for (ib = 0; ib < ia; ++ib) {
@@ -323,4 +331,3 @@ namespace Correlation{
 
 } // namespace Correlation
 } // namespace Pscf
-#endif

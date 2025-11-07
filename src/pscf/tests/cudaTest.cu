@@ -9,6 +9,7 @@
 #include "solvers/SolversTestComposite.h"
 #include "inter/InterTestComposite.h"
 #include "floryHuggins/FloryHugginsTestComposite.h"
+#include "correlation/CorrelationTestComposite.h"
 #include "mesh/MeshTestComposite.h"
 #include "cuda/CudaTestComposite.h"
 
@@ -21,6 +22,7 @@ addChild(new ChemTestComposite, "chem/");
 addChild(new SolversTestComposite, "solvers/");
 addChild(new InterTestComposite, "inter/");
 addChild(new FloryHugginsTestComposite, "floryHuggins/");
+addChild(new CorrelationTestComposite, "correlation/");
 addChild(new MeshTestComposite, "mesh/");
 addChild(new CudaTestComposite, "cuda/");
 TEST_COMPOSITE_END
