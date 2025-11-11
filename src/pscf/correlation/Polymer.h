@@ -128,6 +128,9 @@ namespace Correlation {
       * correlations should thus be set to zero at the beginning any such 
       * calculation.
       *
+      * Precondition: On entry, arrays kSq and correlations must be allocated 
+      * and have the same nonzero capacity.
+      *
       * \param ia  block index of first block
       * \param ib  block index of second block
       * \param prefactor  prefactor multiplying omega(q)
@@ -145,17 +148,21 @@ namespace Correlation {
       * function for a list of values for the squared wavenumber given
       * as elements of input array parameter "kSq". Results are added
       * to corresponding elements of array parameter "correlations". 
+      * On entry, the arrays kSq and correlations must be allocated and
+      * equal capacities.
+      *
       * Each computed value is given by the product of a dimensionless
       * single-chain correlation function omega(k) and the "prefactor" 
       * input parameter. To obtain the contribution of this species to 
       * the total density-density correlation function for an ideal gas 
       * mixture, set prefactor = phi/(v*totalLength), where v is the
-      * monomer reference volume. 
+      * monomer reference volume.  The zero wavenumber limiting value
+      * is given by prefactor*totalLength*totalLength.
       *
       * Resulting values of Omega are added to elements of output array 
-      * correlation.
+      * correlation, as for the function computeOmega.
       *
-      * \param prefactor  prefactor multiplying single-chain correlation
+      * \param prefactor  prefactor of single-chain correlation functions
       * \param kSq  array of squared wavenumbers (in)
       * \param correlations  array of correlation function values (out)
       */

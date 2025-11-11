@@ -59,10 +59,10 @@ namespace Correlation{
    void Polymer::allocate(int nMonomer)
    {
       UTIL_CHECK(speciesPtr_);
-      nBlock_ = species().nBlock();
+      UTIL_CHECK(nMonomer > 0);
       nMonomer_ = nMonomer;
+      nBlock_ = species().nBlock();
       UTIL_CHECK(nBlock_ > 0);
-      UTIL_CHECK(nMonomer_ > 0);
 
       kuhn_.allocate(nBlock_);
       length_.allocate(nBlock_);
@@ -176,9 +176,9 @@ namespace Correlation{
                                 double kSq) const
    {
       // Preconditions
-      UTIL_CHECK(speciesPtr_);
-      UTIL_CHECK(nBlock_ > 0);
-      UTIL_CHECK(totalLength_ > 0.0);
+      UTIL_CHECK(speciesPtr_);         // check if associated
+      UTIL_CHECK(nBlock_ > 0);         // check if allocated
+      UTIL_CHECK(totalLength_ > 0.0);  // check if setup
 
       double correlation;
       double lengthA = length_[ia];
@@ -207,7 +207,11 @@ namespace Correlation{
    }
 
    /*
-   * Compute array of intramolecular correlation functions values.
+   * Compute array of correlation function values for a pair of blocks.
+   *
+   * Parameters:
+   *   - ia and ib are block indices.
+   *   - kSq and correlation must have the same nonzero capacity
    */
    void Polymer::computeOmega(int ia, int ib, 
                               double prefactor, 
@@ -215,10 +219,11 @@ namespace Correlation{
                               Array<double> & correlation) const
    {
       // Preconditions
-      UTIL_CHECK(speciesPtr_);
-      UTIL_CHECK(nBlock_ > 0);
-      UTIL_CHECK(totalLength_ > 0.0);
+      UTIL_CHECK(speciesPtr_);          // check if associated
+      UTIL_CHECK(nBlock_ > 0);          // check if allocated
+      UTIL_CHECK(totalLength_ > 0.0);   // check if setup
       const int nk = kSq.capacity();
+      UTIL_CHECK(nk > 0);
       UTIL_CHECK(correlation.capacity() == nk);
 
       const double lengthA = length_[ia];
@@ -274,6 +279,7 @@ namespace Correlation{
       UTIL_CHECK(nBlock_ > 0);
       UTIL_CHECK(totalLength_ > 0.0);
       int const nk = kSq.capacity();
+      UTIL_CHECK(nk > 0);
       UTIL_CHECK(correlation.capacity() == nk);
 
       // Compute intra-block contributions

@@ -27,6 +27,7 @@
 #include <pscf/chem/SolventSpecies.h>
 #include <pscf/chem/Edge.h>
 #include <pscf/correlation/Debye.h>
+#include <pscf/correlation/Mixture.h>
 #include <pscf/chem/EdgeIterator.h>
 
 #include <util/global.h>
@@ -42,8 +43,11 @@ namespace Rpc{
    template <int D>
    IntraCorrelation<D>::IntraCorrelation(System<D>& system)
     : systemPtr_(&system),
-      kSize_(1)
-   {}
+      correlationMixturePtr_(nullptr),
+      kSize_(-1)
+   {
+      correlationMixturePtr_ = new Correlation::Mixture(system.mixture());
+   }
 
    /*
    * Destructor.
@@ -59,36 +63,47 @@ namespace Rpc{
    void
    IntraCorrelation<D>::computeIntraCorrelations(RField<D>& correlations)
    {
-      // Local copies of system properties
-      Mixture<D> const & mixture = system().mixture();
+      // Local copies of domain properties
       UnitCell<D> const & unitCell = system().domain().unitCell();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-      const int nPolymer = mixture.nPolymer();
-      const int nSolvent = mixture.nSolvent();
-      const double vMonomer = mixture.vMonomer();
 
       // Compute Fourier space kMeshDimensions_ and kSize_
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
       UTIL_CHECK(correlations.capacity() == kSize_);
 
-      // Allocate Gsq (k-space array of square wavenumber values)
-      DArray<double> Gsq;
-      Gsq.allocate(kSize_);
+      // Check allocation of Gsq_ (k-space array of square wavenumbers)
+      if (!Gsq_.isAllocated()) {
+         Gsq_.allocate(kSize_);
+      }
+      UTIL_CHECK(Gsq_.capacity() == kSize_);
 
-      // Compute Gsq
+      // Compute Gsq_
       IntVec<D> G, Gmin;
       MeshIterator<D> iter;
       iter.setDimensions(kMeshDimensions_);
       for (iter.begin(); !iter.atEnd(); ++iter) {
          G = iter.position();
          Gmin = shiftToMinimum(G, dimensions, unitCell);
-         Gsq[iter.rank()] = unitCell.ksq(Gmin);
+         Gsq_[iter.rank()] = unitCell.ksq(Gmin);
       }
 
+      // Compute total Omega
+      if (!correlationMixturePtr_->isAllocated()) {
+         correlationMixturePtr_->allocate();
+      }
+      correlationMixturePtr_->setup();
+      correlationMixturePtr_->computeOmegaTotal(Gsq_, correlations);
+
+      #if 0
       // Initialize correlations to zero
       for (int i = 0; i < correlations.capacity(); ++i){
          correlations[i] = 0.0;
       }
+
+      Mixture<D> const & mixture = system().mixture();
+      const int nPolymer = mixture.nPolymer();
+      const int nSolvent = mixture.nSolvent();
+      const double vMonomer = mixture.vMonomer();
 
       double phi, cPolymer, polymerLength, rsqAB;
       double length, lengthA, lengthB, lengthC, ksq;
@@ -129,17 +144,17 @@ namespace Rpc{
                length = polymer.edge(j).length();
                for (iter.begin(); !iter.atEnd(); ++iter) {
                   rank = iter.rank();
-                  ksq = Gsq[rank];
+                  ksq = Gsq_[rank];
                   correlations[rank] +=
-                                 cPolymer * Correlation::dt(ksq, length, kuhn);
+                             cPolymer * Correlation::dt(ksq, length, kuhn);
                }
             } else {
                length = (double) polymer.edge(j).nBead();
                for (iter.begin(); !iter.atEnd(); ++iter) {
                   rank = iter.rank();
-                  ksq = Gsq[rank];
+                  ksq = Gsq_[rank];
                   correlations[rank] +=
-                                 cPolymer * Correlation::db(ksq, length, kuhn);
+                             cPolymer * Correlation::db(ksq, length, kuhn);
                }
             }
 
@@ -207,7 +222,7 @@ namespace Rpc{
                   if (PolymerModel::isThread()) {
                      for (iter.begin(); !iter.atEnd(); ++iter) {
                         rank = iter.rank();
-                        ksq = Gsq[rank];
+                        ksq = Gsq_[rank];
                         x = std::exp( -rsqAB * ksq / 6.0);
                         eA = Correlation::et(ksq, lengthA, kuhnA);
                         eB = Correlation::et(ksq, lengthB, kuhnB);
@@ -216,7 +231,7 @@ namespace Rpc{
                   } else {
                      for (iter.begin(); !iter.atEnd(); ++iter) {
                         rank = iter.rank();
-                        ksq = Gsq[rank];
+                        ksq = Gsq_[rank];
                         x = std::exp( -rsqAB * ksq / 6.0);
                         eA = Correlation::eb(ksq, lengthA, kuhnA);
                         eB = Correlation::eb(ksq, lengthB, kuhnB);
@@ -243,6 +258,17 @@ namespace Rpc{
             }
          }
       }
+      #endif
+
+      #if 0
+      //DArray<double> corrTest;
+      //corrTest.allocate(kSize_);
+      //correlationMixturePtr_->computeOmegaTotal(Gsq_, corrTest);
+
+      for (int i = 0; i < kSize_; ++i) {
+         UTIL_CHECK(std::abs(corrTest[i] - correlations[i]) < 1.0E-8);
+      }
+      #endif
 
    }
 

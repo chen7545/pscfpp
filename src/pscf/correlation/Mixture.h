@@ -41,7 +41,7 @@ namespace Correlation {
       *
       * \param mixture  assocated MixtureBase object
       */
-      Mixture(MixtureBase const& mixture);
+      Mixture(MixtureBase const & mixture);
 
       /**
       * Destructor.
@@ -56,25 +56,28 @@ namespace Correlation {
       void associate(MixtureBase const& mixture);
 
       /**
-      * Allocate private data structures, construct immutable data.
+      * Allocate private data structures, set immutable private data.
       *
       * This function may only be called once, after reading the Mixture
       * section of a parameter file. It requires knowledge of immutable 
       * properties of a mixture, such as the number of monomer types, the 
-      * number of polymer species, and the monomer type ids for polymer 
-      * blocks.
+      * number of polymer species, and the monomer type id for each block
+      * of each polymer. 
       */
       void allocate();
 
       /**
-      * Compute mutable private data.
+      * Set mutable private data.
       *
-      * This function computes properties that depend on the following
-      * mutable properties of a mixture: monomer statistical segment 
-      * lengths, species volume fractions, polymer block lengths, and
-      * solvent species sizes. It must be called after allocate and
-      * before any correlation function computations, and may be called
-      * more than once.
+      * This function calls Pscf::Correlation::Polymer:setup for all
+      * polymer species, using the current statistical segment length
+      * values. By doing so, it computes properties that depend on the 
+      * following mutable properties of a mixture: monomer statistical 
+      * segment lengths, species volume fractions, polymer block lengths, 
+      * and solvent species sizes. 
+      * 
+      * This function must be called after allocate and before any 
+      * correlation function computations, and may be called repeatedly.
       */
       void setup();
 
@@ -119,6 +122,11 @@ namespace Correlation {
       */
       MixtureBase const & mixture() const;
 
+      /**
+      * Has this Mixture been previously allocated?
+      */
+      bool isAllocated() const;
+
    private:
 
       /// Array of Correlation::Polymer objects
@@ -139,6 +147,10 @@ namespace Correlation {
    // Get  a descriptor for the parent mixture by const reference.
    inline MixtureBase const & Mixture::mixture() const
    {  return *mixturePtr_; }
+
+   // Has this object been allocated?
+   inline bool Mixture::isAllocated() const
+   {  return polymers_.isAllocated(); }
 
 } // namespace Correlation
 } // namespace Pscf

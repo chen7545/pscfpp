@@ -46,17 +46,25 @@ namespace Correlation {
    * Create an association with a Mixture.
    */
    void Mixture::associate(MixtureBase const & mixture)
-   {  mixturePtr_ = &mixture; }
+   {
+      UTIL_CHECK(!mixturePtr_);  
+      mixturePtr_ = &mixture; 
+   }
 
    /*
    * Allocate memory.
    */
    void Mixture::allocate()
    {
+      // Constant and preconditions
+      UTIL_CHECK(mixturePtr_);  
       const int nMonomer = mixture().nMonomer();
       const int nPolymer = mixture().nPolymer();
       UTIL_CHECK(nMonomer > 0);
       UTIL_CHECK(nPolymer > 0);
+      UTIL_CHECK(!polymers_.isAllocated());
+
+      // Allocation
       polymers_.allocate(nPolymer);
       for (int i = 0; i < nPolymer; ++i) {
          polymers_[i].associate(mixture().polymerSpecies(i));
@@ -65,10 +73,12 @@ namespace Correlation {
    }
 
    /*
-   * Compute mutable state variables.
+   * Compute mutable state variables by calling setup for all polymers.
    */
    void Mixture::setup()
    {
+      UTIL_CHECK(mixturePtr_);  
+      UTIL_CHECK(isAllocated());  
       const int nMonomer = mixture().nMonomer();
       const int nPolymer = mixture().nPolymer();
       UTIL_CHECK(nMonomer > 0);

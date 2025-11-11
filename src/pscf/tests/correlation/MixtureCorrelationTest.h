@@ -57,6 +57,7 @@ public:
       MixtureStub p;
       Correlation::Mixture c;
       c.associate(p);
+      TEST_ASSERT(!c.isAllocated());
    } 
 
    void testConstructor()
@@ -64,6 +65,7 @@ public:
       printMethod(TEST_FUNC);
       MixtureStub p;
       Correlation::Mixture c(p);
+      TEST_ASSERT(!c.isAllocated());
    }
 
 
@@ -77,6 +79,7 @@ public:
       Correlation::Mixture c(mixture);
       c.allocate();
       c.setup();
+      TEST_ASSERT(c.isAllocated());
 
       // Test: Mixture of a homopolymer and diblock of equal length 5.0
       double length = c.polymer(0).totalLength();
@@ -186,10 +189,12 @@ public:
       MixtureStub mixture;
       testReadParam(mixture, "in/MixtureDiblockBead");
       Correlation::Mixture c(mixture);
+      TEST_ASSERT(!c.isAllocated());
       c.allocate();
       c.setup();
 
       // Test: Mixture of a homopolymer and diblock of equal length 10
+      TEST_ASSERT(c.isAllocated());
       double length = c.polymer(0).totalLength();
       TEST_ASSERT(eq(length, 10.0));
       length = c.polymer(1).totalLength();

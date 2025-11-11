@@ -8,10 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/math/IntVec.h>      // memmber variable type
+#include <pscf/math/IntVec.h>         // memmber variable type
+#include <util/containers/DArray.h>   // memmber variable type
 
 // Forward declarations
 namespace Pscf {
+   namespace Correlation {
+      class Mixture;
+   }
    namespace Prdc {
       namespace Cpu {
          template <int D> class RField;
@@ -34,7 +38,7 @@ namespace Rpc {
    * \ingroup Rpc_Fts_Compressor_Module
    */
    template <int D>
-   class IntraCorrelation 
+   class IntraCorrelation
    {
 
    public:
@@ -60,30 +64,35 @@ namespace Rpc {
 
    protected:
 
-      /** 
+      /**
       * Return reference to parent system.
-      */      
-      System<D>& system();
-      
+      */
+      System<D> const & system();
+
    private:
-      
-      /// Pointer to the associated system object.
-      System<D>* systemPtr_;
-      
-      /// Dimensions of Fourier grid for DFT of a real function
+
+      /// Pointer to a parent system object.
+      System<D> const * systemPtr_;
+
+      /// Pointer to a child Correlation::Mixture object.
+      Correlation::Mixture* correlationMixturePtr_;
+
+      /// Array of squared magnitudes for reciprocal wavevectors.
+      DArray<double> Gsq_;
+
+      /// Dimensions of Fourier grid for DFT of a real function.
       IntVec<D> kMeshDimensions_;
-      
-      /// Number of elements in the Fourier grid
+
+      /// Number of elements in the Fourier grid.
       int kSize_;
-      
+
    };
-   
-   // Get the parent system.
+
+   // Get the parent system by const reference.
    template <int D>
-   inline System<D>& IntraCorrelation<D>::system()
+   inline System<D> const & IntraCorrelation<D>::system()
    {  return *systemPtr_; }
 
-   
    // Explicit instantiation declarations
    extern template class IntraCorrelation<1>;
    extern template class IntraCorrelation<2>;
