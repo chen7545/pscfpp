@@ -18,9 +18,10 @@ namespace Correlation {
    * homopolymer of specified length and statistical segment length. The
    * result for the thread model can be expressed as a function 
    * \f[
-   *   d = (length)^2 g(x)
+   *   d(k) = L^2 g(x)
    * \f] 
-   * where x =  ksq * length * kuhn * kuhn / 6 and
+   * where \f$ x =  k^2 L b^2 / 6 \f$, for L = length, b = kuhn, and
+   * \f$ k^{2} \f$ = ksq, and
    * \f[
    *     g(x) \equiv 2[ e^{-x} - 1 + x ]/x^2
    * \f]
@@ -39,15 +40,15 @@ namespace Correlation {
    /**
    * Compute and return an intrablock correlation function (bead model)
    * 
-   * This function returns the intramolecular correlation function for 
-   * a homopolymer of specified length and statistical segment length. 
-   * The result for the bead model can be expressed as a function 
+   * This function returns the intramolecular correlation function for a
+   * homopolymer of specified length and statistical segment length. The
+   * result for the bead model can be expressed as a function 
    * \f[
-   *     g(x) \equiv 2[ e^{-yN} - 1 + N(1-e^{-y}) ]/(1-e^{-y})^2
+   *     d(k) \equiv 2[ e^{-yN} - 1 + N(1-e^{-y}) ]/(1-e^{-y})^2
    * \f]
-   * where y =  ksq * kuhn * kuhn / 6 and N = nBead. This function 
-   * also gives the intra-block correlation function for block of N 
-   * beads.
+   * where \f$ y = k^2 b^2 / 6 \f$, for N = nBead, b = kuhn,  and 
+   * \f$ k^{2} = \f$ ksq.  This function also gives the intra-block 
+   * correlation function for block of N beads.
    *
    * \ingroup Pscf_Correlation_Module
    *
@@ -62,19 +63,16 @@ namespace Correlation {
    *
    * This function returns the function
    * \f[
-   *   e = (length) h(x)
+   *   e(k) = L [ 1 - e^{-x} ] / x
    * \f]
-   * where x =  ksq * length * kuhn * kuhn / 6, and
-   * \f[
-   *     h(x) \equiv [ 1 - e^{-x} ]/x 
-   * \f]
-   * is a dimensionless function of x.
+   * where \f$ x =  k^2 L b^2 / 6 \f$, for L = length, b = kuhn, and
+   * \f$ k^{2} \f$ = ksq.
    *
-   * The intra-block correlation function \f$ omega_{ij}(k) \f$ for two
+   * The intra-block correlation function \f$ \omega_{ij}(k) \f$ for two
    * distinct blocks with block indices i and j can be expressed in the
    * thread model as a product
    * \f[
-   *    omega_{ij}(k) = e^{-k^{2}R_{ij}^{2}/6} e_{i}(k) e_{j}(k)
+   *    \omega_{ij}(k) = e^{-k^{2}R_{ij}^{2}/6} e_{i}(k) e_{j}(k)
    * \f]
    * where \f$ R_{ij}^{2} \f$ is the mean-squared end-to-end length of a
    * sequence of other blocks that form a path connecting the two blocks 
@@ -98,13 +96,14 @@ namespace Correlation {
    * \f[
    *     e(x) \equiv ( 1 - e^{-Ny} )/(1-e^{-y})
    * \f]
-   * where y =  ksq * kuhn * kuhn / 6.
+   * where \f$ y =  k^2 b^2 / 6 \f$, for N = nBead, b = kuhn,  and 
+   * \f$ k^{2} \f$ = ksq.
    *
-   * The intramolecular correlation function \f$ omega_{ij}(k) \f$ for two
+   * The intramolecular correlation function \f$ \omega_{ij}(k) \f$ for two
    * distinct blocks with block indices i and j can be expressed in the
    * bead model as a product
    * \f[
-   *    omega_{ij}(k) = e^{-k^{2}R_{ij}^{2}/6} e_{i}(k) e_{j}(k)
+   *    \omega_{ij}(k) = e^{-k^{2}R_{ij}^{2}/6} e_{i}(k) e_{j}(k)
    * \f]
    * where \f$ R_{ij}^{2} \f$ is the mean-squared end-to-end length of the
    * sequence of bonds that lie along a path connecting the two blocks, 
