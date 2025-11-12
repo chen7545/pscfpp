@@ -9,13 +9,8 @@
 
 #include <pscf/correlation/Mixture.h>
 #include <pscf/correlation/Polymer.h>
-#include <pscf/chem/PolymerSpecies.h>
-#include <pscf/chem/VertexIterator.h>
-#include <pscf/chem/EdgeIterator.h>
-
+#include <pscf/chem/PolymerModel.h>
 #include <util/format/Dbl.h>
-#include <util/format/Int.h>
-//#include <util/containers/Pair.h>
 
 #include <fstream>
 

@@ -17,7 +17,7 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Correlation{
+namespace Correlation {
 
    using namespace Util;
 

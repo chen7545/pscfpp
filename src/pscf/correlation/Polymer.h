@@ -40,7 +40,7 @@ namespace Correlation {
       *
       * \param polymer  associated PolymerSpecies object
       */
-      Polymer(PolymerSpecies const& polymer);
+      Polymer(PolymerSpecies const & polymer);
 
       /**
       * Destructor.
@@ -52,7 +52,7 @@ namespace Correlation {
       *
       * \param polymer  associated PolymerSpecies object
       */
-      void associate(PolymerSpecies const& polymer);
+      void associate(PolymerSpecies const & polymer);
 
       /**
       * Allocate memory and initialize immutable data.
@@ -102,7 +102,7 @@ namespace Correlation {
       * \param ib  block index of second block
       * \param prefactor  prefactor multiplying omega(k)
       * \param kSq  squared wavenumber 
-      * \return calculated value of Omega(k)
+      * \return calculated value of Omega_{ia,ib}(k)
       */
       double computeOmega(int ia, int ib, double prefactor, double kSq) 
       const;

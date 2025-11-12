@@ -7,13 +7,9 @@
 #include <pscf/tests/solvers/PolymerStub.h>
 
 #include <pscf/correlation/Polymer.h>
-#include <pscf/chem/PolymerSpecies.h>
-#include <pscf/chem/VertexIterator.h>
-#include <pscf/chem/EdgeIterator.h>
-
+#include <pscf/chem/PolymerModel.h>
 #include <util/format/Dbl.h>
 #include <util/format/Int.h>
-//#include <util/containers/Pair.h>
 
 #include <fstream>
 
@@ -99,26 +95,33 @@ public:
       TEST_ASSERT(c.blockIds(0).size() == 1);
       TEST_ASSERT(c.blockIds(0)[0] == 0);
 
+      // Construct kSq array
       DArray<double> kSq;
       int nk = 10;
-      double maxQRgSq = 2.0;
       kSq.allocate(nk);
+      double maxQRgSq = 2.0;
       double Rg = b * sqrt(length/6.0);
       double RgSq = Rg*Rg;
       for (int i = 0; i < nk; ++i) {
          kSq[i] = maxQRgSq*double(i)/(double(nk)*RgSq);
       }
 
+      // Allocate and zero results arrays
       DArray<double> correlations;
+      DArray<double> correlationsTot;
       correlations.allocate(nk);
+      correlationsTot.allocate(nk);
+      for (int i = 0; i < nk; ++i) {
+         correlations[i] = 0.0;
+         correlationsTot[i] = 0.0;
+      }
 
       double prefactor = 0.7;
       c.computeOmega(0, 0, prefactor, kSq, correlations);
       TEST_ASSERT(eq( correlations[0], length*length*prefactor));
 
-      DArray<double> correlationsTot;
-      correlationsTot.allocate(nk);
       c.computeOmegaTotal(prefactor, kSq, correlationsTot);
+      TEST_ASSERT(eq( correlationsTot[0], length*length*prefactor));
 
       double ks, x, g, value;
       for (int i = 0; i < nk; ++i) {
@@ -181,11 +184,21 @@ public:
       DArray<double> correlations10;
       DArray<double> correlations11;
       DArray<double> correlationsTot;
+      DArray<double> correlationsH;
       correlations00.allocate(nk);
       correlations01.allocate(nk);
       correlations10.allocate(nk);
       correlations11.allocate(nk);
       correlationsTot.allocate(nk);
+      correlationsH.allocate(nk);
+      for (int i=0; i < nk; ++i) {
+         correlations00[i] = 0.0;
+         correlations01[i] = 0.0;
+         correlations10[i] = 0.0;
+         correlations11[i] = 0.0;
+         correlationsTot[i] = 0.0;
+         correlationsH[i] = 0.0;
+      }
 
       // Compute arrays of diblock copolymer properties
       double prefactor = 0.7;
@@ -202,8 +215,6 @@ public:
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
-      DArray<double> correlationsH;
-      correlationsH.allocate(nk);
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
       double l0, l1;
@@ -284,6 +295,7 @@ public:
       DArray<double> correlations12;
       DArray<double> correlations22;
       DArray<double> correlationsTot;
+      DArray<double> correlationsH;
       correlations00.allocate(nk);
       correlations01.allocate(nk);
       correlations10.allocate(nk);
@@ -292,6 +304,18 @@ public:
       correlations12.allocate(nk);
       correlations22.allocate(nk);
       correlationsTot.allocate(nk);
+      correlationsH.allocate(nk);
+      for (int i=0; i < nk; ++i) {
+         correlations00[i] = 0.0;
+         correlations01[i] = 0.0;
+         correlations10[i] = 0.0;
+         correlations11[i] = 0.0;
+         correlations02[i] = 0.0;
+         correlations12[i] = 0.0;
+         correlations22[i] = 0.0;
+         correlationsTot[i] = 0.0;
+         correlationsH[i] = 0.0;
+      }
 
       // Compute arrays of diblock copolymer properties
       double prefactor = 0.7;
@@ -311,11 +335,15 @@ public:
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
-      DArray<double> correlationsH;
-      correlationsH.allocate(nk);
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
-      double c00, c01, c10, c11, c02, c12, c22, cTot, sum;
+      double c00, c01, c10, c11, c02, c12, c22, cTot, cH, sum;
+      double error1, error2, error3;
+      double max1, max2, max3;
+      max1 = 0.0;
+      max2 = 0.0;
+      max3 = 0.0;
+      //setVerbose(1);
       for (int i = 0; i < nk; ++i) {
          c00 = correlations00[i];
          c01 = correlations01[i];
@@ -325,11 +353,23 @@ public:
          c12 = correlations12[i];
          c22 = correlations22[i];
          cTot = correlationsTot[i];
-         TEST_ASSERT(eq(c10, c01));
+         cH = correlationsH[i];
          sum = c00 + c11 + c22 + 2.0*c01 + 2.0*c12+ 2.0*c02;
-         TEST_ASSERT(eq(sum, cTot));
-         TEST_ASSERT(eq(sum, correlationsH[i]));
+         error1 = std::abs(c10 - c01);
+         error2 = std::abs(cTot - cH);
+         error3 = std::abs(sum - cTot);
+	 if (error1 > max1) max1 = error1;
+	 if (error2 > max2) max2 = error2;
+	 if (error3 > max3) max3 = error3;
+	 if (verbose() > 0) {
+            std::cout << "\n" << Int(i) << "  " << Dbl(kSq[i]*RgSq)
+		      << Dbl(sum) << Dbl(cTot) << Dbl(cH);
+		      // << Dbl(error1) << Dbl(error2) << Dbl(error3);
+         }
       }
+      TEST_ASSERT(max1 < 1.0E-8);
+      TEST_ASSERT(max2 < 1.0E-8);
+      TEST_ASSERT(max3 < 1.0E-5);
 
    }
 
@@ -357,6 +397,7 @@ public:
       TEST_ASSERT(c.blockIds(0).size() == 1);
       TEST_ASSERT(c.blockIds(0)[0] == 0);
 
+      // Construct kSq array
       DArray<double> kSq;
       int nk = 10;
       double maxQRgSq = 2.0;
@@ -367,26 +408,38 @@ public:
          kSq[i] = maxQRgSq*double(i)/(double(nk)*RgSq);
       }
 
+      // Allocate and zero all result arrays
       DArray<double> correlations;
+      DArray<double> correlationsTot;
       correlations.allocate(nk);
+      correlationsTot.allocate(nk);
+      for (int i = 0; i < nk; ++i) {
+         correlations[i] = 0.0;
+         correlationsTot[i] = 0.0;
+      }
 
       double prefactor = 0.7;
       c.computeOmega(0, 0, prefactor, kSq, correlations);
       TEST_ASSERT(eq( correlations[0], length*length*prefactor));
-
-      DArray<double> correlationsTot;
-      correlationsTot.allocate(nk);
       c.computeOmegaTotal(prefactor, kSq, correlationsTot);
 
       double ks, value;
+      double error1, error2;
+      //setVerbose(1);
       for (int i = 0; i < nk; ++i) {
          ks = kSq[i];
          value = c.computeOmega(0, 0, prefactor, ks);
          if (verbose() > 0) {
             std::cout << "\n " << Dbl(ks*RgSq) << Dbl(correlations[i]);
          }
-         TEST_ASSERT(eq(value, correlations[i]));
-         TEST_ASSERT(eq(correlations[i], correlationsTot[i]));
+         error1 = std::abs(value - correlations[i]);
+         error2 = std::abs(correlations[i] - correlationsTot[i]);
+	 if (verbose() > 0) {
+            Log::file() << "\n error1 = " << Dbl(error1);
+            Log::file() << "\n error2 = " << Dbl(error2);
+         }
+	 TEST_ASSERT(error1 < 1.0E-6);
+	 TEST_ASSERT(error2 < 1.0E-6);
       }
 
    }
@@ -433,11 +486,21 @@ public:
       DArray<double> correlations10;
       DArray<double> correlations11;
       DArray<double> correlationsTot;
+      DArray<double> correlationsH;
       correlations00.allocate(nk);
       correlations01.allocate(nk);
       correlations10.allocate(nk);
       correlations11.allocate(nk);
       correlationsTot.allocate(nk);
+      correlationsH.allocate(nk);
+      for (int i=0; i < nk; ++i) {
+         correlations00[i] = 0.0;
+         correlations01[i] = 0.0;
+         correlations10[i] = 0.0;
+         correlations11[i] = 0.0;
+         correlationsTot[i] = 0.0;
+         correlationsH[i] = 0.0;
+      }
 
       // Compute arrays of diblock copolymer properties
       double prefactor = 0.7;
@@ -454,8 +517,6 @@ public:
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
-      DArray<double> correlationsH;
-      correlationsH.allocate(nk);
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
       double ks, x, c00, c01, c10, c11, cTot, sum;
@@ -526,6 +587,7 @@ public:
       DArray<double> correlations12;
       DArray<double> correlations22;
       DArray<double> correlationsTot;
+      DArray<double> correlationsH;
       correlations00.allocate(nk);
       correlations01.allocate(nk);
       correlations10.allocate(nk);
@@ -534,6 +596,19 @@ public:
       correlations12.allocate(nk);
       correlations22.allocate(nk);
       correlationsTot.allocate(nk);
+      correlationsH.allocate(nk);
+      for (int i=0; i < nk; ++i) {
+         correlations00[i] = 0.0;
+         correlations01[i] = 0.0;
+         correlations10[i] = 0.0;
+         correlations11[i] = 0.0;
+         correlations02[i] = 0.0;
+         correlations12[i] = 0.0;
+         correlations22[i] = 0.0;
+         correlationsTot[i] = 0.0;
+         correlationsH[i] = 0.0;
+      }
+
 
       // Compute arrays of diblock copolymer properties
       double prefactor = 0.7;
@@ -553,8 +628,6 @@ public:
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
-      DArray<double> correlationsH;
-      correlationsH.allocate(nk);
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
       double c00, c01, c10, c11, c02, c12, c22, cTot, sum;

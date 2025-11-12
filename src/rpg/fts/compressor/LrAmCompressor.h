@@ -10,11 +10,13 @@
 
 #include "Compressor.h"                          // base class argument
 #include <pscf/cuda/DeviceArray.h>               // base class argument
+#include <prdc/cuda/types.h>                     // base class argument
 #include <pscf/iterator/AmIteratorTmpl.h>        // base class template
 
 #include <rpg/fts/compressor/IntraCorrelation.h> // member
-#include <prdc/cpu/RField.h>                     // member
-#include <prdc/cpu/RFieldDft.h>                  // member
+#include <prdc/cuda/RField.h>                    // member
+#include <prdc/cuda/RFieldDft.h>                 // member
+#include <pscf/math/IntVec.h>                    // member
 #include <util/containers/DArray.h>              // member
 
 #include <iostream>                 

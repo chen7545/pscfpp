@@ -5,6 +5,8 @@
 #include <test/UnitTestRunner.h>
 
 #include <rpg/system/System.h>
+#include <rpg/solvers/Mixture.h>
+#include <rpg/field/Domain.h>
 #include <rpg/fts/simulator/Simulator.h>
 #include <rpg/scft/ScftThermo.h>
 #include <prdc/cuda/RField.h> 
@@ -13,6 +15,7 @@
 #include <pscf/math/IntVec.h>
 #include <pscf/inter/Interaction.h>
 #include <util/containers/DArray.h>  
+#include <util/misc/FileMaster.h>  
 
 #include <util/tests/LogFileUnitTest.h>
 

@@ -9,11 +9,11 @@
 */
 
 #include "Compressor.h"                           // base class
+#include <rpg/fts/compressor/IntraCorrelation.h>  // member
 #include <prdc/cuda/RField.h>                     // member
 #include <prdc/cuda/RFieldDft.h>                  // member
 #include <util/containers/DArray.h>               // member
 #include <util/misc/Timer.h>                      // member
-#include <rpg/fts/compressor/IntraCorrelation.h>  // member
 #include <iostream>
 
 namespace Pscf {
@@ -135,7 +135,7 @@ namespace Rpg {
       IntVec<D> kMeshDimensions_;
       
       /**
-      * IntraCorrelation in fourier space calculated by IntraCorrlation class.
+      * IntraCorrelation in fourier space calculated by IntraCorrelation class.
       */
       RField<D> intraCorrelationK_;
 

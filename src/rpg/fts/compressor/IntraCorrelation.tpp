@@ -11,7 +11,6 @@
 #include "IntraCorrelation.h"
 
 #include <rpg/system/System.h>
-#include <rpg/field/Domain.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/solvers/Solvent.h>
 #include <rpg/field/Domain.h>
@@ -23,12 +22,14 @@
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/mesh/MeshIterator.h>
+
 #include <pscf/chem/PolymerSpecies.h>
 #include <pscf/chem/SolventSpecies.h>
 #include <pscf/chem/Edge.h>
-#include <pscf/correlation/Debye.h>
 #include <pscf/chem/EdgeIterator.h>
-//#include <pscf/chem/PolymerType.h>
+#include <pscf/correlation/Debye.h>
+#include <pscf/correlation/Mixture.h>
+
 #include <pscf/cuda/HostDArray.h>
 
 #include <util/global.h>
@@ -38,56 +39,77 @@ namespace Rpg{
 
    using namespace Util;
 
-   // Constructor
+   /*
+   * Constructor.
+   */
    template <int D>
-   IntraCorrelation<D>::IntraCorrelation(System<D>& system)
+   IntraCorrelation<D>::IntraCorrelation(System<D> const & system)
     : systemPtr_(&system),
-      kSize_(1)
-   {  setClassName("IntraCorrelation"); }
+      correlationMixturePtr_(nullptr),
+      kSize_(-1)
+   {
+      setClassName("IntraCorrelation");
+      correlationMixturePtr_ = new Correlation::Mixture(system.mixture());
+   }
 
-   // Destructor
+   /*
+   * Destructor.
+   */
    template <int D>
    IntraCorrelation<D>::~IntraCorrelation()
-   {}
+   {  delete correlationMixturePtr_; }
 
    template<int D>
-   void 
+   void
    IntraCorrelation<D>::computeIntraCorrelations(RField<D>& correlations)
    {
       // Local copies of system properties
       Mixture<D> const & mixture = system().mixture();
       UnitCell<D> const & unitCell = system().domain().unitCell();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-      const int nPolymer = mixture.nPolymer();
-      const int nSolvent = mixture.nSolvent();
-      const double vMonomer = mixture.vMonomer();
 
       // Compute k-space mesh dimensions kMeshDimensions_ & size kSize_
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
       UTIL_CHECK(correlations.capacity() == kSize_);
 
-      // Allocate Gsq (k-space array of square wavenumber values)
-      DArray<double> Gsq;
-      Gsq.allocate(kSize_);
+      // Check allocation of Gsq_ (k-space array of square wavenumber)
+      if (!Gsq_.isAllocated()) {
+         Gsq_.allocate(kSize_);
+      }
+      UTIL_CHECK(Gsq_.capacity() == kSize_);
 
-      // Compute Gsq
+      // Compute Gsq_
       IntVec<D> G, Gmin;
       MeshIterator<D> iter;
       iter.setDimensions(kMeshDimensions_);
       for (iter.begin(); !iter.atEnd(); ++iter) {
          G = iter.position();
          Gmin = shiftToMinimum(G, dimensions, unitCell);
-         Gsq[iter.rank()] = unitCell.ksq(Gmin);
+         Gsq_[iter.rank()] = unitCell.ksq(Gmin);
       }
 
-      // Allocate local correlations_h array
-      HostDArray<cudaReal> correlations_h;
-      correlations_h.allocate(kSize_);
-      
-      // Initialize correlations_h to zero
-      for (int i = 0; i < correlations_h.capacity(); ++i){
-         correlations_h[i] = 0.0;
+      // Check allocation of HostDArray<double> correlations_
+      if (!correlations_.isAllocated()) {
+         correlations_.allocate(kSize_);
       }
+      UTIL_CHECK(correlations_.capacity() == kSize_);
+
+      // Compute array of correlation function values on CPU
+      if (!correlationMixturePtr_->isAllocated()) {
+         correlationMixturePtr_->allocate();
+      }
+      correlationMixturePtr_->setup();
+      correlationMixturePtr_->computeOmegaTotal(Gsq_, correlations_);
+
+      #if 0
+      // Initialize correlations_ to zero
+      for (int i = 0; i < correlations_.capacity(); ++i){
+         correlations_[i] = 0.0;
+      }
+
+      const double vMonomer = mixture.vMonomer();
+      const int nPolymer = mixture.nPolymer();
+      const int nSolvent = mixture.nSolvent();
 
       double phi, cPolymer, polymerLength, rsqAB;
       double length, lengthA, lengthB, lengthC, ksq;
@@ -123,22 +145,22 @@ namespace Rpg{
             monomerId = polymer.edge(j).monomerId();
             kuhn = mixture.monomer(monomerId).kuhn();
 
-            // Loop over ksq to increment correlations_h
+            // Loop over ksq to increment correlations_
             if (PolymerModel::isThread()) {
                length = polymer.edge(j).length();
                for (iter.begin(); !iter.atEnd(); ++iter) {
                   rank = iter.rank();
-                  ksq = Gsq[rank];
-                  correlations_h[rank] +=
-                                 cPolymer * Correlation::dt(ksq, length, kuhn);
+                  ksq = Gsq_[rank];
+                  correlations_[rank] +=
+                            cPolymer * Correlation::dt(ksq, length, kuhn);
                }
             } else {
                length = (double) polymer.edge(j).nBead();
                for (iter.begin(); !iter.atEnd(); ++iter) {
                   rank = iter.rank();
-                  ksq = Gsq[rank];
-                  correlations_h[rank] +=
-                                 cPolymer * Correlation::db(ksq, length, kuhn);
+                  ksq = Gsq_[rank];
+                  correlations_[rank] +=
+                            cPolymer * Correlation::db(ksq, length, kuhn);
                }
             }
 
@@ -206,20 +228,20 @@ namespace Rpg{
                   if (PolymerModel::isThread()) {
                      for (iter.begin(); !iter.atEnd(); ++iter) {
                         rank = iter.rank();
-                        ksq = Gsq[rank];
+                        ksq = Gsq_[rank];
                         x = std::exp( -rsqAB * ksq / 6.0);
                         eA = Correlation::et(ksq, lengthA, kuhnA);
                         eB = Correlation::et(ksq, lengthB, kuhnB);
-                        correlations_h[rank] += prefactor * x * eA * eB;
+                        correlations_[rank] += prefactor * x * eA * eB;
                      }
                   } else {
                      for (iter.begin(); !iter.atEnd(); ++iter) {
                         rank = iter.rank();
-                        ksq = Gsq[rank];
+                        ksq = Gsq_[rank];
                         x = std::exp( -rsqAB * ksq / 6.0);
                         eA = Correlation::eb(ksq, lengthA, kuhnA);
                         eB = Correlation::eb(ksq, lengthB, kuhnB);
-                        correlations_h[rank] += prefactor * x * eA * eB;
+                        correlations_[rank] += prefactor * x * eA * eB;
                      }
                   }
 
@@ -238,13 +260,14 @@ namespace Rpg{
             size = solvent.size();
             dcorr = phi*size/vMonomer;
             for (iter.begin(); !iter.atEnd(); ++iter) {
-               correlations_h[iter.rank()] += dcorr;
+               correlations_[iter.rank()] += dcorr;
             }
          }
       }
+      #endif
 
-      // Copy local array correlations_h to device (gpu) memory
-      correlations = correlations_h;
+      // Copy host array "correlations_" to device array "correlations"
+      correlations = correlations_;
 
    }
 

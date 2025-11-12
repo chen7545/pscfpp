@@ -9,15 +9,29 @@
 */
 
 #include <util/param/ParamComposite.h>    // base class
-#include <prdc/cuda/RField.h>              // member
-#include <prdc/cuda/RFieldDft.h>           // member
+#include <prdc/cuda/types.h>              // member
+#include <pscf/math/IntVec.h>             // member
+#include <pscf/cuda/HostDArray.h>         // member
 #include <util/containers/DArray.h>       // member
 
+// Forward references
 namespace Pscf {
-namespace Rpg
-{
+   namespace Correlation {
+      class Mixture;
+   }
+   namespace Prdc {
+      namespace Cuda {
+         template <int D> class RField; 
+      }
+   }   
+   namespace Rpg {
+      template <int D> class System;
+   }
+}
 
-   template <int D> class System;
+namespace Pscf {
+namespace Rpg {
+
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -39,7 +53,7 @@ namespace Rpg
       *
       * \param system parent System object
       */
-      IntraCorrelation(System<D>& system);
+      IntraCorrelation(System<D> const & system);
 
       /**
       * Destructor.
@@ -47,7 +61,7 @@ namespace Rpg
       ~IntraCorrelation();
 
       /**
-      * Compute and return intramolecular correlations. 
+      * Compute and return intramolecular correlations.
       *
       * \param correlations  k-space grid of intramolecular correlations
       */
@@ -55,30 +69,38 @@ namespace Rpg
 
    protected:
 
-      /** 
+      /**
       * Return reference to parent system.
-      */      
-      System<D>& system();
-      
+      */
+      System<D> const & system() const;
+
    private:
-      
+
       /// Pointer to the associated system object.
-      System<D>* systemPtr_;
-      
-      /// Dimensions of fourier space 
+      System<D> const * systemPtr_;
+
+      /// Pointer to a child Correlation::Mixture object.
+      Correlation::Mixture* correlationMixturePtr_;
+
+      /// Array of square magnitudes for wavevectors on a k-grid.
+      DArray<double> Gsq_;
+
+      /// Host array of square magnitudes for wavevectors on a k-grid.
+      HostDArray<cudaReal> correlations_;
+
+      /// Dimensions of Fourier space grid.
       IntVec<D> kMeshDimensions_;
-      
-      /// Size of fourier space
+
+      /// Size of Fourier space grid. 
       int kSize_;
-   
+
    };
-   
+
    // Get the parent system.
    template <int D>
-   inline System<D>& IntraCorrelation<D>::system()
+   inline System<D> const & IntraCorrelation<D>::system() const
    {  return *systemPtr_; }
 
-   
    // Explicit instantiation declarations
    extern template class IntraCorrelation<1>;
    extern template class IntraCorrelation<2>;

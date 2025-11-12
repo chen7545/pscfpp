@@ -87,7 +87,7 @@ namespace Rpc{
          Gsq_[iter.rank()] = unitCell.ksq(Gmin);
       }
 
-      // Compute total Omega
+      // Compute total intramolecular correlation function
       if (!correlationMixturePtr_->isAllocated()) {
          correlationMixturePtr_->allocate();
       }
@@ -257,16 +257,6 @@ namespace Rpc{
                correlations[iter.rank()] += dcorr;
             }
          }
-      }
-      #endif
-
-      #if 0
-      //DArray<double> corrTest;
-      //corrTest.allocate(kSize_);
-      //correlationMixturePtr_->computeOmegaTotal(Gsq_, corrTest);
-
-      for (int i = 0; i < kSize_; ++i) {
-         UTIL_CHECK(std::abs(corrTest[i] - correlations[i]) < 1.0E-8);
       }
       #endif
 
