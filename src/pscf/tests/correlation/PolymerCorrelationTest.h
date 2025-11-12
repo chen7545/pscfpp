@@ -94,6 +94,7 @@ public:
       TEST_ASSERT(c.nBlock() == 1);
       TEST_ASSERT(c.blockIds(0).size() == 1);
       TEST_ASSERT(c.blockIds(0)[0] == 0);
+      TEST_ASSERT(eq(c.rSq(0,0), 0.0));
 
       // Construct kSq array
       DArray<double> kSq;
@@ -168,6 +169,10 @@ public:
       TEST_ASSERT(c.blockIds(1).size() == 1);
       TEST_ASSERT(c.blockIds(0)[0] == 0);
       TEST_ASSERT(c.blockIds(1)[0] == 1);
+      TEST_ASSERT(eq(c.rSq(0,0), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,1), 0.0));
+      TEST_ASSERT(eq(c.rSq(0,1), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,0), 0.0));
 
       DArray<double> kSq;
       int nk = 10;
@@ -276,6 +281,13 @@ public:
       TEST_ASSERT(c.blockIds(0)[0] == 0);
       TEST_ASSERT(c.blockIds(0)[1] == 2);
       TEST_ASSERT(c.blockIds(1)[0] == 1);
+      TEST_ASSERT(eq(c.rSq(0,0), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,1), 0.0));
+      TEST_ASSERT(eq(c.rSq(2,2), 0.0));
+      TEST_ASSERT(eq(c.rSq(0,1), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,0), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,2), 0.0));
+      TEST_ASSERT(eq(c.rSq(0,2), p.block(1).length()*b*b));
 
       DArray<double> kSq;
       int nk = 10;
@@ -396,6 +408,7 @@ public:
       TEST_ASSERT(c.nBlock() == 1);
       TEST_ASSERT(c.blockIds(0).size() == 1);
       TEST_ASSERT(c.blockIds(0)[0] == 0);
+      TEST_ASSERT(eq(c.rSq(0,0), 0.0));
 
       // Construct kSq array
       DArray<double> kSq;
@@ -470,6 +483,10 @@ public:
       TEST_ASSERT(c.blockIds(1).size() == 1);
       TEST_ASSERT(c.blockIds(0)[0] == 0);
       TEST_ASSERT(c.blockIds(1)[0] == 1);
+      TEST_ASSERT(eq(c.rSq(0,0), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,1), 0.0));
+      TEST_ASSERT(eq(c.rSq(0,1), b*b));
+      TEST_ASSERT(eq(c.rSq(1,0), b*b));
 
       DArray<double> kSq;
       int nk = 10;
@@ -519,13 +536,14 @@ public:
       TEST_ASSERT(eq(ch.totalLength(), length));
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
-      double ks, x, c00, c01, c10, c11, cTot, sum;
+      double ks, x, c00, c01, c10, c11, cTot, cHT, sum;
       for (int i = 0; i < nk; ++i) {
          c00 = correlations00[i];
          c01 = correlations01[i];
          c10 = correlations10[i];
          c11 = correlations11[i];
          cTot = correlationsTot[i];
+         cHT = correlationsH[i];
          if (verbose() > 0) {
             ks = kSq[i];
             x = ks*RgSq;
@@ -536,7 +554,7 @@ public:
          TEST_ASSERT(eq(c10, c01));
          sum = c00 + c01 + c10 + c11;
          TEST_ASSERT(eq(sum, cTot));
-         TEST_ASSERT(eq(sum, correlationsH[i]));
+         TEST_ASSERT(eq(sum, cHT));
       }
 
    }
@@ -568,7 +586,23 @@ public:
       TEST_ASSERT(c.blockIds(0)[0] == 0);
       TEST_ASSERT(c.blockIds(0)[1] == 2);
       TEST_ASSERT(c.blockIds(1)[0] == 1);
+      TEST_ASSERT(eq(c.rSq(0,0), 0.0));
+      TEST_ASSERT(eq(c.rSq(1,1), 0.0));
+      TEST_ASSERT(eq(c.rSq(2,2), 0.0));
+      TEST_ASSERT(eq(c.rSq(0,1), b*b));
+      TEST_ASSERT(eq(c.rSq(1,0), b*b));
+      TEST_ASSERT(eq(c.rSq(1,2), b*b));
+      TEST_ASSERT(eq(c.rSq(0,2), (p.block(1).nBead() + 1.0)*b*b));
 
+      // Create hompolymer object for comparison
+      PolymerStub ph;
+      testReadParam(ph, "in/HomoPolymerBead");
+      Correlation::Polymer ch(ph);
+      ch.allocate(nMonomer);
+      ch.setup(kuhn);
+      TEST_ASSERT(eq(ch.totalLength(), length));
+
+      // Construct kSq input array
       DArray<double> kSq;
       int nk = 10;
       double maxQRgSq = 2.0;
@@ -579,6 +613,7 @@ public:
          kSq[i] = maxQRgSq*double(i)/(double(nk)*RgSq);
       }
 
+      // Allocate and zero correlation output arrays
       DArray<double> correlations00;
       DArray<double> correlations01;
       DArray<double> correlations10;
@@ -609,7 +644,6 @@ public:
          correlationsH[i] = 0.0;
       }
 
-
       // Compute arrays of diblock copolymer properties
       double prefactor = 0.7;
       c.computeOmega(0, 0, prefactor, kSq, correlations00);
@@ -621,16 +655,11 @@ public:
       c.computeOmega(2, 2, prefactor, kSq, correlations22);
       c.computeOmegaTotal(prefactor, kSq, correlationsTot);
 
-      // Compute hompolymer properties for comparison
-      PolymerStub ph;
-      testReadParam(ph, "in/HomoPolymerBead");
-      Correlation::Polymer ch(ph);
-      ch.allocate(nMonomer);
-      ch.setup(kuhn);
-      TEST_ASSERT(eq(ch.totalLength(), length));
+      // Compute hompolymer correlation function
       ch.computeOmegaTotal(prefactor, kSq, correlationsH);
 
-      double c00, c01, c10, c11, c02, c12, c22, cTot, sum;
+      // Compare totals
+      double c00, c01, c10, c11, c02, c12, c22, cTot, cHT, sum;
       for (int i = 0; i < nk; ++i) {
          c00 = correlations00[i];
          c01 = correlations01[i];
@@ -640,41 +669,13 @@ public:
          c12 = correlations12[i];
          c22 = correlations22[i];
          cTot = correlationsTot[i];
+         cHT = correlationsH[i];
          TEST_ASSERT(eq(c10, c01));
          sum = c00 + c11 + c22 + 2.0*c01 + 2.0*c12+ 2.0*c02;
          TEST_ASSERT(eq(sum, cTot));
-         TEST_ASSERT(eq(sum, correlationsH[i]));
+         TEST_ASSERT(eq(sum, cHT));
       }
 
-   }
-
-   void testReadParamStar() 
-   {
-      printMethod(TEST_FUNC);
-
-      /*
-      * Star graph:
-      *
-      *           1
-      *          /
-      *     0 - 3
-      *          \
-      *           2
-      *
-      * Bond indices are the same as attached endpoints.
-      */
-
-      PolymerStub p;
-      testReadParam(p, "in/PolymerStar");
-      Correlation::Polymer c(p);
-      int nMonomer = 3;
-      c.allocate(nMonomer);
-      DArray<double> kuhn;
-      kuhn.allocate(nMonomer);
-      double b = 0.8;
-      kuhn[0] = b;
-      kuhn[1] = b;
-      kuhn[2] = b;
    }
 
 };
@@ -687,7 +688,6 @@ TEST_ADD(PolymerCorrelationTest, testReadParamTriblockABAThread)
 TEST_ADD(PolymerCorrelationTest, testReadParamHomoPolymerBead)
 TEST_ADD(PolymerCorrelationTest, testReadParamDiblockBead)
 TEST_ADD(PolymerCorrelationTest, testReadParamTriblockABABead)
-//TEST_ADD(PolymerCorrelationTest, testReadParamStar)
 TEST_END(PolymerCorrelationTest)
 
 #endif

@@ -200,6 +200,17 @@ namespace Correlation {
       GArray<int> const & blockIds(int i) const;
 
       /**
+      * Get the length of each block.
+      *
+      * This function returns the length of block i for the thread
+      * model, or the floating point representation of nBead for the
+      * the bead model. 
+      *
+      * \param i  block index
+      */
+      double length(int i) const;
+
+      /**
       * Get the mean-squared length of path between blocks i and j.
       *
       * This function returns the sum of the mean-squared end-to-end
@@ -295,6 +306,10 @@ namespace Correlation {
    // Get the list of blocks ids for a specified monomer type.
    inline GArray<int> const & Polymer::blockIds(int i) const
    {  return blockIds_[i]; }
+   
+   // Get the length of a specified block.
+   inline double Polymer::length(int i) const
+   {  return length_[i]; }
    
    // Get the mean-squared length of the path connecting two blocks.
    inline double Polymer::rSq(int i, int j) const
