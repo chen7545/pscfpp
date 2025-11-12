@@ -24,7 +24,7 @@ namespace Correlation {
    /**
    * Correlations in a homogeneous ideal gas mixture.
    *
-   * \ingroup Pscf_Correlation__Module
+   * \ingroup Pscf_Correlation_Module
    */
    class Mixture
    {

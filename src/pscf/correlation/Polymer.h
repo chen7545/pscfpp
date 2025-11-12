@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+// Header includes for class members
 #include <util/containers/DArray.h>
 #include <util/containers/DMatrix.h>
 #include <util/containers/GArray.h>
@@ -23,7 +24,9 @@ namespace Correlation {
    using namespace Util;
 
    /**
-   * Intramolecular correlation analysis for one polymer Species
+   * Intramolecular correlation analysis for one polymer Species.
+   *
+   * \ingroup Pscf_Correlation_Module
    */
    class Polymer 
    {
@@ -59,10 +62,12 @@ namespace Correlation {
       *
       * This function must be called exactly once, at any point after the
       * Mixture block of the parameter file has been processes. It performs
-      * memory allocation and variable initialization operations that require
-      * knowledge of the number of monomer types in the mixture, plus the 
-      * number of blocks per polymer and their monomer type indexes for the
-      * associated polymer species. 
+      * memory allocation and initialization operations that require
+      * knowledge of the number of monomer types in the mixture, as well
+      * as the number of blocks and the monomer type index of each block 
+      * in the associated polymer species. 
+      *
+      * \pre An association with a PolymerSpecies must exist.
       *
       * \param nMonomer  number of monomer types in the mixture
       */
@@ -78,6 +83,8 @@ namespace Correlation {
       * mutable insofar as they may all change during a SCFT sweep or FTS 
       * ramp, and phi may change in an open statistical ensemble. This 
       * function may be called multiple times.
+      *
+      * \pre The allocate function must have been called previously.
       *
       * \param kuhn  array of segment lengths, indexed by monomer type id
       */
@@ -98,10 +105,15 @@ namespace Correlation {
       * prefactor = phi/(v*totalLength), where v is the monomer reference 
       * volume. 
       *
+      * \pre The setup member function must have been called previously.
+      *
+      * \pre Array parameters kSq and correlations must be allocated with 
+      * equal nonzero capacities.
+      *
       * \param ia  block index of first block
       * \param ib  block index of second block
       * \param prefactor  prefactor multiplying omega(k)
-      * \param kSq  squared wavenumber 
+      * \param kSq  squared wavenumber value
       * \return calculated value of Omega_{ia,ib}(k)
       */
       double computeOmega(int ia, int ib, double prefactor, double kSq) 
@@ -128,14 +140,16 @@ namespace Correlation {
       * correlations should thus be set to zero at the beginning any such 
       * calculation.
       *
-      * Precondition: On entry, arrays kSq and correlations must be allocated 
-      * and have the same nonzero capacity.
+      * \pre The setup member function must have been called previously.
+      *
+      * \pre Array parameters kSq and correlations must be allocated with
+      * equal nonzero capacities.
       *
       * \param ia  block index of first block
       * \param ib  block index of second block
       * \param prefactor  prefactor multiplying omega(q)
       * \param kSq  array of squared wavenumbers (in)
-      * \param correlation  array of correlation functions (out)
+      * \param correlation  array of correlation function values (out)
       */
       void computeOmega(int ia, int ib, double prefactor,
                         Array<double> const & kSq, 
@@ -161,6 +175,11 @@ namespace Correlation {
       *
       * Resulting values of Omega are added to elements of output array 
       * correlation, as for the function computeOmega.
+      *
+      * \pre The setup member function must have been called previously.
+      *
+      * \pre Array parameters kSq and correlations must be allocated with 
+      * equal nonzero capacities.
       *
       * \param prefactor  prefactor of single-chain correlation functions
       * \param kSq  array of squared wavenumbers (in)
@@ -202,9 +221,9 @@ namespace Correlation {
       /**
       * Get the length of each block.
       *
-      * This function returns the length of block i for the thread
-      * model, or the floating point representation of nBead for the
-      * the bead model. 
+      * This function returns the length of block i for the thread model,
+      * or the floating point representation of nBead for the the bead 
+      * model. 
       *
       * \param i  block index
       */
@@ -217,8 +236,8 @@ namespace Correlation {
       * lengths of all of the blocks (for the thread model) or bonds
       * (for the bead model) along the path connecting the two blocks
       * with block indices i and j. For the bead model, this includes
-      * the two "half bonds" that connect blocks i and j to a common
-      * vertex or two distinct vertices that lie along this path. 
+      * the two "half bonds" that connect adjacent bonds along this
+      * path to each shared vertex.
       *
       * \param i  block index of 1st block.
       * \param j  block index of 2nd block.
