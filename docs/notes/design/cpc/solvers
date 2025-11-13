@@ -3,8 +3,8 @@ Problem:
 
    How to modify classes in pscf/chem and pscf/solvers to allow
    subclasses to do complex Langevin sampling. This will require
-   introduction of type WT or WType and redefining some variables 
-   that are currently double to WType.
+   introduction of type WT and redefining some variables that are
+   currently double to WType.
 
 Strategy:
 
@@ -111,13 +111,13 @@ Directory pscf/solver (templates):
 
       typename TP::Field cField_
    
-   template <class Block, typename WType = double>
+   template <class Block, typename WT = double>
    class PolymerTmpl : public PolymerSpecies<WType>
    ---------------------------------------------------
 
       Make WT an additional template parameter
 
-      typedef WT WType;
+      using WType = WT;
 
       Private member variable:
 
@@ -126,14 +126,21 @@ Directory pscf/solver (templates):
       Proposal:
       
            Remove declaration and definition of the solve(double phiTot)
-           function and declare this in subclass.
+           function and declare and define in subclasses.
+
+           To avoid complete code duplication, we could define templates 
+           Prdc::Rl::Polymer and Prdc::Cl::Polymer for real and complex
+           valued fields.
 
       Rationale: Why not define solve() in this template?
 
-          1) The interface involves a parameter phiTot that I wouldn't 
-          want to include in a complex Langevin sampling code.
+          1) The interface currently involves a parameter phiTot that 
+          I wouldn't want to propagate into a complex Langevin sampling 
+          code. It also really doesn't belong in real 1D code.
 
-          2) The implementation includes a ratio Q = Q/phiTot for which
-          the operator can't be overloaded, forcing different 
-          implementations just for this one operation.
+          2) The implementation includes a ratio Q = Q/phiTot for 
+          which the operator can't be overloaded, forcing different 
+          implementations just for this one operation. Admittedly, this
+          could be addressed by using a global function for division 
+          that is overloaded for different types.
 

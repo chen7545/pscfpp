@@ -174,12 +174,11 @@ Is layout compatibility guaranteed (or nearly so) ? :
    Conclusion: If the sizeof test works, the layouts must be the simple
    unpadded one that is compatible with that guaranteed for std::complex<T>
 
-   Idea: Consistently using inline functions for operatins that require
+   Idea: Consistently using inline functions for operations that require
    the internal structure of complex numbers could completely isolate 
    the dependence on the type to those functions, but would also remove 
    any advantage of being able to write code that uses operator 
    overloading. Writing everything in terms of such functions would 
    actually make it irrelevant which complex type was used outside of 
    the FFT classes.
-
 

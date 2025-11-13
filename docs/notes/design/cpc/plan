@@ -1,20 +1,27 @@
 Design choices / conventions:
 =============================
 
-   (1) Namespaces will be named Pscf::Cpc (CPU) and Pscf::Cpg (GPU), 
-   where the acronyms stand for Cpc -> complex periodic CPU and 
-   Cpg -> complex periodic GPU
+   (1) Namespaces for CL-FTS will be named Pscf::Cpc (CPU) and 
+   Pscf::Cpg (GPU), where the acronyms stand for Cpc -> complex periodic 
+   CPU and Cpg -> complex periodic GPU
 
    (2) There will be no Basis class used in these namespaces, and thus 
    no symmetry-adapted Fourier basis avialable for use in these complex 
    codes.
 
-   Rationale: (1) SCFT with an imposed symmetry can be done with existing
-              codes. Fluctuating FTS fields don't have an exact symmetry.
-              (2) The Basis class was originally designed for real fields, 
-              using the indexing system for RFieldDft with implicit waves. 
-              It would have to be redesigned to describe a Fourier bassis 
-              for a general complex field
+   Rationale: 
+
+       (1) SCFT with an imposed symmetry can be done with existing
+       codes. Fluctuating FTS fields don't have an exact symmetry.
+
+       (2) The Basis class was originally designed for real fields, 
+       using the indexing system for RFieldDft with implicit waves. 
+       It would have to be redesigned to describe a Fourier bassis 
+       for a general complex field.
+
+       (3) Leaving out the space group symmetry doesn't prevent the
+       later addition of SCFT with complex fields, which could still
+       be done using iterator algorithms that don't impose a symmetry.
 
    (3) In Pscf::Cpc CPU code, use double and fftw_complex as basic types
 
@@ -22,15 +29,17 @@ Design choices / conventions:
    in the prdc/cuda/types.h file. 
 
    (5) In Pscf::Cpg namespace, allow "using namespace Pscf::Prdc" and
-   "using namespace Pscf::Prdc::Cuda", so that classes defined in Prdc::Cuda
-   are used by default (e.g., for RField, RFieldDft, CField, and FFT), but
-   but allow use of explicity Cpu:: qualifier to specify use of classes 
-   defined in Prdc::Cpu.
+   "using namespace Pscf::Prdc::Cuda", so that field and FFT classes 
+   defined in Prdc::Cuda are used by default (e.g., for RField, RFieldDft, 
+   CField, and FFT), but allow explicit use of the Cpu:: qualifier to 
+   specify occasional use of classes defined in Prdc::Cpu.
 
 Programming tasks:
 ==================
 
-In namespaces Prdc::Cpu and Prdc::Cuda :
+Mathematics:
+
+  In namespaces Prdc::Cpu and Prdc::Cuda :
 
   - Create class CField  (Done)
 
@@ -41,21 +50,14 @@ In namespaces Prdc::Cpu and Prdc::Cuda :
   - Add complex.h files to define functions for basic arithmetic
     operations for both type so of complex number (done)
 
-In namespace Prdc:
-
-  - In prdc/field create class template FieldIoComplex as base class
-    for FieldIo classes in Pscf::Cpc and Pscf::Cpg
-
-  - In prdc/field create class template DomainComplex as base class for
-    for Domain classes in Psf::Cpc and Pscf::Cpg.  These classes will not
-    contain Basis, SpaceGroup, group Name etc. 
-
 Solvers:
 
-  - In pscf/chem, turn Species, SolventSpecies and PolymerSpecies classes 
-    into templates with template type parameter WType (type of w field)
+  - In pscf/chem, turn Species, SolventSpecies and PolymerSpecies 
+    classes into templates with a template type parameter WT (the type 
+    of the w fields). Use WT = double as a default.
 
-  - Modify solver template classes (PropagatorTmpl, BlockTmpl)
+  - Modify solver template classes (PropagatorTmpl, BlockTmpl) as
+    needed.
 
   - In Cpc and Cpg, create Propagator and Block classes
 
@@ -64,3 +66,91 @@ Solvers:
   - Create an appropriate Interaction class (nonlocal by default)
 
   - Create System (Mixture, Interaction, Step) with built-in CL sampling
+
+Templates in namespace Prdc:
+
+  - Create subdirectories rl and cl for code that is specific to real
+    and complex (or complex Langevin code)
+
+  - Move templates that are specific to real periodic to prdc/rl. These
+    include:
+
+       rl/DomainTmpl
+       rl/CFieldsTmpl
+       rl/WFieldsTmpl
+       rl/FieldIoTmpl
+       rl/MaskTmpl
+       rl/fieldIoUtil
+       rl/SystemTmpl
+       rl/SystemConstRefTmpl
+       rl/ScftThermoTmpl
+       rl/MixturePrdc
+       rl/MixtureModifierPrdc
+
+  - Create nested namespaces Prdc::Rl:: and Prdc::Cl, allowing use of
+    short names
+
+       rl/Domain  ->  Pscf::Prdc::Rl::Domain, etc.
+       rl/CFields
+       rl/WFields
+       rl/FieldIo
+       rl/Mask
+       rl/fieldIoUtil
+       rl/System
+       rl/SystemConstRef
+       rl/ScftThermo
+       rl/Mixture
+       rl/MixtureModifier
+
+       cl/Domain  -> Pscf::Prdc::Cl::Domain, etc.
+       cl/CFields
+       cl/WFields
+       cl/FieldIo
+       cl/fieldIoUtil
+       cl/System
+       cl/SystemConstRef
+       cl/Mixture
+       cl/MixtureModifier
+
+  - Differences between real and complex code:
+
+      * Cl::Domain will not contain a SpaceGroup or Basis
+
+      * Cl::Fields and Cl::WFields will not support basis format
+
+      * Cl::FieldIoCl will not support basis format
+
+      * There is no class Prdc::Cl::Mask
+
+      * Functions in cl/fieldIoUtil will be defined in Prdc::Prdc::Cl
+
+      * Cl::System will not support SCFT or an Environment
+
+      * Cl::System will contain builty in support for CL sampling
+
+Interaction Class:
+
+  - Each functionally distinct class of programs will have its own
+    interaction class. Cpu and Gpu versions of equivalent programs will 
+    share a class.
+
+  - Copy existing Pscf::Interaction class to R1d::Interaction and
+    Prdc::Rl::Interaction
+
+  - Create a new Prdc::Cl::Interaction for compressible, nonzero range.
+
+Sequence of programming tasks:
+------------------------------
+
+  Stage A: Make changes outlined above to get to the point of having
+  a functional version of existing code that is designed to allow easy
+  generalization to CL-FTS (done mostly by Morse)
+
+  Stage B: Create actual new classes for CL-FTS. Order of creation:
+
+    - Cpc::Solvers
+    - Cl::FieldIo
+    - Cl::Domain 
+    - Cl:CFields and Cl::WFields
+    - Cl::System
+
