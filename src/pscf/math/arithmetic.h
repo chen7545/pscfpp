@@ -8,8 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <cmath>
 #include <complex>
-#include <iostream>
+//#include <iostream>
 
 namespace Pscf {
 
@@ -610,6 +611,80 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void divEq(CT & a, RT const & b);
+
+   // Exponential function
+
+   /**
+   * Exponentiation of a number, z = exp(a).
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z exponent (out)
+   * \param a argument (in)
+   */
+   template <typename T>
+   void assignExp(T & z, T const & a);
+
+   /**
+   * Exponentiation of a real double number, z = exp(a).
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z exponent (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void assignExp(double & z, double const & a)
+   {  z = std::exp(a); }
+
+   /**
+   * Exponent of a real float number, z = exp(a).
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z exponent (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void assignExp(float & z, float const & a)
+   {  z = std::exp(a); }
+
+   // Natural logarithm function
+
+   /**
+   * Logarithm of a number, z = exp(a) (base template).
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z logarithm (out)
+   * \param a argument (in)
+   */
+   template <typename T>
+   void assignLog(T & z, T const & a);
+
+   /**
+   * Logarithm of a real double number, z = exp(a).
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z logarithm (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void assignLog(double & z, double const & a)
+   {  z = std::log(a); }
+
+   /**
+   * Logarithm of a real float number, z = exp(a).
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z logarithm (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void assignLog(float & z, float const & a)
+   {  z = std::log(a); }
 
 } // namespace Pscf
 #endif

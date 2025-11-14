@@ -6,6 +6,7 @@
 */
 
 #include "Species.h"
+#include <cmath>
 
 namespace Pscf { 
 
@@ -63,10 +64,10 @@ namespace Pscf {
    {
       q_ = q;
       if (ensemble() == Ensemble::Closed) {
-         mu_ = log(phi_/q_);
+         mu_ = std::log(phi_/q_);
       } else
       if (ensemble() == Ensemble::Open) {
-         phi_ = exp(mu_)*q_;
+         phi_ = std::exp(mu_)*q_;
       }
    }
 
