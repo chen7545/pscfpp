@@ -18,7 +18,7 @@
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/mesh/MeshIteratorFortran.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/math/complex.h>
+#include <pscf/math/arithmetic.h>
 
 #include <util/containers/DArray.h>
 #include <util/misc/FileMaster.h>

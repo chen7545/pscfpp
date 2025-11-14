@@ -8,25 +8,29 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/math/complex.h>
+#include <pscf/math/arithmetic.h>
 
 #include <fftw3.h>
 #include <complex>
 #include <iostream>
 
-namespace Pscf {
+namespace Pscf{
 
-   /*
-   * Types Cpu::Complex and Cpu::Real are defined in prdc/cpu/types.h
-   * as aliases for fftw_complex and double, respectively.
+   /**
+   * \defgroup Pscf_Math_Arithmetic_Cpu_Module Complex Arithmetic (CPU)
+   *
+   * Complex arithmetic functions using the complex type fftw_complex 
+   * defined by FFTW.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module Arithmetic Functions
    */
 
-   // Real and imaginary components
+   // Real and imaginary components of complex numbers
 
    /**
    * Return the real part of a complex number.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex argument (input)
    */
@@ -37,7 +41,7 @@ namespace Pscf {
    /**
    * Return the imaginary part of a complex number.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex argument (input)
    */
@@ -50,7 +54,7 @@ namespace Pscf {
    /**
    * Return absolute magnitude of a complex number.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex argument (in)
    */
@@ -61,7 +65,7 @@ namespace Pscf {
    /**
    * Return square of absolute magnitude of a complex number.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex argument (in)
    */
@@ -69,12 +73,12 @@ namespace Pscf {
    double absSq<fftw_complex, double>(fftw_complex const& a)
    {  return (a[0] * a[0] + a[1] * a[1]); }
 
-   // fftw_complex Conjugation
+   // Complex Conjugation
 
    /**
    * Compute complex conjugate, z = a^*.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex conjugate of argument (out)
    * \param a complex argument (in)
@@ -89,7 +93,7 @@ namespace Pscf {
    /**
    * In-place complex conjugation of a complex number, a = a^* .
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a argument (in) and complex conjugate (out)
    */
@@ -105,7 +109,7 @@ namespace Pscf {
    /**
    * Create a complex number from real and imaginary parts, z = a + ib.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex (out)
    * \param a real part (in)
@@ -121,7 +125,7 @@ namespace Pscf {
    /**
    * Assign a real input to a complex variable.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex (out)
    * \param a real (in)
@@ -130,13 +134,13 @@ namespace Pscf {
    void assign(fftw_complex& z, double const& a)
    {
       z[0] = a;
-      z[1] = 0;
+      z[1] = 0.0;
    }
 
    /**
    * Assign a complex input to a complex variable.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex (out)
    * \param a complex (in)
@@ -151,7 +155,7 @@ namespace Pscf {
    /**
    * Assign a std::complex input to a complex variable.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex (out)
    * \param a std::complex (in)
@@ -166,7 +170,7 @@ namespace Pscf {
    /**
    * Assign a complex input to a std::complex variable.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z std::complex (out)
    * \param a complex (in)
@@ -180,7 +184,7 @@ namespace Pscf {
    /**
    * Addition of two complex numbers, z = a + b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex sum (out)
    * \param a complex summand (in)
@@ -196,7 +200,7 @@ namespace Pscf {
    /**
    * Addition of a complex and real number, z = a + b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex sum (out)
    * \param a complex summand (in)
@@ -212,7 +216,7 @@ namespace Pscf {
    /**
    * In place addition of complex numbers, a += b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex summand (in) and sum (out)
    * \param b complex summand (in)
@@ -227,7 +231,7 @@ namespace Pscf {
    /**
    * In place addition of a complex and real number, a += b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex summand (in) and sum (out)
    * \param b real summand (in)
@@ -243,7 +247,7 @@ namespace Pscf {
    /**
    * Subtraction of two complex numbers, z = a - b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex difference (out)
    * \param a complex 1st argument (in)
@@ -259,7 +263,7 @@ namespace Pscf {
    /**
    * Subtraction of a real number from a complex number, z = a - b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex difference (out)
    * \param a complex 1st argument (in)
@@ -275,7 +279,7 @@ namespace Pscf {
    /**
    * In place subtraction of two complex numbers, a -= b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex argument (in) and difference (out)
    * \param b complex argument (in)
@@ -290,7 +294,7 @@ namespace Pscf {
    /**
    * In place subtraction of real number from a complex number, a -= b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex argument (in) and difference (out)
    * \param b real argument (in)
@@ -306,7 +310,7 @@ namespace Pscf {
    *
    * This function returns |a-b|^2 for complex a and b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex 1st argument (in)
    * \param b complex 2nd argument (in)
@@ -324,7 +328,7 @@ namespace Pscf {
    /**
    * Multiplication of two complex numbers, z = a * b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex product (out)
    * \param a complex factor (in)
@@ -340,7 +344,7 @@ namespace Pscf {
    /**
    * Multiplication of complex and real numbers, z = a * b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex product (out)
    * \param a complex factor (in)
@@ -356,7 +360,7 @@ namespace Pscf {
    /**
    * In place multiplication of two complex number, a *= b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex factor (in) and product (out)
    * \param b complex factor (in)
@@ -373,7 +377,7 @@ namespace Pscf {
    /**
    * In place multiplication of a complex and real number, a *= b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex factor (in) and product (out)
    * \param b real factor (in)
@@ -388,7 +392,7 @@ namespace Pscf {
    /**
    * Compute complex square of a complex number, z = a * a.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex product (out)
    * \param a complex factor (in)
@@ -405,7 +409,7 @@ namespace Pscf {
    /**
    * Division of two complex numbers, z = a / b .
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex ratio (out)
    * \param a complex numerator (in)
@@ -422,7 +426,7 @@ namespace Pscf {
    /**
    * Division of a complex number by a real number, z = a / b .
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param z complex ratio (out)
    * \param a complex numerator (in)
@@ -438,7 +442,7 @@ namespace Pscf {
    /**
    * In place division of two complex number, a /= b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex numerator (in) and ratio (out)
    * \param b complex denominator (in)
@@ -455,7 +459,7 @@ namespace Pscf {
    /**
    * In place division of a complex number by a real number, a /= b.
    *
-   * \ingroup Prdc_Cpu_Complex_Module
+   * \ingroup Pscf_Math_Arithmetic_Cpu_Module
    *
    * \param a complex numerator (in) and ratio (out)
    * \param b real denominator (in)

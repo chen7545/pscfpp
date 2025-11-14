@@ -148,8 +148,8 @@ Sequence of programming tasks:
 
   Stage B: Create actual new classes for CL-FTS. Order of creation:
 
-    - Cpc::Solvers
     - Cl::FieldIo
+    - Cpc::Solvers
     - Cl::Domain 
     - Cl:CFields and Cl::WFields
     - Cl::System

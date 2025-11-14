@@ -1,4 +1,3 @@
-
 namespace Pscf{
 namespace Prdc{
 
@@ -14,15 +13,6 @@ namespace Cpu{
    * fast Fourier transform library.
    *
    * \ingroup Pscf_Prdc_Module
-   */
-
-   /**
-   * \defgroup Prdc_Cpu_Complex_Module Complex Arithmetic (CPU)
-   *
-   * Typdedefs and functions for complex arithmetic using the complex 
-   * type fftw_complex defined by FFTW.
-   *
-   * \ingroup Prdc_Cpu_Module 
    */
 
 }

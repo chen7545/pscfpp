@@ -45,7 +45,8 @@ Directory pscf/chem:
            assign(phi_, phiMu_);
         }
 
-      - Make assign(WType lhs, double rhs) a pure virtual function
+      - Use function template "assign" to assign real input variable
+        phiMu_ to either real or complex mu_ and phi_ variables
 
       - Change setPhi(double phi) and setMu(double Mu) to set
         phiMu_ as well as phi_ or mu_, using assign function
