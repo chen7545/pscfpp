@@ -9,6 +9,7 @@
 #include <r1d/System.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
+#include <pscf/chem/Ensemble.h>
 #include <pscf/inter/Interaction.h>
 #include <util/misc/Log.h>
 #include <util/misc/Timer.h>
@@ -146,13 +147,13 @@ namespace R1d
       
       // Determine if isCanonical (iff all species ensembles are closed)
       isCanonical_ = true;
-      Species::Ensemble ensemble;
+      Ensemble ensemble;
       for (int i = 0; i < np; ++i) {
          ensemble = mixture().polymer(i).ensemble();
-         if (ensemble == Species::Unknown) {
+         if (ensemble == Ensemble::Unknown) {
             UTIL_THROW("Unknown species ensemble");
          }
-         if (ensemble == Species::Open) {
+         if (ensemble == Ensemble::Open) {
             isCanonical_ = false;
          }
       }

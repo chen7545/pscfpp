@@ -1,17 +1,22 @@
 Design choices / conventions:
 =============================
 
-   (1) Namespaces for CL-FTS will be named Pscf::Cpc (CPU) and 
-   Pscf::Cpg (GPU), where the acronyms stand for Cpc -> complex periodic 
-   CPU and Cpg -> complex periodic GPU
+   (1) As for the code for real periodic fields, there will be a CPU version
+   of the complex Langevin code and a GPU version. Code for the cpu version
+   will be placed in directory src/cpc and code for the gpu version will be 
+   in directory src/cpg. 
 
-   (2) There will be no Basis class used in these namespaces, and thus 
-   no symmetry-adapted Fourier basis avialable for use in these complex 
-   codes.
+   (1) Program-level namespaces for CL-FTS will be named Pscf::Cpc (CPU 
+   version) and Pscf::Cpg (GPU version), where the acronyms stand for 
+   Cpc -> complex periodic CPU and Cpg -> complex periodic GPU
+
+   (2) There will be no Basis class used in these program-level namespaces, 
+   and thus no symmetry-adapted Fourier basis avialable for use in these 
+   complex Langevin codes.
 
    Rationale: 
 
-       (1) SCFT with an imposed symmetry can be done with existing
+       (1) SCFT with an imposed symmetry can already be done with existing
        codes. Fluctuating FTS fields don't have an exact symmetry.
 
        (2) The Basis class was originally designed for real fields, 
@@ -45,16 +50,25 @@ Mathematics:
 
   - Create class CFieldComparison (Done)
 
-  - Add complex transform functions to FFT classes (Done)
+  - Add complex->complex Fourier transform functions to FFT classes (Done)
 
   - Add complex.h files to define functions for basic arithmetic
     operations for both type so of complex number (done)
 
+  - Add functions that compute and assign complex exponentials and 
+    complex logarithms for the complex data types used in the two
+    codes.
+
 Solvers:
+
+  - Convert unscoped enum Pscf::Species::Ensemble to a enum class
+    Pscf::Ensemble (done).
 
   - In pscf/chem, turn Species, SolventSpecies and PolymerSpecies 
     classes into templates with a template type parameter WT (the type 
-    of the w fields). Use WT = double as a default.
+    of the w fields). Use WT = double as a default. Modify functions to
+    use function templates for assignment, computation of exponential,
+    logarithms etc. 
 
   - Modify solver template classes (PropagatorTmpl, BlockTmpl) as
     needed.
@@ -116,41 +130,48 @@ Templates in namespace Prdc:
 
       * Cl::Domain will not contain a SpaceGroup or Basis
 
+      * Cl::FieldIoCl will not support basis format, and will not
+        need to provide any conversion functions involving basis
+        format.
+
       * Cl::Fields and Cl::WFields will not support basis format
 
-      * Cl::FieldIoCl will not support basis format
-
-      * There is no class Prdc::Cl::Mask
+      * There will not be any class Prdc::Cl::Mask
 
       * Functions in cl/fieldIoUtil will be defined in Prdc::Prdc::Cl
 
-      * Cl::System will not support SCFT or an Environment
+      * Cl::System will not support SCFT or an Environment.
 
-      * Cl::System will contain builty in support for CL sampling
+      * Cl::System will contain built in support for CL sampling,
+        including a Step class and an AnalyzerManager.
 
 Interaction Class:
 
   - Each functionally distinct class of programs will have its own
     interaction class. Cpu and Gpu versions of equivalent programs will 
-    share a class.
+    share an Interaction class defined in Prdc::Rl or Prdc::Cl .
 
   - Copy existing Pscf::Interaction class to R1d::Interaction and
     Prdc::Rl::Interaction
 
-  - Create a new Prdc::Cl::Interaction for compressible, nonzero range.
+  - Create a new Prdc::Cl::Interaction for compressible system with 
+    nonzero range interactions.
 
 Sequence of programming tasks:
 ------------------------------
 
-  Stage A: Make changes outlined above to get to the point of having
-  a functional version of existing code that is designed to allow easy
-  generalization to CL-FTS (done mostly by Morse)
+  Stage A: Make changes outlined above to get to the point of having a 
+  functional version of existing code that is designed to allow easy
+  generalization to CL-FTS (implemented mostly by Morse)
 
-  Stage B: Create actual new classes for CL-FTS. Order of creation:
+  Stage B: Create actual new classes for CL-FTS. Possible order of 
+  creation:
 
-    - Cl::FieldIo
+    - Cl::FieldIo (simple version for r-grid file IO)
+    - Cl::Domain  (will need WaveList for solvers)
     - Cpc::Solvers
-    - Cl::Domain 
-    - Cl:CFields and Cl::WFields
+    - Cl:CFields and Cl::WFields (if needed)
     - Cl::System
+    - Cl::Step
+    - Cl::Analyzer and Cl::AnalyzerManager
 

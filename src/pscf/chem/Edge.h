@@ -29,28 +29,28 @@ namespace Pscf
    *    - a block id (unique among blocks of the same polymer species)
    *    - vertex ids for the two vertices at which it terminates
    *
-   * Edge is a base class for the BlockTmpl class template, which is a
-   * a base class for a class named Block in each implementation-level 
+   * Edge is a direct base class for the BlockTmpl class template, and an
+   * indirect base class for a class named Block in each program-level 
    * sub-namespace of Pscf (i.e., in R1d, Rpc, or Rpg).
    *
-   * An Edge is a descriptor for a block within a block polymer, but
-   * does not provide functions or data structure needed to solve the
-   * modified diffusion equation (MDE).  The Block class defined in 
-   * each implementation-level namespace is designed to be used as an
-   * MDE solver as well as a descriptor.
+   * An Edge is a descriptor for a block within a block polymer, but 
+   * does not provide functions or data structure needed to solve the 
+   * modified diffusion equation (MDE).  The Block class defined in each 
+   * program-level namespace is a subclass of Edge that is an MDE solver
+   * as well as a descriptor.
+   *
+   * The Block objects associated with a polymer are normally stored as 
+   * elements of a DArray that is a private member of the Pscf::PolymerTmpl
+   * class template. The block id for each Edge should be set to the 
+   * element index of the associated Block within that array.  
    *
    * An Edge can store either a value for length (the contour length
    * of the block) when PolymerModel::isThread(), or a value for nBead
    * (the number of beads in the block) when PolymerModel::isBead(), but
    * not both.  It is an error to get or set a value for the length 
-   * when a bead model is in use or to get or set a value for nBead when 
-   * a thread model is in use, because these variables are each meaningful 
-   * only in the context of a specific model. 
-   *
-   * Block objects associated with a polymer are normally stored in 
-   * an array that is a private member of the Pscf::PolymerTmpl class 
-   * template. The block id for each Edge should be set to the element 
-   * index of the associated Block within that array.  
+   * when a bead model is in use, or to get or set a value for nBead when 
+   * a thread model is in use, because each of these variables is only
+   * meaningful in the context of a specific polymer model. 
    *
    * \ref user_param_block_sec "Parameter File Format"
    * \ingroup Pscf_Chem_Module

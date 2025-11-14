@@ -23,10 +23,10 @@ namespace Pscf {
    * base class. The size parameter is defined to be the ratio of solvent
    * molecule volume to the monomer reference volume.
    *
-   * Each implementation-level subspace of Pscf defines a subclass of 
-   * Pscf::SolventSpecies named Solvent that defines a function that can
-   * solve the single-particle statistical mechanics problem for a 
-   * solvent species.
+   * Each program-level sub-namespace of Pscf defines a subclass of 
+   * Pscf::SolventSpecies. The Solvent class in each such namespace defines 
+   * a function that can solve the single-particle statistical mechanics 
+   * problem for a solvent species.
    *
    * \ingroup Pscf_Chem_Module
    */

@@ -22,9 +22,9 @@ namespace Pscf {
    /**
    * Template for an MDE solver and descriptor for a block polymer.
    *
-   * Class template argument BT is an alias for a class that represents a 
-   * block of a block polymer. By convention, this is a class named Block
-   * defined in each implementation-level sub-namespace of Pscf.  Each 
+   * Class template argument BT is an alias for a class that represents 
+   * a block of a block polymer. By convention, this is a class named 
+   * Block defined in each program-level sub-namespace of Pscf.  Each 
    * such namespace contains a class named Block that is a subclass of 
    * Pscf::Edge, and a class named Polymer that is a subclass of the
    * template instantiation PolymerTmpl<Block>.
@@ -89,8 +89,8 @@ namespace Pscf {
       * This solve() function does not compute monomer concentration
       * field.
       *
-      * Each implementation-level namespace defines a concrete subclass 
-      * of PolymerTmpl<BT,PT> that is named Polymer by convention. Each such 
+      * Each program-level namespace defines a concrete subclass of
+      * PolymerTmpl<BT,PT> that is named Polymer by convention. Each such 
       * Polymer class defines a function named "compute" that takes an 
       * array of chemical fields (w-fields) as an argument, and that calls
       * PolymerTmpl<BT,PT>::solve internally.  Before calling the solve()

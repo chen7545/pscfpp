@@ -4,7 +4,7 @@ Problem:
    How to modify classes in pscf/chem and pscf/solvers to allow
    subclasses to do complex Langevin sampling. This will require
    introduction of type WT and redefining some variables that are
-   currently double to WType.
+   currently double to WT.
 
 Strategy:
 
@@ -28,13 +28,13 @@ Directory pscf/chem:
 
    class VertexIterator - unchanged
 
-   class Species: Make this a template of type WType, default to double
+   class Species: Make this a template of type WT, default to double
 
-      - Make member variables q_, phi_, and mu_ type WType
+      - Make member variables q_, phi_, and mu_ type WT
 
       - Create a new private variable double phiMu_, read this
         in Species::readParameters. The input parameter is real,
-        but is converted to WType.
+        but is converted to WT.
   
         bool hasPhi = readOptional(in, "phi", inputPhiMu_).isActive();
         if (hasPhi) { 
@@ -90,7 +90,7 @@ Directory pscf/solver (templates):
    ------------------------------------
 
       None of the current private variables of this class template are
-      type double, and none need to be generalized to WType
+      type double, and none need to be generalized to WT
 
       Require concrete Propagator class to define a single typedef Field
 
@@ -113,12 +113,10 @@ Directory pscf/solver (templates):
       typename TP::Field cField_
    
    template <class Block, typename WT = double>
-   class PolymerTmpl : public PolymerSpecies<WType>
+   class PolymerTmpl : public PolymerSpecies<WT>
    ---------------------------------------------------
 
       Make WT an additional template parameter
-
-      using WType = WT;
 
       Private member variable:
 

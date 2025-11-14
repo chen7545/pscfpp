@@ -43,7 +43,7 @@ namespace Pscf
    * subclass of Edge named Block that is an MDE solver and descriptor 
    * for a single block within a block polymer.
    *
-   * The Polymer class in each implementation-level namespace is derived 
+   * The Polymer class in each program-level namespace is derived 
    * directly from an template instantiation Pscf::PolymerTmpl<Block> of 
    * the class template Pscf::PolymerTmpl, while PolymerTmpl<Block> is 
    * derived directly from PolymerSpecies. A PolymerTmpl<Block> has a 

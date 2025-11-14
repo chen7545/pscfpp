@@ -10,6 +10,7 @@
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
 #include <r1d/solvers/Solvent.h>
+#include <pscf/chem/Ensemble.h>
 #include <pscf/inter/Interaction.h>
 #include <pscf/iterator/NanException.h>
 #include <util/global.h>
@@ -102,15 +103,15 @@ namespace R1d{
    */
    bool AmIterator::isCanonical()
    {
-      Species::Ensemble ensemble;
+      Ensemble ensemble;
 
       // Check ensemble of all polymers
       for (int i = 0; i < mixture().nPolymer(); ++i) {
          ensemble = mixture().polymer(i).ensemble();
-         if (ensemble == Species::Open) {
+         if (ensemble == Ensemble::Open) {
             return false;
          }
-         if (ensemble == Species::Unknown) {
+         if (ensemble == Ensemble::Unknown) {
             UTIL_THROW("Unknown species ensemble");
          }
       }
@@ -118,10 +119,10 @@ namespace R1d{
       // Check ensemble of all solvents
       for (int i = 0; i < mixture().nSolvent(); ++i) {
          ensemble = mixture().solvent(i).ensemble();
-         if (ensemble == Species::Open) {
+         if (ensemble == Ensemble::Open) {
             return false;
          }
-         if (ensemble == Species::Unknown) {
+         if (ensemble == Ensemble::Unknown) {
             UTIL_THROW("Unknown species ensemble");
          }
       }

@@ -26,8 +26,8 @@ namespace Pscf
    * PolymerSpecies and SolventSpecies objects describing all molecular
    * species in in a mixture.  The MixtureBase class does not have 
    * functions or data structures needed to solve the modified diffusion 
-   * equation (MDE), and is thus a descriptor but not a solver for the 
-   * mixture. 
+   * equation (MDE), and is thus a descriptor but not an MDE solver for 
+   * the mixture. 
    *
    * MixtureBase is an abstract base class for "solver" classes that can 
    * actually solve the single-molecule statistical mechanics problem for 
@@ -39,7 +39,7 @@ namespace Pscf
    * of PolymerSpecies and a solvent solver class named Solvent that is 
    * subclass of SolventSpecies.  
    * 
-   * The Mixture class in each such implementation-level namespace is a 
+   * The Mixture class in each such program-level namespace is a 
    * subclass of an instantiation Pscf::PolymerTmpl<Polymer, Solvent> of 
    * the class template Pscf::PolymerTmpl. This template is derived 
    * directly from MixtureBase. A PolymerTmpl<Polymer, Solvent> object has 

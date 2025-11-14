@@ -43,14 +43,14 @@ namespace Pscf
    {
       // Check ensemble of all polymer species
       for (int i = 0; i < nPolymer(); ++i) {
-         if (polymerSpecies(i).ensemble() == Species::Open) {
+         if (polymerSpecies(i).ensemble() == Ensemble::Open) {
             return false;
          }
       }
 
       // Check ensemble of all solvent species
       for (int i = 0; i < nSolvent(); ++i) {
-         if (solventSpecies(i).ensemble() == Species::Open) {
+         if (solventSpecies(i).ensemble() == Ensemble::Open) {
             return false;
          }
       }

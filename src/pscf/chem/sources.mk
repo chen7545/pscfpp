@@ -2,6 +2,7 @@ pscf_chem_= \
   pscf/chem/Monomer.cpp \
   pscf/chem/Edge.cpp \
   pscf/chem/Vertex.cpp \
+  pscf/chem/Ensemble.cpp \
   pscf/chem/Species.cpp \
   pscf/chem/SolventSpecies.cpp \
   pscf/chem/PolymerSpecies.cpp \

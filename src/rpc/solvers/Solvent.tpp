@@ -78,18 +78,6 @@ namespace Rpc {
       // Set q and compute mu or phi 
       Species::setQ(Q);
 
-      #if 0
-      q_ = Q;
-      double prefactor;
-      if (ensemble() == Species::Closed) {
-         prefactor = phi_/q_;
-         mu_ = log(prefactor);
-      } else {
-         prefactor = exp(mu_);
-         phi_ = prefactor*q_;
-      }
-      #endif
-
       // Normalize concentration 
       double prefactor = phi()/Q;
       for (int i = 0; i < nx; ++i) {

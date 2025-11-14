@@ -9,7 +9,7 @@
 */
 
 #include <util/param/ParamComposite.h>   // base class
-#include <util/global.h>
+#include <pscf/chem/Ensemble.h>          // member
 
 namespace Pscf {
 
@@ -33,11 +33,6 @@ namespace Pscf {
    class Species : public ParamComposite
    {
    public:
-
-      /**
-      * Statistical ensemble for number of molecules.
-      */
-      enum Ensemble {Unknown, Closed, Open};
 
       /**
       * Default constructor.
@@ -164,40 +159,8 @@ namespace Pscf {
    /*
    * Get statistical ensemble for this species (open or closed).
    */
-   inline Species::Ensemble Species::ensemble() const
+   inline Ensemble Species::ensemble() const
    {  return ensemble_; }
-
-   /**
-   * istream extractor for a Species::Ensemble enumeration.
-   *
-   * \param  in       input stream
-   * \param  policy   Species::Ensemble to be read
-   * \return modified input stream
-   */
-   std::istream& operator >> (std::istream& in, Species::Ensemble& policy);
-
-   /**
-   * ostream inserter for an Species::Ensemble enumeration.
-   *
-   * Text representations of allowed values are "Open" and "Closed".
-   *
-   * \param  out      output stream
-   * \param  policy   Species::Ensemble to be written
-   * \return modified output stream
-   */
-   std::ostream& operator << (std::ostream& out, Species::Ensemble policy);
-
-   /**
-   * Serialize a Species::Ensemble
-   *
-   * \param ar      archive object
-   * \param policy  object to be serialized
-   * \param version archive version id
-   */
-   template <class Archive>
-   void serialize(Archive& ar, Species::Ensemble& policy,
-                  const unsigned int version)
-   {  serializeEnum(ar, policy, version); }
 
 }
 #endif
