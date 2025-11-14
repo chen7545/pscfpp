@@ -14,24 +14,24 @@
 namespace Pscf {
 
    /**
-   * \defgroup Pscf_Math_Arithmetic_Module Complex Arithmetic
+   * \defgroup Pscf_Math_Arithmetic_Module Arithmetic Functions
    *
-   * Declarations of function templates for arithmetic for real and
-   * complex data types.  Function definitions are given in this file
-   * for some functions that involving real types, but only declarations
-   * are given for functions that involve complex types.  Explicit
-   * specializations of templates that involve complex types are given
-   * for the complex data types used by the FFT and cufft FFT libraries
-   * in files named complex.h in directories src/prdc/cpu and
-   * src/prdc/cuda, respectively.
+   * Declarations of function templates for arithmetic operations for 
+   * real and complex data types. Definitions are given for some explicit 
+   * instantiations involving only real data types (double and float), 
+   * but only declarations are given in this file for functions that 
+   * involve complex types.  Definitions of instantiations that involve
+   * involve complex types are given for the complex data types used by 
+   * the FFT and cufft FFT libraries in files named complex.h located in 
+   * directories src/prdc/cpu and src/prdc/cuda, respectively.
    *
    * Convention: Functions for which the result or output may be a
    * complex number provide this as a modified value of the first parameter
    * of the function, which must be passed as a non-const reference.
-   * Functions for which the output is always a real value (such as an
+   * Functions for which the output must always be real value (such as an
    * absolute value function) instead provide this as the function return
-   * value. This convention simplifies the use of C data data types for
-   * which no assignment operator is defined to represent complex numbers.
+   * value. This convention allows for the use of C data types for which
+   * no assignment operator is defined to represent complex numbers.
    *
    * \ingroup Pscf_Math_Module
    */
