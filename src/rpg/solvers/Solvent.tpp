@@ -21,7 +21,7 @@ namespace Rpg {
    template <int D>
    Solvent<D>::Solvent()
     : meshPtr_(nullptr)
-   {  setClassName("Solvent"); }
+   {  ParamComposite::setClassName("Solvent"); }
 
    /*
    * Destructor.
@@ -39,7 +39,7 @@ namespace Rpg {
       int nx = meshPtr_->size(); // Number of grid points
 
       // Evaluate unnormalized integral and Q
-      double s = size();
+      double s = SolventSpecies<cudaReal>::size();
       double Q = 0.0;
 
       // cField_ = exp(-size() * wField)

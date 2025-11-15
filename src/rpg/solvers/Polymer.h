@@ -9,6 +9,7 @@
 */
 
 #include <pscf/solvers/PolymerTmpl.h>     // base class template
+#include <prdc/cuda/types.h>              // data types
 #include <util/containers/FSArray.h>      // member template
 
 // Forward declarations
@@ -29,15 +30,16 @@ namespace Pscf {
 
 // Explicit instantiation declarations for base classes
 namespace Pscf { 
-   extern template class PolymerTmpl< Rpg::Block<1>, Rpg::Propagator<1> >;
-   extern template class PolymerTmpl< Rpg::Block<2>, Rpg::Propagator<2> >;
-   extern template class PolymerTmpl< Rpg::Block<3>, Rpg::Propagator<3> >;
+   extern template class PolymerTmpl< Rpg::Block<1>, Rpg::Propagator<1>, Prdc::Cuda::cudaReal >;
+   extern template class PolymerTmpl< Rpg::Block<2>, Rpg::Propagator<2>, Prdc::Cuda::cudaReal >;
+   extern template class PolymerTmpl< Rpg::Block<3>, Rpg::Propagator<3>, Prdc::Cuda::cudaReal >;
 }
 
 namespace Pscf { 
 namespace Rpg { 
 
    using namespace Util;
+   using namespace Pscf;
    using namespace Pscf::Prdc;
    using namespace Pscf::Prdc::Cuda;
 
@@ -61,7 +63,7 @@ namespace Rpg {
    * \ingroup Rpg_Solver_Module
    */
    template <int D>
-   class Polymer : public PolymerTmpl< Block<D>, Propagator<D> >
+   class Polymer : public PolymerTmpl< Block<D>, Propagator<D>, cudaReal >
    {
 
    public:
@@ -69,7 +71,7 @@ namespace Rpg {
       // Public type name aliases
 
       /// Base class, partial template specialization.
-      using Base = PolymerTmpl< Block<D>, Propagator<D> >;
+      using Base = PolymerTmpl< Block<D>, Propagator<D>, cudaReal >;
 
       /// Block type, for a block within a block polymer.
       using BlockT = Block<D>;
@@ -153,21 +155,21 @@ namespace Rpg {
       using Base::edge;
       using Base::block;
       using Base::propagator;
-      using PolymerSpecies::vertex;
-      using PolymerSpecies::propagatorId;
-      using PolymerSpecies::path;
-      using PolymerSpecies::nBlock;
-      using PolymerSpecies::nVertex;
-      using PolymerSpecies::nPropagator;
-      using PolymerSpecies::length;
-      using PolymerSpecies::nBead;
-      using PolymerSpecies::type;
-      using Species::phi;
-      using Species::mu;
-      using Species::q;
-      using Species::ensemble;
-      using Species::setPhi;
-      using Species::setMu;
+      using PolymerSpecies<cudaReal>::vertex;
+      using PolymerSpecies<cudaReal>::propagatorId;
+      using PolymerSpecies<cudaReal>::path;
+      using PolymerSpecies<cudaReal>::nBlock;
+      using PolymerSpecies<cudaReal>::nVertex;
+      using PolymerSpecies<cudaReal>::nPropagator;
+      using PolymerSpecies<cudaReal>::length;
+      using PolymerSpecies<cudaReal>::nBead;
+      using PolymerSpecies<cudaReal>::type;
+      using Species<cudaReal>::phi;
+      using Species<cudaReal>::mu;
+      using Species<cudaReal>::q;
+      using Species<cudaReal>::ensemble;
+      using Species<cudaReal>::setPhi;
+      using Species<cudaReal>::setMu;
 
    private: 
 
@@ -179,7 +181,7 @@ namespace Rpg {
 
       // Restrict access to inherited functions
       using Base::solve;
-      using Species::setQ;
+      using Species<cudaReal>::setQ;
 
    };
 

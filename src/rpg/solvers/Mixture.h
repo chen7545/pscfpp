@@ -9,6 +9,7 @@
 */
 
 #include <prdc/solvers/MixturePrdc.h>     // base class template
+#include <prdc/cuda/types.h>              // basic real and complex data types
 #include <rpg/system/Types.h>             // template argument
 
 namespace Pscf {
@@ -20,6 +21,7 @@ namespace Rpg {
 
    using namespace Util;
    using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
@@ -84,13 +86,13 @@ namespace Rpg {
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
 
-      using MixtureBase::nMonomer;
-      using MixtureBase::monomer;
-      using MixtureBase::nPolymer;
-      using MixtureBase::nSolvent;
-      using MixtureBase::nBlock;
-      using MixtureBase::vMonomer;
-      using MixtureBase::isCanonical;
+      using MixtureBase<cudaReal>::nMonomer;
+      using MixtureBase<cudaReal>::monomer;
+      using MixtureBase<cudaReal>::nPolymer;
+      using MixtureBase<cudaReal>::nSolvent;
+      using MixtureBase<cudaReal>::nBlock;
+      using MixtureBase<cudaReal>::vMonomer;
+      using MixtureBase<cudaReal>::isCanonical;
 
    protected:
 

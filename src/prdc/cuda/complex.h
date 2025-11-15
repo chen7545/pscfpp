@@ -502,7 +502,7 @@ namespace Pscf {
                   Prdc::Cuda::cudaComplex const & a)
    {  
       std::complex<Prdc::Cuda::cudaReal> arg 
-                  = std::complex<Prdc::Cuda::cudaReal>(a.x, ay); 
+                  = std::complex<Prdc::Cuda::cudaReal>(a.x, a.y); 
       std::complex<Prdc::Cuda::cudaReal> result = std::exp(arg);
       z.x = result.real();
       z.y = result.imag();

@@ -65,7 +65,7 @@ public:
       cosFK.allocate(dimensions);
       HostDArray<cudaReal> cosF_h;
       cosF_h.allocate(meshSize);
-      PolymerSpecies const & polymer = system.mixture().polymerSpecies(0);
+      PolymerSpecies<cudaReal> const & polymer = system.mixture().polymerSpecies(0);
       for (int k = 0; k < meshSize; k++){
          cosF_h[k] = A * std::cos(2 * M_PI * k * f / meshSize);
          

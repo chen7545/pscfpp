@@ -17,6 +17,7 @@
 
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/RField.h>
+#include <prdc/cuda/types.h>
 #include <prdc/crystal/shiftToMinimum.h>
 #include <prdc/crystal/UnitCell.h>
 
@@ -38,6 +39,8 @@ namespace Pscf {
 namespace Rpg{
 
    using namespace Util;
+   using namespace Prdc; 
+   using namespace Prdc::Cuda; 
 
    /*
    * Constructor.
@@ -49,7 +52,7 @@ namespace Rpg{
       kSize_(-1)
    {
       setClassName("IntraCorrelation");
-      correlationMixturePtr_ = new Correlation::Mixture(system.mixture());
+      correlationMixturePtr_ = new Correlation::Mixture<cudaReal>(system.mixture());
    }
 
    /*

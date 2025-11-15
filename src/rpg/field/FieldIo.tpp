@@ -12,8 +12,6 @@
 
 #include <rpg/field/HostDArrayComplex.h>
 
-#include <pscf/math/complex.h>
-
 #include <prdc/field/FieldIoTmpl.tpp>      // base class implementation
 #include <prdc/field/fieldIoUtil.h>
 #include <prdc/field/fieldArrayUtil.h>
@@ -25,6 +23,7 @@
 #include <prdc/cuda/resources.h>
 
 #include <pscf/mesh/Mesh.h>
+#include <pscf/math/arithmetic.h>
 #include <pscf/math/IntVec.h>
 #include <pscf/cuda/HostDArray.h>
 

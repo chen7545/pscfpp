@@ -30,7 +30,7 @@ namespace Rpg {
    * \ingroup Rpg_Solver_Module
    */
    template <int D>
-   class Solvent : public SolventSpecies
+   class Solvent : public SolventSpecies<cudaReal>
    {
    public:
 

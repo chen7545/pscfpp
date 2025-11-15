@@ -17,7 +17,7 @@
 // Forward references
 namespace Pscf {
    namespace Correlation {
-      class Mixture;
+      template <typename WT> class Mixture;
    }
    namespace Prdc {
       namespace Cuda {
@@ -31,7 +31,6 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Rpg {
-
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -80,7 +79,7 @@ namespace Rpg {
       System<D> const * systemPtr_;
 
       /// Pointer to a child Correlation::Mixture object.
-      Correlation::Mixture* correlationMixturePtr_;
+      Correlation::Mixture<cudaReal>* correlationMixturePtr_;
 
       /// Array of square magnitudes for wavevectors on a k-grid.
       DArray<double> Gsq_;
@@ -101,11 +100,19 @@ namespace Rpg {
    inline System<D> const & IntraCorrelation<D>::system() const
    {  return *systemPtr_; }
 
-   // Explicit instantiation declarations
-   extern template class IntraCorrelation<1>;
-   extern template class IntraCorrelation<2>;
-   extern template class IntraCorrelation<3>;
-
 } // namespace Rpg
 } // namespace Pscf
+
+// Explicit instantiation declarations
+#include <pscf/correlation/Mixture.h>   
+namespace Pscf {
+   namespace Correlation {
+      extern template class Mixture<Prdc::Cuda::cudaReal>;
+   }
+   namespace Rpg {
+      extern template class IntraCorrelation<1>;
+      extern template class IntraCorrelation<2>;
+      extern template class IntraCorrelation<3>;
+   }
+}
 #endif
