@@ -16,7 +16,7 @@ namespace Pscf {
       class Block;
       class Propagator;
    }
-   extern template class PolymerTmpl<R1d::Block, R1d::Propagator>;
+   extern template class PolymerTmpl<R1d::Block, R1d::Propagator, double>;
 }
 
 namespace Pscf {
@@ -36,13 +36,10 @@ namespace R1d {
    * and molecular partition function q are indirectly inherited from 
    * Pscf::PolymerSpecies.
    * 
-   * Class R1d::Block is a subclass of Pscf::PolymerTmpl<Block>, which is
-   * a subclass of Pscf::PolymerSpecies.
-   *
    * \ref user_param_polymer_sec "Parameter File Format"
    * \ingroup R1d_Solver_Module
    */
-   class Polymer : public PolymerTmpl<Block, Propagator>
+   class Polymer : public PolymerTmpl<Block, Propagator, double>
    {
 
    public:
@@ -71,7 +68,7 @@ namespace R1d {
    private:
 
       // Restrict access
-      using PolymerTmpl<Block, Propagator>::solve;
+      using PolymerTmpl<Block, Propagator, double>::solve;
 
    };
 

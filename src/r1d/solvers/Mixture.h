@@ -20,7 +20,7 @@ namespace Pscf {
       class Polymer;
       class Solvent;
    }
-   extern template class MixtureTmpl<R1d::Polymer, R1d::Solvent>;
+   extern template class MixtureTmpl<R1d::Polymer, R1d::Solvent, double>;
 }
 
 namespace Pscf {

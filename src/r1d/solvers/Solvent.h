@@ -23,7 +23,7 @@ namespace R1d {
    * \ref user_param_solvent_sec "Parameter File Format"
    * \ingroup R1d_Solver_Module
    */
-   class Solvent : public SolventSpecies
+   class Solvent : public SolventSpecies<double>
    {
 
    public:
