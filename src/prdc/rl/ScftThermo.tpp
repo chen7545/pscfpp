@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "ScftThermoTmpl.h"
+#include "ScftThermo.h"
 
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
@@ -20,6 +20,7 @@
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -29,8 +30,8 @@ namespace Prdc {
    * Constructor.
    */
    template <int D, class ST>
-   ScftThermoTmpl<D,ST>::ScftThermoTmpl(SystemT const & system)
-    : SystemConstRefTmpl<ST>(system),
+   ScftThermo<D,ST>::ScftThermo(SystemT const & system)
+    : Rl::SystemConstRef<ST>(system),
       fHelmholtz_(0.0),
       fIdeal_(0.0),
       fInter_(0.0),
@@ -43,14 +44,14 @@ namespace Prdc {
    * Destructor.
    */
    template <int D, class ST>
-   ScftThermoTmpl<D,ST>::~ScftThermoTmpl()
+   ScftThermo<D,ST>::~ScftThermo()
    {}
 
    /*
    * Compute Helmholtz free energy and pressure.
    */
    template <int D, class ST>
-   void ScftThermoTmpl<D,ST>::compute()
+   void ScftThermo<D,ST>::compute()
    {
       if (hasData_) return;
 
@@ -252,14 +253,14 @@ namespace Prdc {
    * Clear stored values of thermodynamic properties.
    */
    template <int D, class ST>
-   void ScftThermoTmpl<D, ST>::clear()
+   void ScftThermo<D, ST>::clear()
    {  hasData_ = false; }
 
    /*
    * Write thermodynamic properties to file.
    */
    template <int D, class ST>
-   void ScftThermoTmpl<D, ST>::write(std::ostream& out)
+   void ScftThermo<D, ST>::write(std::ostream& out)
    {
       if (!hasData_) {
          compute();
@@ -319,6 +320,7 @@ namespace Prdc {
       out << std::endl;
    }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

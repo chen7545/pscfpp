@@ -1,5 +1,5 @@
-#ifndef PRDC_SYSTEM_TMPL_TPP
-#define PRDC_SYSTEM_TMPL_TPP
+#ifndef PRDC_RL_SYSTEM_TPP
+#define PRDC_RL_SYSTEM_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "SystemTmpl.h"
+#include "System.h"
 
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
@@ -31,6 +31,7 @@
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
 
@@ -38,7 +39,7 @@ namespace Prdc {
    * Constructor.
    */
    template <int D, class T>
-   SystemTmpl<D,T>::SystemTmpl(typename T::System& system)
+   System<D,T>::System(typename T::System& system)
     : w_(),
       c_(),
       h_(),
@@ -64,10 +65,10 @@ namespace Prdc {
       isAllocatedBasis_(false),
       hasMixture_(false)
    {
-      setClassName("SystemTmpl");  // Set block label in parameter file
+      setClassName("System");  // Set block label in parameter file
       BracketPolicy::set(BracketPolicy::Optional);
 
-      // Create dynamically allocated objects owned by this SystemTmpl
+      // Create dynamically allocated objects owned by this System
       mixturePtr_ = new typename T::Mixture();
       mixtureModifierPtr_ = new typename T::MixtureModifier();
       interactionPtr_ = new typename T::Interaction();
@@ -121,27 +122,27 @@ namespace Prdc {
 
       // Signal triggered by unit cell modification
       Signal<void>& cellSignal = domain_().unitCell().signal();
-      cellSignal.addObserver(*this, &SystemTmpl<D,T>::clearUnitCellData);
+      cellSignal.addObserver(*this, &System<D,T>::clearUnitCellData);
 
       // Signal triggered by basis construction
       Signal<void>& basisSignal = domain_().basis().signal();
-      basisSignal.addObserver(*this, &SystemTmpl<D,T>::allocateFieldsBasis);
+      basisSignal.addObserver(*this, &System<D,T>::allocateFieldsBasis);
 
       // Signal triggered by w-field modification
-      w_.signal().addObserver(*this, &SystemTmpl<D,T>::clearCFields);
+      w_.signal().addObserver(*this, &System<D,T>::clearCFields);
 
       // Signal triggered by h-field modification
-      h_.signal().addObserver(*this, &SystemTmpl<D,T>::clearCFields);
+      h_.signal().addObserver(*this, &System<D,T>::clearCFields);
 
       // Signal triggered by mask modification
-      mask_.signal().addObserver(*this, &SystemTmpl<D,T>::clearCFields);
+      mask_.signal().addObserver(*this, &System<D,T>::clearCFields);
    }
 
    /*
    * Destructor.
    */
    template <int D, class T>
-   SystemTmpl<D,T>::~SystemTmpl()
+   System<D,T>::~System()
    {
       delete mixturePtr_;
       delete mixtureModifierPtr_;
@@ -174,7 +175,7 @@ namespace Prdc {
    * Process command line options.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::setOptions(int argc, char **argv)
+   void System<D,T>::setOptions(int argc, char **argv)
    {
       bool eFlag = false;  // echo
       bool dFlag = false;  // spatial dimension (1, 2, or 3)
@@ -279,7 +280,7 @@ namespace Prdc {
    * Read parameters and initialize.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readParameters(std::istream& in)
+   void System<D,T>::readParameters(std::istream& in)
    {
       // Optionally read polymerModel_ enum value, set the global value
       if (!PolymerModel::isLocked()) {
@@ -390,7 +391,7 @@ namespace Prdc {
    * Read parameter file (including open and closing brackets).
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readParam(std::istream& in)
+   void System<D,T>::readParam(std::istream& in)
    {
       readBegin(in, className().c_str());
       readParameters(in);
@@ -401,14 +402,14 @@ namespace Prdc {
    * Read default parameter file.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readParam()
+   void System<D,T>::readParam()
    {  readParam(fileMaster().paramFile()); }
 
    /*
    * Read and execute commands from a specified command file.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readCommands(std::istream &in)
+   void System<D,T>::readCommands(std::istream &in)
    {
       UTIL_CHECK(isAllocatedGrid_);
       std::string command, filename, inFileName, outFileName;
@@ -782,7 +783,7 @@ namespace Prdc {
    * Read and execute commands from the default command file.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readCommands()
+   void System<D,T>::readCommands()
    {
       if (fileMaster().commandFileName().empty()) {
          UTIL_THROW("Empty command file name");
@@ -796,7 +797,7 @@ namespace Prdc {
    * Solve MDE for current w fields, without iteration.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::compute(bool needStress)
+   void System<D,T>::compute(bool needStress)
    {
       // Preconditions
       UTIL_CHECK(isAllocatedGrid_);
@@ -836,7 +837,7 @@ namespace Prdc {
    * Compute SCFT stress for current fields.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::computeStress()
+   void System<D,T>::computeStress()
    {
       // Compute and store standard Mixture stress
       if (!mixture_().hasStress()) {
@@ -856,7 +857,7 @@ namespace Prdc {
    * Iteratively solve a SCFT problem.
    */
    template <int D, class T>
-   int SystemTmpl<D,T>::iterate(bool isContinuation)
+   int System<D,T>::iterate(bool isContinuation)
    {
       // Preconditions
       UTIL_CHECK(hasIterator());
@@ -903,7 +904,7 @@ namespace Prdc {
    * Perform an SCFT sweep along a path in parameter space.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::sweep()
+   void System<D,T>::sweep()
    {
       // Preconditions
       UTIL_CHECK(hasIterator());
@@ -925,7 +926,7 @@ namespace Prdc {
    * Perform a field theoretic simulation of nStep steps.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::simulate(int nStep)
+   void System<D,T>::simulate(int nStep)
    {
       UTIL_CHECK(nStep > 0);
       UTIL_CHECK(hasSimulator());
@@ -938,7 +939,7 @@ namespace Prdc {
    * Mark c-fields and free energy as outdated/invalid.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::clearCFields()
+   void System<D,T>::clearCFields()
    {
       c_.setHasData(false);
       scft().clear();
@@ -950,7 +951,7 @@ namespace Prdc {
    * Set the system unit cell.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::setUnitCell(UnitCell<D> const & unitCell)
+   void System<D,T>::setUnitCell(UnitCell<D> const & unitCell)
    {
       // Preconditions
       UTIL_CHECK(domain_().lattice() != UnitCell<D>::Null);
@@ -978,7 +979,7 @@ namespace Prdc {
    * Set parameters of the system unit cell.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::setUnitCell(FSArray<double, 6> const & parameters)
+   void System<D,T>::setUnitCell(FSArray<double, 6> const & parameters)
    {
       // Precondition
       UTIL_CHECK(domain_().lattice() != UnitCell<D>::Null);
@@ -1006,10 +1007,10 @@ namespace Prdc {
    }
 
    /*
-   * Notify SystemTmpl members that unit cell parameters have been modified.
+   * Notify System members that unit cell parameters have been modified.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::clearUnitCellData()
+   void System<D,T>::clearUnitCellData()
    {
       clearCFields();
       mixture_().clearUnitCellData();
@@ -1025,9 +1026,9 @@ namespace Prdc {
    * Write parameter file for SCFT, omitting any sweep block.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::writeParamNoSweep(std::ostream& out) const
+   void System<D,T>::writeParamNoSweep(std::ostream& out) const
    {
-      out << "SystemTmpl{" << std::endl;
+      out << "System{" << std::endl;
       mixture().writeParam(out);
       interaction().writeParam(out);
       domain().writeParam(out);
@@ -1046,7 +1047,7 @@ namespace Prdc {
    * Write timer values to output stream (computational cost).
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::writeTimers(std::ostream& out) const
+   void System<D,T>::writeTimers(std::ostream& out) const
    {
       if (hasIterator()) {
          iterator().outputTimers(Log::file());
@@ -1062,7 +1063,7 @@ namespace Prdc {
    * Clear state of all timers.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::clearTimers()
+   void System<D,T>::clearTimers()
    {
       if (hasIterator()) {
          iterator().clearTimers();
@@ -1078,7 +1079,7 @@ namespace Prdc {
    * Allocate memory for fields in grid format.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::allocateFieldsGrid()
+   void System<D,T>::allocateFieldsGrid()
    {
       // Preconditions
       UTIL_CHECK(hasMixture_);
@@ -1118,7 +1119,7 @@ namespace Prdc {
    * Allocate memory for fields in basis format.
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::allocateFieldsBasis()
+   void System<D,T>::allocateFieldsBasis()
    {
       // Preconditions and constants
       UTIL_CHECK(hasMixture_);
@@ -1153,7 +1154,7 @@ namespace Prdc {
    * Read a filename string and echo to log file (used in readCommands).
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readEcho(std::istream& in, std::string& string) const
+   void System<D,T>::readEcho(std::istream& in, std::string& string) const
    {
       in >> string;
       if (in.fail()) {
@@ -1166,7 +1167,7 @@ namespace Prdc {
    * Read floating point number, echo to log file (used in readCommands).
    */
    template <int D, class T>
-   void SystemTmpl<D,T>::readEcho(std::istream& in, double& value) const
+   void System<D,T>::readEcho(std::istream& in, double& value) const
    {
       in >> value;
       if (in.fail()) {
@@ -1175,6 +1176,7 @@ namespace Prdc {
       Log::file() << " " << Dbl(value, 20) << std::endl;
    }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

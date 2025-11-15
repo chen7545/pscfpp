@@ -1,5 +1,5 @@
-#ifndef PRDC_MIXTURE_MODIFIER_PRDC_H
-#define PRDC_MIXTURE_MODIFIER_PRDC_H
+#ifndef PRDC_RL_MIXTURE_MODIFIER_H
+#define PRDC_RL_MIXTURE_MODIFIER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,6 +10,7 @@
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    /**
    * Modifier for parameters of an associated mixture.
@@ -18,14 +19,14 @@ namespace Prdc {
    * a Mixture<D> class in each of the implementations for real periodic
    * fields.
    *
-   * A MixtureModifierPrdc provides an interface for a limited number of
+   * A MixtureModifier provides an interface for a limited number of
    * non-const operations that modify the parameters of an associated
    * Mixture object. This interface is used to implement sweep and ramp 
    * operations that need to modify these parameters.
    * 
    * Each PSCF implementation for real periodic fields defines a class 
    * template int \<D\> MixtureModifier that is derived from a template 
-   * specialization MixtureModifierPrdc\< Mixture\<D\> \>. The System\<D\> 
+   * specialization MixtureModifier\< Mixture\<D\> \>. The System\<D\> 
    * class provides public access to its Mixture<D> only through a const 
    * reference, but provides a non-const reference to an associated 
    * MixtureModifier. The MixtureModifier template thus defines a set of 
@@ -33,7 +34,7 @@ namespace Prdc {
    * via a non-const reference to a System.
    */
    template <class MT>
-   class MixtureModifierPrdc 
+   class MixtureModifier 
    {
 
    public:
@@ -44,12 +45,12 @@ namespace Prdc {
       /**
       * Constructor.
       */
-      MixtureModifierPrdc();
+      MixtureModifier();
 
       /**
       * Destructor.
       */
-      ~MixtureModifierPrdc();
+      ~MixtureModifier();
 
       /**
       * Create associations with a Mixture.
@@ -158,6 +159,7 @@ namespace Prdc {
 
    };
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

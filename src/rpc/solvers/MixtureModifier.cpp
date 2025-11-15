@@ -6,7 +6,7 @@
 */
 
 #include "MixtureModifier.h"
-#include <prdc/solvers/MixtureModifierPrdc.tpp>
+#include <prdc/rl/MixtureModifier.tpp>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/solvers/Polymer.h>
 #include <rpc/solvers/Solvent.h>
@@ -14,9 +14,9 @@
 
 namespace Pscf {
    namespace Prdc { 
-      template class MixtureModifierPrdc< Rpc::Mixture<1> >;
-      template class MixtureModifierPrdc< Rpc::Mixture<2> >;
-      template class MixtureModifierPrdc< Rpc::Mixture<3> >;
+      template class Rl::MixtureModifier< Rpc::Mixture<1> >;
+      template class Rl::MixtureModifier< Rpc::Mixture<2> >;
+      template class Rl::MixtureModifier< Rpc::Mixture<3> >;
    }
    namespace Rpc { 
       template class MixtureModifier<1>;

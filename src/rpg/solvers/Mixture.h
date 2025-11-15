@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/solvers/MixturePrdc.h>     // base class template
-#include <prdc/cuda/types.h>              // basic real and complex data types
-#include <rpg/system/Types.h>             // template argument
+#include <prdc/rl/Mixture.h>        // base class template
+#include <rpg/system/Types.h>       // base class argument
+#include <prdc/cuda/types.h>        // real and complex cuda data types
 
 namespace Pscf {
 namespace Rpg {
@@ -27,7 +27,7 @@ namespace Rpg {
    * Solver and descriptor for a mixture of polymers and solvents.
    *
    * A Mixture is derived from a partial specialization of the template
-   * Prdc::MixturePrdc, and has the same public interface as this base
+   * Prdc::Rl::Mixture, and has the same public interface as this base
    * class template. 
    *
    * \ref user_param_mixture_page "Manual Page"
@@ -35,25 +35,25 @@ namespace Rpg {
    */
    template <int D>
    class Mixture 
-     : public MixturePrdc<D, Polymer<D>, Solvent<D>, Types<D> >
+     : public Rl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >
    {
 
    public:
 
       /// Direct (parent) base class.
-      using MixturePrdcT
-       = typename Prdc::MixturePrdc<D, Polymer<D>, Solvent<D>, Types<D> >;
+      using RlMixtureT
+       = typename Prdc::Rl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
 
       // Inherited public type name aliases
 
-      using typename MixturePrdcT::MixtureTmplT;
-      using typename MixturePrdcT::PolymerT;
-      using typename MixturePrdcT::SolventT;
-      using typename MixturePrdcT::BlockT;
-      using typename MixturePrdcT::PropagatorT;
-      using typename MixturePrdcT::FieldT;
-      using typename MixturePrdcT::FFTT;
-      using typename MixturePrdcT::WaveListT;
+      using typename RlMixtureT::MixtureTmplT;
+      using typename RlMixtureT::PolymerT;
+      using typename RlMixtureT::SolventT;
+      using typename RlMixtureT::BlockT;
+      using typename RlMixtureT::PropagatorT;
+      using typename RlMixtureT::FieldT;
+      using typename RlMixtureT::FFTT;
+      using typename RlMixtureT::WaveListT;
 
       // Public member functions
 
@@ -71,15 +71,15 @@ namespace Rpg {
 
       // Inherited public member functions
 
-      using MixturePrdcT::readParameters;
-      using MixturePrdcT::associate;
-      using MixturePrdcT::allocate;
-      using MixturePrdcT::clearUnitCellData;
-      using MixturePrdcT::setKuhn;
-      using MixturePrdcT::compute;
-      using MixturePrdcT::computeStress;
-      using MixturePrdcT::hasStress;
-      using MixturePrdcT::createBlockCRGrid;
+      using RlMixtureT::readParameters;
+      using RlMixtureT::associate;
+      using RlMixtureT::allocate;
+      using RlMixtureT::clearUnitCellData;
+      using RlMixtureT::setKuhn;
+      using RlMixtureT::compute;
+      using RlMixtureT::computeStress;
+      using RlMixtureT::hasStress;
+      using RlMixtureT::createBlockCRGrid;
 
       using MixtureTmplT::polymer;
       using MixtureTmplT::polymerSpecies;
@@ -96,8 +96,8 @@ namespace Rpg {
 
    protected:
 
-      using MixturePrdcT::mesh;
-      using MixturePrdcT::ds;
+      using RlMixtureT::mesh;
+      using RlMixtureT::ds;
 
    private:
 
@@ -141,11 +141,11 @@ namespace Rpg {
 namespace Prdc {
    // Explicit instantiation declarations for base class
    extern template 
-   class MixturePrdc<1, Rpg::Polymer<1>, Rpg::Solvent<1>, Rpg::Types<1> >;
+   class Rl::Mixture<1, Rpg::Polymer<1>, Rpg::Solvent<1>, Rpg::Types<1> >;
    extern template 
-   class MixturePrdc<2, Rpg::Polymer<2>, Rpg::Solvent<2>, Rpg::Types<2> >;
+   class Rl::Mixture<2, Rpg::Polymer<2>, Rpg::Solvent<2>, Rpg::Types<2> >;
    extern template 
-   class MixturePrdc<3, Rpg::Polymer<3>, Rpg::Solvent<3>, Rpg::Types<3> >;
+   class Rl::Mixture<3, Rpg::Polymer<3>, Rpg::Solvent<3>, Rpg::Types<3> >;
 
 } // namespace Prdc
 

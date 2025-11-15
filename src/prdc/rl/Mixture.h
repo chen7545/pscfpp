@@ -1,5 +1,5 @@
-#ifndef PRDC_MIXTURE_REAL_H
-#define PRDC_MIXTURE_REAL_H
+#ifndef PRDC_RL_MIXTURE_H
+#define PRDC_RL_MIXTURE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/solvers/MixtureTmpl.h>     // base class template
-#include <util/containers/FSArray.h>      // member template (stress_)
+#include <pscf/solvers/MixtureTmpl.h>   // base class template
+#include <util/containers/FSArray.h>    // member template (stress_)
 #include <iostream>
 
 // Forward declarations
@@ -25,13 +25,14 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
 
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
    *
-   * A MixturePrdc contains lists of Polymer (PT) and Solvent (ST) 
+   * A Mixture contains lists of Polymer (PT) and Solvent (ST) 
    * objects. Each such object can solve statistical mechanics of a single 
    * molecule of the associated species in a set of specified chemical 
    * potential fields, and thereby compute concentrations and molecular 
@@ -47,7 +48,7 @@ namespace Prdc {
    * Note: Most class templates defined in the Pscf::Prdc namespace for 
    * use as base classes for classes defined in Pscf::Rpc and Pscf::Rpg 
    * have names that end in the suffix Tmpl. This template for mixtures 
-   * in periodic systems has been named MixturePrdc, however, because 
+   * in periodic systems has been named Mixture, however, because 
    * Pscf::MixtureTmpl is the name of the more general template from 
    * which it is derived, which can be used for systems tha are not
    * periodic. 
@@ -55,7 +56,7 @@ namespace Prdc {
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>
-   class MixturePrdc : public MixtureTmpl<PT, ST, double>
+   class Mixture : public MixtureTmpl<PT, ST, double>
    {
 
    public:
@@ -97,12 +98,12 @@ namespace Prdc {
       /**
       * Constructor.
       */
-      MixturePrdc();
+      Mixture();
 
       /**
       * Destructor.
       */
-      ~MixturePrdc();
+      ~Mixture();
 
       /**
       * Read all parameters and initialize.
@@ -472,20 +473,21 @@ namespace Prdc {
    * Has the stress been computed for the current w fields?
    */
    template <int D, class PT, class ST, class TT>
-   inline bool MixturePrdc<D,PT,ST,TT>::hasStress() const
+   inline bool Mixture<D,PT,ST,TT>::hasStress() const
    {  return hasStress_; }
 
    /*
    * Get derivative of free energy w/ respect to a unit cell parameter.
    */
    template <int D, class PT, class ST, class TT>
-   inline double MixturePrdc<D,PT,ST,TT>::stress(int parameterId) const
+   inline double Mixture<D,PT,ST,TT>::stress(int parameterId) const
    {
       UTIL_CHECK(hasStress_);
       UTIL_CHECK(parameterId < nParam_);
       return stress_[parameterId];
    }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

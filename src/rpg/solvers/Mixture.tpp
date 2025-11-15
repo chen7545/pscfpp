@@ -14,7 +14,7 @@
 #include "Block.h"
 #include "Propagator.h"
 #include <rpg/field/FieldIo.h>
-#include <prdc/solvers/MixturePrdc.tpp>
+#include <prdc/rl/Mixture.tpp>
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/RField.h>
 
@@ -29,7 +29,7 @@ namespace Rpg {
    */
    template <int D>
    Mixture<D>::Mixture()
-    : MixturePrdcT(),
+    : RlMixtureT(),
       useBatchedFFT_(true)
    {}
 
@@ -39,7 +39,7 @@ namespace Rpg {
    template <int D>
    void Mixture<D>::readParameters(std::istream& in)
    {
-      MixturePrdcT::readParameters(in);
+      RlMixtureT::readParameters(in);
 
       // Optionally read useBatchedFFT boolean
       useBatchedFFT_ = true;

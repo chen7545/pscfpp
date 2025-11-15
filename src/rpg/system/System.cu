@@ -9,7 +9,7 @@
 */
 
 #include "System.h"
-#include <prdc/system/SystemTmpl.tpp>
+#include <prdc/rl/System.tpp>
 #include <prdc/cuda/WaveList.h>
 
 #include <rpg/environment/EnvironmentFactory.h>
@@ -38,9 +38,9 @@
 namespace Pscf {
    namespace Prdc {
       // Explicit instantiation of base class
-      template class SystemTmpl< 1, Rpg::Types<1> >;
-      template class SystemTmpl< 2, Rpg::Types<2> >;
-      template class SystemTmpl< 3, Rpg::Types<3> >;
+      template class Rl::System< 1, Rpg::Types<1> >;
+      template class Rl::System< 2, Rpg::Types<2> >;
+      template class Rl::System< 3, Rpg::Types<3> >;
    }
    namespace Rpg {
 
@@ -49,7 +49,7 @@ namespace Pscf {
       */
       template <int D>
       System<D>::System()
-       : SystemTmpl<D, Types<D> >(*this)
+       : Rl::System<D, Types<D> >(*this)
       {
          ParamComposite::setClassName("System");
          ThreadArray::init();

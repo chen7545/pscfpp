@@ -12,15 +12,15 @@
 #include <rpg/field/Domain.h>
 #include <prdc/cuda/Reduce.h>
 #include <prdc/cuda/RField.h>
-#include <prdc/system/ScftThermoTmpl.tpp>
+#include <prdc/rl/ScftThermo.tpp>
 #include <pscf/inter/Interaction.h>
 
 namespace Pscf {
 
    namespace Prdc {
-      template class ScftThermoTmpl<1, Rpg::System<1> >;
-      template class ScftThermoTmpl<2, Rpg::System<2> >;
-      template class ScftThermoTmpl<3, Rpg::System<3> >;
+      template class Rl::ScftThermo<1, Rpg::System<1> >;
+      template class Rl::ScftThermo<2, Rpg::System<2> >;
+      template class Rl::ScftThermo<3, Rpg::System<3> >;
    }
 
    namespace Rpg {

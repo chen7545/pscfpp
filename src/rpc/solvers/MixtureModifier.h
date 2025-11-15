@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/solvers/MixtureModifierPrdc.h>  // base class template
+#include <prdc/rl/MixtureModifier.h>  // base class template
 #include "Mixture.h"                           // base class parameter
 
 namespace Pscf {
@@ -18,19 +18,19 @@ namespace Rpc {
    * Parameter modifier for an associated Mixture.
    *
    * A MixtureModifier<D> is derived from the template specialization 
-   * Prdc::MixtureModifierPrdc< Rpc::Mixture<D> > and has the same public
+   * Prdc::Rl::MixtureModifier< Rpc::Mixture<D> > and has the same public
    * interface as this base class. See documentation of base class.
    *
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
-   class MixtureModifier : public MixtureModifierPrdc< Mixture<D> >
+   class MixtureModifier : public Rl::MixtureModifier< Mixture<D> >
    {
 
    public:
  
       /// Direct (parent) base class.
-      using Base = typename Prdc::MixtureModifierPrdc< Mixture<D> >;
+      using Base = typename Prdc::Rl::MixtureModifier< Mixture<D> >;
 
       // Inherited public member functions
 
@@ -54,9 +54,9 @@ namespace Rpc {
 } // namespace Rpc
 namespace Prdc {
    // Explicit instantiation declarations for base class
-   extern template class MixtureModifierPrdc< Rpc::Mixture<1> >;
-   extern template class MixtureModifierPrdc< Rpc::Mixture<2> >;
-   extern template class MixtureModifierPrdc< Rpc::Mixture<3> >;
+   extern template class Rl::MixtureModifier< Rpc::Mixture<1> >;
+   extern template class Rl::MixtureModifier< Rpc::Mixture<2> >;
+   extern template class Rl::MixtureModifier< Rpc::Mixture<3> >;
 } // namespace Prdc
 } // namespace Pscf
 #endif
