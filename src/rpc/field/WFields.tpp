@@ -9,7 +9,7 @@
 */
 
 #include "WFields.h"           // class header
-#include <prdc/field/WFieldsTmpl.tpp>  // base class implementation
+#include <prdc/rl/WFields.tpp>  // base class implementation
 
 namespace Pscf {
 namespace Rpc {

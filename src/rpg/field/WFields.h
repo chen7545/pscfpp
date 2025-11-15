@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/field/WFieldsTmpl.h>     // base class template
+#include <prdc/rl/WFields.h>     // base class template
 #include <prdc/cpu/RField.h>            // template parameter
 #include <rpg/field/FieldIo.h>          // template parameter
 

@@ -1,5 +1,5 @@
-#ifndef PRDC_C_FIELDS_TMPL_H
-#define PRDC_C_FIELDS_TMPL_H
+#ifndef PRDC_RL_C_FIELDS_H
+#define PRDC_RL_C_FIELDS_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -20,6 +20,7 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
 
@@ -28,11 +29,11 @@ namespace Prdc {
    *
    * <b> Template parameters </b>: The template parameters represent:
    * 
-   *     - D   : integer dimensionality of space, D=1,2, or 3
-   *     - RFT : field type for r-grid data (e.g., RField<D>)
-   *     - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
+   *   - D   : integer dimensionality of space, D=1,2, or 3
+   *   - RFT : field type for r-grid data (e.g., RField<D>)
+   *   - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
    * 
-   * <b> Field Representations </b>: A CFieldsTmpl contains a list of
+   * <b> Field Representations </b>: A CFields contains a list of
    * nMonomer fields that are each associated with a monomer type. The
    * fields may be stored in two different formats:
    *
@@ -51,24 +52,24 @@ namespace Prdc {
    * intended relationship between the two data representations is instead
    * left as the responsibility of an object that owns this container. 
    * 
-   * <b> Subclasses </b>: Partial specializations of CFieldsTmpl are 
-   * used as base classes for classes Prdc::CFieldsTmpl \<D \> and 
-   * Rpg::CFieldsTmpl \<D\>:
+   * <b> Subclasses </b>: Partial specializations of CFields are 
+   * used as base classes for classes Prdc::CFields \<D \> and 
+   * Rpg::CFields \<D\>:
    *
-   *  - Subclass Prdc::CFieldsTmpl \<D\> is derived from a partial
-   *    specialization of CFieldsTmpl with template parameters 
+   *  - Subclass Prdc::CFields \<D\> is derived from a partial
+   *    specialization of CFields with template parameters 
    *    RFT = Cpu::RField\<D\> and FIT = Prdc::FieldIo\<D\> , and is 
    *    used in the pscf_pc CPU program.
    *
-   *  - Subclass Rpg::CFieldsTmpl \<D\> is derived from a partial
-   *    specialization of CFieldsTmpl with template parameters 
+   *  - Subclass Rpg::CFields \<D\> is derived from a partial
+   *    specialization of CFields with template parameters 
    *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and 
    *    is used in the pscf_pg GPU accelerated program.
    *
    * \ingroup Prdc_Field_Module
    */
    template <int D, class RFT, class FIT>
-   class CFieldsTmpl 
+   class CFields 
    {
 
    public:
@@ -76,12 +77,12 @@ namespace Prdc {
       /**
       * Constructor.
       */
-      CFieldsTmpl();
+      CFields();
 
       /**
       * Destructor.
       */
-      ~CFieldsTmpl();
+      ~CFields();
 
       /// \name Initialization and Memory Management
       ///@{
@@ -345,7 +346,7 @@ namespace Prdc {
 
    // Get array of all fields in basis format (non-const)
    template <int D, class RFT, class FIT> inline
-   DArray< DArray<double> >& CFieldsTmpl<D,RFT,FIT>::basis()
+   DArray< DArray<double> >& CFields<D,RFT,FIT>::basis()
    {
       UTIL_ASSERT(isAllocatedBasis_);
       return basis_;
@@ -353,7 +354,7 @@ namespace Prdc {
 
    // Get array of all fields in basis format (const)
    template <int D, class RFT, class FIT> inline
-   DArray< DArray<double> > const & CFieldsTmpl<D,RFT,FIT>::basis() const
+   DArray< DArray<double> > const & CFields<D,RFT,FIT>::basis() const
    {
       UTIL_ASSERT(isAllocatedBasis_);
       return basis_;
@@ -361,7 +362,7 @@ namespace Prdc {
 
    // Get one field in basis format (non-const)
    template <int D, class RFT, class FIT> inline
-   DArray<double> & CFieldsTmpl<D,RFT,FIT>::basis(int id)
+   DArray<double> & CFields<D,RFT,FIT>::basis(int id)
    {
       UTIL_ASSERT(isAllocatedBasis_);
       return basis_[id];
@@ -369,7 +370,7 @@ namespace Prdc {
 
    // Get one field in basis format (const)
    template <int D, class RFT, class FIT> inline
-   DArray<double> const & CFieldsTmpl<D,RFT,FIT>::basis(int id)
+   DArray<double> const & CFields<D,RFT,FIT>::basis(int id)
    const
    {
       UTIL_ASSERT(isAllocatedBasis_);
@@ -378,7 +379,7 @@ namespace Prdc {
 
    // Get all fields in r-grid format (non-const)
    template <int D, class RFT, class FIT> inline
-   DArray<RFT>& CFieldsTmpl<D,RFT,FIT>::rgrid()
+   DArray<RFT>& CFields<D,RFT,FIT>::rgrid()
    {
       UTIL_ASSERT(isAllocatedRGrid_);
       return rgrid_;
@@ -386,7 +387,7 @@ namespace Prdc {
 
    // Get all fields in r-grid format (const)
    template <int D, class RFT, class FIT> inline
-   DArray<RFT> const & CFieldsTmpl<D,RFT,FIT>::rgrid() const
+   DArray<RFT> const & CFields<D,RFT,FIT>::rgrid() const
    {
       UTIL_ASSERT(isAllocatedRGrid_);
       return rgrid_;
@@ -394,7 +395,7 @@ namespace Prdc {
 
    // Get one field in r-grid format (non-const)
    template <int D, class RFT, class FIT> inline
-   RFT& CFieldsTmpl<D,RFT,FIT>::rgrid(int id)
+   RFT& CFields<D,RFT,FIT>::rgrid(int id)
    {
       UTIL_ASSERT(isAllocatedRGrid_);
       return rgrid_[id];
@@ -402,7 +403,7 @@ namespace Prdc {
 
    // Get one field in r-grid format (const)
    template <int D, class RFT, class FIT> inline
-   RFT const & CFieldsTmpl<D,RFT,FIT>::rgrid(int id) const
+   RFT const & CFields<D,RFT,FIT>::rgrid(int id) const
    {
       UTIL_ASSERT(isAllocatedRGrid_);
       return rgrid_[id];
@@ -410,22 +411,22 @@ namespace Prdc {
 
    // Has memory been allocated for fields in r-grid format?
    template <int D, class RFT, class FIT> inline 
-   bool CFieldsTmpl<D,RFT,FIT>::isAllocatedRGrid() const
+   bool CFields<D,RFT,FIT>::isAllocatedRGrid() const
    {  return isAllocatedRGrid_; }
 
    // Has memory been allocated for fields in basis format?
    template <int D, class RFT, class FIT> inline 
-   bool CFieldsTmpl<D,RFT,FIT>::isAllocatedBasis() const
+   bool CFields<D,RFT,FIT>::isAllocatedBasis() const
    {  return isAllocatedBasis_; }
 
    // Are the fields up-to-date?
    template <int D, class RFT, class FIT> inline 
-   bool CFieldsTmpl<D,RFT,FIT>::hasData() const
+   bool CFields<D,RFT,FIT>::hasData() const
    {  return hasData_; }
 
    // Are the fields symmetric under elements of the space group?
    template <int D, class RFT, class FIT> inline 
-   bool CFieldsTmpl<D,RFT,FIT>::isSymmetric() const
+   bool CFields<D,RFT,FIT>::isSymmetric() const
    {  return isSymmetric_; }
 
    // Protected inline member function
@@ -433,12 +434,13 @@ namespace Prdc {
    // Associated FieldIo object (const reference).
    template <int D, class RFT, class FIT>
    inline 
-   FIT const & CFieldsTmpl<D,RFT,FIT>::fieldIo() const
+   FIT const & CFields<D,RFT,FIT>::fieldIo() const
    {
       UTIL_CHECK(fieldIoPtr_);
       return *fieldIoPtr_;
    }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

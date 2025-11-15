@@ -9,11 +9,11 @@
 */
 
 #include "FieldIo.h"
-#include <prdc/field/FieldIoTmpl.tpp>     // base class implementation
+#include <prdc/rl/FieldIo.tpp>     // base class implementation
 
 #include <rpc/field/Domain.h>
 
-#include <prdc/field/fieldIoUtil.h>
+#include <prdc/rl/fieldIoUtil.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/RFieldComparison.h>

@@ -8,14 +8,14 @@
 #include "CFields.h"
 #include <rpc/field/FieldIo.h>
 #include <prdc/cpu/RField.h>
-#include <prdc/field/CFieldsTmpl.tpp>
+#include <prdc/rl/CFields.tpp>
 
 namespace Pscf {
    namespace Prdc {
       // Explicit instantiations of base class template
-      template class CFieldsTmpl<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
-      template class CFieldsTmpl<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
-      template class CFieldsTmpl<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
+      template class Rl::CFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
+      template class Rl::CFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
+      template class Rl::CFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
    } 
    namespace Rpc {
       // Explicit instantiations of this class

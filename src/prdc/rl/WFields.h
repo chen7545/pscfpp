@@ -1,5 +1,5 @@
-#ifndef PRDC_W_FIELDS_TMPL_H
-#define PRDC_W_FIELDS_TMPL_H
+#ifndef PRDC_RL_W_FIELDS_H
+#define PRDC_RL_W_FIELDS_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -24,7 +24,6 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Prdc {
-
 
    using namespace Util;
 
