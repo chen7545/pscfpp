@@ -1,6 +1,6 @@
 include config.mk
 
-.PHONY: all all-cpu util pscf prdc r1d rpc rpg \
+.PHONY: all all-cpu util pscf prdc r1d rpc rpg cpc \
         test test-cpu test-gpu \
         clean clean-tests veryclean
 # ======================================================================
@@ -20,6 +20,7 @@ all-cpu:
 	cd r1d; $(MAKE) all
 	cd prdc; $(MAKE) all
 	cd rpc; $(MAKE) all
+	cd cpc; $(MAKE) all
 
 # Build code in Util names (general scientific utilities)
 util: 
@@ -48,6 +49,7 @@ pscf_pc:
 	cd pscf; $(MAKE) all
 	cd prdc; $(MAKE) all
 	cd rpc; $(MAKE) all
+	cd cpc; $(MAKE) all
 
 ifdef PSCF_CUDA
 # Build pscf_pc GPU code for periodic structures (install in BIN_DIR)
@@ -68,6 +70,7 @@ test:
 	@cd prdc/tests; $(MAKE) all; $(MAKE) run-quiet
 	@cd r1d/tests; $(MAKE) all; $(MAKE) run-quiet
 	@cd rpc/tests; $(MAKE) all; $(MAKE) run-quiet
+	@cd cpc/tests; $(MAKE) all; $(MAKE) run-quiet
 ifdef PSCF_CUDA
 	@cd rpg/tests; $(MAKE) all; $(MAKE) run-quiet
 endif
@@ -76,6 +79,7 @@ endif
 	@cat prdc/tests/count >> count
 	@cat r1d/tests/count >> count
 	@cat rpc/tests/count >> count
+	@cat cpc/tests/count >> count
 ifdef PSCF_CUDA
 	@cat rpg/tests/count >> count
 endif
@@ -91,11 +95,13 @@ test-cpu:
 	@cd prdc/tests; $(MAKE) all; $(MAKE) run-quiet
 	@cd r1d/tests; $(MAKE) all; $(MAKE) run-quiet
 	@cd rpc/tests; $(MAKE) all; $(MAKE) run-quiet
+	@cd cpc/tests; $(MAKE) all; $(MAKE) run-quiet
 	@cat util/tests/count > count
 	@cat pscf/tests/count >> count
 	@cat prdc/tests/count >> count
 	@cat r1d/tests/count >> count
 	@cat rpc/tests/count >> count
+	@cat cpc/tests/count >> count
 	@echo " "
 	@echo "Summary"
 	@cat count
@@ -115,6 +121,7 @@ clean:
 	cd r1d; $(MAKE) clean
 	cd rpc; $(MAKE) clean
 	cd rpg; $(MAKE) clean
+	cd cpc; $(MAKE) clean
 
 # Clean unit tests
 clean-tests:
@@ -124,6 +131,7 @@ clean-tests:
 	cd r1d/tests; $(MAKE) clean
 	cd rpc/tests; $(MAKE) clean
 	cd rpg/tests; $(MAKE) clean
+	cd cpc/tests; $(MAKE) clean
 
 # Remove all automatically generated files, recreate initial state
 veryclean:
@@ -133,6 +141,7 @@ veryclean:
 	cd r1d; $(MAKE) clean
 	cd rpc; $(MAKE) clean
 	cd rpg; $(MAKE) clean
+	cd cpc; $(MAKE) clean
 	rm -f util/config.mk
 ifneq ($(BLD_DIR),$(SRC_DIR))
 	rm -f util/makefile
@@ -141,12 +150,14 @@ ifneq ($(BLD_DIR),$(SRC_DIR))
 	rm -f r1d/makefile
 	rm -f rpc/makefile
 	rm -f rpg/makefile
+	rm -f cpc/makefile
 	rm -f util/tests/makefile
 	rm -f pscf/tests/makefile
 	rm -f prdc/tests/makefile
 	rm -f r1d/tests/makefile
 	rm -f rpc/tests/makefile
 	rm -f rpg/tests/makefile
+	rm -f cpc/tests/makefile
 	rm -f setopts
 endif
 	rm -f config.mk
