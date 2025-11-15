@@ -24,10 +24,6 @@ Directory pscf/chem:
 
    class Vertex - unchanged
 
-   class EdgeIterator - unchanged
-
-   class VertexIterator - unchanged
-
    class Species: Make this a template of type WT, default to double
 
       - Make member variables q_, phi_, and mu_ type WT
@@ -49,7 +45,11 @@ Directory pscf/chem:
         phiMu_ to either real or complex mu_ and phi_ variables
 
       - Change setPhi(double phi) and setMu(double Mu) to set
-        phiMu_ as well as phi_ or mu_, using assign function
+        phiMu_ as well as phi_ or mu_, using assign function.
+
+      - Change setQ function to use function templates for division,
+        exponent and natural logarithm that can be applied to either
+        real or complex numbers.
 
       - Add extern template declaration to Species.h for WT=double
 
@@ -82,6 +82,16 @@ Directory pscf/chem:
       - Compile double types in pscf/chem/SolventSpecies.cpp
 
       - Compile complex types in cpc/ and cpg/
+
+   class EdgeIterator - 
+
+        unchanged, but becomes a template of type WT because it holds
+        an association with a PolymerSpecies<WT>.
+
+   class VertexIterator - 
+
+        unchanged, but becomes a template of type WT because it holds
+        an association with a PolymerSpecies<WT>.
 
 Directory pscf/solver (templates): 
 ==================================
@@ -116,13 +126,13 @@ Directory pscf/solver (templates):
    class PolymerTmpl : public PolymerSpecies<WT>
    ---------------------------------------------------
 
-      Make WT an additional template parameter
+    Make WT an additional template parameter
 
-      Private member variable:
+    Private member variable:
 
           DArray<Block> blocks_
 
-      Proposal:
+    Proposal:
       
            Remove declaration and definition of the solve(double phiTot)
            function and declare and define in subclasses.
@@ -131,7 +141,7 @@ Directory pscf/solver (templates):
            Prdc::Rl::Polymer and Prdc::Cl::Polymer for real and complex
            valued fields.
 
-      Rationale: Why not define solve() in this template?
+    Rationale: Why not define solve() in this template?
 
           1) The interface currently involves a parameter phiTot that 
           I wouldn't want to propagate into a complex Langevin sampling 
@@ -142,4 +152,21 @@ Directory pscf/solver (templates):
           implementations just for this one operation. Admittedly, this
           could be addressed by using a global function for division 
           that is overloaded for different types.
+
+Directory pscf/correlation 
+==========================
+
+    - Class Correlation::Polymer must become a template Polymer<WT>
+      with template parameter WT because this class retains
+      the address of an associated PolymerSpecies<WT> object.
+
+    - Class Correlation::Mixture must become a template Mixture<WT>
+      with template parameter WT because this class retains the 
+      address of an associated MixtureBase<WT> object.
+
+Directory pscf/floryHuggins 
+==========================
+
+    - Class FloryHuggins::Mixture needs a template function
+      initialize(MixtureBase<WT> const &). 
 

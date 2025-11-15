@@ -18,11 +18,14 @@ namespace Pscf {
    */
    template <typename WT>
    Species<WT>::Species()
-    : phi_(0.0),
-      mu_(0.0),
-      q_(0.0),
+    : phiMu_(0.0),
       ensemble_(Ensemble::Closed)
-   {  setClassName("Species"); }
+   { 
+      assign(phi_, 0.0); 
+      assign(mu_, 0.0); 
+      assign(q_, 0.0); 
+      setClassName("Species"); 
+   }
 
    /*
    * Read phi or mu (but not both) and set ensemble.
@@ -34,11 +37,11 @@ namespace Pscf {
       bool hasPhi = readOptional(in, "phi", phiMu_).isActive();
       if (hasPhi) {
          ensemble_ = Ensemble::Closed;
-         phi_ = phiMu_;
+         assign(phi_, phiMu_);
       } else {
          ensemble_ = Ensemble::Open;
          read(in, "mu", phiMu_);
-         mu_ = phiMu_;
+         assign(mu_, phiMu_);
       }
    }
 
@@ -51,8 +54,8 @@ namespace Pscf {
       UTIL_CHECK(ensemble() == Ensemble::Closed);  
       UTIL_CHECK(phi >= 0.0);  
       UTIL_CHECK(phi <= 1.0);  
-      phiMu_ = phi;
-      phi_ = phi;
+      assign(phiMu_, phi);
+      assign(phi_, phi);
    }
 
    /*
@@ -62,22 +65,28 @@ namespace Pscf {
    void Species<WT>::setMu(double mu)
    {
       UTIL_CHECK(ensemble() == Ensemble::Open);
-      phiMu_ = mu;
-      mu_ = mu;
+      assign(phiMu_, mu);
+      assign(mu_, mu);
    }
 
    /*
    * Set q and compute mu or phi (depending on ensemble).
    */
    template <typename WT>
-   void Species<WT>::setQ(double q)
+   void Species<WT>::setQ(WT q)
    {
-      q_ = q;
+      assign(q_, q);
       if (ensemble() == Ensemble::Closed) {
-         mu_ = std::log(phi_/q_);
+         WT ratio;
+         div(ratio, phi_, q_);
+         assignLog(mu_, ratio);
+         //mu_ = std::log(phi_/q_);
       } else
       if (ensemble() == Ensemble::Open) {
-         phi_ = std::exp(mu_)*q_;
+         WT lambda;
+         assignExp(lambda, mu_);
+         mul(phi_, lambda, q_);
+         //phi_ = std::exp(mu_)*q_;
       }
    }
 

@@ -10,17 +10,17 @@
 
 #include <util/param/ParamComposite.h>   // base class
 
-#include <pscf/floryHuggins/Clump.h>      // member template argument
-#include <util/containers/Pair.h>        // member template
-#include <util/containers/DArray.h>      // member template
+#include <pscf/floryHuggins/Clump.h>     // member
+#include <util/containers/Pair.h>        // member
+#include <util/containers/DArray.h>      // member
 
 #include <cmath>
 
-namespace Pscf { 
-   namespace FloryHuggins { 
-   
+namespace Pscf {
+   namespace FloryHuggins {
+
       using namespace Util;
-   
+
       /**
       * Descriptor of a molecular species in a homogeneous mixture.
       *
@@ -37,19 +37,19 @@ namespace Pscf {
       */
       class Molecule : public Util::ParamComposite
       {
-   
+
       public:
-   
+
          /**
          * Constructor.
          */
          Molecule();
-    
+
          /**
          * Destructor.
          */
          ~Molecule();
-   
+
          /**
          * Read and initialize.
          *
@@ -67,85 +67,89 @@ namespace Pscf {
          * must be set using Clump::setMonomerId() and Clump::setSize().
          */
          void setNClump(int nClump);
-   
+
          /**
          * Compute total molecule size by adding clump sizes.
          */
          void computeSize();
-   
-         /// \name Accessors 
+
+         /// \name Accessors
          //@{
-   
+
          /**
          * Get a specified Clump.
          *
          * \param id clump index, 0 <= id < nClump
          */
          Clump& clump(int id);
-   
+
          /**
          * Get a specified Clump.
          *
          * \param id clump index, 0 <= id < nClump
          */
          Clump const & clump(int id) const;
-   
+
          /**
          * Number of monomer clumps (monomer types).
          */
-         int nClump() const; 
-   
+         int nClump() const;
+
          /**
          * Total molecule size  = volume / reference volume.
          */
          double size() const;
-   
+
          //@}
-   
+
       private:
-   
+
          /// Array of Clump objects in this polymer.
          DArray<Clump> clumps_;
-   
+
          /// Number of clumps in this polymer
          int nClump_;
-   
+
          /// Total size of all clumps (in units of reference size).
          double size_;
 
          /// Flag set when computeSize is called.
          bool hasSize_;
-   
+
       };
-   
+
    }
 
    /*
    * Number of clumps.
    */
-   inline int FloryHuggins::Molecule::nClump() const
+   inline 
+   int FloryHuggins::Molecule::nClump() const
    {  return nClump_; }
 
    /*
    * Total size of all clumps = volume / reference volume
    */
-   inline double FloryHuggins::Molecule::size() const
+   inline 
+   double FloryHuggins::Molecule::size() const
    {
       UTIL_CHECK(hasSize_);
-      return size_; 
+      return size_;
    }
 
    /*
    * Get a specified Clump (non-constant reference)
    */
-   inline FloryHuggins::Clump& FloryHuggins::Molecule::clump(int id)
+   inline 
+   FloryHuggins::Clump& FloryHuggins::Molecule::clump(int id)
    {  return clumps_[id]; }
- 
+
    /*
    * Get a specified Clump (constant reference)
    */
-   inline const FloryHuggins::Clump& FloryHuggins::Molecule::clump(int id) const
+   inline 
+   const FloryHuggins::Clump& FloryHuggins::Molecule::clump(int id) const
    {  return clumps_[id]; }
- 
+
 }
 #endif

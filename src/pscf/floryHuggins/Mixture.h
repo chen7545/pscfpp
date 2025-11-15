@@ -10,11 +10,12 @@
 
 #include <util/param/ParamComposite.h>    // base class
 
-#include <pscf/chem/Monomer.h>            // Member template argument
-#include <pscf/floryHuggins/Molecule.h>    // Member template argument
-#include <util/containers/DArray.h>       // Member template
-#include <util/containers/DMatrix.h>      // Member template
+#include <pscf/chem/Monomer.h>            // member 
+#include <pscf/floryHuggins/Molecule.h>   // member 
+#include <util/containers/DArray.h>       // member 
+#include <util/containers/DMatrix.h>      // member 
 
+// Forward declarations
 namespace Pscf {
    class Interaction;
    class LuSolver;

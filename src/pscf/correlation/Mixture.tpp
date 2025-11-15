@@ -8,12 +8,8 @@
 #include "Mixture.h"
 #include "Polymer.h"
 
-#include <pscf/correlation/Debye.h>
-#include <pscf/chem/PolymerSpecies.h>
-#include <pscf/chem/SolventSpecies.h>
 #include <pscf/chem/MixtureBase.h>
-#include <pscf/chem/Edge.h>
-#include <pscf/chem/EdgeIterator.h>
+#include <pscf/chem/SolventSpecies.h>
 
 #include <util/global.h>
 

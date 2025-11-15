@@ -1,3 +1,6 @@
+#ifndef PSCF_CORRELATION_POLYMER_TPP
+#define PSCF_CORRELATION_POLYMER_TPP
+
 /*
 * PSCF - Polymer Self-Consistent Field
 *
@@ -346,3 +349,4 @@ namespace Correlation {
 
 } // namespace Correlation
 } // namespace Pscf
+#endif

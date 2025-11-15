@@ -6,6 +6,10 @@
 */
 
 #include "Mixture.tpp"
+#include <pscf/inter/Interaction.h>
+#include <pscf/math/LuSolver.h>
+#include <cmath>
+
 
 namespace Pscf {
 namespace FloryHuggins {

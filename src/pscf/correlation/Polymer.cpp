@@ -12,5 +12,5 @@ namespace Correlation {
 
    template class Polymer<double>;
 
-} // namespace Correlation
-} // namespace Pscf
+} 
+} 

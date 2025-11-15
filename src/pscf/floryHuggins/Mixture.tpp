@@ -1,3 +1,6 @@
+#ifndef PSCF_FLORY_HUGGINS_MIXTURE_TPP
+#define PSCF_FLORY_HUGGINS_MIXTURE_TPP
+
 /*
 * PSCF - Molecule Self-Consistent Field Theory
 *
@@ -6,13 +9,12 @@
 */
 
 #include "Mixture.h"
+#include "Molecule.h"
+#include "Clump.h"
 #include <pscf/chem/MixtureBase.h>
 #include <pscf/chem/PolymerSpecies.h>
 #include <pscf/chem/SolventSpecies.h>
 #include <pscf/chem/Edge.h>
-#include <pscf/inter/Interaction.h>
-#include <pscf/math/LuSolver.h>
-#include <cmath>
 
 namespace Pscf {
 namespace FloryHuggins {
@@ -59,7 +61,7 @@ namespace FloryHuggins {
       // Loop over polymer molecule species
       if (np > 0) {
          for (i = 0; i < np; ++i) {
-             PolymerSpecies<WT> const & polymer = mixture.polymerSpecies(i);
+             PolymerSpecies<WT> const& polymer = mixture.polymerSpecies(i);
    
             // Initial array of clump sizes 
             for (j = 0; j < nm; ++j) {
@@ -104,7 +106,7 @@ namespace FloryHuggins {
          int monomerId;
          for (int is = 0; is < ns; ++is) {
             i = is + np;
-            SolventSpecies<WT> const & solvent = mixture.solventSpecies(is);
+            SolventSpecies<WT> const& solvent = mixture.solventSpecies(is);
             monomerId = solvent.monomerId();
             size = solvent.size();
             molecule(i).setNClump(1);
@@ -118,3 +120,4 @@ namespace FloryHuggins {
 
 } // namespace FloryHuggins
 } // namespace Pscf
+#endif
