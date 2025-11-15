@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/system/ScftThermoTmpl.h>  // base class template
+#include <prdc/rl/ScftThermo.h>  // base class template
 #include <rpg/system/System.h>           // template argument
 
 namespace Pscf {
@@ -23,12 +23,12 @@ namespace Rpg {
    * \ingroup Rpg_Field_Module
    */
    template <int D>
-   class ScftThermo : public ScftThermoTmpl<D, System<D> >
+   class ScftThermo : public Rl::ScftThermo<D, System<D> >
    {
    public:
 
       /// Alias for base class
-      using Base = ScftThermoTmpl<D, System<D> >;
+      using Base = Rl::ScftThermo<D, System<D> >;
 
       /**
       * Constructor
@@ -64,9 +64,9 @@ namespace Rpg {
 namespace Prdc {
 
    // Explicit instantiation declarations for base class
-   extern template class ScftThermoTmpl<1, Rpg::System<1> >;
-   extern template class ScftThermoTmpl<2, Rpg::System<2> >;
-   extern template class ScftThermoTmpl<3, Rpg::System<3> >;
+   extern template class Rl::ScftThermo<1, Rpg::System<1> >;
+   extern template class Rl::ScftThermo<2, Rpg::System<2> >;
+   extern template class Rl::ScftThermo<3, Rpg::System<3> >;
 
 } 
 

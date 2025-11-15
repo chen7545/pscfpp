@@ -8,12 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "SystemConstRefTmpl.h"
+#include <prdc/rl/SystemConstRef.h>
 #include <util/global.h>
 #include <iostream>
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    /**
    * %Base class for SCFT thermodynamic property calculators.
@@ -26,13 +27,13 @@ namespace Prdc {
    * \ingroup Prdc_System_Module
    */
    template <int D, class ST>
-   class ScftThermoTmpl : protected SystemConstRefTmpl<ST>
+   class ScftThermo : protected Rl::SystemConstRef<ST>
    {
 
    public:
 
       /// Base class type name alias.
-      using Base = SystemConstRefTmpl<ST>;
+      using Base = Rl::SystemConstRef<ST>;
 
       /// Parent System type name alias.
       using SystemT = typename Base::SystemT;
@@ -44,12 +45,12 @@ namespace Prdc {
       *
       * \param system  parent System object
       */
-      ScftThermoTmpl(SystemT const & system);
+      ScftThermo(SystemT const & system);
 
       /**
       * Destructor.
       */
-      virtual ~ScftThermoTmpl();
+      virtual ~ScftThermo();
 
       /// \name State modifiers
       ///@{
@@ -221,7 +222,7 @@ namespace Prdc {
 
    // Get the Helmholtz free energy per monomer / kT.
    template <int D, class ST>
-   inline double ScftThermoTmpl<D,ST>::fHelmholtz() const
+   inline double ScftThermo<D,ST>::fHelmholtz() const
    {
       UTIL_CHECK(hasData_);
       return fHelmholtz_;
@@ -229,7 +230,7 @@ namespace Prdc {
 
    // Get the ideal gas contribution to fHelmholtz.
    template <int D, class ST>
-   inline double ScftThermoTmpl<D,ST>::fIdeal() const
+   inline double ScftThermo<D,ST>::fIdeal() const
    {
       UTIL_CHECK(hasData_);
       return fIdeal_;
@@ -237,7 +238,7 @@ namespace Prdc {
 
    // Get the interaction contribution to fHelmholtz.
    template <int D, class ST>
-   inline double ScftThermoTmpl<D,ST>::fInter() const
+   inline double ScftThermo<D,ST>::fInter() const
    {
       UTIL_CHECK(hasData_);
       return fInter_;
@@ -245,7 +246,7 @@ namespace Prdc {
 
    // Get the external field contribution to fHelmholtz.
    template <int D, class ST>
-   inline double ScftThermoTmpl<D,ST>::fExt() const
+   inline double ScftThermo<D,ST>::fExt() const
    {
       UTIL_CHECK(hasData_);
       return fExt_;
@@ -253,7 +254,7 @@ namespace Prdc {
 
    // Get the precomputed pressure (units of kT / monomer volume).
    template <int D, class ST>
-   inline double ScftThermoTmpl<D,ST>::pressure() const
+   inline double ScftThermo<D,ST>::pressure() const
    {
       UTIL_CHECK(hasData_);
       return pressure_;
@@ -261,9 +262,10 @@ namespace Prdc {
 
    // Have free energies and pressure been computed?
    template <int D, class ST>
-   inline bool ScftThermoTmpl<D,ST>::hasData() const
+   inline bool ScftThermo<D,ST>::hasData() const
    {  return hasData_; }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

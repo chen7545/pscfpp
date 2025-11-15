@@ -9,7 +9,7 @@
 */
 
 #include "System.h"
-#include <prdc/system/SystemTmpl.tpp>
+#include <prdc/rl/System.tpp>
 
 #include <rpc/environment/EnvironmentFactory.h>
 #include <rpc/fts/simulator/Simulator.h>
@@ -38,9 +38,9 @@ namespace Pscf {
    namespace Prdc {
 
       // Explicit instantiation of base class template
-      template class SystemTmpl< 1, Rpc::Types<1> >;
-      template class SystemTmpl< 2, Rpc::Types<2> >;
-      template class SystemTmpl< 3, Rpc::Types<3> >;
+      template class Rl::System< 1, Rpc::Types<1> >;
+      template class Rl::System< 2, Rpc::Types<2> >;
+      template class Rl::System< 3, Rpc::Types<3> >;
 
    }
 
@@ -51,7 +51,7 @@ namespace Pscf {
       */
       template <int D>
       System<D>::System()
-       : SystemTmpl<D, Types<D> >(*this)
+       : Rl::System<D, Types<D> >(*this)
       {  ParamComposite::setClassName("System"); }
 
       // Explicit instantiation

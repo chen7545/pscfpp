@@ -6,13 +6,13 @@
 */
 
 #include "SystemConstRef.h"
-#include <prdc/system/SystemConstRefTmpl.tpp>
+#include <prdc/rl/SystemConstRef.tpp>
 
 namespace Pscf {
    namespace Prdc {
-      template class SystemConstRefTmpl< Rpc::System<1> >;
-      template class SystemConstRefTmpl< Rpc::System<2> >;
-      template class SystemConstRefTmpl< Rpc::System<3> >;
+      template class Rl::SystemConstRef< Rpc::System<1> >;
+      template class Rl::SystemConstRef< Rpc::System<2> >;
+      template class Rl::SystemConstRef< Rpc::System<3> >;
    }
    namespace Rpc {
       template class SystemConstRef<1>;

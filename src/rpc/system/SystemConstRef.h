@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/system/SystemConstRefTmpl.h>   // base class template
+#include <prdc/rl/SystemConstRef.h>   // base class template
 #include <rpc/system/System.h>                // template parameter
 
 namespace Pscf {
@@ -21,18 +21,18 @@ namespace Rpc {
    /**
    * Const access to a System<D>.
    *
-   * See documentation of the base class template Prdc::SystemConstRefTmpl
+   * See documentation of the base class template Prdc::Rl::SystemConstRef
    * for documentation of the public interface.
    *
    * \ingroup Rpc_System_Module
    */
    template <int D>
-   class SystemConstRef : public SystemConstRefTmpl< System<D> >
+   class SystemConstRef : public Rl::SystemConstRef< System<D> >
    {
    public:
 
       /// Alias for base class
-      using Base = SystemConstRefTmpl< System<D> >;
+      using Base = Rl::SystemConstRef< System<D> >;
 
       /**
       * Default constructor.
@@ -62,9 +62,9 @@ namespace Rpc {
 namespace Prdc {
 
    // Explicit instantiation declarations for base class template
-   extern template class SystemConstRefTmpl< Rpc::System<1> >;
-   extern template class SystemConstRefTmpl< Rpc::System<2> >;
-   extern template class SystemConstRefTmpl< Rpc::System<3> >;
+   extern template class Rl::SystemConstRef< Rpc::System<1> >;
+   extern template class Rl::SystemConstRef< Rpc::System<2> >;
+   extern template class Rl::SystemConstRef< Rpc::System<3> >;
 
 } // namespace Rpc
 

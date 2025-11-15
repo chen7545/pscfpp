@@ -1,5 +1,5 @@
-#ifndef PRDC_SYSTEM_TMPL_H
-#define PRDC_SYSTEM_TMPL_H
+#ifndef PRDC_RL_SYSTEM_H
+#define PRDC_RL_SYSTEM_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -24,6 +24,7 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    // Namespace that may be used implicitly
    using namespace Util;
@@ -36,13 +37,13 @@ namespace Prdc {
    *    D - integer dimensionality of space (D=1, 2, or 3)
    *    T - "Types" class collection of aliases for other classes
    * 
-   * <b> Usage </b>: A specialization of SystemTmpl\<D, T\> is a base 
+   * <b> Usage </b>: A specialization of System\<D, T\> is a base 
    * class for each System\<D\> class defined in namespaces Rpc and Rpg, 
    * for D=1, 2, or 3.  In this use, template parameter T is taken to be 
    * an instance of a template \<int D\> class Types that is defined in 
    * each of these two namespaces. For example, in namespace Rpc, for 
    * each value of D, class Rpc::System\<D\> is derived from class
-   * Prdc::SystemTmpl\< D, Rpc::Types\<D\> >. For each such instance, 
+   * Prdc::System\< D, Rpc::Types\<D\> >. For each such instance, 
    * Types\<D\> defines a set of typename aliases for classes used in 
    * the relevant namespace, for the specified value of D. For example,
    * the typename Rpc::Types\<D\>::Mixture is an alias for the type 
@@ -51,14 +52,14 @@ namespace Prdc {
    * Rpg::Types for lists of all of the typenames defined in these two 
    * class templates.
    *
-   * In the remainder of the documentation for this template, SystemTmpl, 
+   * In the remainder of the documentation for this template, System, 
    * unqualified names such as "Mixture", "Iterator", etc. are often used 
    * as shorthand for typename aliases such as T::Mixture, T::Iterator 
    * that are defined in class T (i.e., in Rpc::Types\<D\> or 
    * Rpg::Types\<D\>)
    *
    * <b> Class Components </b>:
-   * A SystemTmpl object has (among other components):
+   * A System object has (among other components):
    *
    *    - a Mixture (container for polymer and solvent solvers)
    *    - an %Interaction (list of binary interaction parameters)
@@ -72,7 +73,7 @@ namespace Prdc {
    * describe systems in inhomgeneous imposed environements (such as in 
    * thin films) and are otherwise left empty and unused. 
    *
-   * A SystemTmpl may also optionally have:
+   * A System may also optionally have:
    *
    *    - an %Environment
    *    - an Iterator
@@ -99,7 +100,7 @@ namespace Prdc {
    * \ingroup Prdc_System_Module
    */
    template <int D, class T>
-   class SystemTmpl : public ParamComposite
+   class System : public ParamComposite
    {
 
    public:
@@ -119,30 +120,30 @@ namespace Prdc {
       /**
       * Constructor.
       *
-      * When an instance of SystemTmpl<D,T> is used as a base class for a
+      * When an instance of System<D,T> is used as a base class for a
       * concrete system class, such as Rpc::System\<D\>, typename T::System 
       * must be the name of this resulting subclass. In this usage, in the
       * member initialization list of the T::System subclass constructor,  
       * a reference to the subclass instance should be passed as "*this" to
-      * this SystemTmpl base class constructor. The address of the instance
-      * of the T::System subclass is then retained in the SystemTmpl by
+      * this System base class constructor. The address of the instance
+      * of the T::System subclass is then retained in the System by
       * by private member variable of type T::System* (named systemPtr_). 
       * See definitions of constructors for the Rpc::System and Rpc::System 
       * class templates for this usage.
       *
       * \param system  instance of System subclass
       */
-      SystemTmpl(typename T::System& system);
+      System(typename T::System& system);
 
       /**
       * Destructor.
       */
-      ~SystemTmpl();
+      ~System();
 
       // Suppress compiler-generated member functions
-      SystemTmpl() = delete;
-      SystemTmpl(SystemTmpl<D,T> const &) = delete;
-      SystemTmpl<D,T>& operator = (SystemTmpl<D,T> const & ) = delete;
+      System() = delete;
+      System(System<D,T> const &) = delete;
+      System<D,T>& operator = (System<D,T> const & ) = delete;
 
       ///@}
       /// \name Lifetime Actions 
@@ -727,12 +728,12 @@ namespace Prdc {
 
    // Get the Mixture (const).
    template <int D, class T> inline 
-   typename T::Mixture const & SystemTmpl<D,T>::mixture() const
+   typename T::Mixture const & System<D,T>::mixture() const
    {  return *mixturePtr_; }
 
    // Get the MixtureModifier (non-const).
    template <int D, class T> inline 
-   typename T::MixtureModifier& SystemTmpl<D,T>::mixtureModifier()
+   typename T::MixtureModifier& System<D,T>::mixtureModifier()
    {
       UTIL_ASSERT(mixtureModifierPtr_);
       return *mixtureModifierPtr_;
@@ -740,7 +741,7 @@ namespace Prdc {
 
    // Get the %Interaction (non-const).
    template <int D, class T> inline 
-   typename T::Interaction& SystemTmpl<D,T>::interaction()
+   typename T::Interaction& System<D,T>::interaction()
    {
       UTIL_ASSERT(interactionPtr_);
       return *interactionPtr_;
@@ -748,7 +749,7 @@ namespace Prdc {
 
    // Get the %Interaction (const).
    template <int D, class T> inline 
-   typename T::Interaction const & SystemTmpl<D,T>::interaction() const
+   typename T::Interaction const & System<D,T>::interaction() const
    {
       UTIL_ASSERT(interactionPtr_);
       return *interactionPtr_;
@@ -756,17 +757,17 @@ namespace Prdc {
 
    // Get the Domain (const).
    template <int D, class T> inline 
-   typename T::Domain const & SystemTmpl<D,T>::domain() const
+   typename T::Domain const & System<D,T>::domain() const
    {  return *domainPtr_; }
 
    // Does this system have an %Environment?
    template <int D, class T> inline 
-   bool SystemTmpl<D,T>::hasEnvironment() const
+   bool System<D,T>::hasEnvironment() const
    {  return (environmentPtr_); }
 
    // Get the %Environment (non-const).
    template <int D, class T> inline 
-   typename T::Environment & SystemTmpl<D,T>::environment()
+   typename T::Environment & System<D,T>::environment()
    {
       UTIL_ASSERT(environmentPtr_);
       return *environmentPtr_;
@@ -774,7 +775,7 @@ namespace Prdc {
 
    // Get the %Environment (const).
    template <int D, class T> inline 
-   typename T::Environment const & SystemTmpl<D,T>::environment() const
+   typename T::Environment const & System<D,T>::environment() const
    {
       UTIL_ASSERT(environmentPtr_);
       return *environmentPtr_;
@@ -782,7 +783,7 @@ namespace Prdc {
 
    // Get the Scft calculator (non-const).
    template <int D, class T> inline 
-   typename T::ScftThermo & SystemTmpl<D,T>::scft()
+   typename T::ScftThermo & System<D,T>::scft()
    {
       UTIL_ASSERT(scftPtr_);
       return *scftPtr_;
@@ -790,7 +791,7 @@ namespace Prdc {
 
    // Get the Scft calculator (const).
    template <int D, class T> inline 
-   typename T::ScftThermo const & SystemTmpl<D,T>::scft() const
+   typename T::ScftThermo const & System<D,T>::scft() const
    {
       UTIL_ASSERT(scftPtr_);
       return *scftPtr_;
@@ -798,12 +799,12 @@ namespace Prdc {
 
    // Does this system have an Iterator?
    template <int D, class T> inline 
-   bool SystemTmpl<D,T>::hasIterator() const
+   bool System<D,T>::hasIterator() const
    {  return (iteratorPtr_); }
 
    // Get the Iterator (non-const).
    template <int D, class T> inline 
-   typename T::Iterator& SystemTmpl<D,T>::iterator()
+   typename T::Iterator& System<D,T>::iterator()
    {
       UTIL_ASSERT(iteratorPtr_);
       return *iteratorPtr_;
@@ -811,7 +812,7 @@ namespace Prdc {
 
    // Get the Iterator (const).
    template <int D, class T> inline 
-   typename T::Iterator const & SystemTmpl<D,T>::iterator() const
+   typename T::Iterator const & System<D,T>::iterator() const
    {
       UTIL_ASSERT(iteratorPtr_);
       return *iteratorPtr_;
@@ -819,17 +820,17 @@ namespace Prdc {
 
    // Does this system have a Sweep?
    template <int D, class T> inline 
-   bool SystemTmpl<D,T>::hasSweep() const
+   bool System<D,T>::hasSweep() const
    {  return (sweepPtr_); }
 
    // Does this system have a Simulator?
    template <int D, class T> inline 
-   bool SystemTmpl<D,T>::hasSimulator() const
+   bool System<D,T>::hasSimulator() const
    {  return (simulatorPtr_); }
 
    // Get the Simulator (non-const).
    template <int D, class T> inline 
-   typename T::Simulator& SystemTmpl<D,T>::simulator()
+   typename T::Simulator& System<D,T>::simulator()
    {
       UTIL_ASSERT(simulatorPtr_);
       return *simulatorPtr_;
@@ -837,7 +838,7 @@ namespace Prdc {
 
    // Get the Simulator (const).
    template <int D, class T> inline 
-   typename T::Simulator const & SystemTmpl<D,T>::simulator() const
+   typename T::Simulator const & System<D,T>::simulator() const
    {
       UTIL_ASSERT(simulatorPtr_);
       return *simulatorPtr_;
@@ -845,61 +846,62 @@ namespace Prdc {
 
    // Get the FileMaster (non-const).
    template <int D, class T> inline 
-   FileMaster& SystemTmpl<D,T>::fileMaster()
+   FileMaster& System<D,T>::fileMaster()
    {  return *fileMasterPtr_; }
 
    // Get the FileMaster (const).
    template <int D, class T> inline 
-   FileMaster const & SystemTmpl<D,T>::fileMaster() const
+   FileMaster const & System<D,T>::fileMaster() const
    {  return *fileMasterPtr_; }
 
    // Get the container of c fields (const).
    template <int D, class T> inline
-   typename T::CFields const & SystemTmpl<D,T>::c() const
+   typename T::CFields const & System<D,T>::c() const
    {  return c_; }
 
    // Get the container of w fields (non-const).
    template <int D, class T> inline
-   typename T::WFields& SystemTmpl<D,T>::w()
+   typename T::WFields& System<D,T>::w()
    {  return w_; }
 
    // Get the container of w fields (const).
    template <int D, class T> inline
-   typename T::WFields const & SystemTmpl<D,T>::w() const
+   typename T::WFields const & System<D,T>::w() const
    {  return w_; }
 
    // Get the container of external fields (non-const).
    template <int D, class T> inline 
-   typename T::WFields& SystemTmpl<D,T>::h()
+   typename T::WFields& System<D,T>::h()
    {  return h_; }
 
    // Get the container of external fields (const).
    template <int D, class T> inline 
-   typename T::WFields const & SystemTmpl<D,T>::h() const
+   typename T::WFields const & System<D,T>::h() const
    {  return h_; }
 
    // Get the mask field (non-const).
    template <int D, class T> inline 
-   typename T::Mask& SystemTmpl<D,T>::mask()
+   typename T::Mask& System<D,T>::mask()
    {  return mask_; }
 
    // Get the mask field (const).
    template <int D, class T> inline 
-   typename T::Mask const & SystemTmpl<D,T>::mask() const
+   typename T::Mask const & System<D,T>::mask() const
    {  return mask_; }
 
    // Private inline functions:
 
    // Get the Mixture (non-const).
    template <int D, class T> inline 
-   typename T::Mixture & SystemTmpl<D,T>::mixture_() 
+   typename T::Mixture & System<D,T>::mixture_() 
    {  return *mixturePtr_; }
 
    // Get the Domain (non-const).
    template <int D, class T> inline 
-   typename T::Domain & SystemTmpl<D,T>::domain_() 
+   typename T::Domain & System<D,T>::domain_() 
    {  return *domainPtr_; }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

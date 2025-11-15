@@ -9,7 +9,7 @@
 */
 
 // Header file includes
-#include <prdc/system/SystemTmpl.h>    // base class template
+#include <prdc/rl/System.h>    // base class template
 #include <rpg/system/Types.h>          // base class template param
 #include <rpg/field/WFields.h>         // member
 #include <rpg/field/CFields.h>         // member
@@ -26,13 +26,13 @@ namespace Rpg {
    * Main class, representing a complete physical system.
    *
    * This class is derived from a partial specialization of the base class
-   * template Prdc::SystemTmpl, and has the same public interface as the
+   * template Prdc::Rl::System, and has the same public interface as the
    * base class. See the documentation of this template for details.
    *
    * \ingroup Rpg_System_Module
    */
    template <int D>
-   class System : public SystemTmpl< D, Types<D> >
+   class System : public Rl::System< D, Types<D> >
    {
    public:
 
@@ -67,9 +67,9 @@ namespace Rpg {
 namespace Prdc {
 
    // Explicit instantiation declarations of base class
-   extern template class SystemTmpl<1, Rpg::Types<1> >;
-   extern template class SystemTmpl<2, Rpg::Types<1> >;
-   extern template class SystemTmpl<3, Rpg::Types<1> >;
+   extern template class Rl::System<1, Rpg::Types<1> >;
+   extern template class Rl::System<2, Rpg::Types<1> >;
+   extern template class Rl::System<3, Rpg::Types<1> >;
 
 } // namespace Prdc 
 } // namespace Pscf

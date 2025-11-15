@@ -1,5 +1,5 @@
-#ifndef PRDC_SYSTEM_CONST_REF_TMPL_TPP
-#define PRDC_SYSTEM_CONST_REF_TMPL_TPP
+#ifndef PRDC_RL_SYSTEM_CONST_REF_TPP
+#define PRDC_RL_SYSTEM_CONST_REF_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,16 +8,17 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "SystemConstRefTmpl.h"
+#include "SystemConstRef.h"
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    /*
    * Default constructor.
    */
    template <class ST>
-   SystemConstRefTmpl<ST>::SystemConstRefTmpl()
+   SystemConstRef<ST>::SystemConstRef()
     : systemPtr_(nullptr),
       mixturePtr_(nullptr),
       interactionPtr_(nullptr),
@@ -33,7 +34,7 @@ namespace Prdc {
    * Constructor (creates associations).
    */
    template <class ST>
-   SystemConstRefTmpl<ST>::SystemConstRefTmpl(SystemT const & system)
+   SystemConstRef<ST>::SystemConstRef(SystemT const & system)
     : systemPtr_(nullptr),
       mixturePtr_(nullptr),
       interactionPtr_(nullptr),
@@ -49,11 +50,11 @@ namespace Prdc {
    * Destructor.
    */
    template <class ST>
-   SystemConstRefTmpl<ST>::~SystemConstRefTmpl()
+   SystemConstRef<ST>::~SystemConstRef()
    {}
 
    template <class ST>
-   void SystemConstRefTmpl<ST>::associate(SystemT const & system)
+   void SystemConstRef<ST>::associate(SystemT const & system)
    {
       systemPtr_ = &system;
       mixturePtr_ = &(system.mixture());
@@ -66,6 +67,7 @@ namespace Prdc {
       fileMasterPtr_ = &(system.fileMaster());
    }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

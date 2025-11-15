@@ -10,7 +10,7 @@
 #include <rpc/solvers/Polymer.h>
 #include <rpc/solvers/Solvent.h>
 #include <rpc/field/Domain.h>
-#include <prdc/system/ScftThermoTmpl.tpp>
+#include <prdc/rl/ScftThermo.tpp>
 #include <pscf/inter/Interaction.h>
 
 namespace Pscf {
@@ -18,9 +18,9 @@ namespace Pscf {
    namespace Prdc {
 
       // Explicit instantiation of base class template
-      template class ScftThermoTmpl<1, Rpc::System<1> >;
-      template class ScftThermoTmpl<2, Rpc::System<2> >;
-      template class ScftThermoTmpl<3, Rpc::System<3> >;
+      template class Rl::ScftThermo<1, Rpc::System<1> >;
+      template class Rl::ScftThermo<2, Rpc::System<2> >;
+      template class Rl::ScftThermo<3, Rpc::System<3> >;
 
    }
 
