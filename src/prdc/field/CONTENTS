@@ -4,7 +4,7 @@ boundary conditions.
 
 Classes:
 
-  DomainTmpl  - base class template for (Rpc|Rpg)::Domain
+  Rl::Domain  - base class template for (Rpc|Rpg)::Domain
   FieldIoTmpl - base class template for (Rpc|Rpg)::FieldIo
   WFieldsTmpl - base class template for (Rpc|Rpg)::WFields 
   CFieldsTmpl - base class template for (Rpc|Rpg)::CFields 

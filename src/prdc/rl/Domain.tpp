@@ -1,5 +1,5 @@
-#ifndef PRDC_DOMAIN_TMPL_TPP
-#define PRDC_DOMAIN_TMPL_TPP
+#ifndef PRDC_RL_DOMAIN_TPP
+#define PRDC_RL_DOMAIN_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "DomainTmpl.h"
+#include "Domain.h"
 #include <prdc/crystal/SpaceGroup.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/field/fieldIoUtil.h>
@@ -17,6 +17,7 @@
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
 
@@ -24,7 +25,7 @@ namespace Prdc {
    * Constructor.
    */
    template <int D, class FFT, class WLT, class FIT>
-   DomainTmpl<D,FFT,WLT,FIT>::DomainTmpl()
+   Domain<D,FFT,WLT,FIT>::Domain()
     : mesh_(),
       unitCell_(),
       lattice_(UnitCell<D>::Null),
@@ -39,7 +40,7 @@ namespace Prdc {
       hasGroup_(false),
       isInitialized_(false)
    {
-      setClassName("DomainTmpl");
+      setClassName("Domain");
 
       // Construct associated objects
       groupPtr_ = new SpaceGroup<D>();
@@ -59,7 +60,7 @@ namespace Prdc {
    * Destructor.
    */
    template <int D, class FFT, class WLT, class FIT>
-   DomainTmpl<D,FFT,WLT,FIT>::~DomainTmpl()
+   Domain<D,FFT,WLT,FIT>::~Domain()
    {
       delete basisPtr_;
       delete fftPtr_;
@@ -72,7 +73,7 @@ namespace Prdc {
    * Create association with a FileMaster.
    */
    template <int D, class FFT, class WLT, class FIT>
-   void DomainTmpl<D,FFT,WLT,FIT>::setFileMaster(FileMaster& fileMaster)
+   void Domain<D,FFT,WLT,FIT>::setFileMaster(FileMaster& fileMaster)
    {
       fileMasterPtr_ = &fileMaster;
       fieldIo().setFileMaster(fileMaster);
@@ -82,7 +83,7 @@ namespace Prdc {
    * Read parameters and initialize.
    */
    template <int D, class FFT, class WLT, class FIT>
-   void DomainTmpl<D,FFT,WLT,FIT>::readParameters(std::istream& in)
+   void Domain<D,FFT,WLT,FIT>::readParameters(std::istream& in)
    {
       // Preconditions
       UTIL_CHECK(!isInitialized_);
@@ -119,13 +120,13 @@ namespace Prdc {
    }
 
    /*
-   * Read header of r-grid field to initialize the DomainTmpl.
+   * Read header of r-grid field to initialize the Domain.
    *
    * Alternative to parameter file, used only for unit testing.
    */
    template <int D, class FFT, class WLT, class FIT>
    void
-   DomainTmpl<D,FFT,WLT,FIT>::readRGridFieldHeader(std::istream& in,
+   Domain<D,FFT,WLT,FIT>::readRGridFieldHeader(std::istream& in,
                                                    int& nMonomer)
    {
       // Preconditions - confirm that nothing is initialized
@@ -184,7 +185,7 @@ namespace Prdc {
    * Make basis if needed.
    */
    template <int D, class FFT, class WLT, class FIT>
-   void DomainTmpl<D,FFT,WLT,FIT>::makeBasis()
+   void Domain<D,FFT,WLT,FIT>::makeBasis()
    {
       UTIL_CHECK(mesh_.size() > 0);
       UTIL_CHECK(unitCell_.lattice() != UnitCell<D>::Null);
@@ -205,7 +206,7 @@ namespace Prdc {
    */
    template <int D, class FFT, class WLT, class FIT>
    void
-   DomainTmpl<D,FFT,WLT,FIT>::writeStars(std::string const & filename)
+   Domain<D,FFT,WLT,FIT>::writeStars(std::string const & filename)
    const
    {
       UTIL_CHECK(hasGroup());
@@ -224,7 +225,7 @@ namespace Prdc {
    */
    template <int D, class FFT, class WLT, class FIT>
    void
-   DomainTmpl<D,FFT,WLT,FIT>::writeWaves(std::string const & filename)
+   Domain<D,FFT,WLT,FIT>::writeWaves(std::string const & filename)
    const
    {
       UTIL_CHECK(hasGroup());
@@ -243,7 +244,7 @@ namespace Prdc {
    */
    template <int D, class FFT, class WLT, class FIT>
    void
-   DomainTmpl<D,FFT,WLT,FIT>::writeGroup(std::string const & filename)
+   Domain<D,FFT,WLT,FIT>::writeGroup(std::string const & filename)
    const
    {
       UTIL_CHECK(hasGroup());
@@ -257,9 +258,10 @@ namespace Prdc {
    * Has a symmetry-adapted Fourier basis been initialized ?
    */
    template <int D, class FFT, class WLT, class FIT>
-   bool DomainTmpl<D,FFT,WLT,FIT>::hasBasis() const
+   bool Domain<D,FFT,WLT,FIT>::hasBasis() const
    {  return basis().isInitialized(); }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

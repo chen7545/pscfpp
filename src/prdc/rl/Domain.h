@@ -1,5 +1,5 @@
-#ifndef PRDC_DOMAIN_TMPL_H
-#define PRDC_DOMAIN_TMPL_H
+#ifndef PRDC_RL_DOMAIN_H
+#define PRDC_RL_DOMAIN_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -29,6 +29,7 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -36,7 +37,7 @@ namespace Prdc {
    /**
    * Spatial domain for a periodic structure with real fields.
    *
-   * A DomainTmpl template instance has:
+   * A Domain template instance has:
    *
    *  - a Mesh spatial discretization mesh
    *  - a UnitCell crystallographic unit cell
@@ -60,14 +61,14 @@ namespace Prdc {
    *   - WLT  : WaveList container type, e.g., WaveList<D>
    *   - FIT  : FieldIo class for field operations, e.g., FieldIo<D>
    *
-   * <b> Subclasses </b>: Partial specializations of the DomainTmpl class
+   * <b> Subclasses </b>: Partial specializations of the Domain class
    * template are used as base classes for classes Rpc::Domain \<D\> and
    * Rpg::Domain \<D\>.
    *
    * \ingroup Prdc_Field_Module
    */
    template <int D, class FFT, class WLT, class FIT>
-   class DomainTmpl : public ParamComposite
+   class Domain : public ParamComposite
    {
 
    public:
@@ -75,12 +76,12 @@ namespace Prdc {
       /**
       * Constructor.
       */
-      DomainTmpl();
+      Domain();
 
       /**
       * Destructor.
       */
-      ~DomainTmpl();
+      ~Domain();
 
       /// \name Initialization
       ///@{
@@ -310,7 +311,7 @@ namespace Prdc {
       bool hasGroup_;
 
       /**
-      * Has this DomainTmpl object been initialized?
+      * Has this Domain object been initialized?
       */
       bool isInitialized_;
 
@@ -335,86 +336,87 @@ namespace Prdc {
 
    // Get the UnitCell by non-const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline UnitCell<D>& DomainTmpl<D,FFT,WLT,FIT>::unitCell()
+   inline UnitCell<D>& Domain<D,FFT,WLT,FIT>::unitCell()
    {  return unitCell_; }
 
    // Get the UnitCell by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline UnitCell<D> const & DomainTmpl<D,FFT,WLT,FIT>::unitCell() const
+   inline UnitCell<D> const & Domain<D,FFT,WLT,FIT>::unitCell() const
    {  return unitCell_; }
 
    // Get the Mesh by non-const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline Mesh<D>& DomainTmpl<D,FFT,WLT,FIT>::mesh()
+   inline Mesh<D>& Domain<D,FFT,WLT,FIT>::mesh()
    {  return mesh_; }
 
    // Get the Mesh by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline Mesh<D> const & DomainTmpl<D,FFT,WLT,FIT>::mesh() const
+   inline Mesh<D> const & Domain<D,FFT,WLT,FIT>::mesh() const
    {  return mesh_; }
 
    // Get the SpaceGroup by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline SpaceGroup<D> const & DomainTmpl<D,FFT,WLT,FIT>::group() const
+   inline SpaceGroup<D> const & Domain<D,FFT,WLT,FIT>::group() const
    {  return *groupPtr_; }
 
    // Get the Basis by non-const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline Basis<D>& DomainTmpl<D,FFT,WLT,FIT>::basis()
+   inline Basis<D>& Domain<D,FFT,WLT,FIT>::basis()
    {  return *basisPtr_; }
 
    // Get the Basis by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline Basis<D> const & DomainTmpl<D,FFT,WLT,FIT>::basis() const
+   inline Basis<D> const & Domain<D,FFT,WLT,FIT>::basis() const
    {  return *basisPtr_; }
 
    // Get the FFT by non-const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline FFT& DomainTmpl<D,FFT,WLT,FIT>::fft()
+   inline FFT& Domain<D,FFT,WLT,FIT>::fft()
    {  return *fftPtr_; }
 
    // Get the FFT by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline FFT const & DomainTmpl<D,FFT,WLT,FIT>::fft() const
+   inline FFT const & Domain<D,FFT,WLT,FIT>::fft() const
    {  return *fftPtr_; }
 
    // Get the WaveList by non-const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline WLT& DomainTmpl<D,FFT,WLT,FIT>::waveList()
+   inline WLT& Domain<D,FFT,WLT,FIT>::waveList()
    {  return *waveListPtr_; }
 
    // Get the WaveList by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline WLT const & DomainTmpl<D,FFT,WLT,FIT>::waveList() const
+   inline WLT const & Domain<D,FFT,WLT,FIT>::waveList() const
    {  return *waveListPtr_; }
 
    // Get the FieldIo by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline FIT& DomainTmpl<D,FFT,WLT,FIT>::fieldIo()
+   inline FIT& Domain<D,FFT,WLT,FIT>::fieldIo()
    {  return *fieldIoPtr_; }
 
    // Get the FieldIo by const reference.
    template <int D, class FFT, class WLT, class FIT>
-   inline FIT const & DomainTmpl<D,FFT,WLT,FIT>::fieldIo() const
+   inline FIT const & Domain<D,FFT,WLT,FIT>::fieldIo() const
    {  return *fieldIoPtr_; }
 
    // Get the lattice system enumeration value.
    template <int D, class FFT, class WLT, class FIT>
    inline
-   typename UnitCell<D>::LatticeSystem DomainTmpl<D,FFT,WLT,FIT>::lattice()
+   typename UnitCell<D>::LatticeSystem Domain<D,FFT,WLT,FIT>::lattice()
    const
    {  return lattice_; }
 
    // Get the groupName string identifier.
    template <int D, class FFT, class WLT, class FIT>
-   inline std::string DomainTmpl<D,FFT,WLT,FIT>::groupName() const
+   inline std::string Domain<D,FFT,WLT,FIT>::groupName() const
    {  return groupName_; }
 
    // Has a space group been identified?
    template <int D, class FFT, class WLT, class FIT>
-   inline bool DomainTmpl<D,FFT,WLT,FIT>::hasGroup() const
+   inline bool Domain<D,FFT,WLT,FIT>::hasGroup() const
    {  return hasGroup_; }
 
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

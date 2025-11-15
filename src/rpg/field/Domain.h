@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/field/DomainTmpl.h>        // base class template
+#include <prdc/rl/Domain.h>        // base class template
 
 // Forward declarations
 namespace Pscf {
@@ -28,11 +28,11 @@ namespace Pscf {
    namespace Prdc {
       using namespace Cuda;
       extern template 
-      class DomainTmpl<1, FFT<1>, WaveList<1>, Rpg::FieldIo<1> >;
+      class Rl::Domain<1, FFT<1>, WaveList<1>, Rpg::FieldIo<1> >;
       extern template 
-      class DomainTmpl<2, FFT<2>, WaveList<2>, Rpg::FieldIo<2> >;
+      class Rl::Domain<2, FFT<2>, WaveList<2>, Rpg::FieldIo<2> >;
       extern template 
-      class DomainTmpl<3, FFT<3>, WaveList<3>, Rpg::FieldIo<3> >;
+      class Rl::Domain<3, FFT<3>, WaveList<3>, Rpg::FieldIo<3> >;
    }
 }
 
@@ -46,7 +46,7 @@ namespace Rpg {
    /**
    * Spatial domain for a periodic structure with real fields, on a GPU.
    *
-   * See the interface of the Prdc::DomainTmpl base class template for
+   * See the interface of the Prdc::Rl::Domain base class template for
    * complete API documentation. The Rpg::Domain class template is 
    * basically a named partial specialization of the base class template, 
    * defined using template type parameters FFT = Prdc::Cuda::FFT<D>, 
@@ -57,7 +57,7 @@ namespace Rpg {
    */
    template <int D>
    class Domain 
-     : public DomainTmpl< D, FFT<D>, WaveList<D>, FieldIo<D> >
+     : public Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
    {
 
    public:
@@ -70,7 +70,7 @@ namespace Rpg {
       Domain();
 
       /// Typename alias base class
-      using Base = DomainTmpl< D, FFT<D>, WaveList<D>, FieldIo<D> >;
+      using Base = Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >;
 
       // Inherited pubic member functions
 

@@ -9,7 +9,7 @@
 */
 
 #include "Domain.h"
-#include <prdc/field/DomainTmpl.tpp>
+#include <prdc/rl/Domain.tpp>
 
 #include <rpg/field/FieldIo.h>
 #include <prdc/cuda/WaveList.h>
@@ -27,7 +27,7 @@ namespace Rpg {
    */
    template <int D>
    Domain<D>::Domain()
-    : DomainTmpl<D, FFT<D>, WaveList<D>, FieldIo<D> >()
+    : Rl::Domain<D, FFT<D>, WaveList<D>, FieldIo<D> >()
    {  ParamComposite::setClassName("Domain"); }
 
 } // namespace Rpg

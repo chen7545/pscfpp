@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/field/DomainTmpl.h>        // base class template
+#include <prdc/rl/Domain.h>        // base class template
 
 // Forward declarations
 namespace Pscf {
@@ -28,11 +28,11 @@ namespace Pscf {
    namespace Prdc {
       using namespace Cpu;
       extern template 
-      class DomainTmpl<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
+      class Rl::Domain<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
       extern template 
-      class DomainTmpl<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
+      class Rl::Domain<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
       extern template 
-      class DomainTmpl<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
+      class Rl::Domain<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
    } 
 }
 
@@ -47,11 +47,11 @@ namespace Rpc {
    * Spatial domain for a periodic structure with real fields, on a CPU.
    *
    * The public interface of this class is identical to that of the 
-   * Prdc::DomainTmpl base class template. Please see documentation of
+   * Prdc::Rl::Domain base class template. Please see documentation of
    * that base class for API documentation. 
    *
    * The Rpc::Domain\<D\> class template is a named partial specialization
-   * of the base class template Prdc::DomainTmpl<D, FFT, WLT, FIT> that 
+   * of the base class template Prdc::Rl::Domain<D, FFT, WLT, FIT> that 
    * is designed to use standard CPU hardware, defined using template type 
    * parameters FFT = Prdc::Cpu::FFT\<D\>, WLT = Prdc::Cpu::WaveList\<D\>, 
    * and FIT = Rpc::FieldIo\<D\> . 
@@ -60,7 +60,7 @@ namespace Rpc {
    */
    template <int D>
    class Domain 
-     : public DomainTmpl< D, FFT<D>, WaveList<D>, FieldIo<D> >
+     : public Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
    {
 
    public:
@@ -73,7 +73,7 @@ namespace Rpc {
       Domain();
 
       /// Typedef for base class
-      typedef DomainTmpl< D, FFT<D>, WaveList<D>, FieldIo<D> > Base;
+      typedef Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> > Base;
 
       // Inherited pubic member functions
       using Base::setFileMaster;
