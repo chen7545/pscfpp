@@ -15,7 +15,7 @@
 
 // Forward declarations
 namespace Pscf {
-   class PolymerSpecies;
+   template <typename WT> class PolymerSpecies;
 }
 
 namespace Pscf {
@@ -28,6 +28,7 @@ namespace Correlation {
    *
    * \ingroup Pscf_Correlation_Module
    */
+   template <typename WT>
    class Polymer 
    {
 
@@ -43,7 +44,7 @@ namespace Correlation {
       *
       * \param polymer  associated PolymerSpecies object
       */
-      Polymer(PolymerSpecies const & polymer);
+      Polymer(PolymerSpecies<WT> const & polymer);
 
       /**
       * Destructor.
@@ -55,7 +56,7 @@ namespace Correlation {
       *
       * \param polymer  associated PolymerSpecies object
       */
-      void associate(PolymerSpecies const & polymer);
+      void associate(PolymerSpecies<WT> const & polymer);
 
       /**
       * Allocate memory and initialize immutable data.
@@ -279,7 +280,7 @@ namespace Correlation {
       /* 
       * Pointer to the associated PolymerSpecies object.
       */
-      PolymerSpecies const * speciesPtr_;
+      PolymerSpecies<WT> const * speciesPtr_;
 
       /*
       * Volume fraction of this polymer.
@@ -304,41 +305,50 @@ namespace Correlation {
       /** 
       * Return reference to associated polymer species.
       */      
-      PolymerSpecies const & species() const;
+      PolymerSpecies<WT> const & species() const;
  
    };
   
    // Public inline member functions
  
    // Get the volume fraction of this polymer species.
-   inline double Polymer::phi() const
+   template <typename WT> inline 
+   double Polymer<WT>::phi() const
    {  return phi_; }
    
    // Get the sum of the lengths of all blocks in this polymer species.
-   inline double Polymer::totalLength() const
+   template <typename WT> inline 
+   double Polymer<WT>::totalLength() const
    {  return totalLength_; }
    
    // Get the number of blocks in this polymer species.
-   inline int Polymer::nBlock() const
+   template <typename WT> inline 
+   int Polymer<WT>::nBlock() const
    {  return nBlock_; }
    
    // Get the list of blocks ids for a specified monomer type.
-   inline GArray<int> const & Polymer::blockIds(int i) const
+   template <typename WT> inline 
+   GArray<int> const & Polymer<WT>::blockIds(int i) const
    {  return blockIds_[i]; }
    
    // Get the length of a specified block.
-   inline double Polymer::length(int i) const
+   template <typename WT> inline 
+   double Polymer<WT>::length(int i) const
    {  return length_[i]; }
    
    // Get the mean-squared length of the path connecting two blocks.
-   inline double Polymer::rSq(int i, int j) const
+   template <typename WT> inline 
+   double Polymer<WT>::rSq(int i, int j) const
    {  return rSq_(i, j); }
    
    // Private inline member function
  
    // Get the associated PolymerSpecies molecule descriptor object.
-   inline PolymerSpecies const & Polymer::species() const
+   template <typename WT> inline 
+   PolymerSpecies<WT> const & Polymer<WT>::species() const
    {  return *speciesPtr_; }
+
+   extern template class Polymer<double>;
    
 } // namespace Correlation
 } // namespace Pscf

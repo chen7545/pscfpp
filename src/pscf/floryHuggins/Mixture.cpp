@@ -5,14 +5,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mixture.h"
-#include <pscf/chem/MixtureBase.h>
-#include <pscf/chem/PolymerSpecies.h>
-#include <pscf/chem/SolventSpecies.h>
-#include <pscf/chem/Edge.h>
-#include <pscf/inter/Interaction.h>
-#include <pscf/math/LuSolver.h>
-#include <cmath>
+#include "Mixture.tpp"
 
 namespace Pscf {
 namespace FloryHuggins {
@@ -94,104 +87,7 @@ namespace FloryHuggins {
       c_.allocate(nMonomer_);
       w_.allocate(nMonomer_);
    }
-
-   void Mixture::initialize(MixtureBase const & mixture)
-   {
-
-      // Set number of molecular species and monomers
-      int nm = mixture.nMonomer(); 
-      int np = mixture.nPolymer(); 
-      int ns = mixture.nSolvent(); 
-      int nt = np + ns;
-
-      // Check nMonomer
-      if (nMonomer() == 0) {
-         setNMonomer(nm);
-      } 
-      UTIL_CHECK(nMonomer() == nm);
-      UTIL_CHECK(c_.capacity() == nm);
-      UTIL_CHECK(w_.capacity() == nm);
-
-      // Check nMolecule
-      if (nMolecule() == 0) {
-         setNMolecule(nt);
-      }
-      UTIL_CHECK(nMolecule() == nt);
-      UTIL_CHECK(molecules_.capacity() == nt);
-      UTIL_CHECK(phi_.capacity() == nt);
-      UTIL_CHECK(mu_.capacity() == nt);
-
-      // Work space of clump sizes
-      DArray<double> c_;
-      c_.allocate(nm);
-
-      int i;   // species index
-      int j;   // monomer index
-      int k;   // block or clump index
-      int nb;  // number of blocks
-      int nc;  // number of clumps
- 
-      // Loop over polymer molecule species
-      if (np > 0) {
-         for (i = 0; i < np; ++i) {
-             PolymerSpecies const & polymer = mixture.polymerSpecies(i);
-   
-            // Initial array of clump sizes 
-            for (j = 0; j < nm; ++j) {
-               c_[j] = 0.0;
-            }
-   
-            // Compute clump sizes for all monomer types.
-            nb = polymer.nBlock(); 
-            for (k = 0; k < nb; ++k) {
-               Edge const& edge = polymer.edge(k);
-               j = edge.monomerId();
-               c_[j] += edge.length();
-            }
     
-            // Count the number of clumps of nonzero size
-            nc = 0;
-            for (j = 0; j < nm; ++j) {
-               if (c_[j] > 1.0E-8) {
-                  ++nc;
-               }
-            }
-            molecule(i).setNClump(nc);
-    
-            // Set clump properties for this FloryHuggins::Molecule
-            k = 0; // Clump index
-            for (j = 0; j < nm; ++j) {
-               if (c_[j] > 1.0E-8) {
-                  molecule(i).clump(k).setMonomerId(j);
-                  molecule(i).clump(k).setSize(c_[j]);
-                  ++k;
-               }
-            }
-            UTIL_CHECK(k == nc);
-            molecule(i).computeSize();
-   
-         }
-      }
-
-      // Add solvent contributions
-      if (ns > 0) {
-         double size;
-         int monomerId;
-         for (int is = 0; is < ns; ++is) {
-            i = is + np;
-            SolventSpecies const & solvent = mixture.solventSpecies(is);
-            monomerId = solvent.monomerId();
-            size = solvent.size();
-            molecule(i).setNClump(1);
-            molecule(i).clump(0).setMonomerId(monomerId);
-            molecule(i).clump(0).setSize(size);
-            molecule(i).computeSize();
-         }
-      }
-
-   }
-
-
    /*
    * Set molecular and monomer volume fractions.
    */
@@ -514,6 +410,8 @@ namespace FloryHuggins {
          }
       }
    }
+
+   template void Mixture::initialize<double>(MixtureBase<double> const & );
 
 } // namespace FloryHuggins
 } // namespace Pscf

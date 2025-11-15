@@ -1,5 +1,5 @@
-#ifndef PSCF_SOLVENT_DESCRIPTOR_H
-#define PSCF_SOLVENT_DESCRIPTOR_H
+#ifndef PSCF_SOLVENT_SPECIES_H
+#define PSCF_SOLVENT_SPECIES_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -23,14 +23,15 @@ namespace Pscf {
    * base class. The size parameter is defined to be the ratio of solvent
    * molecule volume to the monomer reference volume.
    *
-   * Each program-level sub-namespace of Pscf defines a subclass of 
-   * Pscf::SolventSpecies. The Solvent class in each such namespace defines 
-   * a function that can solve the single-particle statistical mechanics 
+   * Each program-level sub-namespace of Pscf defines a subclass of
+   * Pscf::SolventSpecies. The Solvent class in each such namespace defines
+   * a function that can solve the single-particle statistical mechanics
    * problem for a solvent species.
    *
    * \ingroup Pscf_Chem_Module
    */
-   class SolventSpecies : public Species
+   template <typename WT = double>
+   class SolventSpecies : public Species<WT>
    {
 
    public:
@@ -66,7 +67,7 @@ namespace Pscf {
       * Set the molecular volume of this solvent species.
       *
       * The ``size" is the ratio (solvent molecule volume) / vMonomer,
-      * where vMonomer is the monomer reference volume, i.e., the 
+      * where vMonomer is the monomer reference volume, i.e., the
       * volume per monomer (or unit contour length) of any polymer.
       *
       * \param size  volume of solvent
@@ -104,14 +105,18 @@ namespace Pscf {
    /*
    * Get the monomer type id.
    */
-   inline int SolventSpecies::monomerId() const
+   template <typename WT> inline 
+   int SolventSpecies<WT>::monomerId() const
    {  return monomerId_; }
 
    /*
    * Get the size (number of monomers) in this block.
    */
-   inline double SolventSpecies::size() const
+   template <typename WT> inline 
+   double SolventSpecies<WT>::size() const
    {  return size_; }
 
+   // Explicit template instantiation declaration
+   extern template class SolventSpecies<double>;
 }
 #endif

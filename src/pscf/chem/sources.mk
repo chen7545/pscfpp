@@ -3,11 +3,11 @@ pscf_chem_= \
   pscf/chem/Edge.cpp \
   pscf/chem/Vertex.cpp \
   pscf/chem/Ensemble.cpp \
-  pscf/chem/Species.cpp \
-  pscf/chem/SolventSpecies.cpp \
-  pscf/chem/PolymerSpecies.cpp \
   pscf/chem/PolymerType.cpp \
   pscf/chem/PolymerModel.cpp \
+  pscf/chem/Species.cpp \
+  pscf/chem/PolymerSpecies.cpp \
+  pscf/chem/SolventSpecies.cpp \
   pscf/chem/MixtureBase.cpp \
   pscf/chem/VertexIterator.cpp \
   pscf/chem/EdgeIterator.cpp 

@@ -15,7 +15,7 @@
 namespace Pscf
 { 
 
-   class PolymerStub : public PolymerTmpl<BlockStub, PropagatorStub>
+   class PolymerStub : public PolymerTmpl<BlockStub, PropagatorStub, double>
    {
 
    public:

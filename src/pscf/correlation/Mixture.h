@@ -13,7 +13,7 @@
 
 // Forward declarations
 namespace Pscf {
-   class MixtureBase;
+   template <typename WT> class MixtureBase;
 }
 
 namespace Pscf {
@@ -26,6 +26,7 @@ namespace Correlation {
    *
    * \ingroup Pscf_Correlation_Module
    */
+   template <typename WT>
    class Mixture
    {
 
@@ -41,7 +42,7 @@ namespace Correlation {
       *
       * \param mixture  assocated MixtureBase object
       */
-      Mixture(MixtureBase const & mixture);
+      Mixture(MixtureBase<WT> const & mixture);
 
       /**
       * Destructor.
@@ -53,7 +54,7 @@ namespace Correlation {
       *
       * \param mixture  associated MixtureBase
       */
-      void associate(MixtureBase const& mixture);
+      void associate(MixtureBase<WT> const& mixture);
 
       /**
       * Allocate private data structures, set immutable private data.
@@ -115,12 +116,12 @@ namespace Correlation {
       *
       * \param i  index for polymer species
       */
-      Correlation::Polymer const & polymer(int i) const;
+      Correlation::Polymer<WT> const & polymer(int i) const;
 
       /**
       * Return reference to a descriptor for the associated mixture.
       */
-      MixtureBase const & mixture() const;
+      MixtureBase<WT> const & mixture() const;
 
       /**
       * Has this Mixture been previously allocated?
@@ -130,27 +131,32 @@ namespace Correlation {
    private:
 
       /// Array of Correlation::Polymer objects
-      DArray<Correlation::Polymer> polymers_;
+      DArray< Correlation::Polymer<WT> > polymers_;
 
       /// Pointer to the associated MixtureBase object.
-      MixtureBase const * mixturePtr_;
+      MixtureBase<WT> const * mixturePtr_;
 
    };
 
-   // Get a constituent Correlation::Polymer object by const reference.
-   inline Correlation::Polymer const & Mixture::polymer(int i) const
+   // Get a constituent Correlation::Polymer<WT> object by const reference.
+   template <typename WT> inline 
+   Correlation::Polymer<WT> const & Mixture<WT>::polymer(int i) const
    {
       UTIL_CHECK(polymers_.isAllocated());
       return polymers_[i];
    }
 
    // Get  a descriptor for the parent mixture by const reference.
-   inline MixtureBase const & Mixture::mixture() const
+   template <typename WT> inline 
+   MixtureBase<WT> const & Mixture<WT>::mixture() const
    {  return *mixturePtr_; }
 
    // Has this object been allocated?
-   inline bool Mixture::isAllocated() const
+   template <typename WT> inline 
+   bool Mixture<WT>::isAllocated() const
    {  return polymers_.isAllocated(); }
+
+   extern template class Mixture<double>;
 
 } // namespace Correlation
 } // namespace Pscf

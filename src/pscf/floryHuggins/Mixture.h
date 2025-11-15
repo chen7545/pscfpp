@@ -18,7 +18,7 @@
 namespace Pscf {
    class Interaction;
    class LuSolver;
-   class MixtureBase;
+   template <typename WT> class MixtureBase;
 }
 
 namespace Pscf {
@@ -60,7 +60,8 @@ namespace FloryHuggins {
       *
       * \param mixture  descriptor for a SCFT or FTS mixture
       */
-      void initialize(MixtureBase const& mixture);
+      template <typename WT>
+      void initialize(MixtureBase<WT> const& mixture);
 
       /**
       * Set the number of molecular species and allocate memory.
@@ -333,6 +334,10 @@ namespace FloryHuggins {
 
    inline int Mixture::nMonomer() const
    {  return nMonomer_; }
+
+   // Explicit instantiation declaration for member function template
+   extern template 
+   void Mixture::initialize<double>(MixtureBase<double> const &);
 
 } // namespace FloryHuggins
 } // namespace Pscf

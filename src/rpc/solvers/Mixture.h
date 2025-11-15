@@ -69,13 +69,13 @@ namespace Rpc {
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
 
-      using MixtureBase::nMonomer;
-      using MixtureBase::monomer;
-      using MixtureBase::nPolymer;
-      using MixtureBase::nSolvent;
-      using MixtureBase::nBlock;
-      using MixtureBase::vMonomer;
-      using MixtureBase::isCanonical;
+      using MixtureBase<double>::nMonomer;
+      using MixtureBase<double>::monomer;
+      using MixtureBase<double>::nPolymer;
+      using MixtureBase<double>::nSolvent;
+      using MixtureBase<double>::nBlock;
+      using MixtureBase<double>::vMonomer;
+      using MixtureBase<double>::isCanonical;
 
    protected:
 

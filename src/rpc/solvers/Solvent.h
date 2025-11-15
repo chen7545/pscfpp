@@ -30,7 +30,7 @@ namespace Rpc {
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
-   class Solvent : public SolventSpecies
+   class Solvent : public SolventSpecies<double>
    {
 
    public:
@@ -82,17 +82,17 @@ namespace Rpc {
       RField<D> const & cField() const;
 
       // Inherited accessor functions
-      using Pscf::Species::phi;
-      using Pscf::Species::mu;
-      using Pscf::Species::q;
-      using Pscf::Species::ensemble;
-      using Pscf::SolventSpecies::monomerId;
-      using Pscf::SolventSpecies::size;
+      using Pscf::Species<double>::phi;
+      using Pscf::Species<double>::mu;
+      using Pscf::Species<double>::q;
+      using Pscf::Species<double>::ensemble;
+      using Pscf::SolventSpecies<double>::monomerId;
+      using Pscf::SolventSpecies<double>::size;
 
    protected:
 
       // Inherited protected functions
-      using Pscf::Species::setQ;
+      using Pscf::Species<double>::setQ;
 
    private:
 

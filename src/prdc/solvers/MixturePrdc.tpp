@@ -52,7 +52,7 @@ namespace Prdc {
    void MixturePrdc<D,PT,ST,TT>::readParameters(std::istream& in)
    {
       // Read standard data for a mixture
-      MixtureTmpl< PolymerT, SolventT >::readParameters(in);
+      MixtureTmpl<PolymerT, SolventT, double>::readParameters(in);
       UTIL_CHECK(nMonomer() > 0);
       UTIL_CHECK(nPolymer()+ nSolvent() > 0);
 

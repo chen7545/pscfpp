@@ -46,7 +46,7 @@ namespace Rpc{
       correlationMixturePtr_(nullptr),
       kSize_(-1)
    {
-      correlationMixturePtr_ = new Correlation::Mixture(system.mixture());
+      correlationMixturePtr_ = new Correlation::Mixture<double>(system.mixture());
    }
 
    /*
@@ -54,7 +54,9 @@ namespace Rpc{
    */
    template <int D>
    IntraCorrelation<D>::~IntraCorrelation()
-   {}
+   {
+      delete correlationMixturePtr_;
+   }
 
    /*
    * Compute k-space array of intramolecular correlation functions.

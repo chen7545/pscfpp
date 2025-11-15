@@ -14,8 +14,8 @@
 namespace Pscf
 {
 
-   class PolymerSpecies;
-   class SolventSpecies;
+   template <typename WT> class PolymerSpecies;
+   template <typename WT> class SolventSpecies;
 
    using namespace Util;
 
@@ -53,6 +53,7 @@ namespace Pscf
    * 
    * \ingroup Pscf_Chem_Module
    */
+   template <typename WT>
    class MixtureBase 
    {
 
@@ -129,7 +130,7 @@ namespace Pscf
       * \param id  integer polymer species index (0 <= id < nPolymer)
       */
       virtual
-      PolymerSpecies const & polymerSpecies(int id) const = 0;
+      PolymerSpecies<WT> const & polymerSpecies(int id) const = 0;
 
       /**
       * Set a solvent solver object by const reference.
@@ -137,7 +138,7 @@ namespace Pscf
       * \param id  integer solvent species index (0 <= id < nSolvent)
       */
       virtual
-      SolventSpecies const & solventSpecies(int id) const = 0;
+      SolventSpecies<WT> const & solventSpecies(int id) const = 0;
 
       ///@}
 
@@ -184,24 +185,28 @@ namespace Pscf
 
    // Inline public member functions
 
-   inline int MixtureBase::nMonomer() const
+   template <typename WT> inline 
+   int MixtureBase<WT>::nMonomer() const
    {  return nMonomer_; }
 
-   inline int MixtureBase::nPolymer() const
+   template <typename WT> inline 
+   int MixtureBase<WT>::nPolymer() const
    {  return nPolymer_; }
 
-   inline int MixtureBase::nSolvent() const
+   template <typename WT> inline 
+   int MixtureBase<WT>::nSolvent() const
    {  return nSolvent_; }
 
-   inline int MixtureBase::nBlock() const
+   template <typename WT> inline 
+   int MixtureBase<WT>::nBlock() const
    {  return nBlock_; }
 
-   inline 
-   double MixtureBase::vMonomer() const
+   template <typename WT> inline 
+   double MixtureBase<WT>::vMonomer() const
    {  return vMonomer_; }
 
-   inline 
-   Monomer const & MixtureBase::monomer(int id) const
+   template <typename WT> inline 
+   Monomer const & MixtureBase<WT>::monomer(int id) const
    {  
       UTIL_CHECK(id < nMonomer_);
       return monomers_[id]; 
@@ -209,12 +214,14 @@ namespace Pscf
 
    // Inline protected member function
 
-   inline 
-   Monomer& MixtureBase::monomer(int id)
+   template <typename WT> inline 
+   Monomer& MixtureBase<WT>::monomer(int id)
    {  
       UTIL_CHECK(id < nMonomer_);
       return monomers_[id]; 
    }
+
+   extern template class MixtureBase<double>;
 
 }
 #endif

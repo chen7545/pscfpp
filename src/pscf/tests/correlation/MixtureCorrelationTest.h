@@ -50,7 +50,7 @@ public:
    {
       printMethod(TEST_FUNC);
       MixtureStub p;
-      Correlation::Mixture c;
+      Correlation::Mixture<double> c;
       c.associate(p);
       TEST_ASSERT(!c.isAllocated());
    } 
@@ -59,7 +59,7 @@ public:
    {
       printMethod(TEST_FUNC);
       MixtureStub p;
-      Correlation::Mixture c(p);
+      Correlation::Mixture<double> c(p);
       TEST_ASSERT(!c.isAllocated());
    }
 
@@ -71,7 +71,7 @@ public:
 
       MixtureStub mixture;
       testReadParam(mixture, "in/MixtureDiblockThread");
-      Correlation::Mixture c(mixture);
+      Correlation::Mixture<double> c(mixture);
       c.allocate();
       c.setup();
       TEST_ASSERT(c.isAllocated());
@@ -95,7 +95,7 @@ public:
       TEST_ASSERT(c.polymer(1).blockIds(1)[0] == 1);
 
       // Test for equal statistical segment lengths
-      MixtureBase const & mixc = mixture;
+      MixtureBase<double> const & mixc = mixture;
       double b = mixc.monomer(0).kuhn();
       TEST_ASSERT(eq(mixc.monomer(1).kuhn(), b));
 
@@ -131,7 +131,7 @@ public:
       // Allocate, setup and compute properties for homopolymer melt
       MixtureStub mixtureH;
       testReadParam(mixtureH, "in/MixtureHomopolymerThread");
-      Correlation::Mixture cH(mixture);
+      Correlation::Mixture<double> cH(mixture);
       cH.allocate();
       cH.setup();
       TEST_ASSERT(eq(cH.polymer(0).totalLength(), length));
@@ -183,7 +183,7 @@ public:
 
       MixtureStub mixture;
       testReadParam(mixture, "in/MixtureDiblockBead");
-      Correlation::Mixture c(mixture);
+      Correlation::Mixture<double> c(mixture);
       TEST_ASSERT(!c.isAllocated());
       c.allocate();
       c.setup();
@@ -208,7 +208,7 @@ public:
       TEST_ASSERT(c.polymer(1).blockIds(1)[0] == 1);
 
       // Test for equal statistical segment lengths
-      MixtureBase const & mixc = mixture;
+      MixtureBase<double> const & mixc = mixture;
       double b = mixc.monomer(0).kuhn();
       TEST_ASSERT(eq(mixc.monomer(1).kuhn(), b));
 
@@ -244,7 +244,7 @@ public:
       // Allocate, setup and compute properties for homopolymer melt
       MixtureStub mixtureH;
       testReadParam(mixtureH, "in/MixtureHomopolymerBead");
-      Correlation::Mixture cH(mixture);
+      Correlation::Mixture<double> cH(mixture);
       cH.allocate();
       cH.setup();
       TEST_ASSERT(eq(cH.polymer(0).totalLength(), length));

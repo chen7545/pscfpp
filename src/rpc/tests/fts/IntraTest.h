@@ -65,7 +65,7 @@ public:
       RFieldDft<1> cosFK;
       cosF.allocate(dimensions);
       cosFK.allocate(dimensions);
-      PolymerSpecies const & polymer = system.mixture().polymerSpecies(0);
+      PolymerSpecies<double> const & polymer = system.mixture().polymerSpecies(0);
       for (int k = 0; k < meshSize; k++){
          cosF[k] = A * std::cos(2 * M_PI * k * f / meshSize);
 

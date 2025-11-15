@@ -60,7 +60,7 @@ public:
    {
       printMethod(TEST_FUNC);
       PolymerStub p;
-      Correlation::Polymer c;
+      Correlation::Polymer<double> c;
       c.associate(p);
    } 
 
@@ -68,7 +68,7 @@ public:
    {
       printMethod(TEST_FUNC);
       PolymerStub p;
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
    }
 
    void testReadParamHomoPolymerThread() 
@@ -78,7 +78,7 @@ public:
 
       PolymerStub p;
       testReadParam(p, "in/HomoPolymer");
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
       int nMonomer = 2;
       c.allocate(nMonomer);
       DArray<double> kuhn;
@@ -150,7 +150,7 @@ public:
 
       PolymerStub p;
       testReadParam(p, "in/PolymerDiblock");
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
 
       int nMonomer = 2;
       c.allocate(nMonomer);
@@ -216,7 +216,7 @@ public:
       // Compute hompolymer properties for comparison
       PolymerStub ph;
       testReadParam(ph, "in/HomoPolymer");
-      Correlation::Polymer ch(ph);
+      Correlation::Polymer<double> ch(ph);
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
@@ -261,7 +261,7 @@ public:
 
       PolymerStub p;
       testReadParam(p, "in/PolymerTriblock");
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
 
       int nMonomer = 2;
       c.allocate(nMonomer);
@@ -343,7 +343,7 @@ public:
       // Compute hompolymer properties for comparison
       PolymerStub ph;
       testReadParam(ph, "in/HomoPolymer");
-      Correlation::Polymer ch(ph);
+      Correlation::Polymer<double> ch(ph);
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
@@ -392,7 +392,7 @@ public:
 
       PolymerStub p;
       testReadParam(p, "in/HomoPolymerBead");
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
       int nMonomer = 2;
       c.allocate(nMonomer);
       DArray<double> kuhn;
@@ -464,7 +464,7 @@ public:
 
       PolymerStub p;
       testReadParam(p, "in/PolymerDiblockBead");
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
 
       int nMonomer = 2;
       c.allocate(nMonomer);
@@ -530,7 +530,7 @@ public:
       // Compute hompolymer properties for comparison
       PolymerStub ph;
       testReadParam(ph, "in/HomoPolymerBead");
-      Correlation::Polymer ch(ph);
+      Correlation::Polymer<double> ch(ph);
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));
@@ -566,7 +566,7 @@ public:
 
       PolymerStub p;
       testReadParam(p, "in/PolymerTriblockBead");
-      Correlation::Polymer c(p);
+      Correlation::Polymer<double> c(p);
 
       int nMonomer = 2;
       c.allocate(nMonomer);
@@ -597,7 +597,7 @@ public:
       // Create hompolymer object for comparison
       PolymerStub ph;
       testReadParam(ph, "in/HomoPolymerBead");
-      Correlation::Polymer ch(ph);
+      Correlation::Polymer<double> ch(ph);
       ch.allocate(nMonomer);
       ch.setup(kuhn);
       TEST_ASSERT(eq(ch.totalLength(), length));

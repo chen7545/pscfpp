@@ -22,17 +22,25 @@ namespace Pscf {
    /**
    * Template for an MDE solver and descriptor for a block polymer.
    *
-   * Class template argument BT is an alias for a class that represents 
-   * a block of a block polymer. By convention, this is a class named 
-   * Block defined in each program-level sub-namespace of Pscf.  Each 
-   * such namespace contains a class named Block that is a subclass of 
-   * Pscf::Edge, and a class named Polymer that is a subclass of the
-   * template instantiation PolymerTmpl<Block>.
+   * Class template argument BT is an alias for a class that represents a
+   * block of a block polymer. By convention, this is a class named Block
+   * defined in each program-level sub-namespace of Pscf.  Each such 
+   * namespace contains a class named Block that is a subclass of 
+   * Pscf::Edge, and a class named Polymer that is a subclass of an
+   * instantiation of PolymerTmpl<Block, Propagator, WT>.
+   *
+   * Class template PT is an alias for the class that represents a
+   * propagator, which holds the solution of the modified diffusion
+   * equation for one block, in one direction.
+   *
+   * Class template WT is a typename for the type of the value of a
+   * chemical potential field defined at a grid point, which can be
+   * either a real (e.g., double) or complex data type.
    * 
-   * A PolymerTmpl<Block> object has an array of Block objects, as well as
-   * an array of Vertex objects inherited from the PolymerSpecies base
-   * class.  Each Block has two Propagator MDE solver objects associated
-   * with the two directions along each block.
+   * A PolymerTmpl<Block, Propagator, WT> object has an array of Block 
+   * objects, as well as an array of Vertex objects inherited from the 
+   * PolymerSpecies<WT> base class.  Each Block owns two Propagator 
+   * objects associated with the two directions along each block.
    *
    * The solve() member function solves the modified diffusion equation
    * (MDE) for all propagators in the molecule (i.e., all blocks, in both
@@ -40,8 +48,8 @@ namespace Pscf {
    *
    * \ingroup Pscf_Solver_Module
    */
-   template <class BT, class PT>
-   class PolymerTmpl : public PolymerSpecies
+   template <class BT, class PT, typename WT = double>
+   class PolymerTmpl : public PolymerSpecies<WT>
    {
 
    public:
@@ -54,7 +62,8 @@ namespace Pscf {
       using BlockT = BT;
 
       /**
-      * Modified diffusion equation solver for one block, in one direction.
+      * Modified diffusion equation solver for one block, in one 
+      * direction.
       */
       using PropagatorT = PT;
 
@@ -90,10 +99,10 @@ namespace Pscf {
       * field.
       *
       * Each program-level namespace defines a concrete subclass of
-      * PolymerTmpl<BT,PT> that is named Polymer by convention. Each such 
+      * PolymerTmpl<BT,PT,WT> that is named Polymer by convention. Each such 
       * Polymer class defines a function named "compute" that takes an 
       * array of chemical fields (w-fields) as an argument, and that calls
-      * PolymerTmpl<BT,PT>::solve internally.  Before calling the solve()
+      * PolymerTmpl<BT,PT,WT>::solve internally.  Before calling the solve()
       * function declared here, the Polymer::compute() function must pass
       * pass the w-fields and any other required mutable data to all Block
       * objects in order to set up the MDE solver for each block. After
@@ -179,20 +188,20 @@ namespace Pscf {
 
       // Inherited public members
 
-      using PolymerSpecies::vertex;
-      using PolymerSpecies::propagatorId;
-      using PolymerSpecies::path;
-      using PolymerSpecies::nBlock;
-      using PolymerSpecies::nVertex;
-      using PolymerSpecies::nPropagator;
-      using PolymerSpecies::length;
-      using PolymerSpecies::nBead;
-      using PolymerSpecies::type;
+      using PolymerSpecies<WT>::vertex;
+      using PolymerSpecies<WT>::propagatorId;
+      using PolymerSpecies<WT>::path;
+      using PolymerSpecies<WT>::nBlock;
+      using PolymerSpecies<WT>::nVertex;
+      using PolymerSpecies<WT>::nPropagator;
+      using PolymerSpecies<WT>::length;
+      using PolymerSpecies<WT>::nBead;
+      using PolymerSpecies<WT>::type;
 
-      using Species::phi;
-      using Species::mu;
-      using Species::q;
-      using Species::ensemble;
+      using Species<WT>::phi;
+      using Species<WT>::mu;
+      using Species<WT>::q;
+      using Species<WT>::ensemble;
 
    protected:
 
@@ -227,33 +236,33 @@ namespace Pscf {
    /*
    * Get a specified Edge (block descriptor) by non-const reference.
    */
-   template <class BT, class PT>
+   template <class BT, class PT, typename WT>
    inline
-   Edge& PolymerTmpl<BT,PT>::edge(int id)
+   Edge& PolymerTmpl<BT,PT,WT>::edge(int id)
    {  return blocks_[id]; }
 
    /*
    * Get a specified Edge (block descriptor) by const reference.
    */
-   template <class BT, class PT>
+   template <class BT, class PT, typename WT>
    inline
-   Edge const & PolymerTmpl<BT,PT>::edge(int id) const
+   Edge const & PolymerTmpl<BT,PT,WT>::edge(int id) const
    {  return blocks_[id]; }
 
    /*
    * Get a specified Block solver by non-const reference.
    */
-   template <class BT, class PT>
+   template <class BT, class PT, typename WT>
    inline
-   BT& PolymerTmpl<BT,PT>::block(int id)
+   BT& PolymerTmpl<BT,PT,WT>::block(int id)
    {  return blocks_[id]; }
 
    /*
    * Get a specified Block solver by const reference.
    */
-   template <class BT, class PT>
+   template <class BT, class PT, typename WT>
    inline
-   BT const & PolymerTmpl<BT,PT>::block(int id) const
+   BT const & PolymerTmpl<BT,PT,WT>::block(int id) const
    {  return blocks_[id]; }
 
 }

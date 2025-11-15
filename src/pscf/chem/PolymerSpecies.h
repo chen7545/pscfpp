@@ -67,7 +67,8 @@ namespace Pscf
    * 
    * \ingroup Pscf_Chem_Module
    */
-   class PolymerSpecies : public Species
+   template <typename WT=double>
+   class PolymerSpecies : public Species<WT>
    {
 
    public:
@@ -295,33 +296,36 @@ namespace Pscf
    /*
    * Number of blocks in this polymer.
    */
-   inline int PolymerSpecies::nBlock() const
+   template <typename WT> inline 
+   int PolymerSpecies<WT>::nBlock() const
    {  return nBlock_; }
 
    /*
-   * Number of vertices (ends and/or junctions)
+   * Number of vertices (ends and junctions)
    */
-   inline int PolymerSpecies::nVertex() const
+   template <typename WT> inline 
+   int PolymerSpecies<WT>::nVertex() const
    {  return nVertex_; }
 
    /*
    * Number of propagators in this polymer (2*nBlock).
    */
-   inline int PolymerSpecies::nPropagator() const
+   template <typename WT> inline 
+   int PolymerSpecies<WT>::nPropagator() const
    {  return nPropagator_; }
 
    /*
    * Get a specified Vertex by const reference.
    */
-   inline
-   Vertex const & PolymerSpecies::vertex(int id) const
+   template <typename WT> inline
+   Vertex const & PolymerSpecies<WT>::vertex(int id) const
    {  return vertices_[id]; }
 
    /*
    * Get a propagator id, indexed in order of computation.
    */
-   inline
-   Pair<int> const & PolymerSpecies::propagatorId(int id) const
+   template <typename WT> inline 
+   Pair<int> const & PolymerSpecies<WT>::propagatorId(int id) const
    {
       UTIL_CHECK(id >= 0);
       UTIL_CHECK(id < nPropagator_);
@@ -331,8 +335,8 @@ namespace Pscf
    /*
    * Get a propagator id that leads from a source vertex towards a target.
    */
-   inline
-   Pair<int> const & PolymerSpecies::path(int is, int it) const
+   template <typename WT> inline 
+   Pair<int> const & PolymerSpecies<WT>::path(int is, int it) const
    {
       UTIL_CHECK(is >= 0);
       UTIL_CHECK(is < nVertex_);
@@ -344,9 +348,13 @@ namespace Pscf
    /*
    * Get the polymer type enumeration value (Branched or Linear).
    */
-   inline
-   PolymerType::Enum PolymerSpecies::type() const
+   template <typename WT> inline 
+   PolymerType::Enum PolymerSpecies<WT>::type() const
    {  return type_; }
+
+
+   // Explicit instantiation declaratio
+   extern template class PolymerSpecies<double>;
 
 }
 #endif

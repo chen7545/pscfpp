@@ -12,16 +12,13 @@
 
 namespace Pscf { 
 
-   // Forward declaration
-   class PolymerSpecies;
-
    using namespace Util;
 
    /**
    * Edge iterator for graph associated with a polymer.
    *
    * Usage: Suppose that object p is an instance of a subclass of 
-   * PolymerSpecies. The following snippet illustrates how to iterate 
+   * PolymerSpecies<WT>. The following snippet illustrates how to iterate 
    * from edge (or block) iSource to edge iTarget of the associated 
    * polymer:
    * \code
@@ -35,6 +32,7 @@ namespace Pscf {
    *
    * \ingroup Pscf_Chem_Module
    */
+   template <typename WT>
    class EdgeIterator 
    {
 
@@ -45,7 +43,7 @@ namespace Pscf {
       *
       * \param polymer  associated PolymerSpecies object
       */
-      EdgeIterator(PolymerSpecies const & polymer);
+      EdgeIterator(PolymerSpecies<WT> const & polymer);
    
       /**
       * Destructor.
@@ -63,7 +61,7 @@ namespace Pscf {
       /**
       * Increment operator - move to next vertex.
       */
-      EdgeIterator& operator ++ ();
+      EdgeIterator<WT>& operator ++ ();
 
       /**
       * Get index of the current edge.
@@ -116,9 +114,11 @@ namespace Pscf {
       int targetVertexId_;
 
       // Pointer to associated PolymerSpecies object.
-      PolymerSpecies const * polymerPtr_;
+      PolymerSpecies<WT> const * polymerPtr_;
 
    };
+
+   extern template class EdgeIterator<double>;
 
 }
 #endif 

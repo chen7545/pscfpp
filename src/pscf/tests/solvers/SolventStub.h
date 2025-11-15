@@ -14,7 +14,7 @@
 namespace Pscf
 { 
 
-   class SolventStub : public SolventSpecies
+   class SolventStub : public SolventSpecies<double>
    {
 
    public:

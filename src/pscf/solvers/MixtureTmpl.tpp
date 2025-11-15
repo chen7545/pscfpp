@@ -16,9 +16,9 @@ namespace Pscf
    /*
    * Constructor.
    */
-   template <class PT, class ST>
-   MixtureTmpl<PT,ST>::MixtureTmpl()
-    : MixtureBase(),
+   template <class PT, class ST, typename WT>
+   MixtureTmpl<PT,ST,WT>::MixtureTmpl()
+    : MixtureBase<WT>(),
       ParamComposite(),
       polymers_(),
       solvents_()
@@ -27,15 +27,16 @@ namespace Pscf
    /*
    * Destructor.
    */
-   template <class PT, class ST>
-   MixtureTmpl<PT,ST>::~MixtureTmpl()
+   template <class PT, class ST, typename WT>
+   MixtureTmpl<PT,ST,WT>::~MixtureTmpl()
    {}
 
    /*
    * Get a PolymerSpecies descriptor by non-const reference.
    */
-   template <class PT, class ST>
-   PolymerSpecies const & MixtureTmpl<PT,ST>::polymerSpecies(int id) const
+   template <class PT, class ST, typename WT>
+   PolymerSpecies<WT> const & 
+   MixtureTmpl<PT,ST,WT>::polymerSpecies(int id) const
    {
       UTIL_CHECK(id < nPolymer_);
       return polymers_[id];
@@ -44,8 +45,9 @@ namespace Pscf
    /*
    * Get a SolventSpecies descriptor by const reference.
    */
-   template <class PT, class ST>
-   SolventSpecies const & MixtureTmpl<PT,ST>::solventSpecies(int id) const
+   template <class PT, class ST, typename WT>
+   SolventSpecies<WT> const & 
+   MixtureTmpl<PT,ST,WT>::solventSpecies(int id) const
    {
       UTIL_CHECK(id < nSolvent_);
       return solvents_[id];
@@ -54,8 +56,8 @@ namespace Pscf
    /*
    * Read all parameters and initialize.
    */
-   template <class PT, class ST>
-   void MixtureTmpl<PT,ST>::readParameters(std::istream& in)
+   template <class PT, class ST, typename WT>
+   void MixtureTmpl<PT,ST,WT>::readParameters(std::istream& in)
    {
       // Read nMonomer and monomers array
       read<int>(in, "nMonomer", nMonomer_);
@@ -96,7 +98,7 @@ namespace Pscf
          for (int i = 0; i < nPolymer_; ++i) {
             for (int j = 0; j < polymer(i).nBlock(); ++j) {
                monomerId = polymer(i).block(j).monomerId();
-               kuhn = monomer(monomerId).kuhn();
+               kuhn = MixtureBase<WT>::monomer(monomerId).kuhn();
                polymer(i).block(j).setKuhn(kuhn);
             }
          }

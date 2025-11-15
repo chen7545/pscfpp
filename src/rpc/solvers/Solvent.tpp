@@ -19,9 +19,9 @@ namespace Rpc {
    */
    template <int D>
    Solvent<D>::Solvent()
-    : SolventSpecies(),
+    : SolventSpecies<double>(),
       meshPtr_(nullptr)
-   {  setClassName("Solvent"); }
+   {  ParamComposite::setClassName("Solvent"); }
 
    /*
    * Destructor
@@ -76,7 +76,7 @@ namespace Rpc {
       // material to a fraction of the unit cell. 
 
       // Set q and compute mu or phi 
-      Species::setQ(Q);
+      Species<double>::setQ(Q);
 
       // Normalize concentration 
       double prefactor = phi()/Q;

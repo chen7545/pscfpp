@@ -55,7 +55,7 @@ namespace Prdc {
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>
-   class MixturePrdc : public MixtureTmpl<PT, ST>
+   class MixturePrdc : public MixtureTmpl<PT, ST, double>
    {
 
    public:
@@ -63,7 +63,7 @@ namespace Prdc {
       // Public type name aliases
 
       /// MixtureTmplT class.
-      using MixtureTmplT = MixtureTmpl<PT,ST>;
+      using MixtureTmplT = MixtureTmpl<PT,ST, double>;
 
       /// Solvent object type: SolventT = ST (inherited).
       using typename MixtureTmplT::SolventT;
@@ -382,13 +382,13 @@ namespace Prdc {
       using MixtureTmplT::polymerSpecies;
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
-      using MixtureBase::nMonomer;
-      using MixtureBase::monomer;
-      using MixtureBase::nPolymer;
-      using MixtureBase::nSolvent;
-      using MixtureBase::nBlock;
-      using MixtureBase::vMonomer;
-      using MixtureBase::isCanonical;
+      using MixtureBase<double>::nMonomer;
+      using MixtureBase<double>::monomer;
+      using MixtureBase<double>::nPolymer;
+      using MixtureBase<double>::nSolvent;
+      using MixtureBase<double>::nBlock;
+      using MixtureBase<double>::vMonomer;
+      using MixtureBase<double>::isCanonical;
 
    protected:
 

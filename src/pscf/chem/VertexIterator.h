@@ -12,16 +12,13 @@
 
 namespace Pscf { 
 
-   // Forward declaration
-   class PolymerSpecies;
-
    using namespace Util;
 
    /**
    * Vertex iterator for graph associated with a polymer.
    *
    * Usage: Suppose that object p is an instance of a subclass of 
-   * PolymerSpecies. The following snippet illustrates how to iterate 
+   * PolymerSpecies<WT>. The following snippet illustrates how to iterate 
    * from vertex iSource to vertex iTarget of the associated polymer:
    * \code
    *    VertexIterator = iter(p);
@@ -34,6 +31,7 @@ namespace Pscf {
    *
    * \ingroup Pscf_Chem_Module
    */
+   template <typename WT>
    class VertexIterator 
    {
 
@@ -44,7 +42,7 @@ namespace Pscf {
       *
       * \param polymer  associated PolymerSpecies object
       */
-      VertexIterator(PolymerSpecies const & polymer);
+      VertexIterator(PolymerSpecies<WT> const & polymer);
    
       /**
       * Destructor.
@@ -85,9 +83,11 @@ namespace Pscf {
       int targetId_;
 
       // Pointer to associated PolymerSpecies object.
-      PolymerSpecies const * polymerPtr_;
+      PolymerSpecies<WT> const * polymerPtr_;
 
    };
+
+   extern template class VertexIterator<double>;
 
 }
 #endif 

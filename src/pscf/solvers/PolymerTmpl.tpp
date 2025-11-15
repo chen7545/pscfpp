@@ -18,43 +18,43 @@ namespace Pscf {
    /*
    * Constructor.
    */
-   template <class BT, class PT>
-   PolymerTmpl<BT,PT>::PolymerTmpl()
-    : PolymerSpecies(),
+   template <class BT, class PT, typename WT>
+   PolymerTmpl<BT,PT,WT>::PolymerTmpl()
+    : PolymerSpecies<WT>(),
       blocks_()
-   {  setClassName("PolymerTmpl"); }
+   {  ParamComposite::setClassName("PolymerTmpl"); }
 
    /*
    * Destructor.
    */
-   template <class BT, class PT>
-   PolymerTmpl<BT,PT>::~PolymerTmpl()
+   template <class BT, class PT, typename WT>
+   PolymerTmpl<BT,PT,WT>::~PolymerTmpl()
    {}
 
    /*
    * Allocate blocks array.
    */
-   template <class BT, class PT>
-   void PolymerTmpl<BT,PT>::allocateBlocks()
+   template <class BT, class PT, typename WT>
+   void PolymerTmpl<BT,PT,WT>::allocateBlocks()
    {  blocks_.allocate(nBlock()); }
 
    /*
    * Read blocks array from parameter file.
    */
-   template <class BT, class PT>
-   void PolymerTmpl<BT,PT>::readBlocks(std::istream& in)
-   {  readDArray<BT>(in, "blocks", blocks_, nBlock()); }
+   template <class BT, class PT, typename WT>
+   void PolymerTmpl<BT,PT,WT>::readBlocks(std::istream& in)
+   {  ParamComposite::readDArray<BT>(in, "blocks", blocks_, nBlock()); }
 
    /*
    * Read parameter file block.
    */
-   template <class BT, class PT>
-   void PolymerTmpl<BT,PT>::readParameters(std::istream& in)
+   template <class BT, class PT, typename WT>
+   void PolymerTmpl<BT,PT,WT>::readParameters(std::istream& in)
    {
 
       // Call PoymerSpecies base class member function
       // Initializes PolymerSpecies, and Edge and Vertex components
-      PolymerSpecies::readParameters(in);
+      PolymerSpecies<WT>::readParameters(in);
 
       // The remainder of this function sets and validates immutable
       // information about graph topology that is stored by propagators.
@@ -112,13 +112,13 @@ namespace Pscf {
    * Checks validity of propagator data set in readParameters.
    *
    * This function only checks validity of propagator source and end flag
-   * member data that is set in PolymerTmpl<BT,PT>::readParameters. It 
+   * member data that is set in PolymerTmpl<BT,PT,WT>::readParameters. It 
    * does not check validity of members of PolymerSpecies, Edge, and Vertex
    * that are set and validated within the PolymerSpecies::readParameters 
    * base class member function. 
    */
-   template <class BT, class PT>
-   void PolymerTmpl<BT,PT>::isValid()
+   template <class BT, class PT, typename WT>
+   void PolymerTmpl<BT,PT,WT>::isValid()
    {
       Vertex const * v0Ptr = nullptr;
       Vertex const * v1Ptr = nullptr;
@@ -149,8 +149,8 @@ namespace Pscf {
    /*
    * Solve the MDE for all blocks of this polymer.
    */
-   template <class BT, class PT>
-   void PolymerTmpl<BT,PT>::solve(double phiTot)
+   template <class BT, class PT, typename WT>
+   void PolymerTmpl<BT,PT,WT>::solve(double phiTot)
    {
 
       // Clear all propagators
@@ -173,30 +173,30 @@ namespace Pscf {
       Q = Q/phiTot;
 
       // Set q and compute phi or mu, depending on the ensemble
-      Species::setQ(Q);
+      Species<WT>::setQ(Q);
 
    }
 
    /*
    * Get a propagator, indexed by block and direction ids (non-const).
    */
-   template <class BT, class PT>
-   PT& PolymerTmpl<BT,PT>::propagator(int blockId, int directionId)
+   template <class BT, class PT, typename WT>
+   PT& PolymerTmpl<BT,PT,WT>::propagator(int blockId, int directionId)
    {  return block(blockId).propagator(directionId); }
 
    /*
    * Get a propagator, indexed by block and direction ids (const).
    */
-   template <class BT, class PT>
+   template <class BT, class PT, typename WT>
    PT const & 
-   PolymerTmpl<BT,PT>::propagator(int blockId, int directionId) const
+   PolymerTmpl<BT,PT,WT>::propagator(int blockId, int directionId) const
    {  return block(blockId).propagator(directionId); }
 
    /*
    * Get a propagator, indexed in order of computation.
    */
-   template <class BT, class PT>
-   PT& PolymerTmpl<BT,PT>::propagator(int id)
+   template <class BT, class PT, typename WT>
+   PT& PolymerTmpl<BT,PT,WT>::propagator(int id)
    {
       Pair<int> propId = propagatorId(id);
       return propagator(propId[0], propId[1]);

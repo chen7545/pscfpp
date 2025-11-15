@@ -16,7 +16,7 @@ namespace Pscf
 { 
 
    class MixtureStub 
-    : public MixtureTmpl<PolymerStub, SolventStub>
+    : public MixtureTmpl<PolymerStub, SolventStub, double>
    {
 
    public:

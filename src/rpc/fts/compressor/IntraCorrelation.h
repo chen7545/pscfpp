@@ -14,7 +14,7 @@
 // Forward declarations
 namespace Pscf {
    namespace Correlation {
-      class Mixture;
+      template <typename WT> class Mixture;
    }
    namespace Prdc {
       namespace Cpu {
@@ -75,7 +75,7 @@ namespace Rpc {
       System<D> const * systemPtr_;
 
       /// Pointer to a child Correlation::Mixture object.
-      Correlation::Mixture* correlationMixturePtr_;
+      Correlation::Mixture<double>* correlationMixturePtr_;
 
       /// Array of squared magnitudes for reciprocal wavevectors.
       DArray<double> Gsq_;

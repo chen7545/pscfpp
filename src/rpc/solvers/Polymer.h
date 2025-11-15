@@ -149,21 +149,21 @@ namespace Rpc {
       using Base::edge;
       using Base::block;
       using Base::propagator;
-      using PolymerSpecies::vertex;
-      using PolymerSpecies::propagatorId;
-      using PolymerSpecies::path;
-      using PolymerSpecies::nBlock;
-      using PolymerSpecies::nVertex;
-      using PolymerSpecies::nPropagator;
-      using PolymerSpecies::length;
-      using PolymerSpecies::nBead;
-      using PolymerSpecies::type;
-      using Species::phi;
-      using Species::mu;
-      using Species::q;
-      using Species::ensemble;
-      using Species::setPhi;
-      using Species::setMu;
+      using PolymerSpecies<double>::vertex;
+      using PolymerSpecies<double>::propagatorId;
+      using PolymerSpecies<double>::path;
+      using PolymerSpecies<double>::nBlock;
+      using PolymerSpecies<double>::nVertex;
+      using PolymerSpecies<double>::nPropagator;
+      using PolymerSpecies<double>::length;
+      using PolymerSpecies<double>::nBead;
+      using PolymerSpecies<double>::type;
+      using Species<double>::phi;
+      using Species<double>::mu;
+      using Species<double>::q;
+      using Species<double>::ensemble;
+      using Species<double>::setPhi;
+      using Species<double>::setMu;
 
    private: 
 
@@ -175,7 +175,7 @@ namespace Rpc {
 
       // Restricting access to inherited functions
       using Base::solve;
-      using Species::setQ;
+      using Species<double>::setQ;
 
    };
 

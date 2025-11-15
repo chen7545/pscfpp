@@ -71,7 +71,7 @@ namespace Prdc {
 
       // Compute polymer ideal gas contributions to fIdeal_
       if (np > 0) {
-         PolymerSpecies const * polymerPtr;
+         PolymerSpecies<double> const * polymerPtr;
          double length;
          for (int i = 0; i < np; ++i) {
             polymerPtr = &mixture().polymerSpecies(i);
@@ -91,7 +91,7 @@ namespace Prdc {
 
       // Compute solvent ideal gas contributions to fIdeal_
       if (ns > 0) {
-         SolventSpecies const * solventPtr;
+         SolventSpecies<double> const * solventPtr;
          double size;
          for (int i = 0; i < ns; ++i) {
             solventPtr = &mixture().solventSpecies(i);
@@ -213,7 +213,7 @@ namespace Prdc {
 
       // Polymer chemical potential corrections to pressure
       if (np > 0) {
-         PolymerSpecies const * polymerPtr;
+         PolymerSpecies<double> const * polymerPtr;
          double length;
          for (int i = 0; i < np; ++i) {
             polymerPtr = &mixture().polymerSpecies(i);
@@ -232,7 +232,7 @@ namespace Prdc {
 
       // Solvent corrections to pressure
       if (ns > 0) {
-         SolventSpecies const * solventPtr;
+         SolventSpecies<double> const * solventPtr;
          double size;
          for (int i = 0; i < ns; ++i) {
             solventPtr = &mixture().solventSpecies(i);

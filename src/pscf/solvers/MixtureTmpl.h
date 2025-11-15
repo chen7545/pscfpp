@@ -22,12 +22,12 @@ namespace Pscf
    *
    * \ingroup Pscf_Solver_Module
    */
-   template <class PT, class ST>
-   class MixtureTmpl : public MixtureBase, public ParamComposite
+   template <class PT, class ST, typename WT = double>
+   class MixtureTmpl : public MixtureBase<WT>, public ParamComposite
    {
    public:
 
-      // Public typedefs
+      // Public type aliases
 
       /**
       * Solvent species solver type.
@@ -95,7 +95,7 @@ namespace Pscf
       *
       * \param id  integer polymer species index (0 <= id < nPolymer)
       */
-      PolymerSpecies const & polymerSpecies(int id) const final;
+      PolymerSpecies<WT> const & polymerSpecies(int id) const final;
 
       /**
       * Get a solvent solver object.
@@ -118,7 +118,7 @@ namespace Pscf
       *
       * \param id integer solvent species index (0 <= id < nSolvent)
       */
-      SolventSpecies const & solventSpecies(int id) const final;
+      SolventSpecies<WT> const & solventSpecies(int id) const final;
 
       ///@}
 
@@ -139,40 +139,40 @@ namespace Pscf
       DArray<SolventT> solvents_;
 
       // Restrict access to inherited protected data
-      using MixtureBase::monomers_;
-      using MixtureBase::nMonomer_;
-      using MixtureBase::nPolymer_;
-      using MixtureBase::nSolvent_;
-      using MixtureBase::nBlock_;
-      using MixtureBase::vMonomer_;
+      using MixtureBase<WT>::monomers_;
+      using MixtureBase<WT>::nMonomer_;
+      using MixtureBase<WT>::nPolymer_;
+      using MixtureBase<WT>::nSolvent_;
+      using MixtureBase<WT>::nBlock_;
+      using MixtureBase<WT>::vMonomer_;
 
    };
 
    // Inline member functions
 
-   template <class PT, class ST>
-   inline PT& MixtureTmpl<PT,ST>::polymer(int id)
+   template <class PT, class ST, typename WT>
+   inline PT& MixtureTmpl<PT,ST,WT>::polymer(int id)
    {  
       UTIL_CHECK(id < nPolymer_);
       return polymers_[id];
    }
 
-   template <class PT, class ST>
-   inline PT const & MixtureTmpl<PT,ST>::polymer(int id) const
+   template <class PT, class ST, typename WT>
+   inline PT const & MixtureTmpl<PT,ST,WT>::polymer(int id) const
    {  
       UTIL_CHECK(id < nPolymer_);
       return polymers_[id];
    }
 
-   template <class PT, class ST>
-   inline ST& MixtureTmpl<PT,ST>::solvent(int id)
+   template <class PT, class ST, typename WT>
+   inline ST& MixtureTmpl<PT,ST,WT>::solvent(int id)
    {  
       UTIL_CHECK(id < nSolvent_);
       return solvents_[id]; 
    }
 
-   template <class PT, class ST>
-   inline ST const & MixtureTmpl<PT,ST>::solvent(int id) const
+   template <class PT, class ST, typename WT>
+   inline ST const & MixtureTmpl<PT,ST,WT>::solvent(int id) const
    {  
       UTIL_CHECK(id < nSolvent_);
       return solvents_[id]; 

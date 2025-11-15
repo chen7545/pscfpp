@@ -88,7 +88,7 @@ public:
    int testVertexIterator(PolymerStub& p, int sourceId, int targetId) 
    {
       if (verbose() > 0) std::cout << "\nVertexIterator: \n";
-      VertexIterator iter(p);
+      VertexIterator<double> iter(p);
       iter.begin(sourceId, targetId);
       int nVertex = 1;
       while (iter.notEnd()) {
@@ -107,7 +107,7 @@ public:
    int testEdgeIterator(PolymerStub& p, int sourceId, int targetId) 
    {
       if (verbose() > 0) std::cout << "\nEdgeIterator: \n";
-      EdgeIterator iter(p);
+      EdgeIterator<double> iter(p);
       iter.begin(sourceId, targetId);
       int nEdge = 1;
       int edgeId, dirId, vertexId, vpId, vnId;

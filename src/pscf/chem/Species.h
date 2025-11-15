@@ -30,6 +30,7 @@ namespace Pscf {
    *
    * \ingroup Pscf_Chem_Module
    */
+   template <typename WT = double>
    class Species : public ParamComposite
    {
    public:
@@ -54,17 +55,17 @@ namespace Pscf {
       /**
       * Get the overall volume fraction for this species.
       */
-      double phi() const;
+      WT phi() const;
 
       /**
       * Get the chemical potential for this species (units kT=1).
       */
-      double mu() const;
+      WT mu() const;
 
       /**
       * Get the molecular partition function for this species.
       */
-      double q() const;
+      WT q() const;
 
       /**
       * Get the statistical ensemble for this species (open or closed).
@@ -119,17 +120,25 @@ namespace Pscf {
       /**
       * Species volume fraction.
       */
-      double phi_;
+      WT phi_;
 
       /**
       * Species chemical potential.
       */
-      double mu_;
+      WT mu_;
 
       /**
       * Molecular partition function.
       */
-      double q_;
+      WT q_;
+
+      /**
+      * Input value of phi (closed ensemble) or mu (open).
+      * 
+      * The input value of this control parameter is required
+      * to be a real number.
+      */
+      double phiMu_;
 
       /**
       * Statistical ensemble for this species (open or closed).
@@ -141,26 +150,33 @@ namespace Pscf {
    /*
    * Get species volume fraction.
    */
-   inline double Species::phi() const
+   template <typename WT>
+   inline WT Species<WT>::phi() const
    {  return phi_; }
 
    /*
    * Get species chemical potential.
    */
-   inline double Species::mu() const
+   template <typename WT>
+   inline WT Species<WT>::mu() const
    {  return mu_; }
 
    /*
    * Get species partition function q.
    */
-   inline double Species::q() const
+   template <typename WT>
+   inline WT Species<WT>::q() const
    {  return q_; }
 
    /*
    * Get statistical ensemble for this species (open or closed).
    */
-   inline Ensemble Species::ensemble() const
+   template <typename WT>
+   inline Ensemble Species<WT>::ensemble() const
    {  return ensemble_; }
+
+   // Explicit instantiation declaration
+   extern template class Species<double>;
 
 }
 #endif
