@@ -541,8 +541,8 @@ namespace Cuda {
       DeviceArray<cudaReal> kBasis(D*D);
       DeviceArray<int> meshDims(D);
       int idx = 0;
-      for(int j = 0; j < D; ++j) {
-         for(int k = 0; k < D; ++k) {
+      for (int j = 0; j < D; ++j) {
+         for (int k = 0; k < D; ++k) {
             kBasis_h[idx] = unitCell().kBasis(j)[k];
             idx++;
          }
@@ -612,8 +612,8 @@ namespace Cuda {
       HostDArray<cudaReal> kBasis_h(D*D);
       DeviceArray<cudaReal> kBasis(D*D);
       int idx = 0;
-      for(int j = 0; j < D; ++j) {
-         for(int k = 0; k < D; ++k) {
+      for (int j = 0; j < D; ++j) {
+         for (int k = 0; k < D; ++k) {
             kBasis_h[idx] = unitCell().kBasis(j)[k];
             idx++;
          }
@@ -654,9 +654,9 @@ namespace Cuda {
       int idx;
       HostDArray<cudaReal> dkkBasis_h(unitCell().nParameter() * D * D);
       DeviceArray<cudaReal> dkkBasis;
-      for(int i = 0 ; i < unitCell().nParameter(); ++i) {
-         for(int j = 0; j < D; ++j) {
-            for(int k = 0; k < D; ++k) {
+      for (int i = 0 ; i < unitCell().nParameter(); ++i) {
+         for (int j = 0; j < D; ++j) {
+            for (int k = 0; k < D; ++k) {
                idx = k + (j * D) + (i * D * D);
                dkkBasis_h[idx] = unitCell().dkkBasis(i, j, k);
             }

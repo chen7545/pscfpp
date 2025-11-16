@@ -74,10 +74,11 @@ namespace Cpu {
       /**
       * Assignment operator.
       *
-      * If this Field is not allocated, allocates and copies all elements.
+      * If this field is not allocated, this function allocates the field
+      * and copies all elements.
       *
-      * If this and the other Field are both allocated, the capacities must
-      * be exactly equal. If so, this method copies all elements.
+      * If this and the other field are both allocated, the capacities must
+      * be equal. If so, this functions copies all elements.
       *
       * \param other the RHS CField
       */

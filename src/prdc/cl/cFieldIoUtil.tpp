@@ -26,9 +26,9 @@ namespace Prdc {
       double x, y;
       MeshIterator<D> iter(dimensions);
       int rank, j;
-      for (iter.begin(); !iter.atEnd(); ++iter) {
-         rank = iter.rank();
-         for (j = 0; j < nMonomer; ++j) {
+      for (j = 0; j < nMonomer; ++j) {
+         for (iter.begin(); !iter.atEnd(); ++iter) {
+            rank = iter.rank();
             in >> x;
             UTIL_ASSERT(in.good());
             in >> y;
@@ -70,9 +70,9 @@ namespace Prdc {
       double x, y;
       MeshIterator<D> iter(dimensions);
       int rank, j;
-      for (iter.begin(); !iter.atEnd(); ++iter) {
-         rank = iter.rank();
-         for (j = 0; j < nMonomer; ++j) {
+      for (j = 0; j < nMonomer; ++j) {
+         for (iter.begin(); !iter.atEnd(); ++iter) {
+            rank = iter.rank();
             x = real( fields[j][rank] );
             y = imag( fields[j][rank] );
             out << "  " 
