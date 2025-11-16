@@ -116,5 +116,4 @@ namespace Prdc {
 
 } // namespace Prdc
 } // namespace Pscf
-#include "fieldIoUtil.tpp"
 #endif

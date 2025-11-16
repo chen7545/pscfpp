@@ -320,22 +320,20 @@ namespace Rpc {
 
    };
 
-   #ifndef RPC_FIELD_IO_TPP
+   // Explicit instantiation declarations 
    extern template class FieldIo<1>;
    extern template class FieldIo<2>;
    extern template class FieldIo<3>;
-   #endif
 
 } // namespace Rpc
 
-#ifndef RPC_FIELD_IO_TPP
 namespace Prdc {
+   // Explicit instantiation declarations for base class
    using namespace Cpu;
    extern template class Rl::FieldIo<1, RField<1>, RFieldDft<1>, FFT<1>>;
    extern template class Rl::FieldIo<2, RField<2>, RFieldDft<2>, FFT<2>>;
    extern template class Rl::FieldIo<3, RField<3>, RFieldDft<3>, FFT<3>>;
-} 
-#endif
+}
 
 } // namespace Pscf
 #endif

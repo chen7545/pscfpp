@@ -7,28 +7,29 @@ respository.
 
 Subdirectories (with corresponding C++ namespace names in parentheses):
 
-  util/  general utilities for scientific computation (Util)
-  pscf/  shared classes accessible throughout the PSCF package (Pscf)
-  prdc/  shared classes for periodic structures (Pscf::Prdc)
-  r1d/   real fields, one-dimensional SCFT (Pscf::R1d)
-  rpc/   real periodic fields, SCFT & PS-FTS on CPU (Pscf::Rpc)
-  rpg/   real periodic fields, SCFT & PS-FTS on GPU (Pscf::Rpg)
-  cpc/   complex periodic fields, CL-FTS on CPU (Pscf::Cpc)
-  test/  unit testing framework (base classes)
+  util - general utilities for scientific computation (Util)
+  pscf - classes accessible throughout the PSCF package (Pscf)
+  prdc - shared classes for periodic structures (Pscf::Prdc)
+  r1d  - real fields, one-dimensional SCFT (Pscf::R1d)
+  rpc  - real periodic fields, SCFT & PS-FTS on CPU (Pscf::Rpc)
+  rpg  - real periodic fields, SCFT & PS-FTS on GPU (Pscf::Rpg)
+  cpc  - complex periodic fields, CL-FTS on CPU (Pscf::Cpc)
+  test - unit testing framework (base classes)
 
   Directories r1d, rpc, rpg, and cpc are "program level" directories 
   that each contain code that is only accessible to and used by a single 
   executable program, namely, pscf_1d, pscf_pc, pscf_pg, or pscf_cpc.
 
   Directories util, pscf, and prdc each contain code that may be used in
-  multiple programs. Names defined in files located in the util/ and pscf/ 
-  directories are accessible anywhere in PSCF. Names defined in the prdc/ 
-  directory are only accessible in prdc/, rpc/, prg/ and cpc/ directories.
+  multiple programs. Names defined in files located in the util and pscf 
+  directories are accessible anywhere in PSCF. Names defined in the prdc 
+  directory are accessible in the rpc, rpg and cpc program-level
+  directories, but not in the r1d directory.
 
 Files (maintained in the git repository):
 
   setopts  - script for managing compile-time options
-  makefile - main makefile for in-source compilation (build in src/)
+  makefile - main makefile for in-source compilation (build in src)
   programs.mod - doxygen page for program command-line interfaces
   CONTENTS - this file
 

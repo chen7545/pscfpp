@@ -29,13 +29,10 @@ namespace Cl {
    using namespace Pscf::Prdc;
 
    /**
-   * File input/output, format conversions and other utilities for fields.
+   * File input/output and other utilities for fields.
    *
-   * This class template provides functions to read and write real-valued
-   * fields in any of three representations (symmetry-adapted basis,
-   * real-space r-grid, or Fourier space k-grid form), functions to
-   * convert among these three representations, and other utilities for
-   * manipulating fields and field files.
+   * This class template provides functions to read and write complex-valued
+   * fields and other utilities for manipulating fields and field files.
    *
    * <b>Template parameters:</b>
    *
@@ -57,8 +54,8 @@ namespace Cl {
    *
    * <b> Pure virtual member functions </b>: This class template defines
    * several pure virtual functions for which different implementations
-   * are required for Cpu and Cuda code. Cpu and Cuda implementations
-   * of these functions, which are defined in the Cpc::FieldIo<D> and
+   * are required for Cpu and Cuda code. Cpu and Cuda implementations of
+   * these functions, which are defined in the Cpc::FieldIo<D> and
    * Cpg::FieldIo<D> subclasses, differ because the Cuda versions must
    * explicitly transfer data between Cpu and Gpu memory.
    *
@@ -180,7 +177,7 @@ namespace Cl {
       * \param nMonomer  expected number of monomer types (input
       */
       virtual
-      void readFieldsdData(std::istream& in,
+      void readFieldsData(std::istream& in,
                            DArray<CFT>& fields,
                            int nMonomer) const = 0;
 
@@ -222,8 +219,7 @@ namespace Cl {
       * On entry, the container fields must be allocated, and the mesh
       * dimensions of each field must equal mesh().dimensions(). The
       * writeHeader argument may be set false to completely suppress
-      * writing of the file header. The isSymmetric argument is only
-      * relevant if writeHeader is true.
+      * writing of the file header. 
       *
       * \param out  output stream (i.e., output file)
       * \param fields  array of RField objects (fields on r-space grid)
@@ -426,7 +422,6 @@ namespace Cl {
       * \param out  output stream (i.e., file)
       * \param nMonomer  number of monomer types or fields
       * \param unitCell  associated crystallographic unit cell
-      * \param isSymmetric  Should a space group be declared?
       */
       void writeFieldHeader(std::ostream& out,
                             int nMonomer,
@@ -479,7 +474,7 @@ namespace Cl {
       /**
       * Check if r-grid workspace is allocated, allocate if necessary.
       */
-      void checkAllocateGrid() const;
+      void checkAllocate() const;
 
    private:
 

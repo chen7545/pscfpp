@@ -99,7 +99,7 @@ namespace Cl {
       * \param in  input parameter stream
       * \param nMonomer  number of monomers in field file (output)
       */
-      void readRGridFieldHeader(std::istream& in, int& nMonomer);
+      void readFieldHeader(std::istream& in, int& nMonomer);
 
       ///@}
       /// \name Accessors (return component objects by reference)

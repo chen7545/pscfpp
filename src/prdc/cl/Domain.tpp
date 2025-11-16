@@ -32,16 +32,22 @@ namespace Cl {
       fieldIoPtr_(nullptr),
       signalPtr_(nullptr),
       fileMasterPtr_(nullptr),
-      hasGroup_(false),
       isInitialized_(false)
    {
       setClassName("Domain");
 
       // Construct associated objects
       fftPtr_ = new FFT();
-      waveListPtr_ = new WLT();
+      bool isRealField = false;
+      waveListPtr_ = new WLT(isRealField);
       fieldIoPtr_ = new FIT();
       signalPtr_ = new Signal<void>();
+
+      // Note: Passing the WLT (i.e. WaveList<D>) constructor
+      // an argument isRealField = false configures it to use
+      // a full k-space grid appropriate for a complex field,
+      // rather than the half-space grid used for the DFT of
+      // a real-valued field. 
 
       // Create associations between objects
       fieldIo().associate(mesh_, fft(), lattice_);
@@ -104,14 +110,13 @@ namespace Cl {
    */
    template <int D, class FFT, class WLT, class FIT>
    void
-   Domain<D,FFT,WLT,FIT>::readRGridFieldHeader(std::istream& in,
-                                                   int& nMonomer)
+   Domain<D,FFT,WLT,FIT>::readFieldHeader(std::istream& in,
+                                          int& nMonomer)
    {
       // Preconditions - confirm that nothing is initialized
       UTIL_CHECK(!isInitialized_);
       UTIL_CHECK(lattice_ == UnitCell<D>::Null);
       UTIL_CHECK(!unitCell_.isInitialized());
-      UTIL_CHECK(!hasGroup_);
 
       // Read common section of standard field header
       int ver1, ver2;
@@ -124,7 +129,7 @@ namespace Cl {
       UTIL_CHECK(lattice_ != UnitCell<D>::Null);
       UTIL_CHECK(unitCell_.isInitialized());
 
-      // Read grid dimensions
+      // Read mesh dimensions
       std::string label;
       in >> label;
       if (label != "mesh" && label != "ngrid") {

@@ -21,9 +21,9 @@ namespace Rpc {
    * A field to which the total density is constrained.
    *
    * Please refer to the documentation of the base class Prdc::Rl::Mask
-   * for more complete API documentation for this class template.
-   * The public interface of Rpc::Mask is identical to that of the
-   * base class template Prdc::Rl::Mask. 
+   * for more complete API documentation for this class template. The
+   * public interface of Rpc::Mask is identical to that of the base class
+   * template Prdc::Rl::Mask.
    *
    * \ingroup Rpc_Field_Module
    */
@@ -67,21 +67,19 @@ namespace Rpc {
 
    };
 
-   #ifndef RPC_MASK_TPP
+   // Explicit instantiation declaration
    extern template class Mask<1>;
    extern template class Mask<2>;
    extern template class Mask<3>;
-   #endif
 
 } // namespace Rpc
 
-#ifndef RPC_MASK_TPP
 namespace Prdc {
+   // Explicit instantiation declaration for base class
    extern template class Rl::Mask< 1, Cpu::RField<1>, Rpc::FieldIo<1> >;
    extern template class Rl::Mask< 2, Cpu::RField<2>, Rpc::FieldIo<2> >;
    extern template class Rl::Mask< 3, Cpu::RField<3>, Rpc::FieldIo<3> >;
-} 
-#endif
+}
 
 } // namespace Pscf
 #endif

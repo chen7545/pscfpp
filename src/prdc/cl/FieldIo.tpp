@@ -10,7 +10,7 @@
 
 #include "FieldIo.h"
 
-#include <prdc/cl/fieldIoUtil.h>
+#include <prdc/rl/fieldIoUtil.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/UnitCell.h>
 
@@ -43,7 +43,7 @@ namespace Cl {
       fftPtr_(nullptr),
       fileMasterPtr_(nullptr),
       nMonomer_(0),
-      isAllocated_(false),
+      isAllocated_(false)
    {}
 
    /*
@@ -95,7 +95,7 @@ namespace Cl {
    * Open-close a file, and write an array of fields in r-grid format
    */
    template <int D, class CFT, class FFT>
-   bool FieldIo<D,CFT,FFT>::readFields(
+   void FieldIo<D,CFT,FFT>::readFields(
                               std::string filename,
                               DArray< CFT >& fields,
                               UnitCell<D>& unitCell) const
@@ -104,14 +104,13 @@ namespace Cl {
       fileMaster().openInputFile(filename, file);
       readFields(file, fields, unitCell);
       file.close();
-      return isSymmetric;
    }
 
    /*
    * Open-close a file, and read a single field in r-grid format
    */
    template <int D, class CFT, class FFT>
-   bool FieldIo<D,CFT,FFT>::readField(
+   void FieldIo<D,CFT,FFT>::readField(
                               std::string filename,
                               CFT & field,
                               UnitCell<D>& unitCell) const
@@ -120,7 +119,6 @@ namespace Cl {
       fileMaster().openInputFile(filename, file);
       readField(file, field, unitCell);
       file.close();
-      return isSymmetric;
    }
 
    /*
@@ -152,7 +150,7 @@ namespace Cl {
    {
       std::ofstream file;
       fileMaster().openOutputFile(filename, file);
-      writeField(file, field, unitCell, isSymmetric);
+      writeField(file, field, unitCell);
       file.close();
    }
 
@@ -266,9 +264,6 @@ namespace Cl {
    * Extracts number of monomers (i.e., number of fields) and unitCell
    * data (lattice type and parameters) from the file, and returns these
    * via non-const reference parameters nMonomer and unitCell.
-   *
-   * Also validates lattice type and groupName (if any), and constructs
-   * a symmetry-adapted basis if there is a group but no basis.
    */
    template <int D, class CFT, class FFT>
    void FieldIo<D,CFT,FFT>::readFieldHeader(
@@ -325,10 +320,6 @@ namespace Cl {
       int v1 = 1;
       int v2 = 0;
       std::string gName = "";
-      if (isSymmetric) {
-         UTIL_CHECK(hasGroup());
-         gName = groupName();
-      }
       Pscf::Prdc::writeFieldHeader(out, v1, v2, unitCell,
                                    gName, nMonomer);
       // Note: This function is defined in prdc/crystal/fieldHeader.tpp

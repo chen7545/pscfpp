@@ -1,5 +1,5 @@
-#ifndef RPC_DOMAIN_H
-#define RPC_DOMAIN_H
+#ifndef CPC_DOMAIN_H
+#define CPC_DOMAIN_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/Domain.h>        // base class template
+#include <prdc/cl/Domain.h>        // base class template
 
 // Forward declarations
 namespace Pscf {
@@ -18,13 +18,26 @@ namespace Pscf {
          template <int D> class FFT;
       }
    }
-   namespace Rpc {
+   namespace Cpc {
       template <int D> class FieldIo;
    }
 }
 
+// Explicit instantiation declarations of base class
 namespace Pscf {
-namespace Rpc {
+namespace Prdc {
+   using namespace Cpu;
+   extern template 
+   class Cl::Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
+   extern template 
+   class Cl::Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
+   extern template 
+   class Cl::Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
+}
+}
+
+namespace Pscf {
+namespace Cpc {
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -34,20 +47,20 @@ namespace Rpc {
    * Spatial domain for a periodic structure with real fields, on a CPU.
    *
    * The public interface of this class is identical to that of the 
-   * Prdc::Rl::Domain base class template. Please see documentation of
+   * Prdc::Cl::Domain base class template. Please see documentation of
    * that base class for API documentation. 
    *
-   * The Rpc::Domain\<D\> class template is a named partial specialization
-   * of the base class template Prdc::Rl::Domain<D, FFT, WLT, FIT> that 
+   * The Cpc::Domain\<D\> class template is a named partial specialization
+   * of the base class template Prdc::Cl::Domain<D, FFT, WLT, FIT> that 
    * is designed to use standard CPU hardware, defined using template type 
    * parameters FFT = Prdc::Cpu::FFT\<D\>, WLT = Prdc::Cpu::WaveList\<D\>, 
-   * and FIT = Rpc::FieldIo\<D\> . 
+   * and FIT = Cpc::FieldIo\<D\> . 
    *
-   * \ingroup Rpc_Field_Module
+   * \ingroup Cpc_Field_Module
    */
    template <int D>
    class Domain 
-     : public Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
+     : public Cl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
    {
 
    public:
@@ -59,28 +72,19 @@ namespace Rpc {
       */
       Domain();
 
-      /// Typedef for base class
-      typedef Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> > Base;
+      /// Alias for base class
+      using Base = Cl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >;
 
       // Inherited pubic member functions
       using Base::setFileMaster;
       using Base::readParameters;
-      using Base::readRGridFieldHeader;
-      using Base::makeBasis;
+      using Base::readFieldHeader;
       using Base::unitCell;
       using Base::mesh;
-      using Base::group;
-      using Base::basis;
       using Base::fft;
       using Base::waveList;
       using Base::fieldIo;
       using Base::lattice;
-      using Base::groupName;
-      using Base::hasGroup;
-      using Base::hasBasis;
-      using Base::writeStars;
-      using Base::writeWaves;
-      using Base::writeGroup;
 
    };
 
@@ -89,18 +93,7 @@ namespace Rpc {
    extern template class Domain<2>;
    extern template class Domain<3>;
 
-} // namespace Rpc
-
-namespace Prdc {
-   // Explicit instantiation declarations of base class
-   using namespace Cpu;
-   extern template 
-   class Rl::Domain<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
-   extern template 
-   class Rl::Domain<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
-   extern template 
-   class Rl::Domain<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
-} 
+} // namespace Cpc
 
 } // namespace Pscf
 #endif

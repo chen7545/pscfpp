@@ -3,10 +3,12 @@
 
 # Include source list files from subdirectories
 include $(SRC_DIR)/cpc/solvers/sources.mk
+include $(SRC_DIR)/cpc/field/sources.mk
 
 # List of source files in src/cpc
 cpc_= \
-  $(cpc_solvers_) 
+  $(cpc_solvers_) \
+  $(cpc_field_)
 
 # List of object file targets
 cpc_OBJS=\

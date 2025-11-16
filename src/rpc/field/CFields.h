@@ -66,11 +66,13 @@ namespace Rpc {
    extern template class CFields<3>;
 
 } // namespace Rpc
+
 namespace Prdc {
    // Explicit instantiation declarations of base class
    extern template class Rl::CFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
    extern template class Rl::CFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
    extern template class Rl::CFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
 } 
+
 } // namespace Pscf
 #endif

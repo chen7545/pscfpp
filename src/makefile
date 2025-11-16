@@ -43,16 +43,22 @@ pscf_1d:
 	cd pscf; $(MAKE) all
 	cd r1d; $(MAKE) all
 
-# Build pscf_pc CPU code for periodic structures (install in BIN_DIR)
+# Build pscf_pc CPU code for real periodic fields (install in BIN_DIR)
 pscf_pc: 
 	cd util; $(MAKE) all
 	cd pscf; $(MAKE) all
 	cd prdc; $(MAKE) all
 	cd rpc; $(MAKE) all
+
+# Build pscf_cpc CPU code for real periodic fields (install in BIN_DIR)
+pscf_cpc: 
+	cd util; $(MAKE) all
+	cd pscf; $(MAKE) all
+	cd prdc; $(MAKE) all
 	cd cpc; $(MAKE) all
 
 ifdef PSCF_CUDA
-# Build pscf_pc GPU code for periodic structures (install in BIN_DIR)
+# Build pscf_pc GPU code for real periodic fields (install in BIN_DIR)
 pscf_pg:
 	cd util; $(MAKE) all
 	cd pscf; $(MAKE) all

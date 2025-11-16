@@ -77,23 +77,19 @@ namespace Rpc {
 
    };
 
-   #ifndef RPC_W_FIELD_CONTAINER_TPP
    // Explicit instantiation declarations
    extern template class WFields<1>;
    extern template class WFields<2>;
    extern template class WFields<3>;
-   #endif
 
 } // namespace Rpc
 
-#ifndef RPC_W_FIELD_CONTAINER_TPP
 namespace Prdc {
-   // Explicit instantiation declarations
+   // Explicit instantiation declarations for base class
    extern template class WFieldsTmpl<1, RField<1>, Rpc::FieldIo<1> >;
    extern template class WFieldsTmpl<2, RField<2>, Rpc::FieldIo<2> >;
    extern template class WFieldsTmpl<3, RField<3>, Rpc::FieldIo<3> >;
-} // namespace Rpc
-#endif
+} 
 
 } // namespace Pscf
 #endif
