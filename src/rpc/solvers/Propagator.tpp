@@ -240,7 +240,7 @@ namespace Rpc {
    * Compute spatial average of product of head and tail of partner.
    */
    template <int D>
-   double Propagator<D>::computeQ() const
+   void Propagator<D>::computeQ(double & Q) const
    {
       // Preconditions
       if (!isSolved()) {
@@ -256,7 +256,7 @@ namespace Rpc {
       UTIL_CHECK(meshPtr_);
       int nx = meshPtr_->size();
 
-      double Q = 0.0;
+      Q = 0.0;
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
          FieldT const& qt = partner().q(ns_-2);
@@ -272,7 +272,6 @@ namespace Rpc {
          }
       }
       Q /= double(nx);
-      return Q;
    }
 
 }

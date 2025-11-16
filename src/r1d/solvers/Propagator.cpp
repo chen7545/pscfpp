@@ -134,7 +134,7 @@ namespace R1d
    /*
    * Integrate to calculate monomer concentration for this block
    */
-   double Propagator::computeQ()
+   void Propagator::computeQ(double & Q)
    {
       if (!isSolved()) {
          UTIL_THROW("Propagator is not solved.");
@@ -147,7 +147,7 @@ namespace R1d
       }
       FieldT const& qh = head();
       FieldT const& qt = partner().tail();
-      return block().domain().innerProduct(qh, qt);
+      Q = block().domain().innerProduct(qh, qt);
    }
 
 }

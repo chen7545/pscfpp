@@ -612,6 +612,43 @@ namespace Pscf {
    template <typename CT, typename RT>
    void divEq(CT & a, RT const & b);
 
+   // Inversion
+
+   /**
+   * Inverse of a number, z = 1 / a .
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z inverse (out)
+   * \param a argument (in)
+   */
+   template <typename T>
+   void inverse(T & z, T const & a);
+
+   /**
+   * Inverse of a double precision real number, z = 1/a.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z inverse (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void inverse(double & z, double const & a)
+   {  z = 1.0/a; }
+
+   /**
+   * Inverse of a  float real number, z = 1 / a .
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z inverse (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void inverse(float & z, float const & a)
+   {  z = 1.0/a; }
+
    // Exponential function
 
    /**

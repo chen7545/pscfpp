@@ -115,10 +115,11 @@ public:
       }
       mix.compute(wFields, cFields);
 
-      double q00 = mix.polymer(0).propagator(0, 0).computeQ();
-      double q01 = mix.polymer(0).propagator(0, 1).computeQ();
-      double q10 = mix.polymer(0).propagator(1, 0).computeQ();
-      double q11 = mix.polymer(0).propagator(1, 1).computeQ();
+      double q00, q01, q10, q11;
+      mix.polymer(0).propagator(0, 0).computeQ(q00);
+      mix.polymer(0).propagator(0, 1).computeQ(q01);
+      mix.polymer(0).propagator(1, 0).computeQ(q10);
+      mix.polymer(0).propagator(1, 1).computeQ(q11);
       TEST_ASSERT(abs(q01 - q00) < 1.0E-5);
       TEST_ASSERT(abs(q10 - q00) < 1.0E-5);
       TEST_ASSERT(abs(q11 - q00) < 1.0E-5);

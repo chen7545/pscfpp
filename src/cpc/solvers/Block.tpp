@@ -195,7 +195,6 @@ namespace Cpc {
    void Block<D>::clearUnitCellData()
    {  
       hasExpKsq_ = false;
-      stress_.clear();
    }
 
    /*
@@ -238,7 +237,7 @@ namespace Cpc {
    */
    template <int D>
    void
-   Block<D>::setupSolver(RField<D> const& w)
+   Block<D>::setupSolver(CField<D> const& w)
    {
       // Preconditions
       int nx = mesh().size();
@@ -246,20 +245,34 @@ namespace Cpc {
       UTIL_CHECK(isAllocated_);
 
       // Compute expW arrays
-      double arg;
+      fftw_complex arg, arg2;
       if (PolymerModel::isThread()) {
          double c = -0.5*ds_;
+         double c2 = -0.25*ds_;
          for (int i = 0; i < nx; ++i) {
-            arg = c*w[i];
-            expW_[i]  = exp(arg);
-            expW2_[i] = exp(0.5*arg);
+
+            mul(arg, w[i], c);
+            mul(arg2, w[i], c2);
+            assignExp(expW_[i], arg);
+            assignExp(expW2_[i], arg2);
+
+            //arg = c*w[i];
+            //expW_[i]  = exp(arg);
+            //expW2_[i] = exp(0.5*arg);
+
          }
       } else
       if (PolymerModel::isBead()) {
          for (int i = 0; i < nx; ++i) {
-            arg = -w[i];
-            expW_[i]  = exp(arg);
-            expWInv_[i] = 1.0/expW_[i];
+
+            mul(arg, w[i], -1.0);
+            assignExp(expW_[i], arg);
+            inverse(expWInv_[i], expW_[i]);  
+
+            //arg = -w[i];
+            //expW_[i]  = exp(arg);
+            //expWInv_[i] = 1.0/expW_[i];
+
          }
       }
 
@@ -274,7 +287,7 @@ namespace Cpc {
    * Propagate solution by one step for the thread model.
    */
    template <int D>
-   void Block<D>::stepThread(RField<D> const & q, RField<D>& qout) const
+   void Block<D>::stepThread(CField<D> const & q, CField<D>& qout) const
    {
       UTIL_CHECK(PolymerModel::isThread());
 
@@ -306,8 +319,13 @@ namespace Cpc {
       // Step by ds/2 for qr_, step by ds/4 for qr2_
       int i;
       for (i = 0; i < nx; ++i) {
-         qr_[i] = q[i]*expW_[i];
-         qr2_[i] = q[i]*expW2_[i];
+
+         mul(qr_[i],  q[i], expW_[i] );
+         mul(qr2_[i], q[i], expW2_[i]);
+
+         // qr_[i] = q[i]*expW_[i];
+         // qr2_[i] = q[i]*expW2_[i];
+
       }
       fft().forwardTransform(qr_, qk_);
       fft().forwardTransform(qr2_, qk2_);
@@ -317,11 +335,13 @@ namespace Cpc {
          qk2_[i][0] *= expKsq2_[i];
          qk2_[i][1] *= expKsq2_[i];
       }
-      fft().inverseTransformUnsafe(qk_, qr_); // overwrites qk_
-      fft().inverseTransformUnsafe(qk2_, qr2_); // overwrites qk2_
+      fft().inverseTransform(qk_, qr_); // overwrites qk_
+      fft().inverseTransform(qk2_, qr2_); // overwrites qk2_
       for (i = 0; i < nx; ++i) {
-         qr_[i] = qr_[i]*expW_[i];
-         qr2_[i] = qr2_[i]*expW_[i];
+         mulEq(qr_[i],  expW_[i]);
+         mulEq(qr2_[i], expW_[i]);
+         // qr_[i] = qr_[i]*expW_[i];
+         // qr2_[i] = qr2_[i]*expW_[i];
       }
 
       // Above, multiplying qr2_ by expW_, rather than by expW2_, combines
@@ -334,14 +354,17 @@ namespace Cpc {
          qk2_[i][0] *= expKsq2_[i];
          qk2_[i][1] *= expKsq2_[i];
       }
-      fft().inverseTransformUnsafe(qk2_, qr2_); // overwrites qk2_
+      fft().inverseTransform(qk2_, qr2_); // overwrites qk2_
       for (i = 0; i < nx; ++i) {
-         qr2_[i] = qr2_[i]*expW2_[i];
+         mulEq(qr2_[i], expW2_[i]);
+         //qr2_[i] = qr2_[i]*expW2_[i];
       }
 
       // Richardson extrapolation
       for (i = 0; i < nx; ++i) {
-         qout[i] = (4.0*qr2_[i] - qr_[i])/3.0;
+         qout[i][0] = (4.0*qr2_[i][0] - qr_[i][0])/3.0;
+         qout[i][1] = (4.0*qr2_[i][1] - qr_[i][1])/3.0;
+         //qout[i] = (4.0*qr2_[i] - qr_[i])/3.0;
       }
 
    }
@@ -350,7 +373,7 @@ namespace Cpc {
    * Apply one step of MDE solution for the bead model.
    */
    template <int D>
-   void Block<D>::stepBead(RField<D> const & q, RField<D>& qout) const
+   void Block<D>::stepBead(CField<D> const & q, CField<D>& qout) const
    {
       UTIL_CHECK(PolymerModel::isBead());
       stepBondBead(q, qout);
@@ -361,7 +384,7 @@ namespace Cpc {
    * Apply the bond operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepBondBead(RField<D> const & q, RField<D>& qout) const
+   void Block<D>::stepBondBead(CField<D> const & q, CField<D>& qout) const
    {
       // Prereconditions 
       UTIL_CHECK(isAllocated_);
@@ -380,14 +403,14 @@ namespace Cpc {
          qk_[i][0] *= expKsq_[i];
          qk_[i][1] *= expKsq_[i];
       }
-      fft().inverseTransformUnsafe(qk_, qout); // destroys qk_
+      fft().inverseTransform(qk_, qout); // overwrites qk_
    }
 
    /*
    * Apply the half-bond operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepHalfBondBead(RField<D> const & q, RField<D>& qout) const
+   void Block<D>::stepHalfBondBead(CField<D> const & q, CField<D>& qout) const
    {
       // Preconditions 
       UTIL_CHECK(isAllocated_);
@@ -406,14 +429,14 @@ namespace Cpc {
          qk_[i][0] *= expKsq2_[i];
          qk_[i][1] *= expKsq2_[i];
       }
-      fft().inverseTransformUnsafe(qk_, qout); // destroys qk_
+      fft().inverseTransform(qk_, qout); // destroys qk_
    }
 
    /*
    * Apply the local field operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepFieldBead(RField<D>& q) const
+   void Block<D>::stepFieldBead(CField<D>& q) const
    {
       // Preconditions 
       int nx = mesh().size();
@@ -423,7 +446,8 @@ namespace Cpc {
 
       // Apply field operator
       for (int i = 0; i < nx; ++i) {
-         q[i] *= expW_[i];
+         mulEq(q[i], expW_[i]);
+         //q[i] *= expW_[i];
       }
    }
 
@@ -442,49 +466,74 @@ namespace Cpc {
       UTIL_CHECK(propagator(1).isSolved());
       UTIL_CHECK(cField().capacity() == nx);
 
+      CField<D> & c = cField();
+      double d;
+      int i, j;
+
       // Initialize cField to zero at all points
-      int i;
+      d = 0.0;
       for (i = 0; i < nx; ++i) {
-         cField()[i] = 0.0;
+         assign(c[i], d);
       }
 
       // References to forward and reverse propagators
       Propagator<D> const & p0 = propagator(0);
       Propagator<D> const & p1 = propagator(1);
+      fftw_complex product;
 
       // Evaluate unnormalized integral
 
-      // Endpoint contributions
-      for (i = 0; i < nx; ++i) {
-         cField()[i] += p0.q(0)[i]*p1.q(ns_ - 1)[i];
-         cField()[i] += p0.q(ns_ -1)[i]*p1.q(0)[i];
+      // Initial (head) endpoint contribution
+      {
+         CField<D> const & hf = p0.q(0);
+         CField<D> const & hr = p1.q(ns_ - 1);
+         for (i = 0; i < nx; ++i) {
+            mul(product, hf[i], hr[i]);
+            addEq(c[i], product);
+         }
       }
 
-      // Odd indices
-      int j;
-      for (j = 1; j < (ns_ -1); j += 2) {
-         RField<D> const & qf = p0.q(j);
-         RField<D> const & qr = p1.q(ns_ - 1 - j);
+      // Final (tail) endpoint contribution
+      {
+         CField<D> const & tf = p0.q(ns_-11);
+         CField<D> const & tr = p1.q(0);
          for (i = 0; i < nx; ++i) {
-            //cField()[i] += p0.q(j)[i] * p1.q(ns_ - 1 - j)[i] * 4.0;
-            cField()[i] += qf[i] * qr[i] * 4.0;
+            mul(product, tf[i], tr[i]);
+            addEq(c[i], product);
+         }
+      }
+      
+      // Odd indices
+      d = 4.0;
+      for (j = 1; j < (ns_ - 1); j += 2) {
+         CField<D> const & qf = p0.q(j);
+         CField<D> const & qr = p1.q(ns_ - 1 - j);
+         for (i = 0; i < nx; ++i) {
+            mul(product, qf[i], qr[i]);
+            mulEq(product, d);
+            addEq(c[i], product);
+            //c[i] += qf[i] * qr[i] * 4.0;
          }
       }
 
       // Even indices
-      for (j = 2; j < (ns_ -2); j += 2) {
-         RField<D> const & qf = p0.q(j);
-         RField<D> const & qr = p1.q(ns_ - 1 - j);
+      d = 2.0;
+      for (j = 2; j < (ns_ - 2); j += 2) {
+         CField<D> const & qf = p0.q(j);
+         CField<D> const & qr = p1.q(ns_ - 1 - j);
          for (i = 0; i < nx; ++i) {
-            // cField()[i] += p0.q(j)[i] * p1.q(ns_ - 1 - j)[i] * 2.0;
-            cField()[i] += qf[i] * qr[i] * 2.0;
+            mul(product, qf[i], qr[i]);
+            mulEq(product, d);
+            addEq(c[i], product);
+            // c[i] += qf[i] * qr[i] * 2.0;
          }
       }
 
       // Normalize the integral
-      prefactor *= ds_ / 3.0;
+      d = prefactor * ds_ / 3.0;
       for (i = 0; i < nx; ++i) {
-         cField()[i] *= prefactor;
+         mulEq(c[i], d);
+         // c[i] *= d;
       }
 
    }
@@ -504,237 +553,41 @@ namespace Cpc {
       UTIL_CHECK(propagator(1).isSolved());
       UTIL_CHECK(cField().capacity() == nx);
 
+      CField<D> & c = cField();
+      fftw_complex product;
+      double d;
+      int i, j;
+
       // Initialize cField to zero at all points
-      int i;
+      d = 0.0;
       for (i = 0; i < nx; ++i) {
-         cField()[i] = 0.0;
+         assign(c[i], d);
+         // c[i] = 0.0;
       }
-   
+  
       // References to forward and reverse propagators
       Propagator<D> const & p0 = propagator(0);
       Propagator<D> const & p1 = propagator(1);
 
-      // Sum over beads (j = 1, ... , ns_ -2)
-      int j;
+      // Sum over interior beads (j = 1, ... , ns_ -2)
       for (j = 1; j < (ns_ -1); ++j) {
-         RField<D> const & qf = p0.q(j);
-         RField<D> const & qr = p1.q(ns_ - 1 - j);
+         CField<D> const & qf = p0.q(j);
+         CField<D> const & qr = p1.q(ns_ - 1 - j);
          for (i = 0; i < nx; ++i) {
-            cField()[i] += qf[i] * qr[i] * expWInv_[i];
+            mul(product, qf[i], qr[i]);
+            mulEq(product, expWInv_[i]);
+            addEq(c[i], product);
+            //c[i] += qf[i] * qr[i] * expWInv_[i];
          }
       }
+
+      // Note: Slices j=0 and j=ns_ - 1 are phantom vertices
 
       // Normalize the integral
       for (i = 0; i < nx; ++i) {
-         cField()[i] *= prefactor;
+         mulEq(c[i], prefactor);
+         //c[i] *= prefactor;
       }
-   }
-
-   /*
-   * Integrate to compute stress exerted by this block (thread).
-   */
-   template <int D>
-   void Block<D>::computeStressThread(double prefactor)
-   {
-      // Preconditions
-      UTIL_CHECK(PolymerModel::isThread());
-      int nx = mesh().size();
-      UTIL_CHECK(nx > 0);
-      UTIL_CHECK(fft().isSetup());
-      UTIL_CHECK(mesh().dimensions() == fft().meshDimensions());
-      UTIL_CHECK(ns_ > 0);
-      UTIL_CHECK(ds_ > 0);
-
-      // References to forward and reverse propagators
-      Propagator<D> const & p0 = propagator(0);
-      Propagator<D> const & p1 = propagator(1);
-      UTIL_CHECK(p0.isAllocated());
-      UTIL_CHECK(p1.isAllocated());
-
-      // If necessary, update derivatives of |k|^2 in WaveList
-      UTIL_CHECK(waveListPtr_);
-      if (!waveListPtr_->hasdKSq()) {
-         waveListPtr_->computedKSq();
-      }
-
-      // Initialize dQ work array to zero
-      FSArray<double, 6> dQ;
-      const int nParam = unitCell().nParameter();
-      for (int i = 0; i < nParam; ++i) {
-         dQ.append(0.0);
-      }
-
-      // Work variables
-      const double bSq = kuhn()*kuhn()/6.0;
-      double dels, prod, increment;
-      int m, n;
-
-      // Evaluate unnormalized integral over contour 
-      for (int j = 0; j < ns_ ; ++j) {
-
-         qr_ = p0.q(j);
-         fft().forwardTransform(qr_, qk_);
-
-         qr2_ = p1.q(ns_ - 1 - j);
-         fft().forwardTransform(qr2_, qk2_);
-
-         // Compute prefactor dels for Simpson's rule
-         dels = ds_ / 3.0;
-         if (j != 0 && j != ns_ - 1) {
-            if (j % 2 == 0) {
-               dels *= 2.0;
-            } else {
-               dels *= 4.0;
-            }
-         }
-
-         // Loop over unit cell parameters
-         for (n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
-            increment = 0.0;
-            // Loop over wavevectors
-            for (m = 0; m < kSize_ ; ++m) {
-               prod = (qk2_[m][0] * qk_[m][0]) + (qk2_[m][1] * qk_[m][1]);
-               prod *= dKSq[m];
-               increment += prod;
-            }
-            increment *= bSq * dels;
-            dQ[n] = dQ[n] - increment;
-         }
-
-      }
-
-      // Compute stress_ from dQ
-      stress_.clear();
-      for (int n = 0; n < nParam; ++n) {
-         stress_.append(-1.0*prefactor*dQ[n]);
-      }
-
-   }
-
-   /*
-   * Compute contribution of this block to stress for bead model.
-   */
-   template <int D>
-   void Block<D>::computeStressBead(double prefactor)
-   {
-      // Preconditions
-      UTIL_CHECK(PolymerModel::isBead());
-      int nx = mesh().size();
-      UTIL_CHECK(nx > 0);
-      UTIL_CHECK(fft().isSetup());
-      UTIL_CHECK(mesh().dimensions() == fft().meshDimensions());
-      UTIL_CHECK(ns_ > 0);
-
-      // References to forward to reverse propagators
-      Propagator<D> const & p0 = propagator(0);
-      Propagator<D> const & p1 = propagator(1);
-      UTIL_CHECK(p0.isSolved());
-      UTIL_CHECK(p1.isSolved());
-
-
-      // If necessary, update derivatives of |k|^2 in WaveList
-      UTIL_CHECK(waveListPtr_);
-      if (!waveListPtr_->hasdKSq()) {
-         waveListPtr_->computedKSq();
-      }
-
-      // Initialize dQ work array to zero
-      FSArray<double, 6> dQ;
-      int nParam = unitCell().nParameter();
-      for (int i = 0; i < nParam; ++i) {
-         dQ.append(0.0);
-      }
-
-      const double bSq = kuhn()*kuhn()/6.0;
-      double increment, prod;
-
-      // Half-bond from head junction to first bead, if not a chain end
-      if (!p0.isHeadEnd()) {
-     
-         // Bead j = 0, forward propagator
-         qr_ = p0.q(0);
-         fft().forwardTransform(qr_, qk_);
-
-         // Next bead (ns_ - 2), reverse propagator
-         qr2_ = p1.q(ns_ - 2);
-         fft().forwardTransform(qr2_, qk2_);
-
-         // Loop over unit cell parameters
-         for (int n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
-            increment = 0.0;
-            // Loop over wavevectors
-            for (int m = 0; m < kSize_ ; ++m) {
-               prod = (qk2_[m][0] * qk_[m][0]) + (qk2_[m][1] * qk_[m][1]);
-               prod *= dKSq[m]*expKsq2_[m];
-               increment += prod;
-            }
-            increment *= 0.5*bSq;
-            dQ[n] = dQ[n] - increment;
-         }
-      }
-
-      // Loop over nBead - 1 full bonds within this block
-      for (int j = 1; j < ns_ - 2 ; ++j) {
-
-         // Bead j, forward propagator
-         qr_ = p0.q(j);
-         fft().forwardTransform(qr_, qk_);
-
-         // Next bead (ns_- 2 - j), reverse propagator
-         qr2_ = p1.q(ns_ - 2 - j);
-         fft().forwardTransform(qr2_, qk2_);
-
-         // Loop over unit cell parameters
-         for (int n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
-            increment = 0.0;
-            // Loop over wavevectors
-            for (int m = 0; m < kSize_ ; ++m) {
-               prod = (qk2_[m][0] * qk_[m][0]) + (qk2_[m][1] * qk_[m][1]);
-               prod *= dKSq[m]*expKsq_[m];
-               increment += prod;
-            }
-            increment *= bSq;
-            dQ[n] = dQ[n] - increment;
-         }
-
-      }
-
-      // Half-bond from last bead to tail junction, if not a chain end
-      if (!p0.isTailEnd()) {
-     
-         // Second-to-last bead, j = ns_ - 2, forward propagator
-         qr_ = p0.q(ns_-2);
-         fft().forwardTransform(qr_, qk_);
-
-         // Last bead, j=0, reverse propagator
-         qr2_ = p1.q(0);
-         fft().forwardTransform(qr2_, qk2_);
-
-         // Loop over unit cell parameters
-         for (int n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
-            increment = 0.0;
-            // Loop over wavevectors
-            for (int m = 0; m < kSize_ ; ++m) {
-               prod = (qk2_[m][0] * qk_[m][0]) + (qk2_[m][1] * qk_[m][1]);
-               prod *= dKSq[m]*expKsq2_[m];
-               increment += prod;
-            }
-            increment *= 0.5*bSq;
-            dQ[n] = dQ[n] - increment;
-         }
-
-      }
-
-      // Compute stress_ from dQ
-      stress_.clear();
-      for (int i = 0; i < nParam; ++i) {
-         stress_.append(-1.0*prefactor*dQ[i]);
-      }
-
    }
 
 }

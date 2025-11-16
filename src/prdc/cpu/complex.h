@@ -35,7 +35,7 @@ namespace Pscf{
    * \param a complex argument (input)
    */
    template <> inline 
-   double real<fftw_complex, double>(fftw_complex const& a)
+   double real<fftw_complex, double>(fftw_complex const & a)
    {  return a[0]; }
 
    /**
@@ -46,7 +46,7 @@ namespace Pscf{
    * \param a complex argument (input)
    */
    template <> inline 
-   double imag<fftw_complex, double>(fftw_complex const& a)
+   double imag<fftw_complex, double>(fftw_complex const & a)
    {  return a[1]; }
 
    // Absolute magnitude
@@ -59,7 +59,7 @@ namespace Pscf{
    * \param a complex argument (in)
    */
    template <> inline 
-   double abs<fftw_complex, double>(fftw_complex const& a)
+   double abs<fftw_complex, double>(fftw_complex const & a)
    {  return sqrt(a[0] * a[0] + a[1] * a[1]); }
 
    /**
@@ -70,7 +70,7 @@ namespace Pscf{
    * \param a complex argument (in)
    */
    template <> inline 
-   double absSq<fftw_complex, double>(fftw_complex const& a)
+   double absSq<fftw_complex, double>(fftw_complex const & a)
    {  return (a[0] * a[0] + a[1] * a[1]); }
 
    // Complex Conjugation
@@ -84,7 +84,7 @@ namespace Pscf{
    * \param a complex argument (in)
    */
    template <> inline
-   void conj(fftw_complex& z, fftw_complex const& a)
+   void conj(fftw_complex& z, fftw_complex const & a)
    {
       z[0] = a[0];
       z[1] = -a[1];
@@ -116,7 +116,7 @@ namespace Pscf{
    * \param b imaginary part (in)
    */
    template <> inline
-   void assign(fftw_complex& z, double const& a, double const& b)
+   void assign(fftw_complex& z, double const & a, double const & b)
    {
       z[0] = a;
       z[1] = b;
@@ -131,7 +131,7 @@ namespace Pscf{
    * \param a real (in)
    */
    template <> inline
-   void assign(fftw_complex& z, double const& a)
+   void assign(fftw_complex& z, double const & a)
    {
       z[0] = a;
       z[1] = 0.0;
@@ -146,7 +146,7 @@ namespace Pscf{
    * \param a complex (in)
    */
    template <> inline
-   void assign(fftw_complex& z, fftw_complex const& a)
+   void assign(fftw_complex& z, fftw_complex const & a)
    {
       z[0] = a[0];
       z[1] = a[1];
@@ -465,10 +465,28 @@ namespace Pscf{
    * \param b real denominator (in)
    */
    template <> inline
-   void divEq(fftw_complex & a, double const& b)
+   void divEq(fftw_complex & a, double const & b)
    {
       a[0] /= b;
       a[1] /= b;
+   }
+
+   // Inversion
+
+   /**
+   * Inversion of a complex number, z = 1 / a .
+   *
+   * \ingroup Pscf_Math_Complex_Cpu_Module
+   *
+   * \param z inverse (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void inverse(fftw_complex& z, fftw_complex const & a)
+   {
+      double aSq = a[0] * a[0] + a[1] * a[1];
+      z[0] =   a[0]/aSq;
+      z[1] = - a[1]/aSq;
    }
 
    // Exponentiation and logarithm
@@ -482,8 +500,8 @@ namespace Pscf{
    * \param a argument (in)
    */
    template <> inline
-   void assignExp(fftw_complex & z, fftw_complex const& a)
-   {  
+   void assignExp(fftw_complex & z, fftw_complex const & a)
+   {
       std::complex<double> arg = std::complex<double>(a[0], a[1]); 
       std::complex<double> result = std::exp(arg);
       z[0] = result.real();
@@ -499,7 +517,7 @@ namespace Pscf{
    * \param a argument (in)
    */
    template <> inline
-   void assignLog(fftw_complex & z, fftw_complex const& a)
+   void assignLog(fftw_complex & z, fftw_complex const & a)
    {  
       std::complex<double> arg = std::complex<double>(a[0], a[1]); 
       std::complex<double> result = std::log(arg);
@@ -525,24 +543,6 @@ namespace Pscf{
    * \return modified output stream
    */
    std::ostream& operator << (std::ostream& os, fftw_complex const & z);
-
-   #if 0
-   /**
-   * Serialization function template for fftw_complex number.
-   *
-   * Implementation serializes real part, then imaginary part.
-   *
-   * \param ar Archive object
-   * \param z complex number
-   * \param version version id
-   */
-   template <typename Archive>
-   void serialize(Archive& ar, double z[2], const unsigned int version = 0)
-   {
-      serialize(ar, z[0], version);
-      serialize(ar, z[1], version);
-   }
-   #endif
 
 } // namespace Pscf
 #endif

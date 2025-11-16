@@ -106,8 +106,10 @@ namespace R1d {
       * molecule as a spatial average of the initial/head Qfield 
       * for this propagator and the final/tail Qfield of its
       * partner. 
+      * 
+      * \param Q  computed value of partition function (output)
       */ 
-      double computeQ();
+      void computeQ(double & Q);
 
       /**
       * Return q-field at specified step.

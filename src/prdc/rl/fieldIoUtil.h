@@ -192,8 +192,6 @@ namespace Prdc {
                          int nMonomer);
 
 
-   // Templates for RGrid data IO
-
    /**
    * Read mesh dimensions from a field file header.
    * 
@@ -221,6 +219,8 @@ namespace Prdc {
    void writeMeshDimensions(std::ostream &out,
                             IntVec<D> const& meshDimensions);
 
+   // Templates for RGrid data IO
+
    /**
    * Read data for array of r-grid fields, with no header section.
    *
@@ -228,7 +228,7 @@ namespace Prdc {
    * for multiple monomer types, with no header. 
    *
    * The template parameter AT must be an array type that provides
-   * an overloaded [] subscript operator.
+   * an overloaded [] subscript operator that returns a real number.
    *
    * \ingroup Prdc_Field_Module
    *
@@ -249,8 +249,8 @@ namespace Prdc {
    * This function reads the data section of an rgrid-field format
    * for a single monomer type, with no header. 
    *
-   * The template parameter AT must be an array type that provides
-   * an overloaded [] subscript operator.
+   * The template parameter AT must be an array type that provides an
+   * overloaded [] subscript operator that returns a real number.
    *
    * \ingroup Prdc_Field_Module
    *
@@ -391,7 +391,7 @@ namespace Prdc {
                        AT const& field,
                        IntVec<D> const& dftDimensions);
 
-   // Templates for Io of symmetrized basis format
+   // Templates for IO of fields in symmetry-adapted basis format
 
    /**
    * Read the number of basis functions from a basis field file header.

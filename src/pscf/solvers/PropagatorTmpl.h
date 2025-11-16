@@ -42,12 +42,15 @@ namespace Pscf
    * The concrete Propagator class is used in templates BlockTmpl, 
    * PolymerTmpl and MixtureTmpl. The usage in those templates require that
    * the Propagator class define an alias named FieldT for the field type.
-   * Propagator must also provide member functions named solve() and 
-   * computeQ(), neither of which takes any arguments.
+   * Propagator must also provide member functions "void solve()" and 
+   * "void computeQ(WT &)", where WT is the name of the real or complex
+   * number data type of the value of the partition function. This data
+   * type is generally the same as the type of the value of a single 
+   * w-field at a grid point.
    * 
-   * The type FieldT must be an aliases for the type of containers used 
-   * to store a single chemical potential or concentration field, or a
-   * slice of a propagator.
+   * The type FieldT must be an alias for the type of container used to
+   * store a single chemical potential or concentration field, or a
+   * single slice of a propagator.
    * 
    * The function void solve() must solve the modified diffusion equation 
    * for this propapagator, using information that is accessible to the
@@ -55,10 +58,12 @@ namespace Pscf
    * in an internal data structures that is read-accessible through the 
    * public class interface, and the function isSolved() must return true.
    *
-   * The function computeQ() must compute and return the molecular 
-   * partition function Q using information available to this propagator. 
+   * The function void computeQ(WT & ) must compute the partition function
+   * Q, which is a value of type WT, and set its single parameter equal to 
+   * Q.
    *
-   * A simple example of the required interface is shown below:
+   * A simple example of such an interface for an implementation with
+   * real fields is shown below:
    * \code
    *
    *    class Propagator : public PropagatorTmpl<Propagator> 
@@ -72,16 +77,15 @@ namespace Pscf
    *        void solve();
    *
    *        // Compute and return the molecular partition function Q.
-   *        double computeQ();
+   *        void computeQ(double& Q);
    *
    *    };
    *
    * \endcode
-   *
-   * In the above example, the field container typenames FieldT is
-   * an alias for DArrray<double>, i.e., for a dynamically allocated 
-   * arrays of double precision floating point numbers. Other 
-   * implementations may use more specialized types.
+   * In this above example, the field container typename FieldT is an alias 
+   * for DArrray<double>, which is a dynamically allocated array of double
+   * double precision floating point numbers. Other implementations may 
+   * use a more specialized container type for field values.
    *
    * \ingroup Pscf_Solver_Module
    */

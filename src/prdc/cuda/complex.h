@@ -487,6 +487,24 @@ namespace Pscf {
       a.y /= b;
    }
 
+   // Inversion
+
+   /**
+   * Inversion of a complex number, z = 1 / a .
+   *
+   * \ingroup Pscf_Math_Complex_Cuda_Module
+   *
+   * \param z inverse (out)
+   * \param a argument (in)
+   */
+   template <> inline
+   void inverse(cudaComplex& z, cudaComplex const & a)
+   {
+      cudaReal aSq = a.x * a.x + a.y * a.y;
+      z.x =   a.x/aSq;
+      z.y = - a.y/aSq;
+   }
+
    // Exponentiation and logarithm
 
    /**

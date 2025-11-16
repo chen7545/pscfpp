@@ -9,6 +9,7 @@
 */
 
 #include "PolymerTmpl.h"                   
+#include <pscf/math/arithmetic.h>
 
 namespace Pscf {
 
@@ -166,11 +167,13 @@ namespace Pscf {
       }
 
       // Compute molecular partition function Q
-      double Q = block(0).propagator(0).computeQ();
+      WT Q;
+      block(0).propagator(0).computeQ(Q);
 
       // The PT::computeQ function returns a spatial average.
       // Correct for partial occupation of the unit cell.
-      Q = Q/phiTot;
+      divEq<WT>(Q, phiTot);
+      // Q = Q/phiTot;
 
       // Set q and compute phi or mu, depending on the ensemble
       Species<WT>::setQ(Q);

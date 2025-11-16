@@ -10,8 +10,8 @@
 
 #include <pscf/solvers/BlockTmpl.h>       // base class template
 
+#include <prdc/cpu/CField.h>              // member
 #include <prdc/cpu/RField.h>              // member
-#include <prdc/cpu/RFieldDft.h>           // member
 #include <util/containers/FSArray.h>      // member
 
 namespace Pscf {
@@ -31,11 +31,11 @@ namespace Pscf {
 
    // Explicit instantiation declarations for base classes
    extern template
-   class BlockTmpl< Cpc::Propagator<1>, Prdc::Cpu::RField<1> >;
+   class BlockTmpl< Cpc::Propagator<1>, Prdc::Cpu::CField<1> >;
    extern template
-   class BlockTmpl< Cpc::Propagator<2>, Prdc::Cpu::RField<2> >;
+   class BlockTmpl< Cpc::Propagator<2>, Prdc::Cpu::CField<2> >;
    extern template
-   class BlockTmpl< Cpc::Propagator<3>, Prdc::Cpu::RField<3> >;
+   class BlockTmpl< Cpc::Propagator<3>, Prdc::Cpu::CField<3> >;
 
 }
 
@@ -49,14 +49,14 @@ namespace Cpc {
    /**
    * Block within a linear or branched block polymer.
    *
-   * A Block has two Propagator<D> members, and a RField<D> concentration
+   * A Block has two Propagator<D> members, and a CField<D> concentration
    * field.
    *
    * \ref user_param_block_sec "Manual Page"
    * \ingroup Cpc_Solver_Module
    */
    template <int D>
-   class Block : public BlockTmpl< Propagator<D>, RField<D> >
+   class Block : public BlockTmpl< Propagator<D>, CField<D> >
    {
 
    public:
@@ -64,7 +64,7 @@ namespace Cpc {
       // Public type name aliases
 
       /// Base class.
-      using Base = BlockTmpl< Propagator<D>, RField<D> >;
+      using Base = BlockTmpl< Propagator<D>, CField<D> >;
 
       /// Propagator type (inherited).
       using typename Base::PropagatorT;
@@ -117,7 +117,7 @@ namespace Cpc {
       * target step size), consistent with the requirements that ns be an
       * odd integer and ns > 1. These requirements allow use of Simpson's
       * rule for integration with respect to the contour variable s to
-      * compute monomer concentration fields and stress contributions.
+      * compute monomer concentration fields.
       *
       * For the bead model, if PolymerModel::isThread() is true, the value
       * of ns is given by nBead + 2.
@@ -164,7 +164,7 @@ namespace Cpc {
       *
       * \param w chemical potential field for this monomer type
       */
-      void setupSolver(RField<D> const & w);
+      void setupSolver(CField<D> const & w);
 
       /**
       * Compute one step of solution of MDE for the thread model.
@@ -177,7 +177,7 @@ namespace Cpc {
       * \param qin  input slice of q, from step i
       * \param qout  output slice of q, from step i+1
       */
-      void stepThread(RField<D> const & qin, RField<D>& qout) const;
+      void stepThread(CField<D> const & qin, CField<D>& qout) const;
 
       /**
       * Compute one step of solution of MDE for the bead model.
@@ -190,7 +190,7 @@ namespace Cpc {
       * \param qin  input slice of q, from step i
       * \param qout  output slice of q, for step i+1
       */
-      void stepBead(RField<D> const & qin, RField<D>& qout) const;
+      void stepBead(CField<D> const & qin, CField<D>& qout) const;
 
       /**
       * Apply the exponential field operator for the bead model.
@@ -200,7 +200,7 @@ namespace Cpc {
       *
       * \param q  slice of propagator q, modified in place
       */
-      void stepFieldBead(RField<D> & q) const;
+      void stepFieldBead(CField<D> & q) const;
 
       /**
       * Apply a bond operator for the bead model.
@@ -212,7 +212,7 @@ namespace Cpc {
       * \param qin  input slice of q, from step i
       * \param qout  ouptut slice of q, for step i+1
       */
-      void stepBondBead(RField<D> const & qin, RField<D>& qout) const;
+      void stepBondBead(CField<D> const & qin, CField<D>& qout) const;
 
       /**
       * Apply a half-bond operator for the bead model.
@@ -225,7 +225,7 @@ namespace Cpc {
       * \param qin  input slice of q, from step i
       * \param qout  ouptut slice of q, for step i+1
       */
-      void stepHalfBondBead(RField<D> const & qin, RField<D>& qout) const;
+      void stepHalfBondBead(CField<D> const & qin, CField<D>& qout) const;
 
       /**
       * Compute the concentration for this block, for the thread model.
@@ -279,38 +279,6 @@ namespace Cpc {
       void computeConcentrationBead(double prefactor);
 
       /**
-      * Compute stress contribution for this block, using thread model.
-      *
-      * This function is called by Polymer<D>::computeStress. The
-      * prefactor parameter must be equal to that passed to function
-      * computeConcentrationThread(double ).
-      *
-      * \param prefactor  constant multiplying integral over s
-      */
-      void computeStressThread(double prefactor);
-
-      /**
-      * Compute stress contribution for this block, using bead model.
-      *
-      * This function is called by Polymer<D>::computeStress. The
-      * prefactor parameter must be equal to that passed to function
-      * computeConcentrationBead(double ).
-      *
-      * \param prefactor  constant multiplying sum over beads
-      */
-      void computeStressBead(double prefactor);
-
-      /**
-      * Get derivative of free energy w/ respect to a unit cell parameter.
-      *
-      * This function returns a value computed by a previous call to the
-      * computeStress function.
-      *
-      * \param n  index of the unit cell parameter
-      */
-      double stress(int n) const;
-
-      /**
       * Get contour length step size.
       */
       double ds() const;
@@ -354,35 +322,32 @@ namespace Cpc {
 
       // In bead model, ds=1 by definition.
 
-      /// Stress arising from this block.
-      FSArray<double, 6> stress_;
-
       /// Array of elements containing exp(-K^2 b^2 ds/6)
       RField<D> expKsq_;
-
-      /// Array containing exp(-W[i] ds/2) (thread) or exp(-W[i]) (bead)
-      RField<D> expW_;
 
       /// Array of elements containing exp(-K^2 b^2 ds/(6*2))
       RField<D> expKsq2_;
 
+      /// Array containing exp(-W[i] ds/2) (thread) or exp(-W[i]) (bead)
+      CField<D> expW_;
+
       /// Array of elements containing exp(-W[i] (ds/2)*0.5) (thread model)
-      RField<D> expW2_;
+      CField<D> expW2_;
 
       /// Array of elements containing exp(+W[i]) (bead model)
-      RField<D> expWInv_;
+      CField<D> expWInv_;
 
       /// Work array for real-space q field (step size ds)
-      mutable RField<D> qr_;
+      mutable CField<D> qr_;
 
       /// Work array for real-space q field (step size ds/2, thread model)
-      mutable RField<D> qr2_;
+      mutable CField<D> qr2_;
 
       /// Work array for wavevector space field (step size ds)
-      mutable RFieldDft<D> qk_;
+      mutable CField<D> qk_;
 
       /// Work array for wavevector space field (step size ds/2)
-      mutable RFieldDft<D> qk2_;
+      mutable CField<D> qk2_;
 
       /// Pointer to associated Mesh<D> object
       Mesh<D> const * meshPtr_;
@@ -458,11 +423,6 @@ namespace Cpc {
    template <int D>
    inline double Block<D>::ds() const
    {  return ds_; }
-
-   // Stress with respect to unit cell parameter n.
-   template <int D>
-   inline double Block<D>::stress(int n) const
-   {  return stress_[n]; }
 
    // Get associated Mesh<D> object by const reference.
    template <int D>

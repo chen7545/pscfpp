@@ -201,23 +201,23 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 1).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
 
       #if 0
-      std::cout << "Propagator(0,0), Q = " 
-                << mixture.polymer(0).propagator(0, 0).computeQ() << "\n";
-      std::cout << "Propagator(1,0), Q = " 
-                << mixture.polymer(0).propagator(1, 0).computeQ() << "\n";
-      std::cout << "Propagator(1,1), Q = " 
-                << mixture.polymer(0).propagator(1, 1).computeQ() << "\n";
-      std::cout << "Propagator(0,1), Q = " 
-                << mixture.polymer(0).propagator(0, 1).computeQ() << "\n";
-      #endif
-
-      #if 0
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q11 << "\n";
+      }
+      
       // Test spatial integral of block concentration
       double sum0 = domain.spatialAverage(cFields[0]);
       double sum1 = domain.spatialAverage(cFields[1]);
@@ -293,24 +293,20 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different vertices
-      double Q = polymer.propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, polymer.propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, polymer.propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, polymer.propagator(1, 1).computeQ()));
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 1).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
 
       if (verbose() > 0) {
-         std::cout << "Propagator(0,0), Q = " 
-                   << mixture.polymer(0).propagator(0, 0).computeQ() 
-                   << "\n";
-         std::cout << "Propagator(1,0), Q = " 
-                   << mixture.polymer(0).propagator(1, 0).computeQ() 
-                   << "\n";
-         std::cout << "Propagator(1,1), Q = " 
-                   << mixture.polymer(0).propagator(1, 1).computeQ() 
-                   << "\n";
-         std::cout << "Propagator(0,1), Q = " 
-                   << mixture.polymer(0).propagator(0, 1).computeQ() 
-                   << "\n";
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q11 << "\n";
       }
       
    }
@@ -392,24 +388,20 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 1).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
 
       if (verbose() > 0) {
-         std::cout << "Propagator(0,0), Q = " 
-                   << mixture.polymer(0).propagator(0, 0).computeQ() 
-                   << "\n";
-         std::cout << "Propagator(1,0), Q = " 
-                   << mixture.polymer(0).propagator(1, 0).computeQ() 
-                   << "\n";
-         std::cout << "Propagator(1,1), Q = " 
-                   << mixture.polymer(0).propagator(1, 1).computeQ() 
-                   << "\n";
-         std::cout << "Propagator(0,1), Q = " 
-                   << mixture.polymer(0).propagator(0, 1).computeQ() 
-                   << "\n";
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q11 << "\n";
       }
       
    }
@@ -478,23 +470,23 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 1).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
 
       #if 0
-      std::cout << "Propagator(0,0), Q = " 
-                << mixture.polymer(0).propagator(0, 0).computeQ() << "\n";
-      std::cout << "Propagator(1,0), Q = " 
-                << mixture.polymer(0).propagator(1, 0).computeQ() << "\n";
-      std::cout << "Propagator(1,1), Q = " 
-                << mixture.polymer(0).propagator(1, 1).computeQ() << "\n";
-      std::cout << "Propagator(0,1), Q = " 
-                << mixture.polymer(0).propagator(0, 1).computeQ() << "\n";
-      #endif
-
-      #if 0
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q11 << "\n";
+      }
+      
       // Test spatial integral of block concentration
       double sum0 = domain.spatialAverage(cFields[0]);
       double sum1 = domain.spatialAverage(cFields[1]);
@@ -559,23 +551,23 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 1).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
 
       #if 0
-      std::cout << "Propagator(0,0), Q = " 
-                << mixture.polymer(0).propagator(0, 0).computeQ() << "\n";
-      std::cout << "Propagator(1,0), Q = " 
-                << mixture.polymer(0).propagator(1, 0).computeQ() << "\n";
-      std::cout << "Propagator(1,1), Q = " 
-                << mixture.polymer(0).propagator(1, 1).computeQ() << "\n";
-      std::cout << "Propagator(0,1), Q = " 
-                << mixture.polymer(0).propagator(0, 1).computeQ() << "\n";
-      #endif
-
-      #if 0
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q11 << "\n";
+      }
+      
       // Test spatial integral of block concentration
       double sum0 = domain.spatialAverage(cFields[0]);
       double sum1 = domain.spatialAverage(cFields[1]);

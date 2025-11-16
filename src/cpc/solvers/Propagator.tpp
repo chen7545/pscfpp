@@ -11,6 +11,8 @@
 #include "Propagator.h"
 #include "Block.h"
 
+#include <prdc/cpu/complex.h>
+#include <pscf/math/arithmetic.h>
 #include <pscf/mesh/Mesh.h>
 
 namespace Pscf {
@@ -54,7 +56,7 @@ namespace Cpc {
    }
 
    /*
-   * Reallocate memory used by this propagator using new ns value.
+   * Reallocate memory used by this propagator using a new ns value.
    */
    template <int D>
    void Propagator<D>::reallocate(int ns)
@@ -72,10 +74,10 @@ namespace Cpc {
       // calls "delete [] ptr", where ptr is a pointer to the underlying
       // C array. The C++ delete [] command calls the destructor for each
       // RField<D> element array before deleting the array itself. The
-      // RField<D> destructor deletes the double* array that stores the
-      // field associated with each slice of the propagator.
+      // RField<D> destructor deletes the fftw_complex* array that stores 
+      // the field associated with each slice of the propagator.
 
-      // Allocate new memory for qFields_ using new value of ns
+      // Allocate new memory for qFields_ using the new value of ns
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
          qFields_[i].allocate(meshPtr_->dimensions());
@@ -98,8 +100,10 @@ namespace Cpc {
 
       // Initialize qh field to 1.0 at all grid points
       for (int ix = 0; ix < nx; ++ix) {
-         qh[ix] = 1.0;
+         assign<fftw_complex>(qh[ix], 1.0);
+         //qh[ix] = 1.0;
       }
+      // VecOp::eqS(qh, 1.0);
 
       if (!isHeadEnd()) {
          // Pointwise multiply tail q-fields of all sources
@@ -109,24 +113,27 @@ namespace Cpc {
             }
             FieldT const& qt = source(is).tail();
             for (int ix = 0; ix < nx; ++ix) {
-               qh[ix] *= qt[ix];
+               mulEq(qh[ix], qt[ix]);
             }
+            // VecOp::mulEq(qh, qt);
          }
       }
 
    }
 
    /*
-   * Compute initial head q-field for the bead model.
+   * Assign one field to another.
    */
    template <int D>
-   void Propagator<D>::assign(FieldT& lhs, FieldT const & rhs)
+   void Propagator<D>::assignField(FieldT& lhs, FieldT const & rhs)
    {
       int nx = lhs.capacity();
       UTIL_CHECK(rhs.capacity() == nx);
       for (int ix = 0; ix < nx; ++ix) {
-          lhs[ix] = rhs[ix];
+          assign<fftw_complex>(lhs[ix], rhs[ix]);
+          // lhs[ix] = rhs[ix];
       }
+      // VecOp::eqV(lhs, rhs);
    }
 
    /*
@@ -153,7 +160,7 @@ namespace Cpc {
 
          // Half-bond and bead weight for first bead
          if (isHeadEnd()) {
-            assign(qFields_[1], qFields_[0]);
+            assignField(qFields_[1], qFields_[0]);
          } else {
             block().stepHalfBondBead(qFields_[0], qFields_[1]);
          }
@@ -167,7 +174,7 @@ namespace Cpc {
 
          // Half-bond for tail slice
          if (isTailEnd()) {
-            assign(qFields_[ns_-1], qFields_[ns_-2]);
+            assignField(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
@@ -194,8 +201,9 @@ namespace Cpc {
       // Initialize initial (head) field
       FieldT& qh = qFields_[0];
       for (int i = 0; i < nx; ++i) {
-         qh[i] = head[i];
+         assign<fftw_complex>(qh[i], head[i]);
       }
+      // VecOp::eqV(qh, head);
 
       if (PolymerModel::isThread()) {
 
@@ -209,7 +217,7 @@ namespace Cpc {
 
          // Half-bond and bead weight for first bead
          if (isHeadEnd()) {
-            assign(qFields_[1], qFields_[0]);
+            assignField(qFields_[1], qFields_[0]);
          } else {
             block().stepHalfBondBead(qFields_[0], qFields_[1]);
          }
@@ -223,7 +231,7 @@ namespace Cpc {
 
          // Half-bond for tail
          if (isTailEnd()) {
-            assign(qFields_[ns_-1], qFields_[ns_-2]);
+            assignField(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
@@ -240,7 +248,7 @@ namespace Cpc {
    * Compute spatial average of product of head and tail of partner.
    */
    template <int D>
-   double Propagator<D>::computeQ() const
+   void Propagator<D>::computeQ(fftw_complex & Q) const
    {
       // Preconditions
       if (!isSolved()) {
@@ -256,23 +264,26 @@ namespace Cpc {
       UTIL_CHECK(meshPtr_);
       int nx = meshPtr_->size();
 
-      double Q = 0.0;
+      assign<fftw_complex>(Q, 0.0);
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
          FieldT const& qt = partner().q(ns_-2);
          for (int ix = 0; ix < nx; ++ix) {
-            Q += qt[ix];
+            addEq(Q, qt[ix]);
          }
       } else {
          // Compute average product of head slice and partner tail slice
          FieldT const& qh = head();
          FieldT const& qt = partner().tail();
+         fftw_complex product;
          for (int ix = 0; ix < nx; ++ix) {
-            Q += qh[ix]*qt[ix];
+            mul(product, qh[ix], qt[ix]);
+            addEq(Q, product);
+            // Q += qh[ix]*qt[ix];
          }
       }
-      Q /= double(nx);
-      return Q;
+      double meshSize = double(nx);
+      divEq(Q, meshSize);
    }
 
 }

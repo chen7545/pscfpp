@@ -65,8 +65,8 @@ namespace Pscf
       /**
       * Compute and return molecular partition function.
       */ 
-      double computeQ()
-      {  return 1.0; };
+      void computeQ(double & Q)
+      {  Q = 1.0; };
 
    private:
 

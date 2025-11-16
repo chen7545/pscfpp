@@ -9,7 +9,7 @@
 */
 
 #include <pscf/solvers/PropagatorTmpl.h> // base class template
-#include <prdc/cpu/RField.h>             // member template
+#include <prdc/cpu/CField.h>             // member template
 #include <util/containers/DArray.h>      // member template
 
 // Forward declarations
@@ -30,8 +30,8 @@ namespace Cpc {
    /**
    * MDE solver for one direction of one block.
    *
-   * A fully initialized Propagator<D> has an associations with a Block<D>
-   * object that owns this propagator and its partner, and with a partner
+   * A fully initialized Propagator<D> has an association with a Block<D>
+   * object, which owns this propagator and its partner, and with a partner
    * Propagator<D> that solves the MDE within the same block in the
    * opposite direction. It also has an association with a Mesh<D> that
    * describes a spatial grid, and associations with zero or more source
@@ -66,7 +66,7 @@ namespace Cpc {
       /**
       * Field type (function of position, defined on a r-space grid).
       */
-      using FieldT = RField<D>;
+      using FieldT = CField<D>;
 
       // Member functions
 
@@ -147,7 +147,7 @@ namespace Cpc {
       *
       * \return value of Q (spatial average of q*q^{+} at head)
       */
-      double computeQ() const;
+      void computeQ(fftw_complex & Q) const;
 
       /**
       * Return q-field at specified step.
@@ -223,6 +223,8 @@ namespace Cpc {
       /// Is this propagator allocated?
       bool isAllocated_;
 
+      // Private member functions
+
       /**
       * Compute initial q-field at head.
       *
@@ -235,7 +237,7 @@ namespace Cpc {
       /**
       * Assign one slice to another (RHS = LHS).
       */
-      void assign(FieldT& lhs, FieldT const & rhs);
+      void assignField(FieldT& lhs, FieldT const & rhs);
 
    };
 
@@ -308,6 +310,6 @@ namespace Cpc {
    extern template class Propagator<2>;
    extern template class Propagator<3>;
 
-}
-}
+} // namespace Cpc
+} // namespace Pscf
 #endif
