@@ -30,13 +30,12 @@ namespace Cpc {
    /**
    * MDE solver for one direction of one block.
    *
-   * A fully initialized Propagator<D> has an association with a Block<D>
-   * object, which owns this propagator and its partner, and with a partner
-   * Propagator<D> that solves the MDE within the same block in the
-   * opposite direction. It also has an association with a Mesh<D> that
-   * describes a spatial grid, and associations with zero or more source
-   * Propagator<D> objects that are used to compute an initial condition
-   * for this propagator at the head vertex.
+   * A fully initialized Propagator<D> has associations with a parent 
+   * Block<D> and with a partner Propagator<D> that solves the MDE within 
+   * the same block in the opposite direction. It also has an association 
+   * with a Mesh<D> that describes a spatial grid, and associations with 
+   * zero or more source Propagator<D> objects that are used to compute 
+   * an initial condition for this propagator at the head vertex.
    *
    * The associated Block<D> stores information required to numerically
    * solve the modified diffusion equation (MDE), including quantities
@@ -45,8 +44,8 @@ namespace Cpc {
    * These quantities are set and stored by the block because their values
    * are the same for the two propagators owned by each block, but may be
    * different for different blocks.  The algorithm used by a Propagator
-   * to solve the MDE repeatedly calls step functions provided by the
-   * parent Block.
+   * to solve the MDE repeatedly calls functions provided by the parent
+   * Block that advance the solution by one bead or step.
    *
    * \ingroup Cpc_Solver_Module
    */
@@ -145,12 +144,12 @@ namespace Cpc {
       * as a spatial average of the pointwise product of the initial/head
       * slice for this propagator and the final/tail slice of its partner.
       *
-      * \return value of Q (spatial average of q*q^{+} at head)
+      * \param value of Q, spatial average of q*q^{+} at head (output)
       */
       void computeQ(fftw_complex & Q) const;
 
       /**
-      * Return q-field at specified step.
+      * Return slice of q-field at a specified step.
       *
       * \param i step index, 0 <= i < ns
       */
@@ -172,7 +171,7 @@ namespace Cpc {
       const FieldT& tail() const;
 
       /**
-      * Get the associated Block object by const reference.
+      * Get the associated Block<D> object by const reference.
       */
       Block<D> const & block() const;
 
@@ -212,7 +211,7 @@ namespace Cpc {
       FieldT work_;
 
       /// Pointer to the associated Block.
-      Block<D>* blockPtr_;
+      Block<D> * blockPtr_;
 
       /// Pointer to the associated Mesh.
       Mesh<D> const * meshPtr_;
@@ -236,28 +235,29 @@ namespace Cpc {
 
       /**
       * Assign one slice to another (RHS = LHS).
+      * 
+      * \param lhs  left-hand-side of assignment (out)
+      * \param rhs  right-hand-side of assignment (out)
       */
-      void assignField(FieldT& lhs, FieldT const & rhs);
+      void assignField(FieldT & lhs, FieldT const & rhs);
 
    };
 
    // Inline member functions
 
    /*
-   * Return q-field at beginning of block.
+   * Return q-field at the head (beginning) of the block.
    */
-   template <int D>
-   inline
+   template <int D> inline
    typename Propagator<D>::FieldT const& Propagator<D>::head() const
    {
       UTIL_CHECK(isSolved());
       return qFields_[0]; }
 
    /*
-   * Return q-field at end of block.
+   * Return q-field at the tail (end) of the block.
    */
-   template <int D>
-   inline
+   template <int D> inline
    typename Propagator<D>::FieldT const& Propagator<D>::tail() const
    {
       UTIL_CHECK(isSolved());
@@ -266,10 +266,9 @@ namespace Cpc {
    }
 
    /*
-   * Return q-field at specified step.
+   * Return q-field at a specified step.
    */
-   template <int D>
-   inline
+   template <int D> inline
    typename Propagator<D>::FieldT const& Propagator<D>::q(int i) const
    {
       UTIL_CHECK(isSolved());
@@ -279,8 +278,7 @@ namespace Cpc {
    /*
    * Get the associated Block object by const reference.
    */
-   template <int D>
-   inline
+   template <int D> inline
    Block<D> const & Propagator<D>::block() const
    {
       UTIL_ASSERT(blockPtr_);
@@ -290,20 +288,13 @@ namespace Cpc {
    /*
    * Get the number of counter grid points.
    */
-   template <int D>
-   inline int Propagator<D>::ns() const
+   template <int D> inline 
+   int Propagator<D>::ns() const
    {  return ns_; }
 
-   template <int D>
-   inline bool Propagator<D>::isAllocated() const
+   template <int D> inline 
+   bool Propagator<D>::isAllocated() const
    {  return isAllocated_; }
-
-   /*
-   * Associate this propagator with a unique block.
-   */
-   template <int D>
-   inline void Propagator<D>::setBlock(Block<D>& block)
-   {  blockPtr_ = &block; }
 
    // Explicit instantiation declarations
    extern template class Propagator<1>;

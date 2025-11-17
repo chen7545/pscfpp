@@ -29,7 +29,7 @@ namespace Pscf {
       template <int D> class Propagator;
    }
 
-   // Explicit instantiation declarations for base classes
+   // Explicit instantiation declarations for base class
    extern template
    class BlockTmpl< Cpc::Propagator<1>, Prdc::Cpu::CField<1> >;
    extern template
@@ -361,7 +361,7 @@ namespace Cpc {
       /// Pointer to associated WaveList<D> object (non-const)
       WaveList<D> * waveListPtr_;
 
-      /// Dimensions of wavevector mesh in real-to-complex transform
+      /// Dimensions of wavevector mesh for Fourier transform
       IntVec<D> kMeshDimensions_;
 
       /// Number of wavevectors in wavevector mesh
@@ -382,28 +382,30 @@ namespace Cpc {
       /// Are expKsq_ arrays up to date ? (initialize false)
       bool hasExpKsq_;
 
-      /// Get associated UnitCell<D> as const reference.
-      UnitCell<D> const & unitCell() const
-      {  return *unitCellPtr_; }
-
-      /// Get associated WaveList<D> by const reference.
-      WaveList<D> const & wavelist() const
-      {  return *waveListPtr_; }
-
       /// Number of unit cell parameters.
       int nParams_;
 
       // Private member functions
 
       /**
-      * Get associated spatial Mesh by const reference.
+      * Get associated spatial Mesh<D> by const reference.
       */
       Mesh<D> const & mesh() const;
 
       /**
-      * Get associated FFT object by const reference.
+      * Get associated UnitCell<D> by const reference.
+      */
+      UnitCell<D> const & unitCell() const;
+
+      /**
+      * Get associated FFT<D> by const reference.
       */
       FFT<D> const & fft() const;
+
+      /**
+      * Get associated WaveList<D> by const reference.
+      */
+      WaveList<D> const & wavelist() const;
 
       /**
       * Compute expKSq arrays.
@@ -412,7 +414,7 @@ namespace Cpc {
 
    };
 
-   // Inline member functions
+   // Public inline member functions
 
    // Get number of contour grid points, including end points.
    template <int D>
@@ -424,27 +426,39 @@ namespace Cpc {
    inline double Block<D>::ds() const
    {  return ds_; }
 
-   // Get associated Mesh<D> object by const reference.
-   template <int D>
-   inline Mesh<D> const & Block<D>::mesh() const
+   // Private inline member functions
+
+   // Get associated Mesh<D> by const reference.
+   template <int D> inline 
+   Mesh<D> const & Block<D>::mesh() const
    {
       UTIL_CHECK(meshPtr_);
       return *meshPtr_;
    }
 
-   // Get associated FFT<D> object by const reference.
-   template <int D>
-   inline FFT<D> const & Block<D>::fft() const
+   // Get associated UnitCell<D> as const reference.
+   template <int D> inline
+   UnitCell<D> const & Block<D>::unitCell() const
+   {  return *unitCellPtr_; }
+
+   // Get associated FFT<D> by const reference.
+   template <int D> inline 
+   FFT<D> const & Block<D>::fft() const
    {
       UTIL_CHECK(fftPtr_);
       return * fftPtr_;
    }
+
+   // Get associated WaveList<D> by const reference.
+   template <int D> inline
+   WaveList<D> const & Block<D>::wavelist() const
+   {  return *waveListPtr_; }
 
    // Explicit instantiation declarations
    extern template class Block<1>;
    extern template class Block<2>;
    extern template class Block<3>;
 
-} // R1d
+} // Cpc
 } // Pscf
 #endif

@@ -39,6 +39,16 @@ namespace Cpc {
    {}
 
    /*
+   * Associate this propagator with a block.
+   */
+   template <int D> inline 
+   void Propagator<D>::setBlock(Block<D>& block)
+   {
+      UTIL_CHECK(!blockPtr_);  
+      blockPtr_ = &block; 
+   }
+
+   /*
    * Allocate memory used by this propagator.
    */
    template <int D>
@@ -100,7 +110,7 @@ namespace Cpc {
 
       // Initialize qh field to 1.0 at all grid points
       for (int ix = 0; ix < nx; ++ix) {
-         assign<fftw_complex>(qh[ix], 1.0);
+         assign(qh[ix], 1.0);
          //qh[ix] = 1.0;
       }
       // VecOp::eqS(qh, 1.0);
@@ -130,7 +140,7 @@ namespace Cpc {
       int nx = lhs.capacity();
       UTIL_CHECK(rhs.capacity() == nx);
       for (int ix = 0; ix < nx; ++ix) {
-          assign<fftw_complex>(lhs[ix], rhs[ix]);
+          assign(lhs[ix], rhs[ix]);
           // lhs[ix] = rhs[ix];
       }
       // VecOp::eqV(lhs, rhs);
@@ -195,6 +205,7 @@ namespace Cpc {
    {
       UTIL_CHECK(blockPtr_);
       UTIL_CHECK(meshPtr_);
+      UTIL_CHECK(isAllocated_);
       int nx = meshPtr_->size();
       UTIL_CHECK(head.capacity() == nx);
 
@@ -264,7 +275,7 @@ namespace Cpc {
       UTIL_CHECK(meshPtr_);
       int nx = meshPtr_->size();
 
-      assign<fftw_complex>(Q, 0.0);
+      assign(Q, 0.0);
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
          FieldT const& qt = partner().q(ns_-2);
