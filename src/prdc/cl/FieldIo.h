@@ -44,13 +44,13 @@ namespace Cl {
    * The Cl:FieldIo template is a base class for two class templates 
    * named FieldIo that are defined in namespaces Pscf::Cpc and Pscf::Cpg.
    * The Pscf::Cpc::FieldIo<int D> template is derived from a partial
-   * specialization of Cl::FieldIo with parameters CFT = Cpu::CField<D> 
-   * and FFT = Cpu::FFT<D> that are defined in the Prdc::Cpu namespace,
-   * and that use standard CPU hardware.  The analogous class template 
+   * specialization of Cl::FieldIo with parameters CFT = Cpu::CField<D> and
+   * FFT = Cpu::FFT<D>, which are both defined in the Prdc::Cpu namespace
+   * and use standard CPU hardware.  The analogous class template 
    * Cpg::FieldIo<int D> in the Pscf::Cpg namespace is derived from a 
    * partial specialization of Cl::FieldIo in which these two parameters 
    * are class templates with the same names (CField and FFT) that are 
-   * defined in the Prdc::Cuda namespace and use GPU hardware.
+   * defined in the Prdc::Cuda namespace, which use GPU hardware.
    *
    * <b> Pure virtual member functions </b>: This class template defines
    * several pure virtual functions for which different implementations
@@ -124,7 +124,7 @@ namespace Cl {
       ///@{
 
       /**
-      * Read array of complex r-grid fields from an input stream.
+      * Read array of complex fields from an input stream.
       *
       * Upon successful return, element fields[i] of the fields array is
       * the instance of CFT containing the r-grid field associated with
@@ -145,7 +145,7 @@ namespace Cl {
                       UnitCell<D> & unitCell) const = 0;
 
       /**
-      * Read an array of r-grid fields from a named file.
+      * Read an array of complex fields from a named file.
       *
       * This function opens an input file with the specified filename,
       * reads fields in real-space grid format from that file, and
@@ -201,9 +201,9 @@ namespace Cl {
       * Read a single field from a named file.
       *
       * This function opens an input file with the specified filename,
-      * reads a field in grid format from that file, and then closes
-      * the file. The overloaded readField member function that takes 
-      * a std::istream& argument is called to read the file.
+      * reads a complex field from that file, and then closes the file.
+      * The overloaded readField member function that takes a 
+      * std::istream& argument is called internally to read the file.
       *
       * \param filename  name of input file
       * \param field  single field defined on r-space grid
@@ -214,18 +214,18 @@ namespace Cl {
                      UnitCell<D>& unitCell) const;
 
       /**
-      * Write an array of fields to an output stream.
+      * Write an array of complex fields to an output stream.
       *
       * On entry, the container fields must be allocated, and the mesh
       * dimensions of each field must equal mesh().dimensions(). The
       * writeHeader argument may be set false to completely suppress
-      * writing of the file header. 
+      * writing of the file header.
       *
       * \param out  output stream (i.e., output file)
       * \param fields  array of RField objects (fields on r-space grid)
       * \param unitCell  associated crystallographic unit cell
       * \param writeHeader  iff true, write file header
-      * \param writeMeshSize Should mesh size be written at end of header?
+      * \param writeMeshSize iff true, write mesh dimensions after header
       */
       virtual
       void writeFields(std::ostream& out,
@@ -235,7 +235,7 @@ namespace Cl {
                        bool writeMeshSize = true) const = 0;
 
       /**
-      * Write an array of r-grid fields to a named file.
+      * Write an array of complex fields to a named file.
       *
       * This function opens a file, writes field file header and data
       * to the file, and closes the file. The overloaded writeFieldsGrid
@@ -251,7 +251,7 @@ namespace Cl {
                        UnitCell<D> const & unitCell) const;
 
       /**
-      * Write a single r-grid field to an an output stream.
+      * Write a single complex field to an an output stream.
       *
       * On entry, the field container must be allocated with mesh
       * dimensions equal to mesh().dimensions(). The writeHeader
@@ -270,7 +270,7 @@ namespace Cl {
                       bool writeHeader = true) const = 0;
 
       /**
-      * Write a single r-grid field to a named file.
+      * Write a single complex field to a named file.
       *
       * This function opens a file, writes the header and data for a
       * single field to the file, and closes that file. The overloaded
@@ -393,7 +393,7 @@ namespace Cl {
       * system, a list of unit cell parameters, the space group name as
       * an optional parameter, and the number of monomer types. The unit
       * cell data is used to update a UnitCell<D> that is passed as a
-      * parameter.
+      * parameter by non-const reference.
       *
       * On return, parameter nMonomer contains the number of monomer
       * types declared in the field file header.  This function does
@@ -409,8 +409,8 @@ namespace Cl {
       * lattice system in the header file.
       *
       * \param in  input stream (i.e., file)
-      * \param nMonomer  number of monomer types in the header (output)
-      * \param unitCell  associated crystallographic unit cell (output)
+      * \param nMonomer  number of monomer types in the header (out)
+      * \param unitCell  associated crystallographic unit cell (out)
       */
       void readFieldHeader(std::istream& in,
                            int& nMonomer,

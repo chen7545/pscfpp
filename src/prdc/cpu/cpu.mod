@@ -7,9 +7,9 @@ namespace Prdc{
 namespace Cpu{
 
    /**
-   * \defgroup Prdc_Cpu_Module Fields and FFT (CPU)
+   * \defgroup Prdc_Cpu_Module Fields (CPU)
    *
-   * Fields and FFT plan for use in CPU code, based around the FFTW
+   * Fields and FFT for use in CPU code, based around the FFTW
    * fast Fourier transform library.
    *
    * \ingroup Pscf_Prdc_Module

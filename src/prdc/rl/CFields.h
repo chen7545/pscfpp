@@ -66,7 +66,7 @@ namespace Rl {
    *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and 
    *    is used in the pscf_pg GPU accelerated program.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Rl_Module
    */
    template <int D, class RFT, class FIT>
    class CFields 

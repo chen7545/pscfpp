@@ -53,6 +53,7 @@ namespace Rl {
    * which it is derived, which can be used for systems tha are not
    * periodic. 
    *
+   * \ingroup Prdc_Rl_Module
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>

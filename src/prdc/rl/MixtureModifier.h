@@ -32,6 +32,8 @@ namespace Rl {
    * MixtureModifier. The MixtureModifier template thus defines a set of 
    * operations that modify parameters of the mixture that may be called 
    * via a non-const reference to a System.
+   *
+   * \ingroup Prdc_Rl_Module
    */
    template <class MT>
    class MixtureModifier 

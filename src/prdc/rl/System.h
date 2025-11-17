@@ -97,7 +97,7 @@ namespace Rl {
    *  <li> \ref scft_command_pc_page "Command File Format" </li>
    * </ul>
    *
-   * \ingroup Prdc_System_Module
+   * \ingroup Prdc_Rl_Module
    */
    template <int D, class T>
    class System : public ParamComposite

@@ -85,7 +85,7 @@ namespace Prdc {
    * objects and indicate a zero-parameter member function of each 
    * observer that will be called whenever the fields are modified.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Rl_Module
    */
    template <int D, class RFT, class FIT>
    class WFieldsTmpl 

@@ -31,40 +31,43 @@ namespace Prdc {
    // Templates for complex field data IO
 
    /**
-   * Read data for array of r-grid fields, with no header section.
+   * Read data for an array of complex fields, with no header section.
    *
-   * This function reads the data section of the rgrid-field format
-   * for multiple monomer types, with no header. 
+   * This function reads the data section of a complex field file for
+   * multiple monomer types, with no header section.
    *
-   * The template parameter AT must be an array type that provides
-   * an overloaded [] subscript operator that returns a real number.
+   * The template parameter AT must be an array type that provides an
+   * overloaded [] subscript operator that returns a complex number of
+   * some type CT. The function template <typename CT, typename RT> 
+   * assign(CT&, RT const&, RT const&) must be defined. Valid complex
+   * array types include DArray<fftw_complex> and HostDArray<cudaReal>.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Cl_Module
    *
    * \param in  input file stream
-   * \param fields  array of r-grid fields (r-space grid) (out)
+   * \param fields  array of complex fields (out)
    * \param nMonomer  number of monomer types (in)
    * \param dimensions  vector of mesh dimensions (in)
    */
    template <int D, class AT>
    void readCFieldData(std::istream& in,
-                      DArray<AT>& fields,
+                      DArray< AT >& fields,
                       int nMonomer,
                       IntVec<D> const& dimensions);
  
    /**
    * Read data for a single r-grid field, with no header section.
    *
-   * This function reads the data section of an rgrid-field format
-   * for a single monomer type, with no header. 
+   * This function reads the data section of a complex field file for
+   * a single monomer type, with no header section.
    *
    * The template parameter AT must be an array type that provides an
-   * overloaded [] subscript operator that returns a real number.
+   * overloaded [] subscript operator that returns a complex number.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Cl_Module
    *
    * \param in  input file stream
-   * \param field  array containing a single r-grid field (out)
+   * \param field  array containing a single complex field (out)
    * \param dimensions  vector of mesh dimensions (in)
    */
    template <int D, class AT>
@@ -75,16 +78,16 @@ namespace Prdc {
    /**
    * Write data for array of r-grid fields, with no header section.
    *
-   * This function writes the data section of the rgrid-field format
-   * for a multiple monomer types, with no header section.
+   * This function writes the data section of the complex field file
+   * format for a multiple monomer types, with no header section.
    *
    * The template parameter AT must be an array type that provides 
-   * an overloaded [] subscript operator.
+   * an overloaded [] subscript operator that returns a complex number.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Cl_Module
    *
    * \param out  output file stream
-   * \param fields  array of r-grid fields (r-space grid) (in)
+   * \param fields  array of complex fields (in)
    * \param nMonomer  number of monomer types (in)
    * \param dimensions  vector of mesh dimensions (in)
    */
@@ -97,16 +100,16 @@ namespace Prdc {
    /**
    * Write data for a single r-grid field, with no header section.
    *
-   * This function writes the data section of an rgrid-field format
-   * for a single monomer type, with no header. 
+   * This function writes the data section of complex field file format
+   * for a single monomer type, with no header.
    *
-   * The template parameter AT must be an array type that provides
-   * an overloaded [] subscript operator.
+   * The template parameter AT must be an array type that provides 
+   * an overloaded [] subscript operator that returns a complex number.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Cl_Module
    *
    * \param out  output file stream
-   * \param field  array containing a single r-grid field (out)
+   * \param field  array containing a single complex field (out)
    * \param dimensions  vector of mesh dimensions
    */
    template <int D, class AT>

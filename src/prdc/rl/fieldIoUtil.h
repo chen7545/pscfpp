@@ -46,7 +46,7 @@ namespace Prdc {
    * fields is not allocated on entry, it is allocated with the
    * correct dimensions.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param field  field object of type FT
    * \param dimensions  required mesh dimensions
@@ -71,7 +71,7 @@ namespace Prdc {
    * If the arrray is not allocated on entry, it is allocated with
    * the required dimensions.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param fields  DArray of fields of type FT (in/out)
    * \param nMonomer  required number of monomer types (in)
@@ -92,7 +92,7 @@ namespace Prdc {
    * An Exception is thrown if fields is not allocated, or if the fields
    * do not all have the same positive list of dimensions.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param fields  DArray of fields (in)
    * \param nMonomer  number of fields, or monomer types (out)
@@ -118,7 +118,7 @@ namespace Prdc {
    * checked, and an Exception is thrown if any are violated.  If arrays is
    * not allocated on entry, it is allocated with the required dimensions.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param arrays  DArray of arrays, each of type AT (in/out)
    * \param nMonomer  required number of arrays, or monomer types (in)
@@ -135,7 +135,7 @@ namespace Prdc {
    * An Exception is thrown if the arrays container is not allocated, or
    * if the 1D arrays do not all have the same positive capacity.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param arrays  DArray of arrays (in)
    * \param nMonomer  number of arrays, or monomer types (out)
@@ -157,7 +157,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides
    * an overloaded [] subscript operator that returns a real number.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  input file stream
    * \param fields  array of r-grid fields (r-space grid) (out)
@@ -179,7 +179,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides an
    * overloaded [] subscript operator that returns a real number.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  input file stream
    * \param field  array containing a single r-grid field (out)
@@ -199,7 +199,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides
    * an overloaded [] subscript operator.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output file stream
    * \param fields  array of r-grid fields (r-space grid) (in)
@@ -221,7 +221,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides
    * an overloaded [] subscript operator.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output file stream
    * \param field  array containing a single r-grid field (out)
@@ -243,7 +243,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides an
    * overloaded [] subscript operator.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  input file stream
    * \param fields  array of k-grid fields (r-space grid) (out)
@@ -265,7 +265,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides
    * an overloaded [] subscript operator.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  input file stream
    * \param field  array containing a single k-grid field (out)
@@ -285,7 +285,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides
    * an overloaded [] subscript operator.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output file stream
    * \param fields  array of k-grid fields (r-space grid) (in)
@@ -307,7 +307,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides an
    * overloaded [] subscript operator.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in input file stream
    * \param field  array containing a single k-grid field (in)
@@ -323,7 +323,7 @@ namespace Prdc {
    /**
    * Read the number of basis functions from a basis field file header.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in input stream
    * \return value of nBasis obtained from the file
@@ -333,7 +333,7 @@ namespace Prdc {
    /**
    * Write the number of basis functions to a basis field file header.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out output stream
    * \param nBasis  number of basis functions
@@ -355,7 +355,7 @@ namespace Prdc {
    * of nStarIn (the number available in the file) and fieldCapacity
    * (the number for which there is room in the arrays).
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  input file stream
    * \param fields  array of field components
@@ -379,7 +379,7 @@ namespace Prdc {
    * obtain the number of basis functions in the input file, which is
    * passed to this function as parameter nStarIn.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  input file stream
    * \param field  components of a single field
@@ -406,7 +406,7 @@ namespace Prdc {
    * lesser fieldCapacity and the number of uncancelled basis functions
    * in the basis.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output file stream
    * \param fields  array of field components
@@ -420,7 +420,7 @@ namespace Prdc {
    /**
    * Write data section of a single field in basis format.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output file stream
    * \param field  components of a single field
@@ -436,7 +436,7 @@ namespace Prdc {
    /**
    * Convert a real field from symmetrized basis to Fourier grid.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param components  coefficients of symmetry-adapted basis functions
    * \param dft  discrete Fourier transform of a real field
@@ -457,7 +457,7 @@ namespace Prdc {
    * tolerance given by the epsilon parameter, and prints a warning to
    * Log::file() if it does not.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in  discrete Fourier transform (k-grid) of a field
    * \param out  components of field in asymmetry-adapted Fourier basis
@@ -483,7 +483,7 @@ namespace Prdc {
    * parameter verbose is true and the deviation from symmetry
    * exceeds the error threshhold, errors are written to Log::file().
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param in field in real space grid (r-grid) format
    * \param basis  associated symmetry adapted basis
@@ -512,7 +512,7 @@ namespace Prdc {
    * Element i of the IntVec<D> parameter named "replicas" contains the
    * number of unit cell replicas along direction i.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output stream (i.e., output file)
    * \param fields  array of RField (r-space) fields to be replicated
@@ -550,7 +550,7 @@ namespace Prdc {
    * is taken to be the same as that associated with the first Bravais
    * lattice vector of the D dimensional unit cell of the input fields.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Crystal_Module
    *
    * \param out  output stream
    * \param fields  input fields defined on a D dimensional grid

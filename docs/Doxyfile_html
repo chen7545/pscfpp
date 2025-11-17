@@ -974,6 +974,7 @@ INPUT                  = manual/main.dox \
                          ../src/r1d \
                          ../src/rpc \
                          ../src/rpg \
+                         ../src/cpc \
                          ../src/test \
                          ../lib/python/pscfpp
 

@@ -24,7 +24,7 @@ namespace Rl {
    * interaction, external). It is used as a base class for 
    * classes named ScftThermo defined in Rpc and Rpg namespaces.
    *
-   * \ingroup Prdc_System_Module
+   * \ingroup Prdc_Rl_Module
    */
    template <int D, class ST>
    class ScftThermo : protected Rl::SystemConstRef<ST>

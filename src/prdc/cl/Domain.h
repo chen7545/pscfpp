@@ -55,7 +55,7 @@ namespace Cl {
    * template are used as base classes for classes Cpc::Domain \<D\> and
    * Cpg::Domain \<D\>.
    *
-   * \ingroup Prdc_Field_Module
+   * \ingroup Prdc_Cl_Module
    */
    template <int D, class FFT, class WLT, class FIT>
    class Domain : public ParamComposite

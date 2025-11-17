@@ -28,7 +28,7 @@ namespace Rl {
    * conditions. Accessor functions return the system and its components 
    * as const references.
    *
-   * \ingroup Prdc_System_Module
+   * \ingroup Prdc_Rl_Module
    */
    template <class ST>
    class SystemConstRef 

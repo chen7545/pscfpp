@@ -12,7 +12,7 @@
 
 #include <prdc/rl/fieldIoUtil.h>
 #include <prdc/crystal/UnitCell.h>
-#include <prdc/crystal/UnitCell.h>
+#include <prdc/crystal/fieldHeader.h>
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>
@@ -21,9 +21,6 @@
 #include <util/containers/DMatrix.h>
 #include <util/misc/FileMaster.h>
 #include <util/misc/Log.h>
-#include <util/format/Str.h>
-#include <util/format/Int.h>
-#include <util/format/Dbl.h>
 
 #include <iomanip>
 #include <string>
@@ -92,7 +89,7 @@ namespace Cl {
    }
 
    /*
-   * Open-close a file, and write an array of fields in r-grid format
+   * Open-close a file, and write an array of complex fields format.
    */
    template <int D, class CFT, class FFT>
    void FieldIo<D,CFT,FFT>::readFields(
@@ -107,7 +104,7 @@ namespace Cl {
    }
 
    /*
-   * Open-close a file, and read a single field in r-grid format
+   * Open-close a file, and read a single complex field.
    */
    template <int D, class CFT, class FFT>
    void FieldIo<D,CFT,FFT>::readField(
@@ -122,7 +119,7 @@ namespace Cl {
    }
 
    /*
-   * Open-close a file, and write an array of fields in r-grid format
+   * Open-close a file, and write an array of complex fields.
    */
    template <int D, class CFT, class FFT>
    void FieldIo<D,CFT,FFT>::writeFields(
@@ -140,7 +137,7 @@ namespace Cl {
    }
 
    /*
-   * Open-close a file, and write a single field in r-grid format
+   * Open-close a file, and write a single complex field.
    */
    template <int D, class CFT, class FFT>
    void FieldIo<D,CFT,FFT>::writeField(
@@ -239,7 +236,9 @@ namespace Cl {
       convertRGridToKGrid(tmpFields_, tmpFieldsKGrid_);
       writeFieldsKGrid(outFileName, tmpFieldsKGrid_, tmpUnitCell);
    }
+   #endif
 
+   #if 0
    // Field Inspection
 
    template <int D, class CFT, class FFT>
@@ -259,7 +258,7 @@ namespace Cl {
    // File Header IO Utilities
 
    /*
-   * Read common part of field header.
+   * Read the common part of field file header.
    *
    * Extracts number of monomers (i.e., number of fields) and unitCell
    * data (lattice type and parameters) from the file, and returns these
@@ -295,11 +294,11 @@ namespace Cl {
       UTIL_CHECK(unitCell.lattice() != UnitCell<D>::Null);
       UTIL_CHECK(unitCell.nParameter() > 0);
 
-      // Validate or initialize lattice type
+      // Validate lattice type
       if (lattice() != unitCell.lattice()) {
          Log::file() << std::endl
                << "Error - Mismatched lattice types "
-               << "in FieldIo function readFieldHeader:\n"
+               << "in Prdc::Cl::FieldIo::readFieldHeader:\n"
                << "  FieldIo::lattice  :" << lattice() << "\n"
                << "  Unit cell lattice :" << unitCell.lattice()
                << "\n";

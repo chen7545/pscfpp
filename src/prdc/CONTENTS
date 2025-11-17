@@ -2,28 +2,30 @@ The src/prdc directory contains source code for treating systems with
 periodic boundary conditions. 
 
 All source code in this directory is defined in namespace Pscf::Prdc, 
-and may use classes and functions defined in namespace Util (directory
+and may use classes and functions defined in namespace Util (directory 
 src/util) or parent namespace Pscf (directory src/pscf).  Code in the
-Pscf::Prdc namespace may be used throughout the Pscf::Rpc and Pscf::Rpg 
-namespaces (directories src/rpc and src/rpg) to construct the pscf_pc
-and pscf_pg programs for systems with periodic boundary conditions. 
+Pscf::Prdc namespace may be used throughout the Pscf::Rpc, Pscf::Rpg,
+Pscf::Cpc and Pscf::Cpg namespaces (or directories src/rpc, src/rpg, 
+src/cpc and src/cpg) to construct programs for systems with periodic 
+boundary conditions using either real- or complex-valued fields, using
+either CPU or GPU hardware. 
 
 Subdirectories:
 ---------------
 
-  cpu/         - field containers etc. for CPU, only used in pscf_pc
-  cuda/        - field containers etc. for GPU, only used in pscf_pg
+  cpu/         - field containers etc. for CPU
+  cuda/        - field containers etc. for GPU
   crystal/     - unit cells, space groups, and symmetry adapted basis
   environment/ - generation of imposed mask and external fields
-  field/       - base classes for field containers, field IO and domain 
-  iterator/    - tools and base classes for SCFT iterators
+  rl/          - templates for use with real-valued fields
+  cl/          - templates for use with complex-valued fields
   tests/       - unit tests for code in src/prdc
 
 Enclosed namespaces:
 --------------------
 
   Namespace Pscf::Prdc contains two enclosed namespaces containing
-  analogous code designed for use on different hardware:
+  analogous code designed to use different hardware:
 
   - Code in prdc/cpu is defined in namespace Pscf::Prdc::Cpu
   - Code in prdc/cuda is defined in namespace Pscf::Prdc::Cuda
@@ -36,9 +38,10 @@ Enclosed namespaces:
   field defined on the nodes of a regular grid. The memory used by class
   Pscf::Prdc::Cpu::RField is allocated on the CPU while memory used by
   by class Pscf::Prdc::Cuda::RField is allocated in global GPU memory.  
-  Classes defined in Pscf::Prdc::Cpu are used in namespace Pscf::Rpc to 
-  construct program pscf_pc, whereas those defined in Pscf::Prdc::Gpu
-  are used in namespace Pscf::Rpg to construct program pscf_pg.
+  Classes defined in Pscf::Prdc::Cpu are used in namespaces Pscf::Rpc 
+  and Pscf::Cpc to construct programs that use only CPU hardware, while
+  those defined in Pscf::Prdc::Gpu are used in namespaces Pscf::Rpg and
+  Pscf::Cpg to construct GPU-accelerated programs.
 
 Makefile and makefile fragments:
 --------------------------------

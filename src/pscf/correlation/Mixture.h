@@ -109,7 +109,7 @@ namespace Correlation {
       * \param correlations  array of correlation function values (out)
       */
       void computeOmegaTotal(Array<double> const & kSq,
-                             Array<double> & correlation) const;
+                             Array<double> & correlations) const;
 
       /**
       * Return reference to a polymer species descriptor.
