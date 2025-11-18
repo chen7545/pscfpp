@@ -105,7 +105,7 @@ namespace Pscf {
    void conj(CT & z, CT const & a);
 
    /**
-   * In-place complex conjugation of a complex number, a = a^* .
+   * In place complex conjugation of a complex number, a = a^* .
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -152,6 +152,18 @@ namespace Pscf {
    {  z = a; }
 
    /**
+   * Assign one std::complex<RT> variable to another.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z value (out)
+   * \param a value (in)
+   */
+   template <typename RT> 
+   void assign(std::complex<RT> & z, std::complex<RT> const & a)
+   {  z = a; }
+
+   /**
    * Create a complex number from real and imaginary parts, z = a + ib.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -162,6 +174,19 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void assign(CT & z, RT const & a, RT const & b);
+
+   /**
+   * Create std::complex<RT> from real and imaginary parts, z = a + ib.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex (out)
+   * \param a real part (in)
+   * \param b imaginary part (in)
+   */
+   template <typename RT>
+   void assign(std::complex<RT> & z, RT const & a, RT const & b)
+   {  z = std::complex<RT>(a, b); }
 
    /**
    * Assign a real input to a complex variable.
@@ -175,7 +200,19 @@ namespace Pscf {
    void assign(CT & z, RT const & a);
 
    /**
-   * Assign a std::complex input to a complex variable, z=a.
+   * Assign a real input to a std::complex variable.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex (out)
+   * \param a real (in)
+   */
+   template <typename RT>
+   void assign(std::complex<RT> & z, RT const & a)
+   {  z = a; }
+
+   /**
+   * Assign a std::complex input to a complex CT variable, z=a.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -186,11 +223,11 @@ namespace Pscf {
    void assign(CT & z, std::complex<RT> const & a);
 
    /**
-   * Assign a complex input to a std::complex variable, z=a.
+   * Assign a complex CT input to a std::complex variable, z=a.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
-   * \param z std::complex (out)
+   * \param z std::complex<RT> (out)
    * \param a complex (in)
    */
    template <typename CT, typename RT>
@@ -237,6 +274,20 @@ namespace Pscf {
    {  z = a + b; }
 
    /**
+   * Addition of two std::complex variables, z = a + b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z sum (out)
+   * \param a summand (in)
+   * \param b summand (in)
+   */
+   template <typename RT> 
+   void add(std::complex<RT> & z, 
+            std::complex<RT> const & a, std::complex<RT> const & b)
+   {  z = a + b; }
+
+   /**
    * Addition of a complex and real number, z = a + b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -247,6 +298,20 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void add(CT & z, CT const & a, RT const & b);
+
+   /**
+   * Addition of a std::complex and real number, z = a + b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex sum (out)
+   * \param a complex summand (in)
+   * \param b real summand (in)
+   */
+   template <typename RT>
+   void add(std::complex<RT> & z, 
+            std::complex<RT> const & a, RT const & b)
+   {  z += a; }
 
    /**
    * In place addition, a += b.
@@ -284,6 +349,18 @@ namespace Pscf {
    {  a += b; }
 
    /**
+   * In place addition of std::complex numbers, a += b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param a summand (in) and sum (out)
+   * \param b summand (in)
+   */
+   template <typename RT> 
+   void addEq(std::complex<RT> & a, std::complex<RT> const & b)
+   {  a += b; }
+
+   /**
    * In place addition of a complex and real number, a += b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -293,6 +370,18 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void addEq(CT & a, RT const & b);
+
+   /**
+   * In place addition of std::complex and real numbers, a += b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param a summand (in) and sum (out)
+   * \param b summand (in)
+   */
+   template <typename RT> 
+   void addEq(std::complex<RT> & a, RT const & b)
+   {  a += b; }
 
    // Subtraction
 
@@ -335,6 +424,20 @@ namespace Pscf {
    {  z = a - b; }
 
    /**
+   * Subtraction of std::complex numbers, z = a - b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z difference (out)
+   * \param a 1st argument (in)
+   * \param b 2nd argument (in)
+   */
+   template <typename RT> inline
+   void sub(std::complex<RT> & z, 
+            std::complex<RT> const & a, std::complex<RT> const & b)
+   {  z = a - b; }
+
+   /**
    * Subtraction of a real number from a complex number, z = a - b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -345,6 +448,20 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void sub(CT & z, CT const & a, RT const & b);
+
+   /**
+   * Subtraction of a real number from a complex number, z = a - b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex difference (out)
+   * \param a complex 1st argument (in)
+   * \param b real 2nd argument (in)
+   */
+   template <typename RT>
+   void sub(std::complex<RT> & z, 
+            std::complex<RT> const & a, RT const & b)
+   {  z = a - b; }
 
    /**
    * In place subtraction of two numbers, a -= b.
@@ -382,6 +499,18 @@ namespace Pscf {
    {  a -= b; }
 
    /**
+   * In place subtraction of std::complex numbers, a -= b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param a argument (in) and difference (out)
+   * \param b argument (in)
+   */
+   template <typename RT> 
+   void subEq(std::complex<RT> & a, std::complex<RT> const & b)
+   {  a -= b; }
+
+   /**
    * In place subtraction of real number from a complex number, a -= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -391,6 +520,18 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void subEq(CT & a, RT const & b);
+
+   /**
+   * In place subtraction of real from std::complex number, a -= b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param a argument (in) and difference (out)
+   * \param b argument (in)
+   */
+   template <typename RT> 
+   void subEq(std::complex<RT> & a, RT const & b)
+   {  a -= b; }
 
    /**
    * Return square of the absolute magnitude of a complex difference.
@@ -446,6 +587,20 @@ namespace Pscf {
    {  z = a * b; }
 
    /**
+   * Multiplication of std::complex numbers, z = a * b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z product (out)
+   * \param a factor (in)
+   * \param b factor (in)
+   */
+   template <typename RT> 
+   void mul(std::complex<RT> & z, 
+            std::complex<RT> const & a, std::complex<RT> const & b)
+   {  z = a * b; }
+
+   /**
    * Multiplication of complex and real numbers, z = a * b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -456,6 +611,20 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void mul(CT & z, CT const & a, RT const & b);
+
+   /**
+   * Multiplication of std::complex and real numbers, z = a * b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex product (out)
+   * \param a complex factor (in)
+   * \param b real factor (in)
+   */
+   template <typename RT>
+   void mul(std::complex<RT> & z, 
+            std::complex<RT> const & a, RT const & b)
+   {  z = a * b; }
 
    /**
    * In place multiplication, a *= b.
@@ -514,6 +683,18 @@ namespace Pscf {
    template <typename CT>
    void square(CT & z, CT const & a);
 
+   /**
+   * Compute complex square of a std::complex number, z = a * a.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex product (out)
+   * \param a complex factor (in)
+   */
+   template <typename RT>
+   void square(std::complex<RT> & z, std::complex<RT> const & a)
+   {  z = a * a; }
+
    // Division
 
    /**
@@ -552,7 +733,21 @@ namespace Pscf {
    */
    template <> inline
    void div(float & z, float const & a, float const & b)
-   {  z = a/b; }
+   {  z = a / b; }
+
+   /**
+   * Division of two std::complex numbers, z = a / b .
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z ratio (out)
+   * \param a numerator (in)
+   * \param b denominator (in)
+   */
+   template <typename RT> 
+   void div(std::complex<RT> & z, 
+            std::complex<RT> const & a, std::complex<RT> const & b)
+   {  z = a / b; }
 
    /**
    * Division of a complex number by a real number, z = a / b .
@@ -565,6 +760,20 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void div(CT & z, CT const & a, RT const & b);
+
+   /**
+   * Division of a std::complex number by a real number, z = a / b .
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param z complex ratio (out)
+   * \param a complex numerator (in)
+   * \param b real denominator (in)
+   */
+   template <typename RT>
+   void div(std::complex<RT> & z, 
+            std::complex<RT> const & a, RT const & b)
+   {  z = a / b; }
 
    /**
    * In place division of two numbers, a /= b.
@@ -602,6 +811,18 @@ namespace Pscf {
    {  a /= b; }
 
    /**
+   * In place division of std::complex numbers, a /= b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param a complex numerator (in) and ratio (out)
+   * \param b complex denominator (in)
+   */
+   template <typename RT> 
+   void divEq(std::complex<RT> & a, std::complex<RT> const & b)
+   {  a /= b; }
+
+   /**
    * In place division of a complex number by a real number, a /= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
@@ -611,6 +832,20 @@ namespace Pscf {
    */
    template <typename CT, typename RT>
    void divEq(CT & a, RT const & b);
+
+   /**
+   * In place division of std::complex number by a real number, a /= b.
+   *
+   * \ingroup Pscf_Math_Arithmetic_Module
+   *
+   * \param a complex numerator (in) and ratio (out)
+   * \param b real denominator (in)
+   */
+   template <typename RT>
+   void divEq(std::complex<RT> & a, RT const & b)
+   {  a /= b; }
+
+   // Inversion
 
    // Inversion
 
