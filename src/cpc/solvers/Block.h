@@ -251,7 +251,7 @@ namespace Cpc {
       *
       * \param prefactor  constant multiplying integral over s
       */
-      void computeConcentrationThread(double prefactor);
+      void computeConcentrationThread(fftw_complex const & prefactor);
 
       /**
       * Compute the concentration for this block, using the bead model.
@@ -276,7 +276,7 @@ namespace Cpc {
       *
       * \param prefactor  constant multiplying sum over beads
       */
-      void computeConcentrationBead(double prefactor);
+      void computeConcentrationBead(fftw_complex const & prefactor);
 
       /**
       * Get contour length step size.

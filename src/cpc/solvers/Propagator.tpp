@@ -259,7 +259,7 @@ namespace Cpc {
    * Compute spatial average of product of head and tail of partner.
    */
    template <int D>
-   void Propagator<D>::computeQ(fftw_complex & Q) const
+   void Propagator<D>::computeQ(std::complex<double> & Q) const
    {
       // Preconditions
       if (!isSolved()) {
@@ -275,12 +275,13 @@ namespace Cpc {
       UTIL_CHECK(meshPtr_);
       int nx = meshPtr_->size();
 
-      assign(Q, 0.0);
+      fftw_complex sum;
+      assign(sum, 0.0);
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
          FieldT const& qt = partner().q(ns_-2);
          for (int ix = 0; ix < nx; ++ix) {
-            addEq(Q, qt[ix]);
+            addEq(sum, qt[ix]);
          }
       } else {
          // Compute average product of head slice and partner tail slice
@@ -289,12 +290,13 @@ namespace Cpc {
          fftw_complex product;
          for (int ix = 0; ix < nx; ++ix) {
             mul(product, qh[ix], qt[ix]);
-            addEq(Q, product);
-            // Q += qh[ix]*qt[ix];
+            addEq(sum, product);
+            // sum += qh[ix]*qt[ix];
          }
       }
       double meshSize = double(nx);
-      divEq(Q, meshSize);
+      divEq(sum, meshSize);
+      assign(Q, sum);
    }
 
 }

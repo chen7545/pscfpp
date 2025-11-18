@@ -146,7 +146,7 @@ namespace Cpc {
       *
       * \param value of Q, spatial average of q*q^{+} at head (output)
       */
-      void computeQ(fftw_complex & Q) const;
+      void computeQ(std::complex<double>& Q) const;
 
       /**
       * Return slice of q-field at a specified step.

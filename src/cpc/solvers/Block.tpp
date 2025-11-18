@@ -13,6 +13,7 @@
 
 #include <prdc/cpu/WaveList.h>
 #include <prdc/cpu/FFT.h>
+#include <prdc/cpu/complex.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/shiftToMinimum.h>
 
@@ -455,7 +456,7 @@ namespace Cpc {
    * Integrate to calculate monomer concentration for this block
    */
    template <int D>
-   void Block<D>::computeConcentrationThread(double prefactor)
+   void Block<D>::computeConcentrationThread(fftw_complex const & prefactor)
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -530,10 +531,12 @@ namespace Cpc {
       }
 
       // Normalize the integral
-      d = prefactor * ds_ / 3.0;
+      fftw_complex p;
+      d = ds_ / 3.0;
+      mul(p, prefactor, d); // d = prefactor * ds_ / 3.0
       for (i = 0; i < nx; ++i) {
-         mulEq(c[i], d);
-         // c[i] *= d;
+         mulEq(c[i], p);
+         // c[i] *= p;
       }
 
    }
@@ -542,7 +545,7 @@ namespace Cpc {
    * Calculate monomer concentration for this block, bead model.
    */
    template <int D>
-   void Block<D>::computeConcentrationBead(double prefactor)
+   void Block<D>::computeConcentrationBead(fftw_complex const & prefactor)
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -584,9 +587,12 @@ namespace Cpc {
       // Note: Slices j=0 and j=ns_ - 1 are phantom vertices
 
       // Normalize the integral
+      fftw_complex p;
+      d = ds_ / 3.0;
+      mul(p, prefactor, d);
       for (i = 0; i < nx; ++i) {
-         mulEq(c[i], prefactor);
-         //c[i] *= prefactor;
+         mulEq(c[i], p);
+         //c[i] *= p;
       }
    }
 
