@@ -12,7 +12,7 @@
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/shiftToMinimum.h>
 #include <prdc/crystal/replicateUnitCell.h>
-#include <prdc/crystal/fieldHeader.h>
+#include <prdc/field/fieldHeader.h>
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/mesh/MeshIterator.h>
@@ -31,109 +31,6 @@
 
 namespace Pscf {
 namespace Prdc {
-
-   // Field inspection and allocation functions
-
-   /*
-   * Check allocation of a single field of type FT, allocate if needed.
-   */
-   template <int D, class FT>
-   void checkAllocateField(FT& field, 
-                           IntVec<D> const& dimensions)
-   {
-      if (field.isAllocated()) {
-         UTIL_CHECK(field.meshDimensions() == dimensions);
-      } else {
-         field.allocate(dimensions);
-      }
-   }
-
-   /*
-   * Check allocation of an array of fields of type FT, allocate if needed.
-   */
-   template <int D, class FT>
-   void checkAllocateFields(DArray<FT>& fields,
-                            int nMonomer, 
-                            IntVec<D> const& dimensions)
-   {
-      if (fields.isAllocated()) {
-         int nMonomerFields = fields.capacity();
-         UTIL_CHECK(nMonomerFields > 0)
-         UTIL_CHECK(nMonomerFields == nMonomer)
-         for (int i = 0; i < nMonomer; ++i) {
-            UTIL_CHECK(fields[i].isAllocated());
-            UTIL_CHECK(fields[i].meshDimensions() == dimensions);
-         }
-      } else {
-         fields.allocate(nMonomer);
-         for (int i = 0; i < nMonomer; ++i) {
-            fields[i].allocate(dimensions);
-         }
-      }
-   }
-
-   /*
-   * Inspect dimensions of a DArray of fields, each of type FT.
-   */
-   template <int D, class FT>
-   void inspectFields(DArray<FT> const& fields,
-                      int & nMonomer,
-                      IntVec<D> & dimensions)
-   {
-      UTIL_CHECK(fields.isAllocated());
-      nMonomer = fields.capacity();
-      UTIL_CHECK(nMonomer > 0);
-
-      dimensions = fields[0].meshDimensions();
-      for (int i = 0; i < nMonomer; ++i) {
-         UTIL_CHECK(fields[i].isAllocated());
-         UTIL_CHECK(fields[i].meshDimensions() == dimensions);
-      }
-   }
-
-   /*
-   * Check allocation of an array of arrays of type AT, allocate if needed.
-   */
-   template <class AT>
-   void checkAllocateArrays(DArray<AT>& arrays,
-                            int nMonomer, 
-                            int capacity)
-   {
-      if (arrays.isAllocated()) {
-         int nMonomerArrays = arrays.capacity();
-         UTIL_CHECK(nMonomerArrays > 0)
-         UTIL_CHECK(nMonomerArrays == nMonomer)
-         for (int i = 0; i < nMonomer; ++i) {
-            UTIL_CHECK(arrays[i].isAllocated());
-            UTIL_CHECK(arrays[i].capacity() == capacity);
-         }
-      } else {
-         arrays.allocate(nMonomer);
-         for (int i = 0; i < nMonomer; ++i) {
-            arrays[i].allocate(capacity);
-         }
-      }
-   }
-
-   /*
-   * Inspect dimensions of an array of arrays of type AT.
-   */
-   template <class AT>
-   void inspectArrays(DArray<AT> const& arrays,
-                    int & nMonomer,
-                    int & capacity)
-   {
-      UTIL_CHECK(arrays.isAllocated());
-      nMonomer = arrays.capacity();
-      UTIL_CHECK(nMonomer > 0);
-
-      capacity = arrays[0].capacity();
-      UTIL_CHECK(capacity > 0);
-      for (int i = 0; i < nMonomer; ++i) {
-         UTIL_CHECK(arrays[i].isAllocated());
-         UTIL_CHECK(arrays[i].capacity() == capacity);
-      }
-   }
 
    // RGrid File Io Templates
 

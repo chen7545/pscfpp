@@ -144,7 +144,7 @@ namespace Cpc {
       * as a spatial average of the pointwise product of the initial/head
       * slice for this propagator and the final/tail slice of its partner.
       *
-      * \param value of Q, spatial average of q*q^{+} at head (output)
+      * \param Q  output value, spatial average of q*q^{+} at head
       */
       void computeQ(std::complex<double>& Q) const;
 

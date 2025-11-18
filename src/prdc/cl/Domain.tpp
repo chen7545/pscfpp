@@ -9,7 +9,7 @@
 */
 
 #include "Domain.h"
-#include <prdc/crystal/fieldHeader.h>
+#include <prdc/field/fieldHeader.h>
 #include <util/signal/Signal.h>
 #include <util/misc/FileMaster.h>
 

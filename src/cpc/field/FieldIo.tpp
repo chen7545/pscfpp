@@ -11,8 +11,8 @@
 #include "FieldIo.h"
 #include <prdc/cl/FieldIo.tpp>        // base class implementation
 
-#include <prdc/rl/fieldIoUtil.h>
-#include <prdc/cl/cFieldIoUtil.h>
+#include <prdc/field/fieldCheck.h>
+#include <prdc/field/cFieldIo.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/CFieldComparison.h>
 #include <prdc/cpu/complex.h>

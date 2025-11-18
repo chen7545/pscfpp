@@ -5,7 +5,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "fieldIoUtil.h"
+#include "rFieldIo.h"
 
 namespace Pscf {
 namespace Prdc {

@@ -145,7 +145,7 @@ namespace Rpc {
       * as a spatial average of the pointwise product of the initial/head
       * slice for this propagator and the final/tail slice of its partner.
       *
-      * \param Q  output value spatial average of q*q^{+} at head
+      * \param Q  output value, spatial average of q*q^{+} at head
       */
       void computeQ(double & Q) const;
 

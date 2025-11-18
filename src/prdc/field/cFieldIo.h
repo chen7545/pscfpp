@@ -42,7 +42,7 @@ namespace Prdc {
    * assign(CT&, RT const&, RT const&) must be defined. Valid complex
    * array types include DArray<fftw_complex> and HostDArray<cudaReal>.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Prdc_Field_Module
    *
    * \param in  input file stream
    * \param fields  array of complex fields (out)
@@ -64,7 +64,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides an
    * overloaded [] subscript operator that returns a complex number.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Prdc_Field_Module
    *
    * \param in  input file stream
    * \param field  array containing a single complex field (out)
@@ -84,7 +84,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides 
    * an overloaded [] subscript operator that returns a complex number.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Prdc_Field_Module
    *
    * \param out  output file stream
    * \param fields  array of complex fields (in)
@@ -106,7 +106,7 @@ namespace Prdc {
    * The template parameter AT must be an array type that provides 
    * an overloaded [] subscript operator that returns a complex number.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Prdc_Field_Module
    *
    * \param out  output file stream
    * \param field  array containing a single complex field (out)

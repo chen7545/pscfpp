@@ -116,13 +116,7 @@ namespace Cpc {
       * propagator solutions and block volume fraction fields, while q and
       * phi or mu are set to new values.
       *
-      * The parameter phiTot is only relevant to problems such as thin
-      * films in which the material is excluded from part of the unit cell
-      * by imposing an inhogeneous constraint on the sum of the monomer
-      * concentrations (i.e., a "Mask"). 
-      *
       * \param wFields array of chemical potential fields.
-      * \param phiTot  volume fraction of unit cell occupied by material
       */ 
       void compute(DArray< CField<D> > const & wFields);
 

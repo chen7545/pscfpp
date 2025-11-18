@@ -8,12 +8,12 @@ include $(SRC_DIR)/prdc/patterns.mk
 #-----------------------------------------------------------------------
 # Main targets 
 
-all: $(prdc_rl_OBJS) 
+all: $(prdc_field_OBJS) 
 
 clean:
-	rm -f $(prdc_rl_OBJS) $(prdc_rl_OBJS:.o=.d) 
+	rm -f $(prdc_field_OBJS) $(prdc_field_OBJS:.o=.d) 
 
 #-----------------------------------------------------------------------
 # Include dependency files
 
--include $(prdc_rl_OBJS:.o=.d)
+-include $(prdc_field_OBJS:.o=.d)

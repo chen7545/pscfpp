@@ -10,9 +10,9 @@
 
 #include "FieldIo.h"
 
-#include <prdc/rl/fieldIoUtil.h>
+#include <prdc/field/fieldCheck.h>
+#include <prdc/field/fieldHeader.h>
 #include <prdc/crystal/UnitCell.h>
-#include <prdc/crystal/fieldHeader.h>
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>
@@ -285,7 +285,7 @@ namespace Cl {
 
       Pscf::Prdc::readFieldHeader(in, ver1, ver2, unitCell,
                                   groupNameIn, nMonomer);
-      // Note: Function definition in prdc/crystal/fieldHeader.tpp
+      // Note: Function definition in prdc/field/fieldHeader.tpp
 
       // Checks of data from header
       UTIL_CHECK(ver1 == 1);
@@ -321,7 +321,7 @@ namespace Cl {
       std::string gName = "";
       Pscf::Prdc::writeFieldHeader(out, v1, v2, unitCell,
                                    gName, nMonomer);
-      // Note: This function is defined in prdc/crystal/fieldHeader.tpp
+      // Note: This function is defined in prdc/field/fieldHeader.tpp
    }
 
    // Protected functions to check and allocate private workspace arrays

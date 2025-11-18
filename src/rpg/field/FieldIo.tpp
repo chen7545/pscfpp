@@ -13,7 +13,7 @@
 #include <rpg/field/HostDArrayComplex.h>
 
 #include <prdc/rl/FieldIo.tpp>      // base class implementation
-#include <prdc/rl/fieldIoUtil.h>
+#include <prdc/field/rFieldIo.h>
 #include <prdc/field/fieldArrayUtil.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>

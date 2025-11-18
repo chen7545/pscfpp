@@ -10,7 +10,8 @@
 
 #include "FieldIo.h"
 
-#include <prdc/rl/fieldIoUtil.h>
+#include <prdc/field/fieldCheck.h>
+#include <prdc/field/rFieldIo.h>
 #include <prdc/crystal/shiftToMinimum.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/Basis.h>
@@ -1037,7 +1038,7 @@ namespace Rl {
 
       Pscf::Prdc::readFieldHeader(in, ver1, ver2, unitCell,
                                   groupNameIn, nMonomer);
-      // Note: Function definition in prdc/crystal/fieldHeader.tpp
+      // Note: Function definition in prdc/field/fieldHeader.tpp
 
       // Checks of data from header
       UTIL_CHECK(ver1 == 1);
@@ -1117,7 +1118,7 @@ namespace Rl {
       }
       Pscf::Prdc::writeFieldHeader(out, v1, v2, unitCell,
                                    gName, nMonomer);
-      // Note: This function is defined in prdc/crystal/fieldHeader.tpp
+      // Note: This function is defined in prdc/field/fieldHeader.tpp
    }
 
    // Protected functions to check and allocate private workspace arrays
