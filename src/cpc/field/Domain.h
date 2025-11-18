@@ -25,15 +25,15 @@ namespace Pscf {
 
 // Explicit instantiation declarations of base class
 namespace Pscf {
-namespace Prdc {
-   using namespace Cpu;
-   extern template 
-   class Cl::Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
-   extern template 
-   class Cl::Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
-   extern template 
-   class Cl::Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
-}
+   namespace Prdc {
+      using namespace Cpu;
+      extern template 
+      class Cl::Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
+      extern template 
+      class Cl::Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
+      extern template 
+      class Cl::Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
+   }
 }
 
 namespace Pscf {
@@ -94,6 +94,5 @@ namespace Cpc {
    extern template class Domain<3>;
 
 } // namespace Cpc
-
 } // namespace Pscf
 #endif

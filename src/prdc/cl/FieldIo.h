@@ -29,10 +29,11 @@ namespace Cl {
    using namespace Pscf::Prdc;
 
    /**
-   * File input/output and other utilities for fields.
+   * File IO and other utilities for complex fields.
    *
-   * This class template provides functions to read and write complex-valued
-   * fields and other utilities for manipulating fields and field files.
+   * This class template provides functions to read and write complex
+   * fields, and other utilities for manipulating such fields and field 
+   * files.
    *
    * <b>Template parameters:</b>
    *
@@ -44,20 +45,18 @@ namespace Cl {
    * The Cl:FieldIo template is a base class for two class templates 
    * named FieldIo that are defined in namespaces Pscf::Cpc and Pscf::Cpg.
    * The Pscf::Cpc::FieldIo<int D> template is derived from a partial
-   * specialization of Cl::FieldIo with parameters CFT = Cpu::CField<D> and
-   * FFT = Cpu::FFT<D>, which are both defined in the Prdc::Cpu namespace
-   * and use standard CPU hardware.  The analogous class template 
-   * Cpg::FieldIo<int D> in the Pscf::Cpg namespace is derived from a 
-   * partial specialization of Cl::FieldIo in which these two parameters 
-   * are class templates with the same names (CField and FFT) that are 
-   * defined in the Prdc::Cuda namespace, which use GPU hardware.
+   * specialization of Cl::FieldIo with parameters CFT = Cpu::CField<D> 
+   * and FFT = Cpu::FFT<D>, which both use standard CPU hardware.  The 
+   * analogous class template Cpg::FieldIo<int D> in the Pscf::Cpg 
+   * namespace is derived from a partial specialization of Cl::FieldIo 
+   * with CFT = Cuda::CField<D> and FFT = Cuda::FFT<D>, which use GPU 
+   * hardware.
    *
-   * <b> Pure virtual member functions </b>: This class template defines
-   * several pure virtual functions for which different implementations
-   * are required for Cpu and Cuda code. Cpu and Cuda implementations of
-   * these functions, which are defined in the Cpc::FieldIo<D> and
-   * Cpg::FieldIo<D> subclasses, differ because the Cuda versions must
-   * explicitly transfer data between Cpu and Gpu memory.
+   * <b> Pure virtual member functions </b>: This class template declares
+   * several pure virtual functions. These are all functions for which 
+   * slightly different implementations are required for Cpu and Cuda 
+   * code, generally because the Cuda versions must explicitly transfer 
+   * data between Cpu and Gpu memory.
    *
    * \ingroup Prdc_Cl_Module
    */
@@ -287,27 +286,15 @@ namespace Cl {
                       UnitCell<D> const & unitCell) const;
 
       ///@}
-     
-      #if 0
-      /// \name Field Array Format Conversion
+      /// \name Fourier Transformations
       ///@{
 
       /**
-      * Convert a single field from k-grid to r-grid format.
+      * Transform an array of fields from r-grid to k-grid (Fourier) format.
       *
-      * This function simply calls the inverse FFT for a single field.
-      *
-      * \param in  field in discrete Fourier format (k-grid)
-      * \param out  field defined on real-space grid (r-grid)
-      */
-      void convertKGridToRGrid(CFT const & in,
-                               CFT & out) const;
-
-      /**
-      * Convert an array of fields from r-grid to k-grid (Fourier) format.
-      *
-      * This function simply calls the forward FFT repeatedly for an
-      * array of fields.
+      * This function simply calls the forward FFT repeatedly for an array
+      * of fields. The in and out arrays must contain equal numbers of 
+      * fields defined with equal mesh dimensions.
       *
       * \param in  fields defined on real-space grid (r-grid)
       * \param out  fields in discrete Fourier format (k-grid)
@@ -316,21 +303,32 @@ namespace Cl {
                                DArray<CFT> & out) const;
 
       /**
-      * Convert a field from r-grid to k-grid (Fourier) format.
+      * Fourier transform a field file from r-grid to k-grid format.
       *
-      * This function simply calls the forward FFT for a single field.
+      * The number of monomers in the input file must equal the number
+      * set by the setNMonomer(int) member function.
       *
-      * \param in   field defined on real-space grid (r-grid)
-      * \param out  field in discrete Fourier format (k-grid)
+      * \param inFileName  name of input file (r-grid format)
+      * \param outFileName  name of output file (k-grid format)
       */
-      void convertRGridToKGrid(CFT const & in, CFT & out) const;
-
-      ///@}
-      /// \name Field File Format Conversion
-      ///@{
+      void convertRGridToKGrid(std::string const & inFileName,
+                               std::string const & outFileName) const;
 
       /**
-      * Convert a field file from Fourier (k-grid) to r-grid format.
+      * Fourier transform an array of fields from k-grid to r-grid format.
+      *
+      * This function simply calls the inverse FFT repeatedly for an array
+      * of fields. The in and out arrays must contain equal numbers of 
+      * fields defined with equal mesh dimensions.
+      *
+      * \param in  fields in discrete Fourier format (k-grid)
+      * \param out fields defined on real-space grid (r-grid)
+      */
+      void convertKGridToRGrid(DArray<CFT> const & in,
+                               DArray<CFT> & out) const;
+
+      /**
+      * Transform a field file from Fourier (k-grid) to r-grid format.
       *
       * The number of monomers in the input file must equal the number
       * set by the setNMonomer(int) member function.
@@ -341,19 +339,8 @@ namespace Cl {
       void convertKGridToRGrid(std::string const & inFileName,
                                std::string const & outFileName) const;
 
-      /**
-      * Convert a field file from r-grid to Fourier (k-grid) format.
-      *
-      * The number of monomers in the input file must equal the number
-      * set by the setNMonomer(int) member function.
-      *
-      * \param inFileName name of input file (r-grid format)
-      * \param outFileName name of output file (k-grid format)
-      */
-      void convertRGridToKGrid(std::string const & inFileName,
-                               std::string const & outFileName) const;
-
       ///@}
+      #if 0
       /// \name Test Field Equality
       ///@{
 

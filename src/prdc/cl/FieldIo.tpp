@@ -151,34 +151,7 @@ namespace Cl {
       file.close();
    }
 
-   #if 0
-   // FFT conversion functions (KGrid <-> RGrid) [Same in Rpc and Rpg]
-
-   /*
-   * Apply inverse FFT to an array of k-grid fields, converting to r-grid.
-   */
-   template <int D, class CFT, class FFT>
-   void FieldIo<D,CFT,FFT>::convertKGridToRGrid(
-                              DArray< CFT > const & in,
-                              DArray< CFT >& out) const
-   {
-      UTIL_ASSERT(in.capacity() == out.capacity());
-      int n = in.capacity();
-      for (int i = 0; i < n; ++i) {
-         fft().inverseTransform(in[i], out[i]);
-      }
-   }
-
-   /*
-   * Apply inverse FFT to a single k-grid field, converting to r-grid.
-   */
-   template <int D, class CFT, class FFT>
-   void FieldIo<D,CFT,FFT>::convertKGridToRGrid(
-                              CFT const & in, 
-                              CFT& out) const
-   {
-      fft().inverseTransform(in, out);
-   }
+   // Fourier transform functions (KGrid <-> RGrid) [Same in Rpc and Rpg]
 
    /*
    * Apply forward FFT to an array of r-grid fields, converting to k-grid.
@@ -188,38 +161,12 @@ namespace Cl {
                               DArray< CFT > const & in,
                               DArray< CFT >& out) const
    {
-      UTIL_ASSERT(in.capacity() == out.capacity());
       int n = in.capacity();
+      UTIL_CHECK(n > 0);
       for (int i = 0; i < n; ++i) {
+         UTIL_CHECK(in[i].meshDimensions() == out[i].meshDimensions());
          fft().forwardTransform(in[i], out[i]);
       }
-   }
-
-   /*
-   * Apply forward FFT to a single r-grid field, converting to k-grid.
-   */
-   template <int D, class CFT, class FFT>
-   void FieldIo<D,CFT,FFT>::convertRGridToKGrid(
-                              CFT const & in,
-                              CFT& out) const
-   {  fft().forwardTransform(in, out); }
-
-   /*
-   * Convert a field file from k-grid to r-grid format.
-   */
-   template <int D, class CFT, class FFT>
-   void FieldIo<D,CFT,FFT>::convertKGridToRGrid(
-                                std::string const & inFileName,
-                                std::string const & outFileName) const
-   {
-      checkAllocate();
-      UnitCell<D> tmpUnitCell;
-      readFields(inFileName, tmpFields_, tmpUnitCell);
-      for (int i = 0; i < nMonomer_; ++i) {
-         fft().inverseTransform(tmpFields_[i],
-                                tmpFields_[i]);
-      }
-      writeFields(outFileName, tmpFields_, tmpUnitCell);
    }
 
    /*
@@ -231,24 +178,59 @@ namespace Cl {
                                 std::string const & outFileName) const
    {
       checkAllocate();
+      DArray< CFT > inFields;
+      allocateFields(inFields, nMonomer_, mesh().dimensions());
       UnitCell<D> tmpUnitCell;
-      readFields(inFileName, tmpFields_, tmpUnitCell);
-      convertRGridToKGrid(tmpFields_, tmpFieldsKGrid_);
-      writeFieldsKGrid(outFileName, tmpFieldsKGrid_, tmpUnitCell);
+      readFields(inFileName, inFields, tmpUnitCell);
+      convertRGridToKGrid(inFields, tmpFields_);
+      writeFields(outFileName, tmpFields_, tmpUnitCell);
    }
-   #endif
+
+   /*
+   * Apply inverse FFT to an array of k-grid fields, converting to r-grid.
+   */
+   template <int D, class CFT, class FFT>
+   void FieldIo<D,CFT,FFT>::convertKGridToRGrid(
+                              DArray< CFT > const & in,
+                              DArray< CFT >& out) const
+   {
+      int n = in.capacity();
+      UTIL_CHECK(n > 0);
+      for (int i = 0; i < n; ++i) {
+         UTIL_CHECK(in[i].meshDimensions() == out[i].meshDimensions());
+         fft().inverseTransform(in[i], out[i]);
+      }
+   }
+
+   /*
+   * Convert a field file from k-grid to r-grid format.
+   */
+   template <int D, class CFT, class FFT>
+   void FieldIo<D,CFT,FFT>::convertKGridToRGrid(
+                                std::string const & inFileName,
+                                std::string const & outFileName) const
+   {
+      checkAllocate();
+      DArray< CFT > inFields;
+      allocateFields(inFields, nMonomer_, mesh().dimensions());
+      UnitCell<D> tmpUnitCell;
+      readFields(inFileName, inFields, tmpUnitCell);
+      convertKGridToRGrid(inFields, tmpFields_);
+      writeFields(outFileName, tmpFields_, tmpUnitCell);
+   }
 
    #if 0
-   // Field Inspection
+   // Field Comparison
 
    template <int D, class CFT, class FFT>
    void FieldIo<D,CFT,FFT>::compareFields(
                                 std::string const & filename1,
                                 std::string const & filename2) const
    {
-      DArray< CFT > fields1, fields2;
+      checkAllocate();
+      DArray< CFT > fields1;
+      allocateFields(fields1, nMonomer_, mesh().dimensions());
       UnitCell<D> tmpUnitCell;
-      // Unallocated arrays will be allocated in readFields
       readFields(filename1, fields1, tmpUnitCell);
       readFields(filename2, fields2, tmpUnitCell);
       compareFields(fields1, fields2);
