@@ -109,7 +109,7 @@ namespace Rl {
    * Allocate memory for all fields.
    */
    template <int D, class RFT, class FIT>
-   void 
+   void
    CFields<D,RFT,FIT>::allocate(int nMonomer, int nBasis,
                                     IntVec<D> const & dimensions)
    {
@@ -183,9 +183,9 @@ namespace Rl {
    // Boolean flag setter functions
 
    // Set the hasData flag.
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    void CFields<D,RFT,FIT>::setHasData(bool hasData)
-   {  
+   {
       hasData_ = hasData;
       if (!hasData_) {
          isSymmetric_ = false;
@@ -193,11 +193,11 @@ namespace Rl {
    }
 
    // Set the isSymmetric flag.
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    void CFields<D,RFT,FIT>::setIsSymmetric(bool isSymmetric)
    {
-      UTIL_CHECK(hasData_);  
-      isSymmetric_ = isSymmetric; 
+      UTIL_CHECK(hasData_);
+      isSymmetric_ = isSymmetric;
    }
 
 } // namespace Rl

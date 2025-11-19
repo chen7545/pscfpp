@@ -28,16 +28,16 @@ namespace Rl {
    * A list of c fields stored in both basis and r-grid format.
    *
    * <b> Template parameters </b>: The template parameters represent:
-   * 
+   *
    *   - D   : integer dimensionality of space, D=1,2, or 3
    *   - RFT : field type for r-grid data (e.g., RField<D>)
    *   - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
-   * 
-   * <b> Field Representations </b>: A CFields contains a list of
+   *
+   * <b> Field Representations </b>: A CFields container has a list of
    * nMonomer fields that are each associated with a monomer type. The
    * fields may be stored in two different formats:
    *
-   *  - A DArray of RFT (RField) containers holds valus of each field 
+   *  - A DArray of RFT (RField) containers holds valus of each field
    *    on the nodes of a regular grid. This is accessed by the rgrid()
    *    and rgrid(int) member functions.
    *
@@ -47,29 +47,29 @@ namespace Rl {
    *    functions.
    *
    * The CFields container provides public non-const access to both field
-   * representations, and does not automatically update one of these 
-   * field representations when the other is modified. Maintenance of the 
+   * representations, and does not automatically update one of these
+   * field representations when the other is modified. Maintenance of the
    * intended relationship between the two data representations is instead
-   * left as the responsibility of an object that owns this container. 
-   * 
-   * <b> Subclasses </b>: Partial specializations of CFields are 
-   * used as base classes for classes Prdc::CFields \<D \> and 
+   * left as the responsibility of an object that owns this container.
+   *
+   * <b> Subclasses </b>: Partial specializations of CFields are
+   * used as base classes for classes Prdc::CFields \<D \> and
    * Rpg::CFields \<D\>:
    *
    *  - Subclass Prdc::CFields \<D\> is derived from a partial
-   *    specialization of CFields with template parameters 
-   *    RFT = Cpu::RField\<D\> and FIT = Prdc::FieldIo\<D\> , and is 
+   *    specialization of CFields with template parameters
+   *    RFT = Cpu::RField\<D\> and FIT = Prdc::FieldIo\<D\> , and is
    *    used in the pscf_pc CPU program.
    *
    *  - Subclass Rpg::CFields \<D\> is derived from a partial
-   *    specialization of CFields with template parameters 
-   *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and 
+   *    specialization of CFields with template parameters
+   *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and
    *    is used in the pscf_pg GPU accelerated program.
    *
    * \ingroup Prdc_Rl_Module
    */
    template <int D, class RFT, class FIT>
-   class CFields 
+   class CFields
    {
 
    public:
@@ -99,7 +99,7 @@ namespace Rl {
       *
       * This function creates a stored pointer to a UnitCell<D> that is
       * is used by the writeBasis and writeRGrid functions, which each
-      * write the unit cell parameters from in this object to a field 
+      * write the unit cell parameters from in this object to a field
       * file header. This function may only be called once.
       *
       * \param cell  unit cell that is used by writeBasis and writeRGrid.
@@ -108,7 +108,7 @@ namespace Rl {
 
       /**
       * Set stored value of nMonomer.
-      * 
+      *
       * This function may only be called once. The value of nMonomer must
       * be positive.
       *
@@ -130,7 +130,7 @@ namespace Rl {
       *
       * This function may only be called once.
       *
-      * \param nBasis  number of basis functions 
+      * \param nBasis  number of basis functions
       */
       void allocateBasis(int nBasis);
 
@@ -140,7 +140,7 @@ namespace Rl {
       * This function may only be called once.
       *
       * \param nMonomer  number of monomer types
-      * \param nBasis  number of basis functions 
+      * \param nBasis  number of basis functions
       * \param dimensions  dimensions of spatial mesh
       */
       void allocate(int nMonomer, int nBasis, IntVec<D> const & dimensions);
@@ -293,14 +293,14 @@ namespace Rl {
       *
       * Element basis_[i] is an array that contains the components
       * of the field associated with monomer i, in a symmetry-adapted
-      * Fourier basis expansion. 
+      * Fourier basis expansion.
       */
       DArray< DArray<double> > basis_;
 
       /*
       * Array of fields in real-space grid (r-grid) format
       *
-      * Element basis_[i] is an RFT that contains values of the 
+      * Element basis_[i] is an RFT that contains values of the
       * field associated with monomer i on the nodes of a regular mesh.
       */
       DArray<RFT> rgrid_;
@@ -410,30 +410,29 @@ namespace Rl {
    }
 
    // Has memory been allocated for fields in r-grid format?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool CFields<D,RFT,FIT>::isAllocatedRGrid() const
    {  return isAllocatedRGrid_; }
 
    // Has memory been allocated for fields in basis format?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool CFields<D,RFT,FIT>::isAllocatedBasis() const
    {  return isAllocatedBasis_; }
 
    // Are the fields up-to-date?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool CFields<D,RFT,FIT>::hasData() const
    {  return hasData_; }
 
    // Are the fields symmetric under elements of the space group?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool CFields<D,RFT,FIT>::isSymmetric() const
    {  return isSymmetric_; }
 
    // Protected inline member function
 
    // Associated FieldIo object (const reference).
-   template <int D, class RFT, class FIT>
-   inline 
+   template <int D, class RFT, class FIT> inline
    FIT const & CFields<D,RFT,FIT>::fieldIo() const
    {
       UTIL_CHECK(fieldIoPtr_);

@@ -48,7 +48,7 @@ namespace Cl {
    {  delete signalPtr_; }
 
    /*
-   * Create an association with a FIT object.
+   * Create an association with a field Io (FIT) object.
    */
    template <int D, class CFT, class FIT>
    void WFields<D,CFT,FIT>::setFieldIo(FIT const & fieldIo)
@@ -65,7 +65,7 @@ namespace Cl {
    }
 
    /*
-   * Set the unit cell that is written to a field header.
+   * Set the unit cell that is written to a field file header.
    */
    template <int D, class CFT, class FIT>
    void WFields<D,CFT,FIT>::setWriteUnitCell(UnitCell<D> const & cell)
@@ -129,7 +129,7 @@ namespace Cl {
    // Read fields from a file
 
    /*
-   * Write fields to an output stream in real-space (r-grid) format.
+   * Write fields to an output stream.
    */
    template <int D, class CFT, class FIT>
    void WFields<D,CFT,FIT>::readFields(std::istream& in)
@@ -147,7 +147,7 @@ namespace Cl {
    }
 
    /*
-   * Read fields from a file in r-grid format, by filename.
+   * Read fields from a file, by filename.
    */
    template <int D, class CFT, class FIT>
    void WFields<D,CFT,FIT>::readFields(std::string const & filename)
@@ -161,7 +161,7 @@ namespace Cl {
    // Write fields to file
 
    /*
-   * Write fields to an output stream in real-space (r-grid) format.
+   * Write fields to an output stream.
    */
    template <int D, class CFT, class FIT>
    void WFields<D,CFT,FIT>::writeFields(std::ostream& out) const
@@ -180,7 +180,7 @@ namespace Cl {
    }
 
    /*
-   * Write all fields to a file.
+   * Write fields to a named file.
    */
    template <int D, class CFT, class FIT>
    void WFields<D,CFT,FIT>::writeFields(std::string const & filename) const

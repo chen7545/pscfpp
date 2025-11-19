@@ -1,5 +1,5 @@
-#ifndef PRDC_CL_W_FIELDS_H
-#define PRDC_CL_W_FIELDS_H
+#ifndef PRDC_CL_C_FIELDS_H
+#define PRDC_CL_C_FIELDS_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -12,10 +12,6 @@
 #include <pscf/math/IntVec.h>            // member
 
 // Forward declarations
-namespace Util {
-   template <typename T> class Signal;
-   template <> class Signal<void>;
-}
 namespace Pscf {
    namespace Prdc {
       template <int D> class UnitCell;
@@ -29,44 +25,36 @@ namespace Cl {
    using namespace Util;
 
    /**
-   * A container of complex-valued w fields.
+   * A container of complex-valued concentration fields (c fields).
    * 
-   * <b> Overview </b>: A WFields container has an array of nMonomer chemical
-   * fields (w fields) that are each associated with a monomer type. Fields 
-   * can be modified through set and read functions, accessed as const 
-   * references, or written to file. 
+   * <b> Overview </b>: A CFields container has an array of nMonomer chemical
+   * fields (c fields) that are each associated with a monomer type. Fields 
+   * can be accessed as const or non const references, or written to file.
    *
    * <b> Template parameters </b>: The template parameters represent:
    * 
    *     - D   : integer dimensionality of space, D=1,2, or 3
-   *     - CFT : field type for r-grid data (e.g., RField<D>)
+   *     - CFT : field type for r-grid data (e.g., CField<D>)
    *     - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
    * 
-   * <b> Subclasses </b>: Partial specializations of WFields are used as
-   * base classes for classes Rpc::WFields \<D \> and Rpg::WFields \<D\>:
+   * <b> Subclasses </b>: Partial specializations of CFields are used as
+   * base classes for classes Rpc::CFields \<D \> and Rpg::CFields \<D\>:
    *
-   *  - Subclass Rpc::WFields \<D\> is derived from a partial
-   *    specialization of WFields with template parameters 
+   *  - Subclass Rpc::CFields \<D\> is derived from a partial
+   *    specialization of CFields with template parameters 
    *    CFT = Cpu::CFT \<D\> and FIT = Rpc::FIT \<D\> , and is used in
    *    the pscf_pc CPU program.
    *
-   *  - Subclass Rpg::WFields \<D\> is derived from a partial
-   *    specialization of WFields with template parameters 
+   *  - Subclass Rpg::CFields \<D\> is derived from a partial
+   *    specialization of CFields with template parameters 
    *    CFT = Cuda::CFT \<D\> and FIT = Rpg::FIT \<D\> , and is used in
    *    the pscf_pg GPU accelerated program.
    *
-   * <b> Signal </b>: A WFields owns an instance of class
-   * Util::Signal<void> that notifies all observers whenever the fields
-   * owned by the WFields are modified by set or read functions. This 
-   * signal object may be accessed by reference using the signal() member 
-   * function. The Util::Signal<void>::addObserver function may used to 
-   * add "observer" objects and indicate a zero-parameter member function 
-   * of each observer that will be called whenever the fields are modified.
    *
    * \ingroup Prdc_Cl_Module
    */
    template <int D, class CFT, class FIT>
-   class WFields 
+   class CFields 
    {
 
    public:
@@ -74,12 +62,12 @@ namespace Cl {
       /**
       * Constructor.
       */
-      WFields();
+      CFields();
 
       /**
       * Destructor.
       */
-      ~WFields();
+      ~CFields();
 
       /// \name Initialization and Memory Management
       ///@{
@@ -90,18 +78,6 @@ namespace Cl {
       * \param fieldIo  associated FIT object
       */
       void setFieldIo(FIT const & fieldIo);
-
-      /**
-      * Set unit cell used when reading field files. 
-      *
-      * This function creates a stored pointer to a UnitCell<D> that is
-      * is used by the readFields functions, which reset the unit cell
-      * parameters in this object to those read from the field file
-      * header. This function may only be called once.
-      *
-      * \param cell  unit cell that is modified by readFields 
-      */
-      void setReadUnitCell(UnitCell<D>& cell);
 
       /**
       * Set unit cell used when writing field files.
@@ -126,43 +102,6 @@ namespace Cl {
       void allocate(int nMonomer, IntVec<D> const & dimensions);
 
       ///@}
-      /// \name Field and State Modifiers
-      ///@{
-
-      /**
-      * Set values for all fields.
-      *
-      * On return, hasData is true.
-      *
-      * \param fields  array of new fields 
-      */
-      void setFields(DArray< CFT > const & fields);
-
-      /**
-      * Read all fields from an input file.
-      * 
-      * \param in  input stream from which to read fields
-      */
-      void readFields(std::istream& in);
-
-      /**
-      * Read all fields from a named file.
-      *
-      * \param filename  file from which to read fields
-      */
-      void readFields(std::string const & filename);
-
-      /**
-      * Clear data stored in this object without deallocating.
-      */
-      void clear();
-
-      /**
-      * Get a signal that notifies observers of field modification.
-      */
-      Signal<void>& signal();
-
-      ///@}
       /// \name Field Output to File
       ///@{
 
@@ -181,25 +120,39 @@ namespace Cl {
       void writeFields(std::string const & filename) const;
 
       ///@}
-      /// \name Field Access (by const reference)
+      /// \name Field Access (by reference)
       ///@{
 
       /**
-      * Get the array of all fields.
+      * Get the array of all fields (non-const reference).
+      *
+      * The array capacity is equal to the number of monomer types.
+      */
+      DArray< CFT > & fields();
+
+      /**
+      * Get the array of all fields (const reference).
       *
       * The array capacity is equal to the number of monomer types.
       */
       DArray< CFT > const & fields() const;
 
       /**
-      * Get the field for one monomer type.
+      * Get the field for one monomer type (non-const reference).
+      *
+      * \param monomerId integer monomer type index (0,..,nMonomer-1)
+      */
+      CFT & field(int monomerId);
+
+      /**
+      * Get the field for one monomer type (const reference).
       *
       * \param monomerId integer monomer type index (0,..,nMonomer-1)
       */
       CFT const & field(int monomerId) const;
 
       ///@}
-      /// \name Boolean Queries
+      /// \name Boolean Flags
       ///@{
 
       /**
@@ -208,12 +161,18 @@ namespace Cl {
       bool isAllocated() const;
 
       /**
-      * Has field data been set since it was last cleared?
-      *
-      * This flag is set true in setFields and readFields functions,
-      * and set false by the clear function.
+      * Does this container have up-to-date field data ?
       */
       bool hasData() const;
+
+      /**
+      * Set the hasData boolean flag.
+      *
+      * This should be set true when fields are set to those computed
+      * from the current w fields, and set false when any input to that
+      * computation changes.
+      */
+      void setHasData(bool hasData);
 
       ///@}
 
@@ -268,11 +227,6 @@ namespace Cl {
       int nMonomer_;
 
       /*
-      * Pointer to unit cell modified by the read functions.
-      */
-      UnitCell<D> * readUnitCellPtr_;
-
-      /*
       * Pointer to unit cell written by the write functions.
       */
       UnitCell<D> const * writeUnitCellPtr_;
@@ -283,50 +237,46 @@ namespace Cl {
       FIT const * fieldIoPtr_;
 
       /*
-      * Pointer to a Signal that is triggered by field modification.
-      *
-      * The Signal is constructed and owned by this container.
-      */
-      Signal<void>* signalPtr_;
- 
-      /*
       * Has memory been allocated for the fields? 
       */
       bool isAllocated_;
 
       /*
-      * Has field data been set since it was last cleared?
+      * Does this container hold up-to-date field data? 
       */
       bool hasData_;
-
-      /*
-      *  Assign one complex field (CFT) to another: lhs = rhs.
-      *  
-      *  \param lhs  left hand side of assignment
-      *  \param rhs  right hand side of assignment
-      */
-      virtual void assignField(CFT& lhs, CFT const & rhs) const;
 
    };
 
    // Inline member functions
 
-   // Mark data stored in this object as invalid or outdated.
-   template <int D, class CFT, class FIT> inline 
-   void WFields<D,CFT,FIT>::clear()
-   {  hasData_ = false; }
-
    // Get the array of all fields (const reference)
    template <int D, class CFT, class FIT> inline
-   DArray< CFT > const & WFields<D,CFT,FIT>::fields() const
+   DArray< CFT > const & CFields<D,CFT,FIT>::fields() const
    {
-      UTIL_ASSERT(isAllocatedR_);
+      UTIL_ASSERT(isAllocated_);
+      return fields_;
+   }
+
+   // Get the array of all fields (non-const reference)
+   template <int D, class CFT, class FIT> inline
+   DArray< CFT > & CFields<D,CFT,FIT>::fields() 
+   {
+      UTIL_ASSERT(isAllocated_);
       return fields_;
    }
 
    // Get a single field (const reference)
    template <int D, class CFT, class FIT> inline
-   CFT const & WFields<D,CFT,FIT>::field(int id) const
+   CFT const & CFields<D,CFT,FIT>::field(int id) const
+   {
+      UTIL_ASSERT(isAllocated_);
+      return fields_[id];
+   }
+
+   // Get a single field (non-const reference)
+   template <int D, class CFT, class FIT> inline
+   CFT & CFields<D,CFT,FIT>::field(int id)
    {
       UTIL_ASSERT(isAllocated_);
       return fields_[id];
@@ -334,12 +284,12 @@ namespace Cl {
 
    // Has memory been allocated for fields ?
    template <int D, class CFT, class FIT> inline 
-   bool WFields<D,CFT,FIT>::isAllocated() const
+   bool CFields<D,CFT,FIT>::isAllocated() const
    {  return isAllocated_; }
 
-   // Has field data been initialized ?
+   // Is data up to date ?
    template <int D, class CFT, class FIT> inline 
-   bool WFields<D,CFT,FIT>::hasData() const
+   bool CFields<D,CFT,FIT>::hasData() const
    {  return hasData_; }
 
    // Protected inline member functions
@@ -347,22 +297,22 @@ namespace Cl {
    // Get mesh dimensions in each direction.
    template <int D, class CFT, class FIT> inline 
    IntVec<D> const & 
-   WFields<D,CFT,FIT>::meshDimensions() const
+   CFields<D,CFT,FIT>::meshDimensions() const
    {  return meshDimensions_; }
 
    // Get mesh size (number of grid points).
    template <int D, class CFT, class FIT> inline 
-   int WFields<D,CFT,FIT>::meshSize() const
+   int CFields<D,CFT,FIT>::meshSize() const
    {  return meshSize_; }
 
    // Get number of monomer types.
    template <int D, class CFT, class FIT> inline 
-   int WFields<D,CFT,FIT>::nMonomer() const
+   int CFields<D,CFT,FIT>::nMonomer() const
    {  return nMonomer_; }
 
    // Get the associated the field Io (FIT) object (const reference).
    template <int D, class CFT, class FIT> inline 
-   FIT const & WFields<D,CFT,FIT>::fieldIo() const
+   FIT const & CFields<D,CFT,FIT>::fieldIo() const
    {
       UTIL_CHECK(fieldIoPtr_);
       return *fieldIoPtr_;

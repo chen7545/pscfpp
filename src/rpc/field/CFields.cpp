@@ -6,9 +6,9 @@
 */
 
 #include "CFields.h"
-#include <rpc/field/FieldIo.h>
-#include <prdc/cpu/RField.h>
 #include <prdc/rl/CFields.tpp>
+#include <prdc/cpu/RField.h>
+#include <rpc/field/FieldIo.h>
 
 namespace Pscf {
    namespace Prdc {
@@ -16,12 +16,12 @@ namespace Pscf {
       template class Rl::CFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
       template class Rl::CFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
       template class Rl::CFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
-   } 
+   }
    namespace Rpc {
       // Explicit instantiations of this class
       template class CFields<1>;
       template class CFields<2>;
       template class CFields<3>;
-   
-   } 
+
+   }
 }
