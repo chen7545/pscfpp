@@ -1,0 +1,36 @@
+#ifndef CPC_W_FIELD_CONTAINER_TPP
+#define CPC_W_FIELD_CONTAINER_TPP
+
+/*
+* PSCF - Polymer Self-Consistent Field
+*
+* Copyright 2015 - 2025, The Regents of the University of Minnesota
+* Distributed under the terms of the GNU General Public License.
+*/
+
+#include "WFields.h"             // class header
+#include <prdc/cl/WFields.tpp>   // base class implementation
+
+namespace Pscf {
+namespace Cpc {
+
+   using namespace Util;
+   using namespace Pscf::Prdc;
+   using namespace Pscf::Prdc::Cpu;
+
+   template <int D>
+   void WFields<D>::assignField(CField<D>& lhs, 
+                                CField<D> const & rhs) const
+   {
+      int n = rhs.capacity();
+      UTIL_CHECK(lhs.capacity() == n);
+      UTIL_CHECK(meshSize() == n);
+      for (int i = 0; i < n; ++i) {
+         lhs[i][0] = rhs[i][0];
+         lhs[i][1] = rhs[i][1];
+      }
+   }
+
+} // namespace Cpc
+} // namespace Pscf
+#endif
