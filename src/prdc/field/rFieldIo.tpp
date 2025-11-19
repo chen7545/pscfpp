@@ -113,8 +113,8 @@ namespace Prdc {
                       int nMonomer,
                       IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       RT x, y;
       MeshIterator<D> iter(dftDimensions);
@@ -141,8 +141,8 @@ namespace Prdc {
                       ACT& field,
                       IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       RT x, y;
       MeshIterator<D> iter(dftDimensions);
@@ -171,8 +171,8 @@ namespace Prdc {
       UTIL_CHECK(nMonomer > 0);
       UTIL_CHECK(nMonomer == fields.capacity());
 
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       RT x, y;
       MeshIterator<D> iter(dftDimensions);
@@ -200,8 +200,8 @@ namespace Prdc {
                        ACT const& field,
                        IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       RT x, y;
       MeshIterator<D> iter(dftDimensions);
@@ -571,8 +571,8 @@ namespace Prdc {
    {
       UTIL_CHECK(basis.isInitialized());
 
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       // Create Mesh<D> with dimensions of DFT Fourier grid.
       Mesh<D> dftMesh(dftDimensions);
@@ -683,8 +683,8 @@ namespace Prdc {
    {
       UTIL_CHECK(basis.isInitialized());
 
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       // Check if input field in k-grid format has specified symmetry
       if (checkSymmetry) {
@@ -811,8 +811,8 @@ namespace Prdc {
    {
       UTIL_CHECK(basis.isInitialized());
 
-      typedef typename ACT::Complex CT;
-      typedef typename ACT::Real    RT;
+      typedef typename ACT::ValueType CT;
+      typedef typename ACT::RealType  RT;
 
       typename Basis<D>::Star const* starPtr; // pointer to current star
       typename Basis<D>::Wave const* wavePtr; // pointer to current wave
