@@ -80,12 +80,12 @@ namespace Cpc {
       qFields_.deallocate();
 
       // NOTE: The qFields_ container is a DArray<FieldT>, where FieldT
-      // is a typedef for RField<D>. The DArray::deallocate() function
+      // is an alias for CField<D>. The DArray::deallocate() function
       // calls "delete [] ptr", where ptr is a pointer to the underlying
       // C array. The C++ delete [] command calls the destructor for each
-      // RField<D> element array before deleting the array itself. The
-      // RField<D> destructor deletes the fftw_complex* array that stores 
-      // the field associated with each slice of the propagator.
+      // element of type CField<T> before deleting the outer array itself. 
+      // The CField<D> destructor deletes the fftw_complex* array that 
+      // stores the field associated with each slice of the propagator.
 
       // Allocate new memory for qFields_ using the new value of ns
       qFields_.allocate(ns);

@@ -27,6 +27,8 @@
 #include <util/containers/DArray.h>
 #include <util/containers/FSArray.h>
 
+#include <cmath>
+
 namespace Pscf {
 namespace Cpc {
 
@@ -44,8 +46,6 @@ namespace Cpc {
       fftPtr_(nullptr),
       unitCellPtr_(nullptr),
       waveListPtr_(nullptr),
-      kMeshDimensions_(-1),
-      kSize_(-1),
       ds_(-1.0),
       dsTarget_(-1.0),
       ns_(-1),
@@ -99,16 +99,13 @@ namespace Cpc {
       UTIL_CHECK(mesh().dimensions() == fft().meshDimensions());
       UTIL_CHECK(!isAllocated_);
 
-      // Compute DFT grid dimensions kMeshDimensions_ and size kSize_
-      FFT<D>::computeKMesh(mesh().dimensions(), kMeshDimensions_, kSize_);
-
       // Allocate work arrays for MDE solution
-      expKsq_.allocate(kMeshDimensions_);
-      expKsq2_.allocate(kMeshDimensions_);
+      expKsq_.allocate(mesh().dimensions());
+      expKsq2_.allocate(mesh().dimensions());
       expW_.allocate(mesh().dimensions());
       qr_.allocate(mesh().dimensions());
-      qk_.allocate(mesh().dimensions());
       qr2_.allocate(mesh().dimensions());
+      qk_.allocate(mesh().dimensions());
       qk2_.allocate(mesh().dimensions());
       if (PolymerModel::isThread()) {
          expW2_.allocate(mesh().dimensions());
@@ -121,7 +118,7 @@ namespace Cpc {
 
       dsTarget_ = ds;
 
-      // Compute ns_ 
+      // Compute ns_
       if (PolymerModel::isThread()) {
          // Set contour length discretization for this block
          UTIL_CHECK(length() > 0.0);
@@ -132,7 +129,7 @@ namespace Cpc {
          }
          ns_ = 2*tempNs + 1;
          ds_ = length()/double(ns_-1);
-      } else 
+      } else
       if (PolymerModel::isBead()) {
          ds_ = 1.0;
          ns_ = nBead() + 2;
@@ -194,7 +191,7 @@ namespace Cpc {
    */
    template <int D>
    void Block<D>::clearUnitCellData()
-   {  
+   {
       hasExpKsq_ = false;
    }
 
@@ -220,7 +217,7 @@ namespace Cpc {
       RField<D> const & kSq = waveListPtr_->kSq();
 
       MeshIterator<D> iter;
-      iter.setDimensions(kMeshDimensions_);
+      iter.setDimensions(mesh().dimensions());
       double arg;
       int i;
       for (iter.begin(); !iter.atEnd(); ++iter) {
@@ -268,7 +265,7 @@ namespace Cpc {
 
             mul(arg, w[i], -1.0);
             assignExp(expW_[i], arg);
-            inverse(expWInv_[i], expW_[i]);  
+            inverse(expWInv_[i], expW_[i]);
 
             //arg = -w[i];
             //expW_[i]  = exp(arg);
@@ -300,13 +297,12 @@ namespace Cpc {
 
       // Internal preconditions
       UTIL_CHECK(isAllocated_);
-      int nk = qk_.capacity();
-      UTIL_CHECK(nk > 0);
+      UTIL_CHECK(qk_.capacity() == nx);
+      UTIL_CHECK(expKsq_.capacity() == nx);
+      UTIL_CHECK(expKsq2_.capacity() == nx);
       UTIL_CHECK(qr_.capacity() == nx);
       UTIL_CHECK(expW_.capacity() == nx);
       UTIL_CHECK(expW2_.capacity() == nx);
-      UTIL_CHECK(expKsq_.capacity() == nk);
-      UTIL_CHECK(expKsq2_.capacity() == nk);
       UTIL_CHECK(hasExpKsq_);
 
       // Preconditions on parameters
@@ -326,18 +322,17 @@ namespace Cpc {
 
          // qr_[i] = q[i]*expW_[i];
          // qr2_[i] = q[i]*expW2_[i];
-
       }
       fft().forwardTransform(qr_, qk_);
       fft().forwardTransform(qr2_, qk2_);
-      for (i = 0; i < nk; ++i) {
+      for (i = 0; i < nx; ++i) {
          qk_[i][0] *= expKsq_[i];
          qk_[i][1] *= expKsq_[i];
          qk2_[i][0] *= expKsq2_[i];
          qk2_[i][1] *= expKsq2_[i];
       }
-      fft().inverseTransform(qk_, qr_); // overwrites qk_
-      fft().inverseTransform(qk2_, qr2_); // overwrites qk2_
+      fft().inverseTransform(qk_, qr_);
+      fft().inverseTransform(qk2_, qr2_);
       for (i = 0; i < nx; ++i) {
          mulEq(qr_[i],  expW_[i]);
          mulEq(qr2_[i], expW_[i]);
@@ -345,17 +340,17 @@ namespace Cpc {
          // qr2_[i] = qr2_[i]*expW_[i];
       }
 
-      // Above, multiplying qr2_ by expW_, rather than by expW2_, combines
-      // required multiplications by expW2_ at the end of first half-step 
-      // and at the beginning of the second.
+      // Note: Above, multiplying qr2_ by expW_, rather than by expW2_,
+      // combines required multiplications by expW2_ at the end of first
+      // half-step and at the beginning of the second.
 
       // Finish second half-step of ds/2 for qr2_
       fft().forwardTransform(qr2_, qk2_);
-      for (i = 0; i < nk; ++i) {
+      for (i = 0; i < nx; ++i) {
          qk2_[i][0] *= expKsq2_[i];
          qk2_[i][1] *= expKsq2_[i];
       }
-      fft().inverseTransform(qk2_, qr2_); // overwrites qk2_
+      fft().inverseTransform(qk2_, qr2_);
       for (i = 0; i < nx; ++i) {
          mulEq(qr2_[i], expW2_[i]);
          //qr2_[i] = qr2_[i]*expW2_[i];
@@ -385,48 +380,47 @@ namespace Cpc {
    * Apply the bond operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepBondBead(CField<D> const & q, CField<D>& qout) const
+   void Block<D>::stepBondBead(CField<D> const & q,
+                               CField<D> & qout) const
    {
-      // Prereconditions 
+      // Prereconditions
       UTIL_CHECK(isAllocated_);
       UTIL_CHECK(hasExpKsq_);
       int nx = mesh().size();
       UTIL_CHECK(nx > 0);
       UTIL_CHECK(q.capacity() == nx);
       UTIL_CHECK(qout.capacity() == nx);
-      int nk = qk_.capacity();
-      UTIL_CHECK(nk > 0);
-      UTIL_CHECK(expKsq_.capacity() == nk);
+      UTIL_CHECK(expKsq_.capacity() == nx);
 
       // Apply bond operator
       fft().forwardTransform(q, qk_);
-      for (int i = 0; i < nk; ++i) {
+      for (int i = 0; i < nx; ++i) {
          qk_[i][0] *= expKsq_[i];
          qk_[i][1] *= expKsq_[i];
       }
-      fft().inverseTransform(qk_, qout); // overwrites qk_
+      fft().inverseTransform(qk_, qout);
    }
 
    /*
    * Apply the half-bond operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepHalfBondBead(CField<D> const & q, CField<D>& qout) const
+   void Block<D>::stepHalfBondBead(CField<D> const & q,
+                                   CField<D> & qout) const
    {
-      // Preconditions 
+      // Preconditions
       UTIL_CHECK(isAllocated_);
       UTIL_CHECK(hasExpKsq_);
       int nx = mesh().size();
       UTIL_CHECK(nx > 0);
       UTIL_CHECK(q.capacity() == nx);
       UTIL_CHECK(qout.capacity() == nx);
-      int nk = qk_.capacity();
-      UTIL_CHECK(nk > 0);
-      UTIL_CHECK(expKsq_.capacity() == nk);
+      UTIL_CHECK(qk_.capacity() == nx);
+      UTIL_CHECK(expKsq2_.capacity() == nx);
 
       // Apply bond operator
       fft().forwardTransform(q, qk_);
-      for (int i = 0; i < nk; ++i) {
+      for (int i = 0; i < nx; ++i) {
          qk_[i][0] *= expKsq2_[i];
          qk_[i][1] *= expKsq2_[i];
       }
@@ -439,7 +433,7 @@ namespace Cpc {
    template <int D>
    void Block<D>::stepFieldBead(CField<D>& q) const
    {
-      // Preconditions 
+      // Preconditions
       int nx = mesh().size();
       UTIL_CHECK(nx > 0);
       UTIL_CHECK(expW_.capacity() == nx);
@@ -456,7 +450,8 @@ namespace Cpc {
    * Integrate to calculate monomer concentration for this block
    */
    template <int D>
-   void Block<D>::computeConcentrationThread(fftw_complex const & prefactor)
+   void
+   Block<D>::computeConcentrationThread(fftw_complex const & prefactor)
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -480,7 +475,7 @@ namespace Cpc {
       // References to forward and reverse propagators
       Propagator<D> const & p0 = propagator(0);
       Propagator<D> const & p1 = propagator(1);
-      fftw_complex product;
+      fftw_complex z;
 
       // Evaluate unnormalized integral
 
@@ -489,30 +484,30 @@ namespace Cpc {
          CField<D> const & hf = p0.q(0);
          CField<D> const & hr = p1.q(ns_ - 1);
          for (i = 0; i < nx; ++i) {
-            mul(product, hf[i], hr[i]);
-            addEq(c[i], product);
+            mul(z, hf[i], hr[i]);
+            addEq(c[i], z);
          }
       }
 
       // Final (tail) endpoint contribution
       {
-         CField<D> const & tf = p0.q(ns_-11);
+         CField<D> const & tf = p0.q(ns_ - 1);
          CField<D> const & tr = p1.q(0);
          for (i = 0; i < nx; ++i) {
-            mul(product, tf[i], tr[i]);
-            addEq(c[i], product);
+            mul(z, tf[i], tr[i]);
+            addEq(c[i], z);
          }
       }
-      
+
       // Odd indices
       d = 4.0;
       for (j = 1; j < (ns_ - 1); j += 2) {
          CField<D> const & qf = p0.q(j);
          CField<D> const & qr = p1.q(ns_ - 1 - j);
          for (i = 0; i < nx; ++i) {
-            mul(product, qf[i], qr[i]);
-            mulEq(product, d);
-            addEq(c[i], product);
+            mul(z, qf[i], qr[i]);
+            mulEq(z, d);
+            addEq(c[i], z);
             //c[i] += qf[i] * qr[i] * 4.0;
          }
       }
@@ -523,20 +518,20 @@ namespace Cpc {
          CField<D> const & qf = p0.q(j);
          CField<D> const & qr = p1.q(ns_ - 1 - j);
          for (i = 0; i < nx; ++i) {
-            mul(product, qf[i], qr[i]);
-            mulEq(product, d);
-            addEq(c[i], product);
+            mul(z, qf[i], qr[i]);
+            mulEq(z, d);
+            addEq(c[i], z);
             // c[i] += qf[i] * qr[i] * 2.0;
          }
       }
 
       // Normalize the integral
-      fftw_complex p;
       d = ds_ / 3.0;
-      mul(p, prefactor, d); // d = prefactor * ds_ / 3.0
+      mul(z, prefactor, d);
+      // z = prefactor * ds_ / 3.0
       for (i = 0; i < nx; ++i) {
-         mulEq(c[i], p);
-         // c[i] *= p;
+         mulEq(c[i], z);
+         // c[i] *= z;
       }
 
    }
@@ -557,7 +552,7 @@ namespace Cpc {
       UTIL_CHECK(cField().capacity() == nx);
 
       CField<D> & c = cField();
-      fftw_complex product;
+      fftw_complex z;
       double d;
       int i, j;
 
@@ -567,7 +562,7 @@ namespace Cpc {
          assign(c[i], d);
          // c[i] = 0.0;
       }
-  
+
       // References to forward and reverse propagators
       Propagator<D> const & p0 = propagator(0);
       Propagator<D> const & p1 = propagator(1);
@@ -577,22 +572,19 @@ namespace Cpc {
          CField<D> const & qf = p0.q(j);
          CField<D> const & qr = p1.q(ns_ - 1 - j);
          for (i = 0; i < nx; ++i) {
-            mul(product, qf[i], qr[i]);
-            mulEq(product, expWInv_[i]);
-            addEq(c[i], product);
+            mul(z, qf[i], qr[i]);
+            mulEq(z, expWInv_[i]);
+            addEq(c[i], z);
             //c[i] += qf[i] * qr[i] * expWInv_[i];
          }
       }
 
-      // Note: Slices j=0 and j=ns_ - 1 are phantom vertices
+      // Note: Slices j = 0 and j = ns_ - 1 are phantom vertices
 
       // Normalize the integral
-      fftw_complex p;
-      d = ds_ / 3.0;
-      mul(p, prefactor, d);
       for (i = 0; i < nx; ++i) {
-         mulEq(c[i], p);
-         //c[i] *= p;
+         mulEq(c[i], prefactor);
+         //c[i] *= prefactor;
       }
    }
 

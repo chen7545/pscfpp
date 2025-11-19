@@ -10,9 +10,8 @@
 
 #include <pscf/solvers/BlockTmpl.h>       // base class template
 
-#include <prdc/cpu/CField.h>              // member
+#include <prdc/cpu/CField.h>              // members
 #include <prdc/cpu/RField.h>              // member
-#include <util/containers/FSArray.h>      // member
 
 namespace Pscf {
 
@@ -102,13 +101,14 @@ namespace Cpc {
                      WaveList<D>& wavelist);
 
       /**
-      * Allocate memory and set contour step size.
+      * Allocate memory and set number of counter steps.
       *
       * This function choses a value for the number ns of contour
-      * variable grid points for this block, sets the step size, and
-      * allocates memory for several private arrays. Spatial grid
-      * dimensions are obtained from a pointers to the associated mesh.
-      * The associate function must be called before this function.
+      * variable grid points for this block, and allocates memory for
+      * the associated propagators and several private arrays variables.
+      * Spatial grid dimensions are obtained from a pointers to the
+      * associated Mesh<D> object.  The associate member function must
+      * be called before this function.
       *
       * For the thread model, if PolymerModel::isThread() is true, the
       * value for the number ns of contour variable grid points for this
@@ -120,9 +120,8 @@ namespace Cpc {
       * compute monomer concentration fields.
       *
       * For the bead model, if PolymerModel::isThread() is true, the value
-      * of ns is given by nBead + 2.
-      *
-      * The value of input parameter ds is ignored for the bead model.
+      * of ns is given by nBead + 2. The value of the input parameter ds
+      * is ignored for the bead model.
       *
       * \param ds desired (optimal) value for contour length step
       */
@@ -183,9 +182,7 @@ namespace Cpc {
       * Compute one step of solution of MDE for the bead model.
       *
       * This function is called internally by the Propagator::solve
-      * function within a loop over steps. It is implemented in the Block
-      * class because the same private data structures are needed for the
-      * two propagators associated with a Block.
+      * function within a loop over steps when the bead model is in use.
       *
       * \param qin  input slice of q, from step i
       * \param qout  output slice of q, for step i+1
@@ -361,12 +358,6 @@ namespace Cpc {
       /// Pointer to associated WaveList<D> object (non-const)
       WaveList<D> * waveListPtr_;
 
-      /// Dimensions of wavevector mesh for Fourier transform
-      IntVec<D> kMeshDimensions_;
-
-      /// Number of wavevectors in wavevector mesh
-      int kSize_;
-
       /// Contour length step size (actual step size for this block)
       double ds_;
 
@@ -429,7 +420,7 @@ namespace Cpc {
    // Private inline member functions
 
    // Get associated Mesh<D> by const reference.
-   template <int D> inline 
+   template <int D> inline
    Mesh<D> const & Block<D>::mesh() const
    {
       UTIL_CHECK(meshPtr_);
@@ -442,7 +433,7 @@ namespace Cpc {
    {  return *unitCellPtr_; }
 
    // Get associated FFT<D> by const reference.
-   template <int D> inline 
+   template <int D> inline
    FFT<D> const & Block<D>::fft() const
    {
       UTIL_CHECK(fftPtr_);
