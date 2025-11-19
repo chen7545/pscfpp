@@ -1,5 +1,5 @@
-#ifndef PRDC_CFIELD_IO_UTIL_TPP
-#define PRDC_CFIELD_IO_UTIL_TPP
+#ifndef PRDC_CFIELD_IO_TPP
+#define PRDC_CFIELD_IO_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -18,13 +18,15 @@
 namespace Pscf {
 namespace Prdc {
 
-   template <int D, class ART>
-   void readCFieldData(std::istream& in, 
-                       DArray< ART > & fields,
-                       IntVec<D> const& dimensions)
+   template <int D, class AT>
+   void readCFieldsData(std::istream& in, 
+                        DArray< AT > & fields,
+                        IntVec<D> const& dimensions)
    {
       double x, y;
       MeshIterator<D> iter(dimensions);
+      int nMonomer = fields.capacity();
+      UTIL_CHECK(nMonomer > 0);
       int rank, j;
       for (j = 0; j < nMonomer; ++j) {
          for (iter.begin(); !iter.atEnd(); ++iter) {
@@ -33,15 +35,15 @@ namespace Prdc {
             UTIL_ASSERT(in.good());
             in >> y;
             UTIL_ASSERT(in.good());
-            assign(field[j][rank], x, y);
+            assign(fields[j][rank], x, y);
          }
       }
       UTIL_CHECK(in.good());
    }
 
-   template <int D, class ART>
+   template <int D, class AT>
    void readCFieldData(std::istream& in, 
-                      ART& field,
+                      AT& field,
                       IntVec<D> const& dimensions)
    {
       double x, y;
@@ -58,46 +60,42 @@ namespace Prdc {
       UTIL_CHECK(in.good());
    }
 
-   template <int D, class ART>
-   void writeCFieldData(std::ostream& out,
-                       DArray< ART > const& fields,
-                       int nMonomer,
+   template <int D, class AT, typename CT, typename RT>
+   void writeCFieldsData(std::ostream& out,
+                       DArray< AT > const& fields,
                        IntVec<D> const& dimensions)
    {
-      UTIL_CHECK(nMonomer > 0);
-      UTIL_CHECK(nMonomer == fields.capacity());
-
-      double x, y;
+      RT x, y;
       MeshIterator<D> iter(dimensions);
+      int nMonomer = fields.capacity();
+      UTIL_CHECK(nMonomer > 0);
       int rank, j;
       for (j = 0; j < nMonomer; ++j) {
          for (iter.begin(); !iter.atEnd(); ++iter) {
             rank = iter.rank();
-            x = real( fields[j][rank] );
-            y = imag( fields[j][rank] );
-            out << "  " 
-                << Dbl(x, 21, 13);
-                << Dbl(y, 21, 13);
+            x = real<CT, RT>( fields[j][rank] );
+            y = imag<CT, RT>( fields[j][rank] );
+            out << " " << Dbl(x, 21, 13)
+                << " " << Dbl(y, 21, 13);
          }
          out << std::endl;
       }
    }
 
-   template <int D, class ART>
+   template <int D, class AT, typename CT, typename RT>
    void writeCFieldData(std::ostream& out,
-                       ART const& field,
+                       AT const& field,
                        IntVec<D> const& dimensions)
    {
-      double x, y;
+      RT x, y;
       MeshIterator<D> iter(dimensions);
       int rank;
       for (iter.begin(); !iter.atEnd(); ++iter) {
          rank = iter.rank();
-         x = real( field[rank] );
-         y = imag( field[rank] );
-         out << "  " 
-             << Dbl(x, 21, 13)
-             << Dbl(y, 21, 13);
+         x = real<CT,RT>( field[rank] );
+         y = imag<CT,RT>( field[rank] );
+         out << " " << Dbl(x, 21, 13)
+             << " " << Dbl(y, 21, 13)
              << std::endl;
       }
    }

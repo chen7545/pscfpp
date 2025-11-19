@@ -30,10 +30,11 @@ namespace Cpu {
 
    public:
 
-      /**
-      * Type of each array element.
-      */
-      typedef double ElementType;
+      // Public type alias 
+
+      using FftwDArray<double>::ValueType;
+
+      // Public member functions
 
       /**
       * Default constructor.

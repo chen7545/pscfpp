@@ -33,22 +33,14 @@ namespace Cpu {
 
    public:
 
-      // Typedefs
+      // Type aliases
+
+      using FftwDArray<fftw_complex>::ValueType;
 
       /**
-      * Type of each element.
+      * Type of real and imaginary parts of a complex element value.
       */
-      typedef fftw_complex ElementType;
-
-      /**
-      * Complex number type.
-      */
-      typedef fftw_complex Complex;
-
-      /**
-      * Real and imaginary parts of a Complex number.
-      */
-      typedef double Real;
+      using RealType = double;
 
       // Member functions
 

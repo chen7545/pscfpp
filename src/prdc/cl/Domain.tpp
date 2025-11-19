@@ -100,6 +100,10 @@ namespace Cl {
       // Allocate memory for WaveList
       waveList().allocate(mesh_, unitCell_);
 
+      // Optionally read groupName, and discard information if found
+      std::string groupName;
+      readOptional(in, "groupName", groupName);
+
       isInitialized_ = true;
    }
 

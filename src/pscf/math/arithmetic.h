@@ -26,6 +26,11 @@ namespace Pscf {
    * the FFT and cufft FFT libraries in files named complex.h located in 
    * directories src/prdc/cpu and src/prdc/cuda, respectively.
    *
+   * Convention: Throughout, a template argument T represents a numerical 
+   * type that may be either real or complex, a template argument CT 
+   * represents a complex data type, while RT represents a corresponding 
+   * real data type.
+   *
    * Convention: Functions for which the result or output may be a
    * complex number provide this as a modified value of the first parameter
    * of the function, which must be passed as a non-const reference.
@@ -37,14 +42,19 @@ namespace Pscf {
    * \ingroup Pscf_Math_Module
    */
 
+   /**
+   * Declaration of trait class associated with a complex data type.
+   *
+   * Instantiations of this class must provide a typedef named
+   * Real that is name of the real type used for the real and 
+   * imaginary parts.
+   */
+   template <typename CT> class complexTrait;
+
    /*
    * The remainder of this file contains declarations of function
    * templates for complex arithmetic that all belong to doxygen topic
    * module Pscf_Math_Arithmetic_Module, which is documented above.
-   * Throughout, a template argument T represents a numerical type that
-   * may be either real or complex, a template argument CT represents an
-   * unspecified complex data type, while RT represents a corresponding
-   * real data type.
    */
 
    // Real and imaginary components of complex numbers

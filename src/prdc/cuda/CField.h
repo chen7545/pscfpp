@@ -29,7 +29,7 @@ namespace Cuda {
    template <int D>
    class CField : public DeviceArray<cudaComplex>
    {
-
+   
    public:
 
       /**

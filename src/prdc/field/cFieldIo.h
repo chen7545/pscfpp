@@ -1,5 +1,5 @@
-#ifndef PRDC_CFIELD_IO_UTIL_H
-#define PRDC_CFIELD_IO_UTIL_H
+#ifndef PRDC_CFIELD_IO_H
+#define PRDC_CFIELD_IO_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -14,19 +14,11 @@
 namespace Util {
    template <typename T> class DArray;
 }
-namespace Pscf {
-   template <int D> class Mesh;
-   namespace Prdc {
-      template <int D> class UnitCell;
-      template <int D> class Basis;
-   }
-}
 
 namespace Pscf {
 namespace Prdc {
 
    using namespace Util;
-   using namespace Pscf;
 
    // Templates for complex field data IO
 
@@ -46,14 +38,12 @@ namespace Prdc {
    *
    * \param in  input file stream
    * \param fields  array of complex fields (out)
-   * \param nMonomer  number of monomer types (in)
    * \param dimensions  vector of mesh dimensions (in)
    */
    template <int D, class AT>
-   void readCFieldData(std::istream& in,
-                      DArray< AT >& fields,
-                      int nMonomer,
-                      IntVec<D> const& dimensions);
+   void readCFieldsData(std::istream& in,
+                        DArray< AT >& fields,
+                        IntVec<D> const & dimensions);
  
    /**
    * Read data for a single r-grid field, with no header section.
@@ -88,14 +78,12 @@ namespace Prdc {
    *
    * \param out  output file stream
    * \param fields  array of complex fields (in)
-   * \param nMonomer  number of monomer types (in)
    * \param dimensions  vector of mesh dimensions (in)
    */
-   template <int D, class AT>
-   void writeCFieldData(std::ostream& out, 
-                       DArray<AT> const& fields,
-                       int nMonomer,
-                       IntVec<D> const& dimensions);
+   template <int D, class AT, typename CT, typename RT>
+   void writeCFieldsData(std::ostream& out, 
+                         DArray< AT > const& fields,
+                         IntVec<D> const& dimensions);
  
    /**
    * Write data for a single r-grid field, with no header section.
@@ -112,11 +100,12 @@ namespace Prdc {
    * \param field  array containing a single complex field (out)
    * \param dimensions  vector of mesh dimensions
    */
-   template <int D, class AT>
+   template <int D, class AT, typename CT, typename RT>
    void writeCFieldData(std::ostream& out, 
                        AT const& field,
                        IntVec<D> const& dimensions);
 
 } // namespace Prdc
 } // namespace Pscf
+#include "cFieldIo.tpp"
 #endif

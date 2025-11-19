@@ -23,6 +23,15 @@ namespace Pscf {
    }
 }
 
+// Explicit instantiation declaration for base class
+namespace Pscf {
+   namespace Prdc {
+      extern template class Cl::FieldIo<1, Cpu::CField<1>, Cpu::FFT<1> >;
+      extern template class Cl::FieldIo<2, Cpu::CField<2>, Cpu::FFT<2> >;
+      extern template class Cl::FieldIo<3, Cpu::CField<3>, Cpu::FFT<3> >;
+   }
+}
+
 namespace Pscf {
 namespace Cpc {
 
@@ -178,13 +187,6 @@ namespace Cpc {
    extern template class FieldIo<3>;
 
 } // namespace Cpc
-
-namespace Prdc {
-   using namespace Cpu;
-   extern template class Cl::FieldIo<1, CField<1>, FFT<1>>;
-   extern template class Cl::FieldIo<2, CField<2>, FFT<2>>;
-   extern template class Cl::FieldIo<3, CField<3>, FFT<3>>;
-}
 
 } // namespace Pscf
 #endif

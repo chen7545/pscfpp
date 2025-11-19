@@ -13,6 +13,7 @@
 
 #include <prdc/field/fieldCheck.h>
 #include <prdc/field/cFieldIo.h>
+#include <prdc/field/cFieldIo.tpp>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/CFieldComparison.h>
 #include <prdc/cpu/complex.h>
@@ -44,7 +45,7 @@ namespace Cpc {
 
       // Read data
       // Rpg:: Allocate host arrays
-      Prdc::readCFieldData(in, fields, nMonomer, mesh().dimensions());
+      Prdc::readCFieldsData(in, fields, mesh().dimensions());
       // Rpg:: Copy host -> device
 
    }
@@ -59,7 +60,7 @@ namespace Cpc {
    {
       checkAllocateFields(fields, nMonomer, mesh().dimensions());
       // Rpg:: Allocate host arrays
-      Prdc::readCFieldData(in, fields, nMonomer, mesh().dimensions());
+      Prdc::readCFieldsData(in, fields, mesh().dimensions());
       // Rpg:: Copy host -> device
    }
 
@@ -112,7 +113,10 @@ namespace Cpc {
       // Write data section
       // Rpg:: Allocate host arrays
       // Rpg:: Copy device -> host
-      Prdc::writeCFieldData(out, fields, nMonomer, meshDimensions);
+      using AT = CField<D>;
+      using CT = typename CField<D>::ValueType;
+      using RT = typename CField<D>::RealType;
+      Prdc::writeCFieldsData<D,AT,CT,RT>(out, fields, meshDimensions);
    }
 
    /*
@@ -135,7 +139,10 @@ namespace Cpc {
       // Write data
       // Rpg:: Allocate host array
       // Rpg:: Copy device -> host
-      Prdc::writeCFieldData(out, field, meshDimensions);
+      using AT = CField<D>;
+      using CT = typename CField<D>::ValueType;
+      using RT = typename CField<D>::RealType;
+      Prdc::writeCFieldData<D,AT,CT,RT>(out, field, meshDimensions);
    }
 
    #if 0

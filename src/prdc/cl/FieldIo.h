@@ -82,9 +82,9 @@ namespace Cl {
       /**
       * Create associations with other members of the parent Domain.
       *
-      * This function may be called within the constructor of the
-      * Domain object, since addresses of other members of the Domain
-      * are known at this point.
+      * This function may be called within the constructor of the Domain
+      * object, since addresses of other members of the Domain are known 
+      * at this point.
       *
       * \param mesh  associated spatial discretization Mesh<D>
       * \param fft   associated FFT object for fast transforms
@@ -99,8 +99,8 @@ namespace Cl {
       *
       * The FileMaster is used to open and close files in all member
       * functions that take file name arguments and that open and close
-      * files. This allows prefixes for input and output files (if any)
-      * to be automatically prepended to file names.
+      * files. This allows prefixes for input and output files (if any) to
+      * be automatically prepended to file names.
       *
       * \param fileMaster  associated FileMaster (for file paths)
       */
@@ -147,10 +147,9 @@ namespace Cl {
       * Read an array of complex fields from a named file.
       *
       * This function opens an input file with the specified filename,
-      * reads fields in real-space grid format from that file, and
-      * then closes the file. The overloaded readFieldsRGrid member
-      * function that takes a std::istream& argument is called to read
-      * the file.
+      * reads fields in real-space grid format from that file, and then
+      * closes the file. The overloaded readFieldsRGrid member function
+      * that takes a std::istream& argument is called to read the file.
       *
       * \param filename  name of input file
       * \param fields  array of r-grid fields (instances of CFT)
@@ -274,8 +273,8 @@ namespace Cl {
       * This function opens a file, writes the header and data for a
       * single field to the file, and closes that file. The overloaded
       * writeFieldGrid member function that takes a std::ostream&
-      * argument is called internally with writeHeader == true to
-      * write the file.
+      * argument is called internally with writeHeader == true to write 
+      * the file.
       *
       * \param filename  name of output file
       * \param field  field defined on r-space grid
@@ -290,7 +289,7 @@ namespace Cl {
       ///@{
 
       /**
-      * Transform an array of fields from r-grid to k-grid (Fourier) format.
+      * Fourier transform array of fields from r-grid to k-grid format.
       *
       * This function simply calls the forward FFT repeatedly for an array
       * of fields. The in and out arrays must contain equal numbers of 

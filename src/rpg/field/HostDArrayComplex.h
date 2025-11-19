@@ -31,7 +31,7 @@ namespace Rpg {
       /**
       * Type of each element.
       */
-      typedef Prdc::Cuda::cudaComplex ElementType;
+      typedef Prdc::Cuda::cudaComplex ValueType;
 
       /**
       * Complex number type.

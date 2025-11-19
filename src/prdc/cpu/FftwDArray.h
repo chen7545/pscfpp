@@ -35,6 +35,11 @@ namespace Cpu {
    public:
 
       /**
+      * Data type of each array element.
+      */
+      using ValueType = Data;
+
+      /**
       * Default constructor.
       */
       FftwDArray();

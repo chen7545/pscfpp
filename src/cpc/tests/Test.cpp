@@ -5,12 +5,14 @@
 #include <test/CompositeTestRunner.h>
 
 #include "solvers/SolverTestComposite.h"
+#include "field/FieldTestComposite.h"
 
 #include <util/param/BracketPolicy.h>
 #include <util/global.h>
 
 TEST_COMPOSITE_BEGIN(CpcNsTestComposite)
 addChild(new SolverTestComposite, "solvers/");
+addChild(new FieldTestComposite, "field/");
 TEST_COMPOSITE_END
 
 using namespace Util;
