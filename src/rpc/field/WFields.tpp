@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "WFields.h"           // class header
-#include <prdc/rl/WFields.tpp>  // base class implementation
+#include "WFields.h"             // class header
+#include <prdc/rl/WFields.tpp>   // base class implementation
 
 namespace Pscf {
 namespace Rpc {
@@ -20,7 +20,7 @@ namespace Rpc {
 
    template <int D>
    void WFields<D>::assignRField(RField<D>& lhs, 
-                                         RField<D> const & rhs) const
+                                 RField<D> const & rhs) const
    {
       int n = rhs.capacity();
       UTIL_CHECK(lhs.capacity() == n);

@@ -18,6 +18,7 @@
 
 namespace Pscf {
 namespace Prdc {
+namespace Rl {
 
    using namespace Util;
 
@@ -27,7 +28,7 @@ namespace Prdc {
    * Constructor.
    */
    template <int D, class RFT, class FIT>
-   WFieldsTmpl<D,RFT,FIT>::WFieldsTmpl()
+   WFields<D,RFT,FIT>::WFields()
     : basis_(),
       rgrid_(),
       meshDimensions_(),
@@ -50,7 +51,7 @@ namespace Prdc {
    * Destructor.
    */
    template <int D, class RFT, class FIT>
-   WFieldsTmpl<D,RFT,FIT>::~WFieldsTmpl()
+   WFields<D,RFT,FIT>::~WFields()
    {
       delete signalPtr_;
    }
@@ -59,15 +60,14 @@ namespace Prdc {
    * Create an association with a FIT object.
    */
    template <int D, class RFT, class FIT>
-   void
-   WFieldsTmpl<D,RFT,FIT>::setFieldIo(FIT const & fieldIo)
+   void WFields<D,RFT,FIT>::setFieldIo(FIT const & fieldIo)
    {  fieldIoPtr_ = &fieldIo; }
 
    /*
    * Set the unit cell that is modified by reading a field file.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::setReadUnitCell(UnitCell<D>& cell)
+   void WFields<D,RFT,FIT>::setReadUnitCell(UnitCell<D>& cell)
    {
       UTIL_CHECK(!readUnitCellPtr_);
       readUnitCellPtr_ = &cell;
@@ -77,7 +77,7 @@ namespace Prdc {
    * Set the unit cell that whose parameters are written to a field header.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::setWriteUnitCell(UnitCell<D> const & cell)
+   void WFields<D,RFT,FIT>::setWriteUnitCell(UnitCell<D> const & cell)
    {
       UTIL_CHECK(!writeUnitCellPtr_);
       writeUnitCellPtr_ = &cell;
@@ -87,7 +87,7 @@ namespace Prdc {
    * Set the stored value of nMonomer (this may only be called once).
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::setNMonomer(int nMonomer)
+   void WFields<D,RFT,FIT>::setNMonomer(int nMonomer)
    {
       UTIL_CHECK(nMonomer_ == 0);
       UTIL_CHECK(nMonomer > 0);
@@ -99,7 +99,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::allocateRGrid(IntVec<D> const & meshDimensions)
+   WFields<D,RFT,FIT>::allocateRGrid(IntVec<D> const & meshDimensions)
    {
       UTIL_CHECK(nMonomer_ > 0);
       UTIL_CHECK(!hasData_);
@@ -118,15 +118,15 @@ namespace Prdc {
       for (int i = 0; i < nMonomer_; ++i) {
          rgrid_[i].allocate(meshDimensions);
       }
-      isAllocatedRGrid_ = true;
 
+      isAllocatedRGrid_ = true;
    }
 
    /*
    * Allocate memory for fields in basis format.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::allocateBasis(int nBasis)
+   void WFields<D,RFT,FIT>::allocateBasis(int nBasis)
    {
       UTIL_CHECK(nMonomer_ > 0);
       UTIL_CHECK(nBasis > 0);
@@ -145,10 +145,9 @@ namespace Prdc {
    * Allocate memory for all fields.
    */
    template <int D, class RFT, class FIT>
-   void
-   WFieldsTmpl<D,RFT,FIT>::allocate(int nMonomer,
-                                       int nBasis,
-                                       IntVec<D> const & meshDimensions)
+   void WFields<D,RFT,FIT>::allocate(int nMonomer,
+                                     int nBasis,
+                                     IntVec<D> const & meshDimensions)
    {
       setNMonomer(nMonomer);
       allocateRGrid(meshDimensions);
@@ -162,7 +161,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::setBasis(DArray< DArray<double> > const & fields)
+   WFields<D,RFT,FIT>::setBasis(DArray< DArray<double> > const & fields)
    {
       UTIL_CHECK(fields.capacity() == nMonomer_);
 
@@ -206,7 +205,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::setRGrid(DArray<RFT> const & fields,
+   WFields<D,RFT,FIT>::setRGrid(DArray<RFT> const & fields,
                                        bool isSymmetric)
    {
       // Allocate r-grid fields as needed
@@ -249,7 +248,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::readBasis(std::istream& in)
+   WFields<D,RFT,FIT>::readBasis(std::istream& in)
    {
       // Preconditions
       UTIL_CHECK(nMonomer_ > 0);
@@ -302,7 +301,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::readBasis(std::string filename)
+   WFields<D,RFT,FIT>::readBasis(std::string filename)
    {
       std::ifstream file;
       fieldIo().fileMaster().openInputFile(filename, file);
@@ -323,7 +322,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::readRGrid(std::istream& in,
+   WFields<D,RFT,FIT>::readRGrid(std::istream& in,
                                         bool isSymmetric)
    {
       // Preconditions
@@ -361,7 +360,7 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::readRGrid(std::string filename,
+   WFields<D,RFT,FIT>::readRGrid(std::string filename,
                                         bool isSymmetric)
    {
       std::ifstream file;
@@ -374,7 +373,7 @@ namespace Prdc {
    * Symmetrize r-grid fields, convert to basis format.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::symmetrize()
+   void WFields<D,RFT,FIT>::symmetrize()
    {
       UTIL_CHECK(hasData_);
       fieldIo().convertRGridToBasis(rgrid_, basis_);
@@ -391,7 +390,7 @@ namespace Prdc {
    * Write fields to an output stream in basis format.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::writeBasis(std::ostream& out) const
+   void WFields<D,RFT,FIT>::writeBasis(std::ostream& out) const
    {
       // Preconditions
       UTIL_CHECK(nMonomer_ > 0);
@@ -408,7 +407,7 @@ namespace Prdc {
    * Write fields to a file in basis format, by filename.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::writeBasis(std::string filename) const
+   void WFields<D,RFT,FIT>::writeBasis(std::string filename) const
    {
       std::ofstream file;
       fieldIo().fileMaster().openOutputFile(filename, file);
@@ -420,7 +419,7 @@ namespace Prdc {
    * Write fields to an output stream in real-space (r-grid) format.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::writeRGrid(std::ostream& out) const
+   void WFields<D,RFT,FIT>::writeRGrid(std::ostream& out) const
    {
       // Preconditions
       UTIL_CHECK(nMonomer_ > 0);
@@ -431,15 +430,15 @@ namespace Prdc {
 
       bool writeHeader = true;
 
-      fieldIo().writeFieldsRGrid(out, rgrid_, *writeUnitCellPtr_, writeHeader,
-                                 isSymmetric_);
+      fieldIo().writeFieldsRGrid(out, rgrid_, *writeUnitCellPtr_, 
+                                 writeHeader, isSymmetric_);
    }
 
    /*
    * Write fields to a file in r-grid format, by filename.
    */
    template <int D, class RFT, class FIT>
-   void WFieldsTmpl<D,RFT,FIT>::writeRGrid(std::string filename) const
+   void WFields<D,RFT,FIT>::writeRGrid(std::string filename) const
    {
       std::ofstream file;
       fieldIo().fileMaster().openOutputFile(filename, file);
@@ -453,7 +452,7 @@ namespace Prdc {
    * Get the Signal<void> that is triggered by field modification.
    */
    template <int D, class RFT, class FIT>
-   Signal<void>& WFieldsTmpl<D,RFT,FIT>::signal()
+   Signal<void>& WFields<D,RFT,FIT>::signal()
    {
       UTIL_CHECK(signalPtr_);
       return *signalPtr_;
@@ -468,11 +467,10 @@ namespace Prdc {
    */
    template <int D, class RFT, class FIT>
    void
-   WFieldsTmpl<D,RFT,FIT>::assignRField(RFT & lhs, RFT const & rhs) const
-   {  UTIL_THROW("Unimplemented function WFieldsTmpl::assignRField");
+   WFields<D,RFT,FIT>::assignRField(RFT & lhs, RFT const & rhs) const
+   {  UTIL_THROW("Unimplemented function WFields::assignRField"); }
 
-}
-
+} // namespace Rl
 } // namespace Prdc
 } // namespace Pscf
 #endif

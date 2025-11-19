@@ -35,8 +35,8 @@ namespace Rpc {
 
    public:
 
-      /// Alias for base class
-      typedef Rl::CFields<D, RField<D>, FieldIo<D> >  Base;
+      /// Alias for direct base class.
+      using Base = Rl::CFields<D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;

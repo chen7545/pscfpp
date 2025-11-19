@@ -9,8 +9,8 @@
 */
 
 #include <prdc/rl/WFields.h>     // base class template
-#include <prdc/cpu/RField.h>            // template parameter
-#include <rpc/field/FieldIo.h>          // template parameter
+#include <prdc/cpu/RField.h>     // template parameter
+#include <rpc/field/FieldIo.h>   // template parameter
 
 namespace Pscf {
 namespace Rpc {
@@ -23,19 +23,19 @@ namespace Rpc {
    * A container of fields stored in both basis and r-grid format.
    *
    * The public interface of this class is identical to that of the base
-   * class template Pscf::Prdc::WFieldsTmpl. Please see documentation
+   * class template Pscf::Prdc::Rl::WFields. Please see documentation
    * of that base class for API documentation.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
    class WFields 
-     : public WFieldsTmpl<D, Prdc::Cpu::RField<D>, Rpc::FieldIo<D> >
+     : public Rl::WFields<D, Prdc::Cpu::RField<D>, Rpc::FieldIo<D> >
    {
    public:
 
       /// Alias for base class.
-      typedef WFieldsTmpl<D, RField<D>, FieldIo<D> >  Base;
+      using Base = Rl::WFields< D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -83,13 +83,17 @@ namespace Rpc {
    extern template class WFields<3>;
 
 } // namespace Rpc
+} // namespace Pscf
 
+namespace Pscf {
 namespace Prdc {
    // Explicit instantiation declarations for base class
-   extern template class WFieldsTmpl<1, RField<1>, Rpc::FieldIo<1> >;
-   extern template class WFieldsTmpl<2, RField<2>, Rpc::FieldIo<2> >;
-   extern template class WFieldsTmpl<3, RField<3>, Rpc::FieldIo<3> >;
+   extern template 
+   class Rl::WFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
+   extern template 
+   class Rl::WFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
+   extern template 
+   class Rl::WFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
 } 
-
 } // namespace Pscf
 #endif
