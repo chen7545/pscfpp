@@ -120,16 +120,17 @@ namespace Rl {
       /**
       * Constructor.
       *
-      * When an instance of System<D,T> is used as a base class for a
-      * concrete system class, such as Rpc::System\<D\>, typename T::System 
-      * must be the name of this resulting subclass. In this usage, in the
-      * member initialization list of the T::System subclass constructor,  
-      * a reference to the subclass instance should be passed as "*this" to
-      * this System base class constructor. The address of the instance
-      * of the T::System subclass is then retained in the System by
-      * by private member variable of type T::System* (named systemPtr_). 
-      * See definitions of constructors for the Rpc::System and Rpc::System 
-      * class templates for this usage.
+      * When an instantiation of System<D,T> is used as a base class for 
+      * a concrete System class, such as Rpc::System\<D\>, the typename 
+      * T::System must be an alias for the name of the subclass. In this 
+      * usage, in the member initialization list of the T::System 
+      * subclass constructor,  a reference to the subclass instance 
+      * must be passed as "*this" to this System base class constructor. 
+      * The address of the instance of the T::System subclass is then 
+      * retained in the Prdc::Rl::System base class instance by a private 
+      * member variable named systemPtr_ that is of type T::System* .
+      * See definitions of the constructors for the Rpc::System and 
+      * Rpc::System class templates for examples of this usage.
       *
       * \param system  instance of System subclass
       */
@@ -140,7 +141,7 @@ namespace Rl {
       */
       ~System();
 
-      // Suppress compiler-generated member functions
+      // Suppress several compiler-generated member functions
       System() = delete;
       System(System<D,T> const &) = delete;
       System<D,T>& operator = (System<D,T> const & ) = delete;

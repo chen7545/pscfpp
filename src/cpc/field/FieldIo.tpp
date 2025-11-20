@@ -13,7 +13,7 @@
 
 #include <prdc/field/fieldCheck.h>
 #include <prdc/field/cFieldIo.h>
-#include <prdc/field/cFieldIo.tpp>
+#include <prdc/field/rFieldIo.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/CFieldComparison.h>
 #include <prdc/cpu/complex.h>
@@ -82,6 +82,27 @@ namespace Cpc {
       // Rpg:: Allocate host arrays
       checkAllocateField(field, mesh().dimensions());
       Prdc::readCFieldData(in, field, mesh().dimensions());
+      // Rpg:: Copy host -> device
+
+   }
+
+   /*
+   * Read an array of real-valued fields in r-grid format.
+   */
+   template <int D>
+   void FieldIo<D>::readFieldsRGrid(std::istream& in,
+                                    DArray< CField<D> >& fields,
+                                    UnitCell<D>& unitCell) const
+   {
+      // Read header
+      int nMonomer;
+      readFieldHeader(in, nMonomer, unitCell);
+      readMeshDimensions(in, mesh().dimensions());
+      checkAllocateFields(fields, nMonomer, mesh().dimensions());
+
+      // Read data
+      // Rpg:: Allocate host arrays
+      Prdc::readRGridData(in, fields, nMonomer, mesh().dimensions());
       // Rpg:: Copy host -> device
 
    }

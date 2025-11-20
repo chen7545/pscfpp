@@ -79,7 +79,6 @@ public:
       Block<1> block;
    }
 
-   #if 0
    void testSetup1D()
    {
       printMethod(TEST_FUNC);
@@ -98,7 +97,7 @@ public:
       UnitCell<1> unitCell;
       setupUnitCell<1>(unitCell, "in/Lamellar");
 
-      WaveList<1> waveList;
+      WaveList<1> waveList(false);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -129,7 +128,7 @@ public:
       UnitCell<2> unitCell;
       setupUnitCell<2>(unitCell, "in/Rectangular");
 
-      WaveList<2> waveList;
+      WaveList<2> waveList(false);
       waveList.allocate(mesh, unitCell);
 
       block.associate(mesh, fft, unitCell, waveList);
@@ -161,7 +160,7 @@ public:
       UnitCell<3> unitCell;
       setupUnitCell<3>(unitCell, "in/Hexagonal");
 
-      WaveList<3> waveList;
+      WaveList<3> waveList(false);
       waveList.allocate(mesh, unitCell);
 
       // Associate block
@@ -196,7 +195,8 @@ public:
       UnitCell<1> unitCell;
       setupUnitCell<1>(unitCell, "in/Lamellar");
 
-      WaveList<1> waveList;
+      bool isRealField = false;
+      WaveList<1> waveList(isRealField);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -206,11 +206,12 @@ public:
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 4.0));
 
       // Setup chemical potential field
-      RField<1> w;
+      CField<1> w;
       w.allocate(mesh.dimensions());
       TEST_ASSERT(w.capacity() == mesh.size());
       for (int i=0; i < w.capacity(); ++i) {
-         w[i] = 1.0;
+         w[i][0] = 1.0;
+         w[i][1] = 0.0;
       }
 
       block.clearUnitCellData();
@@ -234,7 +235,8 @@ public:
       UnitCell<2> unitCell;
       setupUnitCell<2>(unitCell, "in/Rectangular");
 
-      WaveList<2> waveList;
+      bool isRealField = false;
+      WaveList<2> waveList(isRealField);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -245,11 +247,12 @@ public:
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
 
       // Setup chemical potential field
-      RField<2> w;
+      CField<2> w;
       w.allocate(mesh.dimensions());
       TEST_ASSERT(w.capacity() == mesh.size());
       for (int i=0; i < w.capacity(); ++i) {
-         w[i] = 1.0;
+         w[i][0] = 0.0;
+         w[i][1] = 1.0;
       }
 
       block.clearUnitCellData();
@@ -275,7 +278,8 @@ public:
       UnitCell<2> unitCell;
       setupUnitCell<2>(unitCell, "in/Rectangular");
 
-      WaveList<2> waveList;
+      bool isRealField = false;
+      WaveList<2> waveList(isRealField);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.5;
@@ -286,11 +290,12 @@ public:
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
 
       // Setup chemical potential field
-      RField<2> w;
+      CField<2> w;
       w.allocate(mesh.dimensions());
       TEST_ASSERT(w.capacity() == mesh.size());
       for (int i=0; i < w.capacity(); ++i) {
-         w[i] = 1.0;
+         w[i][0] = 1.5;
+         w[i][0] = 0.5;
       }
 
       block.clearUnitCellData();
@@ -315,7 +320,8 @@ public:
       UnitCell<3> unitCell;
       setupUnitCell<3>(unitCell, "in/Orthorhombic");
 
-      WaveList<3> waveList;
+      bool isRealField = false;
+      WaveList<3> waveList(isRealField);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -327,11 +333,12 @@ public:
       TEST_ASSERT(eq(unitCell.rBasis(2)[2], 5.0));
 
       // Setup chemical potential field
-      RField<3> w;
+      CField<3> w;
       w.allocate(mesh.dimensions());
       TEST_ASSERT(w.capacity() == mesh.size());
       for (int i=0; i < w.capacity(); ++i) {
-         w[i] = 1.0;
+         w[i][0] = 1.5;
+         w[i][0] = 0.5;
       }
 
       block.clearUnitCellData();
@@ -341,6 +348,7 @@ public:
    void testSolver1D()
    {
       printMethod(TEST_FUNC);
+      TEST_ASSERT(PolymerModel::isThread());
 
       // Create and initialize block
       Block<1> block;
@@ -356,7 +364,8 @@ public:
       setupUnitCell<1>(unitCell, "in/Lamellar");
       double a = unitCell.parameter(0);
 
-      WaveList<1> waveList;
+      bool isRealField = false;
+      WaveList<1> waveList(isRealField);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -364,13 +373,17 @@ public:
       block.allocate(ds);
 
       // Setup chemical potential field
-      RField<1> w;
+      CField<1> w;
       w.allocate(mesh.dimensions());
       int nx = mesh.size();
       TEST_ASSERT(w.capacity() == nx);
-      double wc = 0.3;
+      double wcr = 0.3;
+      //double wci = 0.0;
+      //fftw_complex wc;
+      //assign(wc, wcr, wci);
       for (int i=0; i < nx; ++i) {
-         w[i] = wc;
+         w[i][0] = wcr;
+         w[i][1] = 0.0;
       }
 
       block.clearUnitCellData();
@@ -384,34 +397,49 @@ public:
 
       double twoPi = 2.0*Constants::Pi;
       for (int i=0; i < nx; ++i) {
-         qin[i] = cos(twoPi*double(i)/double(nx));
+         qin[i][0] = cos(twoPi*double(i)/double(nx));
+         qin[i][1] = 0.5 * cos(twoPi*double(i)/double(nx));
+         //qin[i][0] = 1.0;
+         //qin[i][1] = 0.0;
       }
 
       block.stepThread(qin, qout);
+
       //double a = 4.0;
       double b = block.kuhn();
       double Gb = twoPi*b/a;
       double r = Gb*Gb/6.0;
       ds = block.ds();
-      double expected = exp(-(wc + r)*ds);
+      // double F = exp( - wc * ds);
+      // fftw_complex G = std::exp( - wc * ds);
+      //fftw_coplex H;
+      double expected = exp(-(wcr + r)*ds);
+      //double expected = exp(-wcr * ds);
       for (int i = 0; i < nx; ++i) {
-         TEST_ASSERT(eq(qout[i], qin[i]*expected));
+         //Log::file() << "\n" << Dbl(qin[i][0])
+         //            << "  " << Dbl(qout[i][0])
+         //            << "  " << Dbl(qin[i][0]*expected);
+         TEST_ASSERT( eq( qout[i][0], qin[i][0]*expected) );
+         TEST_ASSERT( eq( qout[i][1], qin[i][1]*expected) );
       }
     
       // Test propagator solve 
       block.propagator(0).solve();
 
       for (int i = 0; i < nx; ++i) {
-         TEST_ASSERT(eq(block.propagator(0).head()[i],1.0));
+         TEST_ASSERT(eq(block.propagator(0).head()[i][0], 1.0));
+         TEST_ASSERT(eq(block.propagator(0).head()[i][1] ,0.0));
       }
       
-      expected = exp(-wc*block.length());
+      expected = exp(-wcr * block.length());
       for (int i = 0; i < nx; ++i) {
-         TEST_ASSERT(eq(block.propagator(0).tail()[i], expected));
+         TEST_ASSERT(eq(block.propagator(0).tail()[i][0], expected));
+         TEST_ASSERT(eq(block.propagator(0).tail()[i][1], 0.0));
       }
 
    }
 
+   #if 0
    void testSolver1D_bead()
    {
       printMethod(TEST_FUNC);
@@ -432,7 +460,7 @@ public:
       UnitCell<1> unitCell;
       setupUnitCell<1>(unitCell, "in/Lamellar");
 
-      WaveList<1> waveList;
+      WaveList<1> waveList(false);
       waveList.allocate(mesh, unitCell);
 
       double ds = 1.00;
@@ -531,7 +559,7 @@ public:
       UnitCell<2> unitCell;
       setupUnitCell<2>(unitCell, "in/Rectangular");
 
-      WaveList<2> waveList;
+      WaveList<2> waveList(false);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -620,7 +648,7 @@ public:
       UnitCell<3> unitCell;
       setupUnitCell<3>(unitCell, "in/Orthorhombic");
 
-      WaveList<3> waveList;
+      WaveList<3> waveList(false);
       waveList.allocate(mesh, unitCell);
 
       double ds = 0.02;
@@ -697,7 +725,14 @@ public:
 
 TEST_BEGIN(PropagatorTest)
 TEST_ADD(PropagatorTest, testConstructor1D)
-//TEST_ADD(PropagatorTest, testSetup1D)
+TEST_ADD(PropagatorTest, testSetup1D)
+TEST_ADD(PropagatorTest, testSetup2D)
+TEST_ADD(PropagatorTest, testSetup3D)
+TEST_ADD(PropagatorTest, testSetupSolver1D)
+TEST_ADD(PropagatorTest, testSetupSolver2D)
+TEST_ADD(PropagatorTest, testSetupSolver2D_bead)
+TEST_ADD(PropagatorTest, testSetupSolver3D)
+TEST_ADD(PropagatorTest, testSolver1D)
 TEST_END(PropagatorTest)
 
 #endif

@@ -44,11 +44,13 @@ namespace Prdc {
       UTIL_CHECK(fields.capacity() == nMonomer);
 
       MeshIteratorFortran<D> iter(dimensions);
+      double value;
       int rank;
       for (iter.begin(); !iter.atEnd(); ++iter) {
          rank = iter.rank();
          for (int k = 0; k < nMonomer; ++k) {
-            in >> fields[k][rank];
+            in >> value;
+            assign(fields[k][rank], value);
          }
          UTIL_ASSERT(in.good());
       }
@@ -58,14 +60,16 @@ namespace Prdc {
    template <int D, class ART>
    void readRGridData(std::istream& in, 
                       ART& field,
-                      IntVec<D> const& dimensions)
+                      IntVec<D> const & dimensions)
    {
       MeshIteratorFortran<D> iter(dimensions);
+      double value;
       int rank;
       for (iter.begin(); !iter.atEnd(); ++iter) {
          rank = iter.rank();
-         in >> field[rank];
+         in >> value;
          UTIL_ASSERT(in.good());
+         assign( field[rank], value);
       }
       UTIL_CHECK(in.good());
    }

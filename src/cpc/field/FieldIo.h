@@ -68,8 +68,11 @@ namespace Cpc {
 
    public:
 
+      /// \name Read fields from file
+      ///@{
+
       /**
-      * Read array of CField objects (r-grid fields) from a stream.
+      * Read multiple complex-valued fields from an input stream.
       *
       * See documentation of analogous function in Prdc::Cl::FieldIo.
       *
@@ -82,7 +85,7 @@ namespace Cpc {
                       UnitCell<D> & unitCell) const override;
 
       /**
-      * Read data for an array of r-grid fields, with no header section.
+      * Read data for multiple complex fields, with no header section.
       *
       * See documentation of analogous function in Prdc::Cl::FieldIo.
       *
@@ -106,6 +109,29 @@ namespace Cpc {
       void readField(std::istream &in,
                      CField<D> & field,
                      UnitCell<D>& unitCell) const override;
+
+      /**
+      * Read multiple real value field in r-grid format.
+      *
+      * This function is designed to read a real-valued field file written 
+      * in the the r-grid file format used by the programs pscf_pc and 
+      * pscf_pg, but stores data for each field in a CField<D> container
+      * designed for complex-valued fields. On return, each field value in
+      * this container is a complex number with a zero imaginary part and
+      * a real part equal to the value given in the field file for the
+      * specified monomer type and grid node.
+      *
+      * \param in  input file stream
+      * \param fields   array of fields defined on grid (out)
+      * \param unitCell  associated crystallographic unit cell (out)
+      */
+      void readFieldsRGrid(std::istream &in,
+                           DArray< CField<D> > & fields,
+                           UnitCell<D>& unitCell) const;
+
+      ///@}
+      /// \name Write fields to file
+      ///@{
 
       /**
       * Write array of CField objects (fields on r-space grid) to a stream.
@@ -137,10 +163,13 @@ namespace Cpc {
       void writeField(std::ostream &out,
                       CField<D> const & field,
                       UnitCell<D> const & unitCell,
-                      bool writeHeader = true)
-      const override;
+                      bool writeHeader = true) const override;
 
+      ///@}
       #if 0
+      /// \name Compare arrays
+      ///@{
+
       /**
       * Compare two arrays of complex fields, output a report.
       *

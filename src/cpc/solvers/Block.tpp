@@ -203,19 +203,23 @@ namespace Cpc {
    {
       UTIL_CHECK(isAllocated_);
       UTIL_CHECK(waveListPtr_);
-
-      bool isThread = PolymerModel::isThread();
-      double bSqFactor = -1.0*kuhn()*kuhn() / 6.0;
-      if (isThread) {
-         bSqFactor *= ds_;
-      }
+      UTIL_CHECK(waveListPtr_->isAllocated());
 
       // Calculate KSq if necessary
       if (!waveListPtr_->hasKSq()) {
          waveListPtr_->computeKSq();
       }
       RField<D> const & kSq = waveListPtr_->kSq();
+      UTIL_CHECK(kSq.capacity() == mesh().size());
 
+      // Compute bSqFactor = b*b*ds/6
+      bool isThread = PolymerModel::isThread();
+      double bSqFactor = -1.0*kuhn()*kuhn() / 6.0;
+      if (isThread) {
+         bSqFactor *= ds_;
+      }
+
+      // Compute expKsq arrays
       MeshIterator<D> iter;
       iter.setDimensions(mesh().dimensions());
       double arg;
