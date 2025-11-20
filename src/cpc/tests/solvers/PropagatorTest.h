@@ -6,6 +6,7 @@
 
 #include <cpc/solvers/Block.h>
 #include <cpc/solvers/Propagator.h>
+#include <cpc/field/Domain.h>
 
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/WaveList.h>
@@ -36,6 +37,8 @@ public:
 
    void tearDown()
    {  PolymerModel::setModel(PolymerModel::Thread); }
+
+   // Utility functions (used in unit tests)
 
    template <int D> 
    void setupBlock(Block<D>& block)
@@ -72,6 +75,22 @@ public:
       in >> unitCell;
       in.close();
    }
+
+   /*
+   * Open and read file header to initialize Domain<D> system.
+   */
+   template <int D>
+   int readHeader(std::string filename, Domain<D>& domain)
+   {
+      std::ifstream in;
+      openInputFile(filename, in);
+      int nMonomer;
+      domain.readFieldHeader(in, nMonomer);
+      in.close();
+      return nMonomer;
+   }
+
+   // Unit test functions
 
    void testConstructor1D()
    {
@@ -345,6 +364,44 @@ public:
       block.setupSolver(w);
    }
 
+   void testSetupSolver3D_domain()
+   {
+      printMethod(TEST_FUNC);
+
+
+      Domain<3> domain;
+      int nMonomer = readHeader("in/Cubic.hdr", domain);
+      TEST_ASSERT(nMonomer == 2);
+      Mesh<3>& mesh = domain.mesh();
+      UnitCell<3>& unitCell = domain.unitCell();
+      FFT<3>& fft = domain.fft();
+      WaveList<3>& waveList = domain.waveList();
+
+      // Create and initialize block
+      Block<3> block;
+      block.associate(mesh, fft, unitCell, waveList);
+      setupBlock<3>(block);
+
+      double ds = 0.02;
+      block.allocate(ds);
+
+      TEST_ASSERT(eq(unitCell.rBasis(0)[0], 1.8));
+      TEST_ASSERT(eq(unitCell.rBasis(1)[1], 1.8));
+      TEST_ASSERT(eq(unitCell.rBasis(2)[2], 1.8));
+
+      // Setup chemical potential field
+      CField<3> w;
+      w.allocate(mesh.dimensions());
+      TEST_ASSERT(w.capacity() == mesh.size());
+      for (int i=0; i < w.capacity(); ++i) {
+         w[i][0] = 1.5;
+         w[i][0] = 0.5;
+      }
+
+      block.clearUnitCellData();
+      block.setupSolver(w);
+   }
+
    void testSolver1D()
    {
       printMethod(TEST_FUNC);
@@ -362,7 +419,6 @@ public:
 
       UnitCell<1> unitCell;
       setupUnitCell<1>(unitCell, "in/Lamellar");
-      double a = unitCell.parameter(0);
 
       bool isRealField = false;
       WaveList<1> waveList(isRealField);
@@ -378,12 +434,12 @@ public:
       int nx = mesh.size();
       TEST_ASSERT(w.capacity() == nx);
       double wcr = 0.3;
-      //double wci = 0.0;
-      //fftw_complex wc;
-      //assign(wc, wcr, wci);
+      double wci = 0.2;
+      fftw_complex wc;
+      assign(wc, wcr, wci);
       for (int i=0; i < nx; ++i) {
          w[i][0] = wcr;
-         w[i][1] = 0.0;
+         w[i][1] = wci;
       }
 
       block.clearUnitCellData();
@@ -405,36 +461,150 @@ public:
 
       block.stepThread(qin, qout);
 
-      //double a = 4.0;
+      double a = unitCell.parameter(0);
       double b = block.kuhn();
       double Gb = twoPi*b/a;
       double r = Gb*Gb/6.0;
       ds = block.ds();
-      // double F = exp( - wc * ds);
-      // fftw_complex G = std::exp( - wc * ds);
-      //fftw_coplex H;
-      double expected = exp(-(wcr + r)*ds);
-      //double expected = exp(-wcr * ds);
+      double ratioQ = exp(- r * ds);
+      fftw_complex ratioW;
+      fftw_complex wArg;
+      mul(wArg, wc, -1.0*ds);
+      assignExp(ratioW, wArg);
+      fftw_complex ratio;
+      mul(ratio, ratioW, ratioQ);
+      fftw_complex expected;
+      //setVerbose(1);
       for (int i = 0; i < nx; ++i) {
-         //Log::file() << "\n" << Dbl(qin[i][0])
-         //            << "  " << Dbl(qout[i][0])
-         //            << "  " << Dbl(qin[i][0]*expected);
-         TEST_ASSERT( eq( qout[i][0], qin[i][0]*expected) );
-         TEST_ASSERT( eq( qout[i][1], qin[i][1]*expected) );
+         mul(expected, qin[i], ratio);
+         if (verbose() > 0) {
+            Log::file() << "\n" << Dbl(qin[i][0])
+                        << "  " << Dbl(qin[i][1])
+                        << "  " << Dbl(qout[i][0])
+                        << "  " << Dbl(qout[i][1])
+                        << "  " << Dbl(expected[0])
+                        << "  " << Dbl(expected[1]);
+         }
+         TEST_ASSERT( eq( qout[i][0], expected[0]) );
+         TEST_ASSERT( eq( qout[i][1], expected[1]) );
       }
     
-      // Test propagator solve 
+      // Test propagator solve , homogeneous initial condition
       block.propagator(0).solve();
 
       for (int i = 0; i < nx; ++i) {
          TEST_ASSERT(eq(block.propagator(0).head()[i][0], 1.0));
-         TEST_ASSERT(eq(block.propagator(0).head()[i][1] ,0.0));
+         TEST_ASSERT(eq(block.propagator(0).head()[i][1], 0.0));
       }
-      
-      expected = exp(-wcr * block.length());
+     
+      ds = block.length();
+      ratioQ = exp(- r * ds);
+      mul(wArg, wc, -1.0*ds);
+      assignExp(ratioW, wArg);
       for (int i = 0; i < nx; ++i) {
-         TEST_ASSERT(eq(block.propagator(0).tail()[i][0], expected));
-         TEST_ASSERT(eq(block.propagator(0).tail()[i][1], 0.0));
+         TEST_ASSERT(eq(block.propagator(0).tail()[i][0], ratioW[0]));
+         TEST_ASSERT(eq(block.propagator(0).tail()[i][1], ratioW[1]));
+      }
+
+   }
+
+   void testSolver1D_domain()
+   {
+      printMethod(TEST_FUNC);
+      TEST_ASSERT(PolymerModel::isThread());
+
+      Block<1> block;
+
+      Domain<1> domain;
+      Mesh<1>& mesh = domain.mesh();
+      UnitCell<1>& unitCell = domain.unitCell();
+      FFT<1>& fft = domain.fft();
+      WaveList<1>& waveList = domain.waveList();
+      block.associate(mesh, fft, unitCell, waveList);
+      int nMonomer = readHeader("in/Lamellar.hdr", domain);
+      TEST_ASSERT(nMonomer == 2);
+
+      // Initialize block
+      setupBlock<1>(block);
+      double ds = 0.02;
+      block.allocate(ds);
+
+      // Setup chemical potential field
+      CField<1> w;
+      w.allocate(mesh.dimensions());
+      int nx = mesh.size();
+      TEST_ASSERT(w.capacity() == nx);
+      double wcr = 0.3;
+      double wci = 0.2;
+      fftw_complex wc;
+      assign(wc, wcr, wci);
+      for (int i=0; i < nx; ++i) {
+         w[i][0] = wcr;
+         w[i][1] = wci;
+      }
+
+      block.clearUnitCellData();
+      block.setupSolver(w);
+
+      // Test step
+      Propagator<1>::FieldT qin;
+      Propagator<1>::FieldT qout;
+      qin.allocate(mesh.dimensions());
+      qout.allocate(mesh.dimensions());
+
+      double twoPi = 2.0*Constants::Pi;
+      for (int i=0; i < nx; ++i) {
+         qin[i][0] = cos(twoPi*double(i)/double(nx));
+         qin[i][1] = 0.5 * cos(twoPi*double(i)/double(nx));
+         //qin[i][0] = 1.0;
+         //qin[i][1] = 0.0;
+      }
+
+      block.stepThread(qin, qout);
+
+      double a = unitCell.parameter(0);
+      double b = block.kuhn();
+      double Gb = twoPi*b/a;
+      double r = Gb*Gb/6.0;
+      ds = block.ds();
+      double ratioQ = exp(- r * ds);
+      fftw_complex ratioW;
+      fftw_complex wArg;
+      mul(wArg, wc, -1.0*ds);
+      assignExp(ratioW, wArg);
+      fftw_complex ratio;
+      mul(ratio, ratioW, ratioQ);
+      fftw_complex expected;
+      //setVerbose(1);
+      for (int i = 0; i < nx; ++i) {
+         mul(expected, qin[i], ratio);
+         if (verbose() > 0) {
+            Log::file() << "\n" << Dbl(qin[i][0])
+                        << "  " << Dbl(qin[i][1])
+                        << "  " << Dbl(qout[i][0])
+                        << "  " << Dbl(qout[i][1])
+                        << "  " << Dbl(expected[0])
+                        << "  " << Dbl(expected[1]);
+         }
+         TEST_ASSERT( eq( qout[i][0], expected[0]) );
+         TEST_ASSERT( eq( qout[i][1], expected[1]) );
+      }
+    
+      // Test propagator solve , homogeneous initial condition
+      block.propagator(0).solve();
+
+      for (int i = 0; i < nx; ++i) {
+         TEST_ASSERT(eq(block.propagator(0).head()[i][0], 1.0));
+         TEST_ASSERT(eq(block.propagator(0).head()[i][1], 0.0));
+      }
+     
+      ds = block.length();
+      ratioQ = exp(- r * ds);
+      mul(wArg, wc, -1.0*ds);
+      assignExp(ratioW, wArg);
+      for (int i = 0; i < nx; ++i) {
+         TEST_ASSERT(eq(block.propagator(0).tail()[i][0], ratioW[0]));
+         TEST_ASSERT(eq(block.propagator(0).tail()[i][1], ratioW[1]));
       }
 
    }
@@ -532,12 +702,6 @@ public:
       Propagator<1>& p1 = block.propagator(1);
       p1.solve();
 
-      #if 0
-      double qh = block.averageProductBead(p0.head(), p1.tail());
-      double qt = block.averageProductBead(p0.tail(), p1.head());
-      TEST_ASSERT(eq( log(qh), log(qt) )) ;
-      TEST_ASSERT(eq( log(qh), -wc*ds*block.nBead() )) ;
-      #endif
    }
 
    void testSolver2D()
@@ -732,7 +896,9 @@ TEST_ADD(PropagatorTest, testSetupSolver1D)
 TEST_ADD(PropagatorTest, testSetupSolver2D)
 TEST_ADD(PropagatorTest, testSetupSolver2D_bead)
 TEST_ADD(PropagatorTest, testSetupSolver3D)
+TEST_ADD(PropagatorTest, testSetupSolver3D_domain)
 TEST_ADD(PropagatorTest, testSolver1D)
+TEST_ADD(PropagatorTest, testSolver1D_domain)
 TEST_END(PropagatorTest)
 
 #endif

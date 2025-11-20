@@ -116,7 +116,7 @@ public:
 
       //setVerbose(1);
       if (verbose() > 0) {
-         // openLogFile("out/DomainTestReadHeader.log");
+         openLogFile("out/DomainTestReadHeader.log");
          Log::file() << "\n";
          Log::file() << "Cell  = " << domain.unitCell() << "\n";
          Log::file() << "Ngrid = " << domain.mesh().dimensions() << "\n";
