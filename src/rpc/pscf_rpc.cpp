@@ -15,7 +15,7 @@ namespace Pscf {
 namespace Rpc {
 
    /**
-   * Function template for main pscf_pc program.
+   * Function template for main pscf_rpc program.
    *
    * \ingroup Pscf_Rpc_Module
    *
@@ -43,7 +43,7 @@ namespace Rpc {
 }
 
 /**
-* Main pscf_pc program.
+* Main pscf_rpc program.
 *
 * \param argc  number of command line arguments
 * \param argv  array of command line arguments

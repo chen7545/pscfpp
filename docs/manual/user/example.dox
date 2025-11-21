@@ -12,7 +12,7 @@ directory of the repository.
 
 Each top level subdirectory of the examples/ directory contains examples
 of calculations performed using one of the three available PSCF programs.
-For example, the pc/ directory contains examples that use the pscf_pc
+For example, the pc/ directory contains examples that use the pscf_rpc
 CPU program for systems with periodic boundary conditiobs.  Lower levels
 in this directory tree organizes examples by the type of calculation
 (SCFT or PS-FTS) and the type of physical system.  For example, the
@@ -69,11 +69,11 @@ file. Note the use of the prefix "./" before the script name, which is
 used to tell the unix shell to look for the script in the current
 directory.
 
-To use pscf_pc to run a simple example computation with the above
+To use pscf_rpc to run a simple example computation with the above
 directory structure, one could change directory (cd) to the relevant
 example directory and then issue a command such as
 \code
- pscf_pc -d 3 -e -p param -c command
+ pscf_rpc -d 3 -e -p param -c command
 \endcode
 for a three dimensional periodic structure.  This command would send
 log output to the terminal.  The "run" script simply issues this
@@ -81,11 +81,11 @@ command or something very similar to it for you. To run the calculation
 in background and redirect the log output to a file out/log, one could
 instead enter
 \code
- pscf_pc -d 3 -e -p param -c command > out/log &
+ pscf_rpc -d 3 -e -p param -c command > out/log &
 \endcode
 A command to execute a different PSCF program would have a similar
 syntax except for the use of a different executable name, such as
-pscf_1d or pscf_pg.
+pscf_1d or pscf_rpg.
 
 \section examples_clean_sec Cleaning up
 

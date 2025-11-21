@@ -7,7 +7,7 @@ namespace Rpc{
 A LinearRamp allows a user to vary a set of one or more parameters over 
 the course of a simulation, such that each of the chosen parameters varies 
 linear with the simulation step counter. This is the default ramp algorithm
-for both pscf_pc and pscf_pg, and so may be selected by including a 
+for both pscf_rpc and pscf_rpg, and so may be selected by including a 
 parameter file block with either the specific label "LinearRamp" or the 
 generic label "Ramp" in the appropriate location within a
 \ref rpc_BdSimulator_page "BdSimulator" or 

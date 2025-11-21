@@ -16,7 +16,7 @@ of the Anderson mixing (AM) algorithm. General aspects of this algorithm
 are discussed on a \ref pscf_AmIteratorTmpl_page "separate page".
 
 Different sets of algorithms are available for use with pscf_1d for
-one-dimension problems, and for the pscf_pc and pscf_pg programs for
+one-dimension problems, and for the pscf_rpc and pscf_rpg programs for
 periodic systems, as described below:
 
 \section scft_iterator_1d_sec One-dimensional systems (pscf_1d)
@@ -64,9 +64,9 @@ The BinaryRelaxiterator class implements a simple relaxation iterator for
 AB systems with only two types of monomer, as described by F. Drolet and
 G.H. Fredrickson (Phys. Rev. Lett, vol 83, page 4317, 1999).
 
-\section scft_iterator_periodic_sec Periodic systems (pscf_pc and pscf_pg)
+\section scft_iterator_periodic_sec Periodic systems (pscf_rpc and pscf_rpg)
 
-The pscf_pc and pscf_pg programs each provide two Anderson mixing iterator
+The pscf_rpc and pscf_rpg programs each provide two Anderson mixing iterator
 algorithms named \ref rpc_AmIteratorBasis_page "AmIteratorBasis" and
 \ref rpc_AmIteratorGrid_page "AmIteratorGrid", respectively.
 The AmIteratorBasis algorithm is the default iterator algorithm for either

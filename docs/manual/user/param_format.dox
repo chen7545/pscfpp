@@ -17,7 +17,7 @@ elements and selectable subblocks.
 \section user_param_format_example1_sec Example 1: SCFT parameter file
 
 As a simple first example of this sort of format description, the overall
-format for a pscf_pc or pscf_pg parameter file used to initialize a SCFT
+format for a pscf_rpc or pscf_rpg parameter file used to initialize a SCFT
 calculation is shown below:
 \code
 System{
@@ -44,7 +44,7 @@ Sweep blocks are both optional and selectable.
 For simplicity, the above format description only shows allowed elements
 of the System block that are relevant to SCFT calculations for spatially
 periodic structure. A complete format description for the System block
-of the pscf_pc program, which includes additional optional elements, is
+of the pscf_rpc program, which includes additional optional elements, is
 given \ref rpc_System_page "here".
 
 \section user_param_format_example2_sec Example 2: Mixture block
@@ -52,7 +52,7 @@ given \ref rpc_System_page "here".
 Every PSCF parameter file contains a Mixture block, which is always a
 required element of the System block. Different PSCF programs use a
 Mixture block with very similar file formats. The format used by both
-pscf_1d and pscf_pc can be described compactly as follows:
+pscf_1d and pscf_rpc can be described compactly as follows:
 \code
 Mixture{
   nMonomer   int

@@ -14,7 +14,7 @@ Hompolymers are treated as a special case of a block polymer with only one
 block. Solvent species, if present, are treated as point-like particles
 that occupy a specified volume per molecule.
 
-In the pscf_pc and pscf_pg programs for periodic domains, conformations
+In the pscf_rpc and pscf_rpg programs for periodic domains, conformations
 of individual polymers may be modelled using either a continuous "thread"
 model or a discrete "bead" model. The thread model idealizes blocks
 within a block polymer as continuous random walks. The bead model instead

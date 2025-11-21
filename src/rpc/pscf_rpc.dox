@@ -1,15 +1,15 @@
 /*!
-\page pscf_pc_page pscf_pc - Periodic Structures (CPU)
+\page pscf_rpc_page pscf_rpc - Periodic Structures (CPU)
 
 Main program for self-consistent field theory (SCFT) and partial-saddle 
 point field-theoretic simulation (PS-FTS) of spatially periodic structures 
 of polymer liquids, using real fields and standard CPU hardware.
 
-\section pscf_pc_usage_section Usage
+\section pscf_rpc_usage_section Usage
 
-    pscf_pc -d dimension -p file -c file [-i prefix] [-o prefix] [-e]
+    pscf_rpc -d dimension -p file -c file [-i prefix] [-o prefix] [-e]
 
-\section pscf_pc_options_section Command Line Options
+\section pscf_rpc_options_section Command Line Options
 
 The -d, -p and -c options are required, to provide a value for the spatial
 dimension for the structure of interest (-d option), a parameter file name 

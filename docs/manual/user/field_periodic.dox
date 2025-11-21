@@ -1,15 +1,15 @@
-/*! \page user_field_periodic_page Field File - Periodic Fields (pscf_pc and pscf_pg)
+/*! \page user_field_periodic_page Field File - Periodic Fields (pscf_rpc and pscf_rpg)
 
 \ref user_field_r1d_page  (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref user_command_page     (Next)
 <BR>
 
-The pscf_pc and pscf_pg programs are both designed to treat periodic
+The pscf_rpc and pscf_rpg programs are both designed to treat periodic
 structures, and use the same set of field file formats.
 
 \section user_field_periodic_formats_sec File Formats
 
-The pscf_pc and pscf_pg programs can all read and write fields using
+The pscf_rpc and pscf_rpg programs can all read and write fields using
 following three field file formats:
 
   - A \ref user_field_basis_page "basis" file format contains the
@@ -51,8 +51,8 @@ file formats used by the older Fortran PSCF program.  The k-grid
 format used by the current version is not backwards compatible with
 the analogous k-grid format used by the Fortran program.
 
-The names of some command-file commands that instruct pscf_pc and
-pscf_pg programs to read or write field files contain the strings
+The names of some command-file commands that instruct pscf_rpc and
+pscf_rpg programs to read or write field files contain the strings
 "BASIS", "RGRID", or "KGRID" to indicate the use of a particular
 field file format.
 

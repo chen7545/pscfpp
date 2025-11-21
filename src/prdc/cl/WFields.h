@@ -43,17 +43,17 @@ namespace Cl {
    *     - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
    * 
    * <b> Subclasses </b>: Partial specializations of WFields are used as
-   * base classes for classes Rpc::WFields \<D \> and Rpg::WFields \<D\>:
+   * base classes for classes Cpc::WFields \<D \> and Rpg::WFields \<D\>:
    *
-   *  - Subclass Rpc::WFields \<D\> is derived from a partial
+   *  - Subclass Cpc::WFields \<D\> is derived from a partial
    *    specialization of WFields with template parameters 
-   *    CFT = Cpu::CFT \<D\> and FIT = Rpc::FIT \<D\> , and is used in
-   *    the pscf_pc CPU program.
+   *    CFT = Cpu::CFT \<D\> and FIT = Cpc::FIT \<D\> , and is used in
+   *    the pscf_cpc CPU program.
    *
    *  - Subclass Rpg::WFields \<D\> is derived from a partial
    *    specialization of WFields with template parameters 
    *    CFT = Cuda::CFT \<D\> and FIT = Rpg::FIT \<D\> , and is used in
-   *    the pscf_pg GPU accelerated program.
+   *    the pscf_cpg GPU accelerated program.
    *
    * <b> Signal </b>: A WFields owns an instance of class
    * Util::Signal<void> that notifies all observers whenever the fields

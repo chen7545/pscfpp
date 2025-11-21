@@ -4,7 +4,7 @@
  \ref user_field_basis_page     (Next)
 <BR>
 
-The pscf_pc and pscf_pg programs can use any of three different file
+The pscf_rpc and pscf_rpg programs can use any of three different file
 formats for field files, which we refer to as basis, r-grid and k-grid
 formats. In each of these formats, a field file contains a header section
 followed by a field data section. The header section has nearly identical
@@ -46,7 +46,7 @@ of which is given with a parameter label on one line and its value on
 the next.
 
 A header such as that shown above appears at the top of every field file
-used by pscf_pc or pscf_pg. The remainder of each field file is a field
+used by pscf_rpc or pscf_rpg. The remainder of each field file is a field
 data section that may use any of three different formats (basis, r-grid,
 or k-grid).
 
@@ -99,8 +99,8 @@ The dim parameter, denoted by D elsewhere in the documentation and
 source code, gives the dimension of space in which the fields are
 defined. For SCFT solutions, this is the number of axes along which
 the fields are periodic. This value must match the value given as an
-argument of the required -d command line option used when pscf_pc or
-pscf_pg was invoked.
+argument of the required -d command line option used when pscf_rpc or
+pscf_rpg was invoked.
 
 <b> crystal_system </b>:
 The value of crystal_system is a string identifer for a lattice

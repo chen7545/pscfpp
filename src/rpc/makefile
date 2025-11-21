@@ -15,13 +15,13 @@ include $(SRC_DIR)/rpc/sources.mk
 include $(SRC_DIR)/rpc/patterns.mk
 
 #-----------------------------------------------------------------------
-# Paths to pscf_pc program files
+# Paths to pscf_rpc program files
 
-# Base path to *.o and *.d files for pscf_pc
-PSCF_PC=$(BLD_DIR)/rpc/pscf_pc
+# Base path to *.o and *.d files for pscf_rpc
+PSCF_PC=$(BLD_DIR)/rpc/pscf_rpc
 
-# Path to pscf_pc executable file
-PSCF_PC_EXE=$(BIN_DIR)/pscf_pc
+# Path to pscf_rpc executable file
+PSCF_PC_EXE=$(BIN_DIR)/pscf_rpc
 
 #-----------------------------------------------------------------------
 # Main targets 
@@ -36,19 +36,19 @@ clean:
 	rm -f *.d */*.d */*/*.d
 	cd tests; $(MAKE) clean
 
-# Rule for pscf_pc executable file
+# Rule for pscf_rpc executable file
 $(PSCF_PC_EXE): $(PSCF_PC).o $(PSCF_LIBS)
 	$(CXX) $(LDFLAGS) -o $(PSCF_PC_EXE) $(PSCF_PC).o $(LIBS)
 
 # Short phony target for executable file (for convenience)
-pscf_pc:
+pscf_rpc:
 	$(MAKE) $(PSCF_PC_EXE)
 
-# Note: In the rule for pscf_pc, we include the list $(PSCF_LIBS) of 
+# Note: In the rule for pscf_rpc, we include the list $(PSCF_LIBS) of 
 # PSCF static libraries as prerequisites, but link to the list $(LIBS) 
 # that includes all relevant external libraries.
 
-.PHONY: all clean pscf_pc
+.PHONY: all clean pscf_rpc
 
 #-----------------------------------------------------------------------
 # Include dependency files

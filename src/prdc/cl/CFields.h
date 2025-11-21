@@ -34,21 +34,21 @@ namespace Cl {
    * <b> Template parameters </b>: The template parameters represent:
    * 
    *     - D   : integer dimensionality of space, D=1,2, or 3
-   *     - CFT : field type for r-grid data (e.g., CField<D>)
+   *     - CFT : complex field type (e.g., CField<D>)
    *     - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
    * 
    * <b> Subclasses </b>: Partial specializations of CFields are used as
-   * base classes for classes Rpc::CFields \<D \> and Rpg::CFields \<D\>:
+   * base classes for classes Cpc::CFields \<D \> and Rpg::CFields \<D\>:
    *
-   *  - Subclass Rpc::CFields \<D\> is derived from a partial
+   *  - Subclass Cpc::CFields \<D\> is derived from a partial
    *    specialization of CFields with template parameters 
-   *    CFT = Cpu::CFT \<D\> and FIT = Rpc::FIT \<D\> , and is used in
-   *    the pscf_pc CPU program.
+   *    CFT = Cpu::CFT \<D\> and FIT = Cpc::FIT \<D\> , and is used in
+   *    the pscf_cpc CPU program.
    *
    *  - Subclass Rpg::CFields \<D\> is derived from a partial
    *    specialization of CFields with template parameters 
    *    CFT = Cuda::CFT \<D\> and FIT = Rpg::FIT \<D\> , and is used in
-   *    the pscf_pg GPU accelerated program.
+   *    the pscf_cpg GPU accelerated program.
    *
    *
    * \ingroup Prdc_Cl_Module

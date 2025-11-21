@@ -71,7 +71,7 @@ namespace Rl {
    *  - Subclass Rpc::WFields \<D\> is derived from a partial
    *    specialization of WFields with template parameters 
    *    RFT = Cpu::RFT \<D\> and FIT = Rpc::FIT \<D\> , and is used in
-   *    the pscf_pc CPU program.
+   *    the pscf_rpc CPU program.
    *
    *  - Subclass Rpg::WFields \<D\> is derived from a partial
    *    specialization of WFields with template parameters 

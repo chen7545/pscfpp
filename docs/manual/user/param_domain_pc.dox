@@ -1,16 +1,16 @@
 namespace Pscf {
 
-/*! \page user_param_domain_pc_page Periodic domains (pscf_pc and pscf_pg)
+/*! \page user_param_domain_pc_page Periodic domains (pscf_rpc and pscf_rpg)
 
 \ref user_param_domain_1d_page  (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref user_command_page  (Next)
 <BR>
 
-The Domain block of the parameter file for pscf_pc or pscf_pg contains
+The Domain block of the parameter file for pscf_rpc or pscf_rpg contains
 information about the periodic unit cell and discretization mesh for a
 D-dimensional periodic structure. Here D is the dimension of space
 specified by the argument of the "-d" command line option used to
-invoked pscf_pc or pscf_pg.
+invoked pscf_rpc or pscf_rpg.
 
 \section user_param_domain_pc_example_sec Example
 
@@ -53,8 +53,8 @@ i = 0 ,..., D-1.
 
 The dimensions N[0], ... , N[D-1] of the spatial mesh are initialized
 in the parameter file and are immutable thereafter. To perform
-simulations with different mesh sizes, one must thus run pscf_pc or
-pscf_pg multiple times using different parameters files with different
+simulations with different mesh sizes, one must thus run pscf_rpc or
+pscf_rpg multiple times using different parameters files with different
 values for the mesh parameter.
 
 <b> lattice </b>
@@ -120,7 +120,7 @@ must be present in order to allow PSCF to read or write files using the
 is designed to be used for this purpose.  This parameter is also required
 to enable use of SCFT iteration algorithms that are designed search for
 a solution with a specific space group, such as the AmIteratorBasis
-algorithm that is used by default by both pscf_pc and pscf_pg. SCFT
+algorithm that is used by default by both pscf_rpc and pscf_rpg. SCFT
 calculations that are initialized with a parameter file that does
 not contain a groupName must instead import and export fields in the
 \ref user_field_rgrid_page "real-space grid" file format, and must use
@@ -145,7 +145,7 @@ set by an explicit command, as discussed below.
 Values for unit cell parameters are given within the header section of all
 field files that contain either chemical potential fields (w-fields) or
 monomer concentration fields (c-cields) for periodic structures. The unit
-cell parameter values that are stored in memory by the pscf_pc or pscf_pg
+cell parameter values that are stored in memory by the pscf_rpc or pscf_rpg
 program may be set to the values given in such a field file by executing
 the READ_W_BASIS and READ_W_RGRID command in a command file. Both of these
 commands cause the program to read in a set of w-fields, and also set a
@@ -181,14 +181,14 @@ about \ref prdc_unitcell_page "unit cells".
 
 \section user_param_domain_pc_basis_sec Symmetry-adapted bases
 
-When the groupName parameter appears in a parameter file used by pscf_pc
-or pscf_pg, the program will construct a symmetry-adapted Fourier basis
+When the groupName parameter appears in a parameter file used by pscf_rpc
+or pscf_rpg, the program will construct a symmetry-adapted Fourier basis
 appropriate to the specified space group. A symmetry-adapted Fourier basis
 is a set of periodic functions of position that are all eigenfunctions of
 the Laplacian, and are all invariant under all symmetry operations of an
 associated space group. Such a basis can be used to construct a Fourier
 series expansion of fields that are required to exhibit a specified space
-group symmetry. The type of basis used by pscf_pc and pscf_pg contains
+group symmetry. The type of basis used by pscf_rpc and pscf_rpg contains
 basis functions that are defined on the nodes of the computational mesh
 described by the "mesh" parameter, and provides a complete basis for
 periodic functions of the specified space-group symmetry that are defined

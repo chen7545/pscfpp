@@ -114,7 +114,7 @@ namespace Cpc {
       * Read multiple real value field in r-grid format.
       *
       * This function is designed to read a real-valued field file written 
-      * in the the r-grid file format used by the programs pscf_pc and 
+      * in the the r-grid file format used by the programs pscf_rpc and 
       * pscf_pg, but stores data for each field in a CField<D> container
       * designed for complex-valued fields. On return, each field value in
       * this container is a complex number with a zero imaginary part and

@@ -127,7 +127,7 @@ rather than \$(ROOT_DIR)/bld.  The config.mk file in the src directory
 is used only for in-source compilation, and so it declares that the
 src directory should be used as the build directory.
 
-The main executable files named pscf_1d, pscf_pc, and pscf_pg are
+The main executable files named pscf_1d, pscf_rpc, and pscf_rpg are
 created within the BIN_DIR.  Users can, if desired, change the location
 in which these files are created by using a text editor to change the
 value assigned to BIN_DIR within either or both of the config.mk files.
@@ -144,7 +144,7 @@ need to rerun the configure script to reset the value of this variable,
 and then rebuild the package. Recompilation is necessary if the PSCF
 root directory is moved because some executables contain hard-coded
 paths to data files that are located in within the PSCF directory tree.
-Specifically, the pscf_pc and pscf_pg executables access files in the
+Specifically, the pscf_rpc and pscf_rpg executables access files in the
 data subdirectory of the PSCF root directory, and the absolute path to
 this data directory is set by the configure script by modifying a C++
 header file named src/pscf/paths.h that is included by other C++ files.
@@ -160,7 +160,7 @@ Specifically:
     in execution speed.
 
   - Defining PSCF_CUDA enables compilation of code that uses an NVIDIA
-    GPU, and creation of the pscf_pg executable.
+    GPU, and creation of the pscf_rpg executable.
 
 The config.mk code contains two statements that can each be used to
 define one of these variables, in order to enable the associated feature,

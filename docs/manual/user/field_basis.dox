@@ -31,7 +31,7 @@ expansion.
 
 \section user_field_basis_fourier_sec Symmetry-Adapted Fourier Basis
 
-The symmetry-adapted Fourier basis used by the pscf_pc and pscf_pg
+The symmetry-adapted Fourier basis used by the pscf_rpc and pscf_rpg
 programs is a finite sequence of of real orthogonal basis functions,
 denoted here by
 \f[
@@ -254,8 +254,8 @@ This last basis function is somewhat special, as discussed below.
 
 The differences between the basis function with index \f$ n = N/2 = 20 \f$
 and those with \f$ 0 < n < N/2 \f$ are a consequences of the fact that
-that periodic functions are defined internally in the pscf_pc and
-pscf_pg programs only on the nodes of a regular grid, rather than at
+that periodic functions are defined internally in the pscf_rpc and
+pscf_rpg programs only on the nodes of a regular grid, rather than at
 arbitrary points in a continuum. The Fourier representation of each
 field is thus based on a discrete Fourier transform (DFT) with a finite
 number of waves rather than an infinite Fourier series.  The function
@@ -516,7 +516,7 @@ families of wavevectors are cancelled because they are vectors that
 belong to the reciprocal lattice of the declared Bravais lattice
 (e.g., the simple cubic lattice) that actually do not belong to the
 reciprocal lattice of the primitive body- or face-centered lattice.
-The code used by pscf_pc and pscf_pg programs to generate basis
+The code used by pscf_rpc and pscf_rpg programs to generate basis
 functions currently uses a conventional Bravais lattice with orthogonal
 basis vectors by default for these sorts of centered lattices, which
 leads to the appearance of cancelled stars (i.e, systematic
@@ -811,7 +811,7 @@ of \f$ \phi_{i}({\bf r}) \f$ and its complex conjugate).
 \section user_field_basis_order_sec Ordering of Basis Functions
 
 The order in which star functions or associated real basis functions
-are listed and assigned indices by a pscf_pc or pscf_pg program is
+are listed and assigned indices by a pscf_rpc or pscf_rpg program is
 chosen so as to give eigenvalues of the operator \f$ - \nabla^{2} \f$
 that were ordered in increasing (or at least non-decreasing) order
 when the basis was constructed. The eigenvalues of \f$ -\nabla^{2} \f$
@@ -837,12 +837,12 @@ indices and stored internally generally depends, however, upon the
 values of the unit cell parameters that were available when the
 basis was constructed.
 
-The pscf_pc and pscf_pg programs normally create a symmetry-adapted basis
+The pscf_rpc and pscf_rpg programs normally create a symmetry-adapted basis
 immediately after the first time the program reads a set of values for
 unit cell parameters from a file. This usually happens the first time
 the program executes a command that reads a chemical potential or
 concentration field from file. The header section of all of the field
-file formats used by pscf_pc and pscf_pg contain a complete description
+file formats used by pscf_rpc and pscf_rpg contain a complete description
 of the unit cell, including unit cell parameter values.  The space group
 name and mesh dimensions are given in the parameter file, which is read
 before the command file or any field files. The parameter file does not,
@@ -856,7 +856,7 @@ values, and remains unchanged during the rest of the program execution.
 This order in which the basis functions are assigned indices during
 construction of the basis determines the order in which rows
 associated with different basis functions are written to an output
-file when a pscf_pc or pscf_pg program writes any field to a file
+file when a pscf_rpc or pscf_rpg program writes any field to a file
 in basis format.  Values of unit cell parameters can be modified during
 execution of a SCFT program, after the basis is constructed, by iteration
 algorithms that adjust these parameters so as to minimize free energy.

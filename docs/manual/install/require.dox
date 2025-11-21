@@ -17,8 +17,8 @@ hardware.  Compilation is controlled by a system of unix makefiles.
 \section require_overview_section Overview
 
 PSCF currently contains code for two programs that are designed to run on
-a conventional CPU (pscf_1d and pscf_pg), and one that is designed to use
-an NVIDIA GPU (pscf_pg). We distinguish these in what follows by referring
+a conventional CPU (pscf_1d and pscf_rpg), and one that is designed to use
+an NVIDIA GPU (pscf_rpg). We distinguish these in what follows by referring
 to CPU programs and a GPU-enabled program.
 
 In order to compile just the two CPU programs in the PSCF package, the
@@ -40,10 +40,10 @@ in a Mac OS operating system in which
 \ref require_mac_commandtools_section "command line tools" have been
 installed.  The GNU scientific library is used by several programs
 within the package for linear algebra operations.  The FFTW fast Fourier
-transform library is used extensively by the pscf_pc programs for
+transform library is used extensively by the pscf_rpc programs for
 periodic microstructures.
 
-In order to compile the GPU-enabled pscf_pg program, the user's system
+In order to compile the GPU-enabled pscf_rpg program, the user's system
 must also have:
 
    - a CUDA-enabled NVIDIA graphics card
@@ -217,7 +217,7 @@ is described in more detail \ref install_configure_page "here".
 
 \section install_require_compiler_cuda CUDA compiler
 
-To compile the GPU-accelerated pscf_pg program, the system must have
+To compile the GPU-accelerated pscf_rpg program, the system must have
 an appropriate NVIDIA GPU and a CUDA development toolkit installed. The
 NVIDIA nvcc C++/CUDA compiler is designed to integrate with the GNU g++
 compiler, so we recommend using the GNU compiler to compile C++ source

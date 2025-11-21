@@ -7,7 +7,7 @@
 This page contains instructions for installing or loading the Gnu
 Scientific Library (GSL) and FFTW packages in several common unix
 environments.  The GSL is required by all of the PSCF programs, while
-FFTW is required only by pscf_pc.
+FFTW is required only by pscf_rpc.
 
 Instructions for installing the doxygen documentation generator utility
 are also given below.  Installing doxygen is not necessary to compile

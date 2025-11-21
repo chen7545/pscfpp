@@ -12,9 +12,9 @@ theoretic calculation. These are:
   - Partial Saddle-Point Field Theoretic Simulation (PS-FTS)
 
 SCFT calculations can be performed with any of the three PSCF programs
-(pscf_1d, pscf_pc and pscf_pg).  PS-FTS calculations that use either
+(pscf_1d, pscf_rpc and pscf_rpg).  PS-FTS calculations that use either
 Brownian dynamics or Monte-Carlo sampling techniques can be performed
-with the pscf_pc and pscf_pg programs for periodic systems, but not with
+with the pscf_rpc and pscf_rpg programs for periodic systems, but not with
 the pscf_1d program.
 
 All three PSCF programs can also perform SCFT parameter sweeps.

@@ -1,13 +1,13 @@
 namespace Pscf {
 namespace Rpc {
 
-/*! \page scft_param_pc_page Parameter File - pscf_pc and pscf_pg
+/*! \page scft_param_pc_page Parameter File - pscf_rpc and pscf_rpg
 
 \ref scft_param_1d_page  (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref user_field_page  (Next)
 <BR>
 
-The pscf_pc and pscf_pg programs for periodic systems use nearly identical
+The pscf_rpc and pscf_rpg programs for periodic systems use nearly identical
 parameter file formats, and so are discussed together here. The description
 given here only discusses parameter file elements that are relevant to SCFT
 calculations. A complete description of the parameter file format for either
@@ -16,8 +16,8 @@ given \ref rpc_System_page "here".
 
 \section scft_param_pc_example_sec Example
 
-The example show below is a typical parameter file for using either pscf_pc
-or pscf_pg to perform a single SCFT calculation for a 3D structure of a
+The example show below is a typical parameter file for using either pscf_rpc
+or pscf_rpg to perform a single SCFT calculation for a 3D structure of a
 diblock copolymer melt using a known space group.
 
 \code
@@ -68,7 +68,7 @@ sweep would also contain an additional "Sweep" block.
 
 \section scft_param_pc_system_sec File format
 
-The elements of a parameter file used by pscf_pc or pscf_pg to perform a
+The elements of a parameter file used by pscf_rpc or pscf_rpg to perform a
 SCFT or an SCFT parameter sweep are shown in skeleton from below:
 \code
 System{
@@ -96,7 +96,7 @@ The optional polymerModel is a string parameter with allowed values of
 "thread" and "bead". These values specify global use of either the
 continuous thread ("thread") or discrete bead ("bead") model, respectively
 The polymerModel parameter is the first entry in the System block for a
-pscf_pc or pscf_pg parameter file, which must appear before the Mixture
+pscf_rpc or pscf_rpg parameter file, which must appear before the Mixture
 block. If the polymerModel parameter is omitted, the thread model is
 used by default.
 
@@ -126,22 +126,22 @@ example.
 
 \section scft_param_pc_iterator_sec Iterator
 
-The pscf_pc and pscf_pg programs each provide two SCFT iterator
+The pscf_rpc and pscf_rpg programs each provide two SCFT iterator
 algorithms named \ref rpc_AmIteratorBasis_page "AmIteratorBasis" and
 \ref rpc_AmIteratorGrid_page "AmIteratorGrid", as discussed on a
 \ref scft_iterator_periodic_sec "previous page".
 
-AmIteratorBasis is the default iterator algorithm for both pscf_pc and
-pscf_pg.  The above example uses the generic "Iterator" block label
+AmIteratorBasis is the default iterator algorithm for both pscf_rpc and
+pscf_rpg.  The above example uses the generic "Iterator" block label
 to invoke this algorithm, which is an Anderson mixing algorithm that
 preserves the space-group symmetry specified in the Domain block.
 
 The Iterator block of the parameter file is formally optional in the
-parameter file format for pscf_pc and pscf_pg. Either program can thus
+parameter file format for pscf_rpc and pscf_rpg. Either program can thus
 successfully finish reading the parameter file if this block is absent.
 A valid Iterator block must be present, however, to actually perform a
 SCFT calculation.  The Iterator block is treated as optional element of
-pscf_pc and pscf_pg parameter files because both of these programs can
+pscf_rpc and pscf_rpg parameter files because both of these programs can
 also perform PS-FTS calculations, as well as SCFT, and an Iterator is
 not needed for such simulations.
 
@@ -149,8 +149,8 @@ not needed for such simulations.
 
 The Sweep block is optional block that is used to program a SCFT
 parameter sweep. It has been programmed as a selectable block, but there
-is currently only one available sweep algorithm for either pscf_pc or
-pscf_pg, which is a general linear sweep algorithm that is implemented
+is currently only one available sweep algorithm for either pscf_rpc or
+pscf_rpg, which is a general linear sweep algorithm that is implemented
 by a class named LinearSweep. Because this is also the default sweep
 algorithm, it may be enabled by including a Sweep block that starts with
 either with the generic label "Sweep" or the specific label "LinearSweep".

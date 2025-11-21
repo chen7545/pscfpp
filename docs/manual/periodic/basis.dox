@@ -103,7 +103,7 @@ will fail if the parameter file contains a list of mesh dimensions and a
 space group identifier that are incompatible, because the mesh would not
 be invariant under all operations of the chosen space group.
 If the mesh dimensions and space group are found to be incompatible, the
-pscf_pc and pscf_pg programs will write a message to the log file that
+pscf_rpc and pscf_rpg programs will write a message to the log file that
 explains the nature of the error, and then halt execution.
 
 \section prdc_basis_star_sec Wavevector stars

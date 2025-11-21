@@ -18,8 +18,8 @@ Compilation and installation of PSCF involves the following operations:
   - Creating a static library file in each namespace-level subdirectory
     of the src directory
 
-  - Creating the executable files (pscf_1d, pscf_pc, and optionally
-    pscf_pg) and installing them in the bin directory by default
+  - Creating the executable files (pscf_1d, pscf_rpc, and optionally
+    pscf_rpg) and installing them in the bin directory by default
 
 Various types of file involved in this process are described below.
 
@@ -102,8 +102,8 @@ rpc, and rpg) each have a source file that contains the main program
 function for one of the three PSCF programs (i.e., the C function named
 "main"). The base name of this main program file is the same as the name
 of the executable file that is created from it. For example, the main
-program source file in directory src/rpc is named pscf_pc.cpp, and
-this is used to create the executable file named pscf_pc.
+program source file in directory src/rpc is named pscf_rpc.cpp, and
+this is used to create the executable file named pscf_rpc.
 
 When the code in one of the three program-level directories of the build
 directory is compiled, the build system:
@@ -122,10 +122,10 @@ directory.
 In each program-level subdirectory of src, the makefile rule that
 creates the executable file links to library files located in other
 namespace-level directories on which the relevant program-level depends.
-Thus, for example, the rule to create the pscf_pc executable (which
+Thus, for example, the rule to create the pscf_rpc executable (which
 is defined in the file src/rpc/makefile) links the object file
-src/rpc/pscf_pc.o that is created by compiling the main program file
-src/rpc/pscf_pc.cpp is linked to library files src/util/libutil.a,
+src/rpc/pscf_rpc.o that is created by compiling the main program file
+src/rpc/pscf_rpc.cpp is linked to library files src/util/libutil.a,
 src/pscf/libpscf.a, src/prdc/libprdc.a, and src/rpc/librpc.a. Each
 of these library files is also listed as a prerequisite to the rule
 that creates the executable file, which force the build system to

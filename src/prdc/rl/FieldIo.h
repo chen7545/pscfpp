@@ -1121,7 +1121,7 @@ namespace Rl {
       * of the values of coordinates associated with the added dimensions.
       * For example, when invoked with D=1, it can transform a lamellar
       * field computed with D=1 to a lamellar field defined on a 3D grid
-      * (d=3), written in a format that can be read by pscf_pc when
+      * (d=3), written in a format that can be read by pscf_rpc when
       * invoked with D=3.
       *
       * \param out  output stream (i.e., output file)

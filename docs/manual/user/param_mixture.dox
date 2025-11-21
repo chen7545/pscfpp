@@ -59,11 +59,11 @@ shown \ref user_param_example_page "previously" :
 \section user_param_mixture_format_sec Format
 
 All three PSCF programs use very similar format for the Mixture block. The
-pscf_1d and pscf_pc programs use identical formats for this block, which
+pscf_1d and pscf_rpc programs use identical formats for this block, which
 was discussed on the \ref user_param_format_example2_sec "previous page" .
-The format used by the pscf_pg program accepts one additional optional
+The format used by the pscf_rpg program accepts one additional optional
 parameter named useBatchedFFT the end of the block. The format of the
-Mixture block used by pscf_pg is shown below
+Mixture block used by pscf_rpg is shown below
 \code
 Mixture{
   nMonomer   int
@@ -76,7 +76,7 @@ Mixture{
     ...
   vMonomer*  real (1.0 by default)
   ds         real (only allowed for thread model)
-  useBatchedFFT*  bool (only allowed for pscf_pg, 1 by default)
+  useBatchedFFT*  bool (only allowed for pscf_rpg, 1 by default)
 }
 \endcode
 The asterisks after nSolvent, Solvent, vMonomer and useFFTBatched labels
@@ -143,10 +143,10 @@ table:
   </tr>
   <tr>
      <td> useBatchedFFT* </td>
-     <td> For pscf_pg, this boolean flag controls a purely
+     <td> For pscf_rpg, this boolean flag controls a purely
           computational option that is discussed on a
           \ref user_param_mixture_batchedFFT_page "separate page".
-          This parameter may only appear in pscf_pg parameter files
+          This parameter may only appear in pscf_rpg parameter files
           (optional, 1 or true by default)
           </td>
   </tr>
@@ -190,7 +190,7 @@ Comments:
   - The parameter ds is required when the thread model is being used,
     but may not appear when the bead model is being used. The pscf_1d
     program can only use the thread model, and so always requires a
-    "ds" parameter. For the pscf_pc and pscf_pg programs, the choice of
+    "ds" parameter. For the pscf_rpc and pscf_rpg programs, the choice of
     bead or thread model is determined by the value of the polymerModel
     parameter, which is the first (optional) element of the main System
     block, which appears before the Mixture block.
@@ -204,7 +204,7 @@ Comments:
     which is not necessarily equal to the actual contour length step size
     used for any particular block.
 
-  - The format for the Mixture block used by pscf_pg has one additional
+  - The format for the Mixture block used by pscf_rpg has one additional
     optional algorithm parameter named usedBatchedFFT, which appears at
     the end of the Mixture block format used for this program. This is
     a purely computational parameter whose meaning is discussed on a
@@ -220,9 +220,9 @@ The source code for PCSF is defined within a C++ namespace named Pscf.
 This top-level namespace contains several enclosed namespaces named
 Prdc, R1d, Rpc, and Rpg. Namespace Pscf::Prdc contains code relevant
 to problems involving periodic boundary conditions, which is used to
-construct both pscf_pc and pscf_pg.  The enclosed namespaces named R1d,
+construct both pscf_rpc and pscf_rpg.  The enclosed namespaces named R1d,
 Rpc, and each contain code that is only used by one executable program
-(e.g., pscf_1d, pscf_pc or pscf_pg, respectively).
+(e.g., pscf_1d, pscf_rpc or pscf_rpg, respectively).
 
 We refer to the enclosed namespaces R1d, Rpc, and Rpg throughout this
 documentation as program-level namespaces, because each contains files
@@ -237,7 +237,7 @@ Each program-level namespace contains a class or class template named
 Mixture. The R1d namespace contains a class named Mixture. The Rpc and
 Rpg namespaces each contain a class template Mixture<int D>, for which
 the integer dimensionality of space D is a template parameter.  The
-Mixture object used by the pscf_pc program to treat a 2D periodic
+Mixture object used by the pscf_rpc program to treat a 2D periodic
 structure is thus a instance of class Pscf::Rpc::Mixture<2>, for which
 the dimensionality of space is specified by the template parameter D=2.
 All of the Mixture classes and class templates defined in program-level

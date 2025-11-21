@@ -40,7 +40,7 @@ A Thermo object may have attributes named 'polymers', 'solvents',
 block contains the corresponding elements. Each of these attributes,
 when present, is a Python list, with elements that can be accessed
 using the square bracket syntax.  For example, if thermo contains the
-contents of the thermo block produced by a pscf_pc or pscf_pg
+contents of the thermo block produced by a pscf_rpc or pscf_rpg
 simulation of a periodic system, the quantity
 \code
    thermo.cellParams[0]

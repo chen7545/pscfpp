@@ -10,7 +10,7 @@ commands available for each of the PSCF programs:
 
 <ol>
  <li> \subpage scft_command_1d_page "One-dimensional systems (pscf_1d) </li>
- <li> \subpage scft_command_pc_page "Periodic systems (pscf_pc and pscf_pg) </li>
+ <li> \subpage scft_command_pc_page "Periodic systems (pscf_rpc and pscf_rpg) </li>
 </ol>
 
  <BR>

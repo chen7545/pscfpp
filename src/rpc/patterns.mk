@@ -11,7 +11,7 @@
 # Variables $(rpc_LIB) etc. are defined in namespace config.mk files
 PSCF_LIBS= $(rpc_LIB) $(prdc_LIB) $(pscf_LIB) $(util_LIB) 
 
-# All libraries needed by main program pscf_pc (including external libs)
+# All libraries needed by main program pscf_rpc (including external libs)
 LIBS=$(PSCF_LIBS)
 
 # Add header include and library paths to Gnu scientific library

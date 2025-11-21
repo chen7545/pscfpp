@@ -4,7 +4,7 @@
  \ref prdc_fourier_page   (Next)
 <BR>
 
-The pscf_pc and pscf_pg programs can input and output field files in a
+The pscf_rpc and pscf_rpg programs can input and output field files in a
 format that constrains the fields to be symmetric under all symmetry
 operations of a specified crystallographic space group. Both of these
 programs can also perform SCFT calculations that search for a solution

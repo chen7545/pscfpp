@@ -76,7 +76,7 @@ System{
   Sweep#*{ ... }
 }
 \endcode
-The overall structure is similar to that of the example pscf_pc parameter
+The overall structure is similar to that of the example pscf_rpc parameter
 file shown \ref user_param_example_page "previously" as an example, with
 one important difference: The System block of a pscf_1d parameter file does
 not contain a polymerModel parameter because the pscf_1d program does not
@@ -99,7 +99,7 @@ that domain. The parameter file syntax is described in detail here
 \section scft_param_1d_iterator_sec Iterators
 
 The Iterator block provides data required by the iterator used to solve
-the nonlinear self-consistent field (SCF) equations.  The pscf_pc program
+the nonlinear self-consistent field (SCF) equations.  The pscf_rpc program
 allows the user to choose from among three SCFT iteration algorithms, as
 has been discussed \ref scft_iterator_page "here".
 

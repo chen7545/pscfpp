@@ -1,13 +1,13 @@
 /*! 
 \page rpc_LrCompressor_page LrCompressor
 
-The LrCompressor classes used by both the pscf_pc and pscf_pg programs 
+The LrCompressor classes used by both the pscf_rpc and pscf_rpg programs 
 implements a linear-response Anderson mixing (LRAM) algorithm as described
 in this publication.
 
 Two closely analogous classes named Pscf::Rpc::LrCompressor and 
-Pscf::Rpg::LrCompressor implement this algorithm for the pscf_pc CPU and
-program and the pscf_pg GPU-accelerated program, respectively. These two 
+Pscf::Rpg::LrCompressor implement this algorithm for the pscf_rpc CPU and
+program and the pscf_rpg GPU-accelerated program, respectively. These two 
 classes implement the same step algorithm and use the same parameter file
 format, which are documented below.
 

@@ -16,7 +16,7 @@ including the sections that specify choices of algorithms.
 
 \section psfts_algorithm_types_sec Types of Algorithm
 
-The pscf_pc and pscf_pg programs can perform PS-FTS calculations
+The pscf_rpc and pscf_rpg programs can perform PS-FTS calculations
 using either a Brownian dynamics (BD) or Monte Carlo (MC) method to
 stochastically sample a fluctuating field or fields.  BD and MC sampling
 algorithms for PS-FTS have a similar structure.  A single BD step or MC

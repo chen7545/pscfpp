@@ -6,7 +6,7 @@
 <BR>
 
 The PSCF package currently contains source code for three executable
-programs named pscf_1d, pscf_pc and pscf_pg. The purpose and
+programs named pscf_1d, pscf_rpc and pscf_rpg. The purpose and
 capabilties of each are summarized below;
 
 <b>pscf_1d</b>:
@@ -19,20 +19,20 @@ involving flat or curved interfaces, and for simulating spherical or
 cylindrical micelles.  The pscf_1d program cannot perform stochastic field
 theoretic simulations.
 
-<b>pscf_pc</b>:
+<b>pscf_rpc</b>:
 
-The pscf_pc program can perform both SCFT and PS-FTS calculations on
+The pscf_rpc program can perform both SCFT and PS-FTS calculations on
 systems with periodic boundary conditions in 1, 2 or 3 dimensions, using
 conventional CPU hardware.  This program provides capabilities for SCFT
 analogous to those of the older Fortran PSCF program.  The suffix "pc"
 stands for "periodic CPU".
 
-<b>pscf_pg</b>:
+<b>pscf_rpg</b>:
 
-The pscf_pg program is a GPU-accelerated sister of pscf_pc that can also
+The pscf_rpg program is a GPU-accelerated sister of pscf_rpc that can also
 perform SCFT and PS-FTS calculations on systems with periodic boundary
-conditions.  The pscf_pc and pscf_pg programs provide identical features
-and user interfaces, but pscf_pg provide higher performance for problems
+conditions.  The pscf_rpc and pscf_rpg programs provide identical features
+and user interfaces, but pscf_rpg provide higher performance for problems
 involving a large number of grid points per unit cell.  The suffix "pg"
 stands for "periodic GPU".
 

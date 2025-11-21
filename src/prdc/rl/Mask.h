@@ -68,7 +68,7 @@ namespace Rl {
    * <b> Subclasses </b>: Partial specializations of the template
    * Mask \<D, RFT, FIT\> are used as base classes for the class 
    * templates Rpc::Mask \<D \> and Rpg::Mask \<D\> that are used by
-   * pscf_pc and pscf_pg, respectively.
+   * pscf_rpc and pscf_pg, respectively.
    *
    * <b> Signal </b>: A Mask owns an instance of class
    * Util::Signal<void> that notifies all observers whenever the field

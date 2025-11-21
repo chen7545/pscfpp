@@ -22,11 +22,11 @@ described on a \ref psfts_command_page "separate page".
 
 \section user_command_example_sec Example
 
-Suppose that pscf_pc is used to perform an SCFT calculation, and is
+Suppose that pscf_rpc is used to perform an SCFT calculation, and is
 invoked from a directory that contains a parameter file named "param"
 and a command file named "command", using the command
 \code
-   pscf_pc -e -p param -c command > log
+   pscf_rpc -e -p param -c command > log
 \endcode
 Also suppose that the current working directory has subdirectories named
 "in" and "out", such that the "in" directory contains an initial w-field
@@ -42,7 +42,7 @@ WRITE_W_BASIS   out/w.bf
 WRITE_C_RGRID   out/c.rf
 FINISH
 \endcode
-This command file could also be used by the GPU accelerated pscf_pg
+This command file could also be used by the GPU accelerated pscf_rpg
 program, which accepts the same set of commands and input file formats
 as scf_pc.  This command file instructs the program to perform the
 following actions:
@@ -89,11 +89,11 @@ and "-o" \ref user_usage_page "command line options" to automatically
 add prefixes to paths for input and output files.
 
 <b> Example (revisited) </b>: The command file in the above example was
-designed for a case in which pscf_pc or pscf_pg is invoked without using
+designed for a case in which pscf_rpc or pscf_rpg is invoked without using
 the -i or -o command line options. Suppose that the program had instead
 been invoked using these options to specify prefixes of "in/" and "out/",
 e.g., as \code
- > pscf_pc -d 3 -p param -c command -i in/ -o out/ -e > log
+ > pscf_rpc -d 3 -p param -c command -i in/ -o out/ -e > log
 \endcode
 Note that, if a prefix is used to specify a subdirectory path for
 input or output files, as in this example, then that prefix string must

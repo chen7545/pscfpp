@@ -6,7 +6,7 @@ namespace Rpc {
 
 This analyzer periodically writes the w-field configuration to
 frames of a trajectory file.  The resulting file can be read and 
-postprocessed using the ANALYZE command of pscf_pc or pscf_pg.
+postprocessed using the ANALYZE command of pscf_rpc or pscf_rpg.
 
 \see TrajectoryWriter (class API)
 

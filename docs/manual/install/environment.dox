@@ -53,7 +53,7 @@ Rationale:
     directory must thus be added to the user's PATH variable in order
     to allow the unix shell to find and execute these files when one
     of them is invoked by entering the base file name (such as pscf_1d
-    or pscf_pc) as a command.
+    or pscf_rpc) as a command.
 
   - The PSCF lib/python directory contains several python modules that
     are used by the PSCF build system to process information about

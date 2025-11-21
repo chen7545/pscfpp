@@ -12,7 +12,7 @@ for a periodic structure.
 
 The text shown below is a complete parameter file for an SCFT calculation
 of a 3D periodic structure that could be used as an input file for either
-the pscf_pc or pscf_pg program:
+the pscf_rpc or pscf_rpg program:
 
 \code
 System{
@@ -111,7 +111,7 @@ This parameter is input as a string with only two possible valid values,
 "thread" or "bead". These values enable use of the continuous thread or
 discrete bead model for polymer conformations, respectively.  The
 polymerModel parameter is an optional element in parameter files for
-pscf_pc and pscf_pg. If this parameter entry is omitted, the thread
+pscf_rpc and pscf_rpg. If this parameter entry is omitted, the thread
 model is used by default.
 
 The remainder of the System block in this example contains a sequence of
@@ -379,7 +379,7 @@ example.
 <b> Domain block </b>:
 
 This Domain block in this example has the format required by either
-pscf_pc and pscf_pg to simulate a 3D cubic phase with a specified
+pscf_rpc and pscf_rpg to simulate a 3D cubic phase with a specified
 space group symmetry.
 
 The "mesh" parameter is a vector-valued parameter that specifies the
@@ -425,7 +425,7 @@ line of an Iterator block can either be the generic label "Iterator",
 as in this example, which is used to indicate that the user would like
 to use the default choice for the iterator algorithm, or it can be the
 name of the class that implements a specific algorithm.  The default
-iterator algorithm for the pscf_pc program is an Anderson-mixing
+iterator algorithm for the pscf_rpc program is an Anderson-mixing
 algorithm that is implemented by a class named AmIterator. This default
 iterator algorithm can thus be invoked either using the generic label
 "Iterator", as in the above example, or, more explicitly, by using the

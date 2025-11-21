@@ -269,7 +269,7 @@ Initial conditions for \f$ q_{1} \f$ and \f$ q_{2} \f$ are analogous.
 
 <em> Boundary Conditions </em>:
 
-In the pscf_pc and pscf_pg programs, the MDE for propagators in a
+In the pscf_rpc and pscf_rpg programs, the MDE for propagators in a
 periodic structure is solved within a single unit cell, subject to
 periodic boundary conditions.
 
@@ -772,7 +772,7 @@ solution for \f$ \xi({\bf r}) \f$.
 
 Different conventions for this additional constraint on
 \f$ \xi({\bf r}) \f$ are used in different PSCF programs.  The
-implementations of the pscf_pc and pscf_pg programs for periodic
+implementations of the pscf_rpc and pscf_rpg programs for periodic
 microstructures obtain equations with a unique solution by requiring, as
 a matter of convention, that the spatial average of \f$ \xi(\textbf{r}) \f$
 must vanish in canonical ensemble. The pscf_1d code for one-dimensional
@@ -815,7 +815,7 @@ an incompressible liquid in the form implemented in PSCF, for calculations in
 a fixed spatial domain.  We simplify the discussion by restricting ourselves
 here to calculation that are carried out in a fixed one-dimensional or periodic
 spatial domain. Extension to SCFT calculations in a periodic unit cell with
-flexible parameters, as performed by pscf_pc or pscf_pg programs, would
+flexible parameters, as performed by pscf_rpc or pscf_rpg programs, would
 require an additional set of working equations to impose a requirement that
 the free energy density be minimized with respect to  variation of the unit
 cell parameters.  The working equations for a PSCF SCFT calculation in a fixed

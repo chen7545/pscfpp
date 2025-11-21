@@ -6,7 +6,7 @@
 
 The input files required to run a field theoretic simulation (FTS)
 are closely analogous to those required an SCFT calculation for a
-periodic system. The pscf_pc or pscf_pg program must be invoked
+periodic system. The pscf_rpc or pscf_rpg program must be invoked
 with command line parameters that specify the names of a parameter
 file and a command file.  The main difference in the command file
 is simply that a SIMULATE command is used to run a stochastic
@@ -15,12 +15,12 @@ SCFT calculation or an SCFT parameter sweep.
 
 \section psfts_command_example_sec FTS Example
 
-For example, suppose that we want to use pscf_pg to run a GPU-accelerated
+For example, suppose that we want to use pscf_rpg to run a GPU-accelerated
 BD simulation of 30,000 BD steps in a 3D domain, using a parameter file
 named param and a command file named command. To do so, we might invoke
-the pscf_pg executable as
+the pscf_rpg executable as
 \code
-   pscf_pg -e -d 3 -p param -c command > log
+   pscf_rpg -e -d 3 -p param -c command > log
 \endcode
 We assume that the parameter file "param" contains a BdSimulator block
 that specifies appropriate choices of algorithms and parameters for a
@@ -74,15 +74,15 @@ an McSimulation block for an MC simulation.
 \section psfts_command_commands_sec Commands for FTS
 
 The commands that can be used for SCFT calculations performed with
-pscf_pc have already been listed here \ref scft_command_pc_page "here".
-Most of these commands can also be used in a command file for pscf_pg.
+pscf_rpc have already been listed here \ref scft_command_pc_page "here".
+Most of these commands can also be used in a command file for pscf_rpg.
 Specifically, commands for reading and writing field files such as
 READ_W_RGRID and WRITE_W_RGRID can be used in either context, as can
 the timer commands and many of the utility commands for manipulating
 field files.
 
 The following table lists a set of commands that are accepted by either
-pscf_pc or and pscf_pg that are only meaningful in the context of an
+pscf_rpc or and pscf_rpg that are only meaningful in the context of an
 FTS simulation, and that were thus not listed among the commands that
 can be used for SCFT calculations.
 

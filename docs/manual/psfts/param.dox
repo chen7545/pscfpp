@@ -81,7 +81,7 @@ System{
   }
 }
 \endcode
-The above parameter file could be used by either the pscf_pc or pscf_pg
+The above parameter file could be used by either the pscf_rpc or pscf_rpg
 program, which provide identical capabilities and identical user
 interfaces for PS-FTS calculations.
 
@@ -98,7 +98,7 @@ but slightly different formats, which must differ somewhat because
 they contain computational parameters for different types of sampling
 algorithms.
 
-The format of the main System block of any pscf_pc or pscf_pg parameter
+The format of the main System block of any pscf_rpc or pscf_rpg parameter
 file, including all allowed elements, is shown below in skeleton form:
 \code
 System{
@@ -297,7 +297,7 @@ See also: \ref rpc_BdSimulator_page "BdSimulator parameter file format"
 
 <b> BD Step Algorithms: </b>
 
-The BD step algorithms that are available for use with pscf_pc or pscf_pg
+The BD step algorithms that are available for use with pscf_rpc or pscf_rpg
 are listed below, with each indicated by the name that would be used as
 the label of the BdStep parameter file block. Each such label is a
 clickable link to a file containing documentation of the algorithm and
@@ -426,8 +426,8 @@ exchange field at each grid point.
 See also: \ref rpc_McSimulator_page "McSimulator parameter file format"
 
 <b> MC Move Algorithms: </b>
-The MC move algorithms that are available for use with pscf_pc or
-pscf_pg are listed below, labelled by the name that is used in the first
+The MC move algorithms that are available for use with pscf_rpc or
+pscf_rpg are listed below, labelled by the name that is used in the first
 line of a corresponding parameter file block. Further information about
 each MC move can be obtained by clicking on the associated link.
 <ul>

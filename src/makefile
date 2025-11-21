@@ -43,8 +43,8 @@ pscf_1d:
 	cd pscf; $(MAKE) all
 	cd r1d; $(MAKE) all
 
-# Build pscf_pc CPU code for real periodic fields (install in BIN_DIR)
-pscf_pc: 
+# Build pscf_rpc CPU code for real periodic fields (install in BIN_DIR)
+pscf_rpc: 
 	cd util; $(MAKE) all
 	cd pscf; $(MAKE) all
 	cd prdc; $(MAKE) all
@@ -58,7 +58,7 @@ pscf_cpc:
 	cd cpc; $(MAKE) all
 
 ifdef PSCF_CUDA
-# Build pscf_pc GPU code for real periodic fields (install in BIN_DIR)
+# Build pscf_rpc GPU code for real periodic fields (install in BIN_DIR)
 pscf_pg:
 	cd util; $(MAKE) all
 	cd pscf; $(MAKE) all

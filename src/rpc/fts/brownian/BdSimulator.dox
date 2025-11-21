@@ -3,8 +3,8 @@ namespace Rpc{
 /*! 
 \page rpc_BdSimulator_page BdSimulator
 
-An instance of the class BdSimulator<D> in namespace Pscf::Rpc (for pscf_pc)
-or Pscf::Rpg (for pscf_pg) provides a set of data structures and algorithms 
+An instance of the class BdSimulator<D> in namespace Pscf::Rpc (for pscf_rpc)
+or Pscf::Rpg (for pscf_rpg) provides a set of data structures and algorithms 
 that are needed to enable partial saddle-point field theoretic simulation 
 (PS-FTS) using Brownian dynamic sampling, but that are not needed for 
 self-consistent field (SCFT) calculation. The associated parameter file 

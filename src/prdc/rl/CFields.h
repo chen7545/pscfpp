@@ -59,7 +59,7 @@ namespace Rl {
    *  - Subclass Prdc::CFields \<D\> is derived from a partial
    *    specialization of CFields with template parameters
    *    RFT = Cpu::RField\<D\> and FIT = Prdc::FieldIo\<D\> , and is
-   *    used in the pscf_pc CPU program.
+   *    used in the pscf_rpc CPU program.
    *
    *  - Subclass Rpg::CFields \<D\> is derived from a partial
    *    specialization of CFields with template parameters

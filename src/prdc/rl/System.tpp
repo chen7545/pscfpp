@@ -381,7 +381,7 @@ namespace Rl {
       // Check that the polymer model was not modified after initialization
       UTIL_CHECK(PolymerModel::nSet() == nSetPolymerModel);
 
-      // Note: The main pscf_pc or pscf_pg program can irreversibly lock the
+      // Note: The main pscf_rpc or pscf_pg program can irreversibly lock the
       // global polymer model after reading the parameter file, to also prohibit 
       // later changes. The model is not locked here to allow repeated calls to
       // this function during unit testing.

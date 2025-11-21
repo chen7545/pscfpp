@@ -4,8 +4,8 @@
 \ref user_param_domain_page   (Next)
 <BR>
 
-The format of the Mixture block in parameter files used by pscf_pg
-differs from that of pscf_pc and pscf_1d in that the format for pscf_pg
+The format of the Mixture block in parameter files used by pscf_rpg
+differs from that of pscf_rpc and pscf_1d in that the format for pscf_rpg
 allows an additional optional boolean parameter named "useBatchedFFT".
 This extra parameter appears at the end of the Mixture block, immediately
 after `ds`, and is equal to 1 (or true) by default.  The purpose of this
@@ -17,7 +17,7 @@ backward propagator of every polymer block at every monomer or step
 along the block contour. This stress calculation is performed after
 solution of the modified diffusion equation for all blocks and
 directions, and often requires several hundred additional FFTs that
-are not needed for other purposes.  By default, pscf_pg performs
+are not needed for other purposes.  By default, pscf_rpg performs
 these FFTs in parallel using a "batched" FFT algorithm provided by
 cuFFT, which performs parallel FFTs in a manner that maximizes GPU
 occupancy. Use of this option can signficantly accelerate stress

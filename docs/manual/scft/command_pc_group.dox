@@ -1,9 +1,9 @@
-/*! \page scft_command_pc_group_page Command for pscf_pc: WRITE_STARS
+/*! \page scft_command_pc_group_page Command for pscf_rpc: WRITE_STARS
 \ref scft_command_pc_page  (Up/Prev) &nbsp; &nbsp; &nbsp; &nbsp;
 \ref scft_thermo_page  (Next)
 <BR>
 
-THE WRITE_GROUP command accepted by pscf_pc and pscf_pg programs writes
+THE WRITE_GROUP command accepted by pscf_rpc and pscf_rpg programs writes
 a file containing a list of all the symmetry operations of the current
 space group. A discussion of symmetry operations and their representation
 is given as an \ref prdc_symmetry_page "appendix". A shorter overview is

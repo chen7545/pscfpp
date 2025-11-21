@@ -127,7 +127,7 @@ These six namespace-level subdirectories are listed below:
 <tr>
   <td> prdc </td>
   <td> Pscf::Prdc </td>
-  <td> Code for periodic structures, used by pscf_pc and pscf_pg programs </td>
+  <td> Code for periodic structures, used by pscf_rpc and pscf_rpg programs </td>
 </tr>
 <tr>
   <td> r1d </td>
@@ -137,12 +137,12 @@ These six namespace-level subdirectories are listed below:
 <tr>
   <td> rpc </td>
   <td> Pscf::Rpc </td>
-  <td> Code used only by the pscf_pc CPU program for periodic structures </td>
+  <td> Code used only by the pscf_rpc CPU program for periodic structures </td>
 </tr>
 <tr>
   <td> rpg </td>
   <td> Pscf::Rpg </td>
-  <td> Code used only by the pscf_pg GPU program for periodic structures </td>
+  <td> Code used only by the pscf_rpg GPU program for periodic structures </td>
 </tr>
 </table>
 The src/pscf directory contains files that contain code for class and
@@ -165,7 +165,7 @@ within one associated executable program.  These three namespaces and
 corresponding directories are referred to hereafter as program-level
 namespaces and program-level directories, respectively. Subdirectory r1d
 contains code that is only used by pscf_1d, rpc contains code that is
-only used by pscf_pc, and rpg contains code that is only used by pscf_pg.
+only used by pscf_rpc, and rpg contains code that is only used by pscf_rpg.
 By convention, code within in one program-level PSCF namespace may not
 use entities such classes or functions that are defined in any other
 program-level namespace.
@@ -224,7 +224,7 @@ Note that every directory other than util depends on util, and every
 directory other than util and pscf depends on both util and pscf. These
 two directories thus contain code that is available for use through the
 PSCF source code. The prdc directory contains code that is only used in
-the pscf_pc and pscf_pg programs for systems with periodic boundary
+the pscf_rpc and pscf_rpg programs for systems with periodic boundary
 conditions, and so is listed as a dependency of the rpc and rpg
 directories. None of the three program-level directories (r1d, rpc, and
 rpg) depends on any other program-level directories

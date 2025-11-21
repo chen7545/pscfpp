@@ -13,7 +13,7 @@ Individual programs or groups of programs may be compiled by invoking the
 \code
 make target
 \endcode
-where "target" represents a target name such as "all" or "pscf_pc".
+where "target" represents a target name such as "all" or "pscf_rpc".
 The command "make" with no target is equivalent to "make all".
 
 The make utility may be invoked from the PSCF root directory (named pscfpp/
@@ -55,8 +55,8 @@ make all
 The behavior of this command depends on whether CUDA compilation has
 been enabled. If CUDA compilation is disabled (which is the default
 behavior), then the "make all" command only compiles the CPU programs
-pscf_1d and pscf_pc. If CUDA compilation has been enabled, this
-command also compiles the GPU-enabled pscf_pg program.
+pscf_1d and pscf_rpc. If CUDA compilation has been enabled, this
+command also compiles the GPU-enabled pscf_rpg program.
 
 CUDA compilation can be enabled or disabled by using the -c option of
 the setopts script, e.g., by entering "./setopts -c1" to enable CUDA
@@ -64,7 +64,7 @@ compilation or "./setopts -c0" to disable CUDA, , as discussed in more
 detail \ref install_setopts_page "here".  When CUDA compilation is
 disabled, "make all" is equivalent to "make all-cpu". When CUDA
 compilation is enabled, "make all" equivalent to calling "make all-cpu"
-followed by "make pscf_pg".
+followed by "make pscf_rpg".
 
 <h2> pscf_1d: </h2>
 
@@ -95,10 +95,10 @@ command.  The build system will detect if you have changed any of the
 relevant configuration files, and will recompile any file that might
 be effected by such changes.
 
-<h2> pscf_pc: </h2>
-To compile only the pscf_pc CPU program for periodic structures, enter:
+<h2> pscf_rpc: </h2>
+To compile only the pscf_rpc CPU program for periodic structures, enter:
 \code
-make pscf_pc
+make pscf_rpc
 \endcode
 from the PSCF root, bld or src directory.
 This command will cause the system to:
@@ -110,33 +110,33 @@ This command will cause the system to:
   - Compile all of the \*.cpp class files in the src/rpc directory, and '
     create a corresponding static library file named librpc.a.
 
-  - Compile and link the main program pscf_pc.cpp, and install an
-    executable program file named pscf_pc in the PSCF bin directory.
+  - Compile and link the main program pscf_rpc.cpp, and install an
+    executable program file named pscf_rpc in the PSCF bin directory.
 
 <h2> all-cpu: </h2>
 
-To explicitly build the pscf_1d and pscf_pc CPU programs, but not the
-GPU-enable pscf_pg program, enter
+To explicitly build the pscf_1d and pscf_rpc CPU programs, but not the
+GPU-enable pscf_rpg program, enter
 \code
 make all-cpu
 \endcode
-This is equivalent to entering "make pscf_1d" followed by "make pscf_pc".
+This is equivalent to entering "make pscf_1d" followed by "make pscf_rpc".
 
-<h2> pscf_pg: </h2>
+<h2> pscf_rpg: </h2>
 
-This pscf_pg target only functions if CUDA has been enabled (e.g., by
+This pscf_rpg target only functions if CUDA has been enabled (e.g., by
 entering "./setopts -c1") on a computer with an appropriate NVIDIA GPU
-and CUDA development kit.  To compile the pscf_pg GPU-enabled program
+and CUDA development kit.  To compile the pscf_rpg GPU-enabled program
 for periodic structures on such a computer, enter
 \code
-make pscf_pg
+make pscf_rpg
 \endcode
 from either the PSCF root directory or the desired build directory.
 If successful, this will compile code from the rpgsubdirectory of
 the src directory, compile code from the util, pscf and prdc
 directories if needed, place object, dependency and library files in
 subdirectories of the chosen build tree, and install an executable
-named pscf_pg in the PSCF bin directory.
+named pscf_rpg in the PSCF bin directory.
 
 \section install_targets_docs_sec Documentation
 

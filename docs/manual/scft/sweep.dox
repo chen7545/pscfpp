@@ -155,7 +155,7 @@ Source code files that are specific to different PSCF
 programs are defined in different C++ implementation level namespaces
 (i.e., in Pscf::R1d, Pscf::Rpc and Pscf::Rpg). This allows classes
 that play analogous roles in different programs to be given the same
-name. The LinearSweep classes for the pscf_1d, pscf_pc and pscf_pg
+name. The LinearSweep classes for the pscf_1d, pscf_rpc and pscf_rpg
 programs are actually different classes defined in different namespaces
 that have identical or nearly identical user interfaces and implement
 closely analogous algorithms.  The common user interface for these
@@ -178,7 +178,7 @@ The parameter file format for a LinearSweep is summarized below:
   }
 \endcode
 Parameters marked with an asterisk are optional. Parameters marked
-with a plus sign are only relevant to pscf_pc and pscf_pg, and cannot
+with a plus sign are only relevant to pscf_rpc and pscf_rpg, and cannot
 be used in pscf_1d. The purpose of the parameters in this block are
 explained below:
 <table>
@@ -382,7 +382,7 @@ automatically also update chi(j, i) for \f$ i \neq j \f$, thus preserving
 the symmetry of the matrix.
 
 Parameters of type "cell_param" are only usable in simulations of
-periodic structure performed using a pscf_pc or pscf_pg program, for
+periodic structure performed using a pscf_rpc or pscf_rpg program, for
 simulations with a rigid unit cell in which the parameters are not
 automatically optimized so as to minimize the free energy density.
 In this case, a "unit_cell" parameter is one of the parameters that
@@ -398,7 +398,7 @@ The uid index for a cell_parameter is a zero based integer index
 that identifies which parameter in such a list is being varied.
 
 The chi_top and chi_bottom parameters are only applicable to
-simulations of thin films performed with thepscf_pc or pscf_pg program,
+simulations of thin films performed with thepscf_rpc or pscf_rpg program,
 as discussed \ref scft_thin_films_page "here". These are used to vary the
 effective interaction parameters for interactions of a specific monomer
 type with the top or bottom surface of a thin film.
@@ -436,7 +436,7 @@ output in the \ref user_field_r1d_page "1D field file" used by
 pscf_1d. Names for these files end with filename extension ".w" for
 chemical potential fields and ".c" for monomer concentration fields.
 
-In the case of the pscf_pc and pscf_pg programs, only the converged
+In the case of the pscf_rpc and pscf_rpg programs, only the converged
 chemical potential fields are output by default. If these converged
 fields were obtained using an iterator that preserves space group
 symmetry, such as AmIteratorBasis, they are output in

@@ -33,8 +33,8 @@ current version of PSCF, as discussed below.
 
 \section psfts_ramp_linear_sec Linear Ramp
 
-The only type ramp that is currently available for either pscf_pc
-or pscf_pg is a linear ramp algorithm that is implemented by a class
+The only type ramp that is currently available for either pscf_rpc
+or pscf_rpg is a linear ramp algorithm that is implemented by a class
 named LinearRamp.  The LinearRamp class allows a user to perform a
 simulation in which almost any physical parameter of the Hamiltonian
 that is represented by a real number, or any set of such parameters,

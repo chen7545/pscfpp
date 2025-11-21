@@ -4,7 +4,7 @@
  \ref user_field_kgrid_page   (Next)
 <BR>
 
-The r-grid file format is used by the pscf_pc and pscf_pg programs to
+The r-grid file format is used by the pscf_rpc and pscf_rpg programs to
 describe fields in a spatially periodic microstructure. This format
 outputs the values of set of fields on the nodes of a regular mesh that
 covers one unit cell of a periodic structure. This mesh is the same

@@ -72,7 +72,7 @@ parameter entries, as already noted on the previous page:
      followed by several element values of the same data type on the same
      line as the label, without any delimiters surrounding the list of
      element values. The "mesh" parameter of the Domain block for a
-     pscf_pc or pscf_pg parameter file is a vector-valued parameter with
+     pscf_rpc or pscf_rpg parameter file is a vector-valued parameter with
      integer elements,  in which the number of elements must be equal to
      the dimension of space.
    </li>
@@ -427,7 +427,7 @@ Every selectable block has an associated generic name (such as the name
 The default algorithm may be selected either by using the generic name as
 a label for the block (such as "Iterator") or by using the specific name
 of the default algorithm.  For example, the default choice of SCFT
-iterator for both the pscf_pc and pscf_pg programs is an Anderson-Mixing
+iterator for both the pscf_rpc and pscf_rpg programs is an Anderson-Mixing
 iterator that imposes a known space group symmetry. This algorithm is
 identified in a parameter file by a specific label AmIteratorBasis, which
 is also the name of a class that implements this algorithm. Because this

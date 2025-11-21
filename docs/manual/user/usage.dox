@@ -23,17 +23,17 @@ one would enter
    pscf_1d -p param -c commands
 \endcode
 
-<b> pscf_pc and pscf_pg</b>:
-The syntax to invoke either the pscf_pc or pscf_pg programs for periodic
+<b> pscf_rpc and pscf_rpg</b>:
+The syntax to invoke either the pscf_rpc or pscf_rpg programs for periodic
 microstructures is similar, but requires that parameter also pass the
 spatial dimensionality as a parameter of the -d option. For example,
-to use pscf_pc to perform a calculation involving a three-dimensional
+to use pscf_rpc to perform a calculation involving a three-dimensional
 periodic microstructures, one could enter
 \code
-   pscf_pc -d 3  -p param -c commands
+   pscf_rpc -d 3  -p param -c commands
 \endcode
-The command line interface for pscf_pg is identical to the interface
-for pscf_pc.
+The command line interface for pscf_rpg is identical to the interface
+for pscf_rpc.
 
 <b> Redirecting log output </b>:
 During execution, some information is written to standard output, which
@@ -41,7 +41,7 @@ outputs to a terminal by default. This log output can be re-directed to
 a file by using the unix ">" output redirect operator. For example, the
 command
 \code
-  pscf_pc -d 3 -p param -c commands > log
+  pscf_rpc -d 3 -p param -c commands > log
 \endcode
 would direct standard output to a file named "log" in the current working
 directory.  Standard output should normally be redirected to a file when
@@ -51,10 +51,10 @@ a job is run in background or in a queue on a shared computing cluster.
 
 All PSCF programs accept a command line option "-e" that causes the
 contents of each line of the parameter file to be echoed to standard output
-while the parameter file is being read. For example, to invoke pscf_pc
+while the parameter file is being read. For example, to invoke pscf_rpc
 with echoing of the parameter file to a log file, one could enter
 \code
-   pscf_pc -d 3 -p param -c commands -e > log
+   pscf_rpc -d 3 -p param -c commands -e > log
 \endcode
 The -e "echo" option is very useful for locating syntax errors in the
 parameter file.  When an error is detected while reading a parameter file,
@@ -81,7 +81,7 @@ programs. The second column, which describes the option parameter, is
 left empty for options that do not take a parameter.  All but one of the
 options listed below can be used with any of the three PSCF programs.
 The only exception to this is the -d option, which is a required input
-to the pscf_pc and pscf_pg programs, but is not a valid option for
+to the pscf_rpc and pscf_rpg programs, but is not a valid option for
 pscf_1d.
 <table>
   <tr>
@@ -92,7 +92,7 @@ pscf_1d.
   <tr>
      <td> -d </td>
      <td> dimension </td>
-     <td> spatial dimensionality 1, 2, or 3 (required for pscf_pc and pscf_pg) </td>
+     <td> spatial dimensionality 1, 2, or 3 (required for pscf_rpc and pscf_rpg) </td>
   </tr>
   <tr>
      <td> -p </td>
@@ -124,7 +124,7 @@ pscf_1d.
   </tr>
 </table>
 The -p and -c options are required, while the -e, -i, -o options are
-not.  The -d option only exists for the pscf_pc and pscf_pg programs,
+not.  The -d option only exists for the pscf_rpc and pscf_rpg programs,
 and is required by those two programs. The -e option does not take a
 parameter.
 
@@ -145,9 +145,9 @@ files that are given in the command line.
 <em> Example </em>:
 The command
 \code
-   pscf_pc -d 3 -e -p param -c commands -i in/ -o out/ > log
+   pscf_rpc -d 3 -e -p param -c commands -i in/ -o out/ > log
 \endcode
-would run the pscf_pc program using a parameter file named "param" and
+would run the pscf_rpc program using a parameter file named "param" and
 a command file named "commands" in the current working directory, while
 echoing the parameter file, reading all input files other than the
 parameter and command files from subdirectory of the current working

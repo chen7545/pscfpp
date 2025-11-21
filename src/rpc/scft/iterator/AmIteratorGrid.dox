@@ -1,7 +1,7 @@
 /*! 
 \page rpc_AmIteratorGrid_page AmIteratorGrid
 
-The AmIteratorGrid algorithm available to the pscf_pc or pscf_pg programs
+The AmIteratorGrid algorithm available to the pscf_rpc or pscf_rpg programs
 uses an Anderson mixing algorithm in which residual equations and field 
 updates are formulated using values defined on the nodes of a regular 
 spatial grid. The algorithm can be used to either solve the SCFT equations 

@@ -3,7 +3,7 @@
 \ref prdc_groups_page  (Next)
 <BR>
 
-The input files for pscf_pc and pscf_pg programs use a shared set of
+The input files for pscf_rpc and pscf_rpg programs use a shared set of
 conventions to describe crystallographic unit cells (i.e,. Bravais
 lattices).
 
@@ -39,17 +39,17 @@ convention, the required lattice parameters for each lattice system
 type are always listed in a specific order that is described below
 for each of the possible 1, 2 and 3 dimensional lattice systems.
 
-These three different types of information are provided to a pscf_pc or
-pscf_pg program in different ways:
+These three different types of information are provided to a pscf_rpc or
+pscf_rpg program in different ways:
 
 <em> Spatial dimension </em>: The PSCF package requires the user to
 specify the spatial dimension D of a periodic structure that will be
-treated by the pscf_pc or pscf_pg program as an argument of the -d
+treated by the pscf_rpc or pscf_rpg program as an argument of the -d
 command line option for those programs.
 
 <em> Lattice system identifier </em> : The string identifier for a
 lattice system is a required parameter in the parameter file format for
-all pscf_pc and pscf_pg programs. This identifier is given as the value
+all pscf_rpc and pscf_rpg programs. This identifier is given as the value
 of the parameter with the label "lattice" within the Domain block of the
 parameter file.  The choice of lattice system that is specified in the
 parameter file cannot be changed during later stages of program execution.
@@ -61,7 +61,7 @@ different input parameter files.
 (i.e., lengths of the edges of the unit cell and angles between them) do
 not appear in the parameter file, but are instead usually provided within
 an input field file that is read by the program. All of the field file
-formats used by pscf_pc and pscf_pg contain a file header that contains
+formats used by pscf_rpc and pscf_rpg contain a file header that contains
 lattice system identifier and a list of values for lattice parameters.
 The lattice system identifier in the header of any field file read by
 the program must agree with that declared in the parameter file - the

@@ -56,7 +56,7 @@ namespace Prdc {
    * to an r-grid field file. The header of the resulting file contains a 
    * description of the unit cell obtained here. That field replication 
    * function is used to implement the REPLICATE_UNIT_CELL command of
-   * the pscf_pc and pscf_pg programs.
+   * the pscf_rpc and pscf_pg programs.
    *
    * \ingroup Prdc_Crystal_Module
    * 

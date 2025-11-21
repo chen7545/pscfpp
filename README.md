@@ -75,7 +75,7 @@ PSCF provides source code for the following three executable programs:
      to treat problems involving flat and curved interfaces, as well as
      cylindrical and spherical micelles.
 
-   - **pscf_pc** : The pscf_pc program can be used to perform SCFT and
+   - **pscf_rpc** : The pscf_rpc program can be used to perform SCFT and
      PS-FTS calculations for systems that are periodic in 1, 2 or 3 
      spatial dimensions, using standard CPU hardware. A pseudo-spectral 
      algorithm is used to solve the MDE. This program provides capabilities
@@ -84,9 +84,9 @@ PSCF provides source code for the following three executable programs:
      stands for "periodic CPU".
 
    - **pscf_pg** : The pscf_pg program is a GPU-accelerated version
-     of pscf_pc that can also perform SCFT and PS-FTS calculations for
+     of pscf_rpc that can also perform SCFT and PS-FTS calculations for
      periodic systems. It is based on algorithms analogous to those used 
-     in pscf_pc and provides almost identical features, but provides 
+     in pscf_rpc and provides almost identical features, but provides 
      higher performance for large systems. The suffix "pg" stands for 
      "periodic GPU".
 
@@ -96,7 +96,7 @@ All three PSCF programs are designed to treat an incompressible mixture
 containing any number of block polymer, homopolymer and small molecule
 (point-like) solvent molecular species. Polymer species may be modelled
 using either the standard Gaussian model of polymer conformations as 
-continuous random walks or (in pscf_pc and pscf_pg) using a discrete 
+continuous random walks or (in pscf_rpc and pscf_pg) using a discrete 
 bead-spring model with harmonic springs.
 
 Features relevant to both SCFT and PS-FTS (all programs):
@@ -123,7 +123,7 @@ Features for SCFT (all programs):
     calculations with different parameters along a 1D path through 
     parameter space.
 
-Features for SCFT or PS-FTS for periodic systems (pscf_pc and pscf_pg):
+Features for SCFT or PS-FTS for periodic systems (pscf_rpc and pscf_pg):
 
   - Pseudo-spectral solution of the modified diffusion equation
 
@@ -138,7 +138,7 @@ Features for SCFT or PS-FTS for periodic systems (pscf_pc and pscf_pg):
   - A companion Matlab package for visualization of periodic structures:
     [Polymer Visual](<https://github.com/kdorfmanUMN/polymer_visual/>)
 
-Features for SCFT on periodic systems (pscf_pc and pscf_pg): 
+Features for SCFT on periodic systems (pscf_rpc and pscf_pg): 
 
   - Automatic optimization of unit cell parameters so as to minimize the 
     SCFT free energy density
@@ -156,7 +156,7 @@ Features for SCFT on periodic systems (pscf_pc and pscf_pg):
   - Tools for thin polymer films (using a mask to represent confinement 
     and external fields for selective surface interactions)
 
-Features for PS-FTS (pscf_pc and pscf_pg):
+Features for PS-FTS (pscf_rpc and pscf_pg):
 
   - Brownian dynamics (BD) and Monte Carlo (MC) sampling algorithms
 
@@ -247,7 +247,7 @@ which is the main page of the web manual.
 PSCF has been developed and tested on both linux and and Mac OS X operating
 systems, and is designed to be compiled on these or other unix-like systems.
 
-The pscf_1d and pscf_pc CPU programs depend on the following external
+The pscf_1d and pscf_rpc CPU programs depend on the following external
 libraries:
 
   - [GSL](<https://www.gnu.org/software/gsl/>) - GNU Scientific Library
@@ -255,7 +255,7 @@ libraries:
   - [FFTW](<https://www.fftw.org/>) Fast Fourier Transform library
 
 The pscf_1d one-dimensional program pscf_1d requires only GSL, while
-the pscf_pc program relies on both GSL and FFTW.
+the pscf_rpc program relies on both GSL and FFTW.
 
 The GPU-accelerated pscf_pg program can only be compiled and run on a
 computer with an appropriate Nvidia GPU and an Nvidia CUDA development
@@ -338,7 +338,7 @@ executable files that have been placed in a non-standard location.
 
 ## Command line usage
 
-PSCF is a package the provides three executable programs (pscf_1d, pscf_pc,
+PSCF is a package the provides three executable programs (pscf_1d, pscf_rpc,
 and pscf_pg) with different capabilities but very similar command line 
 interfaces. To perform a calculation, each PSCF program must read two files,
 which we refer to as a parameter file and a command file. The parameter 
@@ -381,29 +381,29 @@ to standard output as this file is being processed. Use of this option
 makes it easier to debug failures that arise from syntax errors in 
 the parameter file. 
 
-**pscf_pc and pscf_pg** : The command line interfaces for the pscf_pc and
+**pscf_rpc and pscf_pg** : The command line interfaces for the pscf_rpc and
 pscf_pg programs take the same required and optional elements as pscf_1d, 
 but also require a value for the dimension of space as an additional 
 parameter.  This is an integer parameter of the -d option that must have 
 a value 1, 2 or 3, which specifies the number of coordinates along which 
-the structure is periodic.  The usual syntax for invoking pscf_pc for an
+the structure is periodic.  The usual syntax for invoking pscf_rpc for an
 SCFT calculation of a three dimensionally periodic structure (e.g., a 
 network structure or a 3D arrangement of spheres), while also using the 
 -e option, is thus 
 ```
-pscf_pc -d 3 -p param -c command -e
+pscf_rpc -d 3 -p param -c command -e
 ```
 Here, "param" and "command" again denote names of parameter and command 
 files. The syntax for an SCFT calculation for a one-dimensionally periodic 
 lamellar phase would instead contain an option "-d 1", while an SCFT
 calculation for a 2D periodic phase of hexagonally packed cylinders would
 use an option "-d 2".  The syntax for invoking pscf_pg is the same as that 
-for pscf_pc, except for the use of the program name pscf_pg rather than
-pscf_pc.
+for pscf_rpc, except for the use of the program name pscf_pg rather than
+pscf_rpc.
 
-The pscf_pc and pscf_pg programs can also both perform PS-FTS simulations. 
+The pscf_rpc and pscf_pg programs can also both perform PS-FTS simulations. 
 Such simulations usually allow field fluctuations to vary in all three 
-spatial dimensions, and so pscf_pc and pscf_pg are normally invoked using 
+spatial dimensions, and so pscf_rpc and pscf_pg are normally invoked using 
 an option "-d 3" when used for this purpose.
 
 **Output redirection** : Programs that are invoked as shown in the above 
@@ -412,7 +412,7 @@ user's screen (i.e., to standard output).  This log output may instead be
 redirected to a file by using the unix ">" redirection operator.  For 
 example, the command
 ```
-pscf_pc -d 3 -p param -c command -e > log
+pscf_rpc -d 3 -p param -c command -e > log
 ```
 would redirect log output that is written during a calculation to a file
 named "log" in the current working directory. Standard output is normally 
@@ -426,7 +426,7 @@ is by studying examples.  The directory pscfpp/examples contains input
 files for examples of a variety of different types of SCFT and PS-FTS 
 calculations.  Top level subdirectories of the examples directory named 
 1d, pc and pg contain examples for the three different PSCF programs,
-pscf_1d, pscf_pc, and pscf_pg.
+pscf_1d, pscf_rpc, and pscf_pg.
 
 Subdirectory examples/1d contains examples of SCFT calculations for the 
 1D finite-difference program pscf_1d. Top level subdirectories of the 
@@ -434,7 +434,7 @@ directory examples/1d contain examples for planar, cylindrical and
 spherical geometries, as indicated by the subdirectory names. One or more 
 example is given for each geometry.
 
-Subdirectory examples/pc contains examples for the pscf_pc CPU program. 
+Subdirectory examples/pc contains examples for the pscf_rpc CPU program. 
 Top level subdirectories of examples/pc named scf and fts contain examples
 of SCFT and PS-FTS calculations, respectively. Top level subdirectories 
 of directory examples/pc/scf contain examples of input files for SCFT 

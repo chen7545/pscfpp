@@ -6,7 +6,7 @@
 
 \section scft_environment_overview_sec Overview
 
-The SCFT iterators used by pscf_pc and pscf_pg allow users to define two
+The SCFT iterators used by pscf_rpc and pscf_rpg allow users to define two
 different types of externally imposed fields to describe situations in
 which a polymeric material interacts with an inhomogeneous environment. A
 "mask" field is used to describe geometric confinement to a specified
@@ -66,7 +66,7 @@ page.
 
 \section scft_environment_mask_sec Mask field
 
-The iterators used in pscf_pc and pscf_pg allow users to define a "mask"
+The iterators used in pscf_rpc and pscf_rpg allow users to define a "mask"
 field that imposes geometric confinement within the unit cell by modifying
 the incompressibility constraint. A mask field is a dimensionless function
 of position, denoted here by \f$ m({\bf r}) \f$, that has a value very
@@ -122,7 +122,7 @@ symmetry-adapated basis.
 
 \section scft_environment_external_sec External fields
 
-The pscf_pc and pscf_pg programs also allows users to define an external
+The pscf_rpc and pscf_rpg programs also allows users to define an external
 potential field associated with each type of monomer in the system. In what
 follows, let \f$ h_{\alpha}({\bf r}) \f$ denote the external field imposed
 on monomers of type \f$ \alpha \f$.  When nonzero external fields have been

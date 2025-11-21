@@ -32,7 +32,7 @@ following locations:
    - **Program-level subdirectories of src or bld (not program level)**:
      The "all" target of makefiles in the r1d, rpc, and rpg program-level
      directories of either src or bld directory each creates a single
-     executable file (pscf_1d, pscf_pc, or pscf_pg), in addition to making
+     executable file (pscf_1d, pscf_rpc, or pscf_rpg), in addition to making
      a static library and compiling all of the source files in the
      associated directory tree.
 
@@ -292,13 +292,13 @@ include $(SRC_DIR)/rpc/sources.mk
 include $(SRC_DIR)/rpc/patterns.mk
 
 #-----------------------------------------------------------------------
-# Paths to pscf_pc program files
+# Paths to pscf_rpc program files
 
-# Base path to *.o and *.d files for pscf_pc
-PSCF_PC=$(BLD_DIR)/rpc/pscf_pc
+# Base path to *.o and *.d files for pscf_rpc
+PSCF_PC=$(BLD_DIR)/rpc/pscf_rpc
 
-# Path to pscf_pc executable file
-PSCF_PC_EXE=$(BIN_DIR)/pscf_pc
+# Path to pscf_rpc executable file
+PSCF_PC_EXE=$(BIN_DIR)/pscf_rpc
 
 #-----------------------------------------------------------------------
 # Main targets
@@ -313,15 +313,15 @@ clean:
 	rm -f *.d */*.d */*/*.d
 	cd tests; $(MAKE) clean
 
-# Rule for pscf_pc executable file
+# Rule for pscf_rpc executable file
 $(PSCF_PC_EXE): $(PSCF_PC).o $(PSCF_LIBS)
 	$(CXX) $(LDFLAGS) -o $(PSCF_PC_EXE) $(PSCF_PC).o $(LIBS)
 
 # Short phony target for executable file (for convenience)
-pscf_pc:
+pscf_rpc:
 	$(MAKE) $(PSCF_PC_EXE)
 
-.PHONY: all clean pscf_pc
+.PHONY: all clean pscf_rpc
 
 #-----------------------------------------------------------------------
 # Include dependency files
@@ -336,12 +336,12 @@ pscf_pc:
 Note the following elements of this file that are not present in the
 makefiles in the util, pscf, and prdc namespace-level directories:
 
-  - Definition of a variable PSCF_PC = \$(BLD_DIR)/rpc/pscf_pc that gives
+  - Definition of a variable PSCF_PC = \$(BLD_DIR)/rpc/pscf_rpc that gives
     the shared part of the paths for the object and dependency file that
-    are created by compiling the program source file src/rpc/pscf_pc.cpp,
+    are created by compiling the program source file src/rpc/pscf_rpc.cpp,
     without the .o and .d file name suffixes.
 
-  - Definition of a variable PSCF_PC_EXE = \$(BIN_DIR)/pscf_pc that gives
+  - Definition of a variable PSCF_PC_EXE = \$(BIN_DIR)/pscf_rpc that gives
     the absolute path to the resulting executable file.
 
   - A rule to build the executable file \$(PSCF_PC_EXE) by linking the main
@@ -384,7 +384,7 @@ of libraries represented by a variable \$(LIBS) that is defined in the
 patterns.mk file.
 
 In this example, the object file \$(PSCF_PC).o is created by compiling
-the main program file h$(SRC_DIR)/rpc/pscf_pc.cpp. This object file will
+the main program file h$(SRC_DIR)/rpc/pscf_rpc.cpp. This object file will
 be created before the executable file because the object file is list
 as a prerequisite of the executable.  This main program object file is
 created as needed using a standard pattern rule for compiling source
@@ -445,23 +445,23 @@ Here \$(MAKE) is the value of a standard variable that represents the
 name of the unix make command. The two target shown here both contain
 recipes that instruct the system to repeatedly descend into a namespace
 level directories. The "all-cpu" target is designed to build only the
-two programs that use standard CPU hardware, pscf_1d and pscf_pc. The
-"all" target is designed to also create the pscf_pg executable if
+two programs that use standard CPU hardware, pscf_1d and pscf_rpc. The
+"all" target is designed to also create the pscf_rpg executable if
 compilation of CUDA code has been enabled by defining the PSCF_CUDA
 makefile variable.
 
 The phony "all-cpu" target simply invokes make all within 5 of the
 6 namespace-level subdirectories, including the two program-level
 subdirectories r1d and rpc that build the CPU programs pscf_1d and
-pscf_pc, but excluding subdirectory rpg that contains CUDA C++ code
-for pscf_pg.
+pscf_rpc, but excluding subdirectory rpg that contains CUDA C++ code
+for pscf_rpg.
 
 The "all" target first invokes cpu-all and then conditionally invokes
 "make all" from within the rpg subdirectory if and only if the makefile
 variable PSCF_CUDA is defined. The variable PSCF_CUDA is undefined by
 default, and is defined if and only if the user has explicitly enabled
 compilation of CUDA code. The "all" target thus compiles code in the rpg
-directory and creates the pscf_pg executable only if CUDA compilation
+directory and creates the pscf_rpg executable only if CUDA compilation
 has been enabled.  Compilation of CUDA code can be enabled either by
 using the setopts script, using the -c option with argument 1, or by
 manually uncommenting the definition of the variable PSCF_CUDA in the
