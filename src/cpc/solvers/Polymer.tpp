@@ -70,8 +70,8 @@ namespace Cpc {
          for (int i = 0; i < nBlock(); ++i) {
             block(i).computeConcentrationThread(prefactor);
          }
-      } else 
-      if (PolymerModel::isBead()) {
+      } else {
+         UTIL_CHECK(PolymerModel::isBead());
          double len = (double) nBead();
          ratio = phi() / len;
          ratio /= q();

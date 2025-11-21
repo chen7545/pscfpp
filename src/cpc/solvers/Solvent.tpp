@@ -32,7 +32,7 @@ namespace Cpc {
    {}
 
    /*
-   * Create an association with a Mesh & allocate the concentration field.
+   * Create an association with a Mesh.
    */
    template <int D>
    void Solvent<D>::associate(Mesh<D> const & mesh)
@@ -81,16 +81,18 @@ namespace Cpc {
       }
       r = (double)nx;
       divEq(Q, r);
+      // Q /= (double)nx
 
-      // Set q and compute mu or phi 
-      std::complex<double> T;
-      assign(T, Q);
-      Species< std::complex<double> >::setQ(T);
+      // Set Q in Species base class and compute mu or phi 
+      std::complex<double> Qstd;
+      assign(Qstd, Q);
+      Species< std::complex<double> >::setQ(Qstd);
 
       // Normalize concentration 
-      assign(z, phi());
       fftw_complex prefactor;
+      assign(z, phi());
       div(prefactor, z, Q);
+      // prefactor = phi()/Q
       for (int i = 0; i < nx; ++i) {
           mulEq(cField_[i], prefactor);
           //cField_[i] *= prefactor;
@@ -98,6 +100,6 @@ namespace Cpc {
  
    }
 
-}
-}
+} // namespace Cpc
+} // namespace Rpc
 #endif

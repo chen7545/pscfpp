@@ -37,6 +37,16 @@ namespace Cpc {
 
    public:
 
+      // Typename aliases
+
+      /// Direct base class, an instantiation of Pscf::SolventSpecies.
+      using Base = SolventSpecies< std::complex<double> >;
+
+      /// Indirect base, an instantiation of Pscf::Species.
+      using SpeciesT = SolventSpecies< std::complex<double> >;
+
+      // Member functions
+
       /**
       * Constructor.
       */
@@ -78,21 +88,21 @@ namespace Cpc {
       CField<D> const & cField() const;
 
       // Inherited accessor functions
-      using Pscf::Species< std::complex<double> >::phi;
-      using Pscf::Species< std::complex<double> >::mu;
-      using Pscf::Species< std::complex<double> >::q;
-      using Pscf::Species< std::complex<double> >::ensemble;
-      using Pscf::SolventSpecies< std::complex<double> >::monomerId;
-      using Pscf::SolventSpecies< std::complex<double> >::size;
+      using SpeciesT::phi;
+      using SpeciesT::mu;
+      using SpeciesT::q;
+      using SpeciesT::ensemble;
+      using Base::monomerId;
+      using Base::size;
 
    protected:
 
       // Inherited protected functions
-      using Pscf::Species< std::complex<double> >::setQ;
+      using SpeciesT::setQ;
 
    private:
 
-      /// Concentration field for this solvent.
+      /// Complex concentration field for this solvent.
       CField<D> cField_;
 
       /// Pointer to associated mesh.
@@ -103,7 +113,7 @@ namespace Cpc {
    // Inline member function
 
    /*
-   * Get monomer concentration field for this solvent.
+   * Get complex monomer concentration field for this solvent.
    */
    template <int D>
    inline CField<D> const & Solvent<D>::cField() const
@@ -114,6 +124,6 @@ namespace Cpc {
    extern template class Solvent<2>;
    extern template class Solvent<3>;
 
-}
-}
+} // namespace Cpc
+} // namespace Pscf
 #endif
