@@ -1,5 +1,5 @@
-#ifndef RPC_TYPES_H
-#define RPC_TYPES_H
+#ifndef CPC_TYPES_H
+#define CPC_TYPES_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -24,7 +24,7 @@ namespace Pscf {
          template <int D> class WaveList;
       }
    }
-   namespace Rpc {
+   namespace Cpc {
       template <int D> class System;
       template <int D> class Mixture;
       // template <int D> class MixtureModifier;
@@ -42,16 +42,16 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rpc {
+namespace Cpc {
 
    // Namespaces that may be used implicitly
    using namespace Util;
    using namespace Prdc;
 
    /**
-   * List of aliases for types used the in Rpc namespace.
+   * List of aliases for types used the in Cpc namespace.
    *
-   * \ingroup Rpc_System_Module
+   * \ingroup Cpc_System_Module
    */
    template <int D>
    class Types
@@ -59,14 +59,14 @@ namespace Rpc {
 
    public:
 
-      using System = Rpc::System<D>;
+      using System = Cpc::System<D>;
 
-      using Mixture = Rpc::Mixture<D>;
-      // using MixtureModifier = Rpc::MixtureModifier<D>;
-      using Polymer = Rpc::Polymer<D>;
-      using Solvent = Rpc::Solvent<D>;
-      using Block = Rpc::Block<D>;
-      using Propagator = Rpc::Propagator<D>;
+      using Mixture = Cpc::Mixture<D>;
+      // using MixtureModifier = Cpc::MixtureModifier<D>;
+      using Polymer = Cpc::Polymer<D>;
+      using Solvent = Cpc::Solvent<D>;
+      using Block = Cpc::Block<D>;
+      using Propagator = Cpc::Propagator<D>;
 
       using Species = Pscf::Species<double>;
       using PolymerSpecies = Pscf::PolymerSpecies<double>;
@@ -74,16 +74,14 @@ namespace Rpc {
       using MixtureBase = Pscf::MixtureBase<double>;
 
       using Interaction = Pscf::Interaction;
-      using Domain = Rpc::Domain<D>;
-      using FieldIo = Rpc::FieldIo<D>;
-      using ScftThermo = Rpc::ScftThermo<D>;
+      using Domain = Cpc::Domain<D>;
+      using FieldIo = Cpc::FieldIo<D>;
 
-      using WFields = Rpc::WFields<D>;
-      using CFields = Rpc::CFields<D>;
-      using Mask = Rpc::Mask<D>;
+      using WFields = Cpc::WFields<D>;
+      using CFields = Cpc::CFields<D>;
 
-      // using Simulator = Rpc::Simulator<D>;
-      // using SimulatorFactory = Rpc::SimulatorFactory<D>;
+      // using Simulator = Cpc::Simulator<D>;
+      // using SimulatorFactory = Cpc::SimulatorFactory<D>;
 
       using CField = Prdc::Cpu::CField<D>;
       using FFT = Prdc::Cpu::FFT<D>;
@@ -92,6 +90,6 @@ namespace Rpc {
 
    };
 
-} // namespace Rpc
+} // namespace Cpc
 } // namespace Pscf
 #endif

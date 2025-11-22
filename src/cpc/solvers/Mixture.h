@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/Mixture.h>     // base class template
+#include <prdc/cl/Mixture.h>     // base class template
 #include <cpc/system/Types.h>    // base class argument
 
 namespace Pscf {
@@ -38,13 +38,14 @@ namespace Cpc {
 
    public:
 
-      /// Direct (parent) base class.
+      /// Direct base class, instantiation of Cl::Mixture template.
       using ClMixtureT
          = typename Prdc::Cl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
 
       // Inherited public type name aliases
 
       using typename ClMixtureT::MixtureTmplT;
+      using typename ClMixtureT::MixtureBaseT;
       using typename ClMixtureT::PolymerT;
       using typename ClMixtureT::SolventT;
       using typename ClMixtureT::BlockT;
@@ -61,22 +62,19 @@ namespace Cpc {
       using ClMixtureT::clearUnitCellData;
       using ClMixtureT::setKuhn;
       using ClMixtureT::compute;
-      using ClMixtureT::computeStress;
-      using ClMixtureT::hasStress;
-      using ClMixtureT::createBlockCRGrid;
 
       using MixtureTmplT::polymer;
       using MixtureTmplT::polymerSpecies;
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
 
-      using MixtureBase<double>::nMonomer;
-      using MixtureBase<double>::monomer;
-      using MixtureBase<double>::nPolymer;
-      using MixtureBase<double>::nSolvent;
-      using MixtureBase<double>::nBlock;
-      using MixtureBase<double>::vMonomer;
-      using MixtureBase<double>::isCanonical;
+      using MixtureBaseT::nMonomer;
+      using MixtureBaseT::monomer;
+      using MixtureBaseT::nPolymer;
+      using MixtureBaseT::nSolvent;
+      using MixtureBaseT::nBlock;
+      using MixtureBaseT::vMonomer;
+      using MixtureBaseT::isCanonical;
 
    protected:
 

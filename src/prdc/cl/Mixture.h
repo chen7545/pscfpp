@@ -48,15 +48,18 @@ namespace Cl {
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>
-   class Mixture : public MixtureTmpl<PT, ST, fftw_complex>
+   class Mixture : public MixtureTmpl< PT, ST, std::complex<double> >
    {
 
    public:
 
       // Public type name aliases
 
-      /// MixtureTmplT class.
-      using MixtureTmplT = MixtureTmpl<PT,ST, double>;
+      /// MixtureTmpl class.
+      using MixtureTmplT = MixtureTmpl< PT, ST, std::complex<double> >;
+
+      /// MixtureBase class.
+      using MixtureBaseT = MixtureBase< std::complex<double> >;
 
       /// Solvent object type: SolventT = ST (inherited).
       using typename MixtureTmplT::SolventT;
@@ -71,7 +74,7 @@ namespace Cl {
       using PropagatorT = typename TT::Propagator;
 
       /// Field type, for data defined on a real-space grid.
-      using FieldT = typename TT::RField;
+      using FieldT = typename TT::CField;
 
       /// WaveList type.
       using FFTT = typename TT::FFT;
@@ -183,7 +186,6 @@ namespace Cl {
       /// \name Parameter Modification
       ///@{
 
-      #if 0  // Delay implementation of this function until needed
       /**
       * Reset statistical segment length for one monomer type.
       *
@@ -195,7 +197,6 @@ namespace Cl {
       * \param kuhn  new value for the statistical segment length
       */
       void setKuhn(int monomerId, double kuhn);
-      #endif
 
       /**
       * Clear all data that depends on the unit cell parameters.
@@ -208,7 +209,8 @@ namespace Cl {
       void clearUnitCellData();
 
       ///@}
-      #if 0  // Delay implementation of these functions until needed
+
+      #if 0  // Delay implementation and testing
       /// \name Concentration Field Output
       ///@{
 
@@ -251,7 +253,8 @@ namespace Cl {
 
       ///@}
       #endif
-      #if 0  // Delay implementation of these functions until needed
+
+      #if 0  // Delay implementation and testing
       /// \name Propagator Output
       ///@{
       
@@ -318,13 +321,13 @@ namespace Cl {
       using MixtureTmplT::polymerSpecies;
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
-      using MixtureBase<double>::nMonomer;
-      using MixtureBase<double>::monomer;
-      using MixtureBase<double>::nPolymer;
-      using MixtureBase<double>::nSolvent;
-      using MixtureBase<double>::nBlock;
-      using MixtureBase<double>::vMonomer;
-      using MixtureBase<double>::isCanonical;
+      using MixtureBaseT::nMonomer;
+      using MixtureBaseT::monomer;
+      using MixtureBaseT::nPolymer;
+      using MixtureBaseT::nSolvent;
+      using MixtureBaseT::nBlock;
+      using MixtureBaseT::vMonomer;
+      using MixtureBaseT::isCanonical;
 
    protected:
 
