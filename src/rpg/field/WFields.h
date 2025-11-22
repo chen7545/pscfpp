@@ -9,8 +9,8 @@
 */
 
 #include <prdc/rl/WFields.h>     // base class template
-#include <prdc/cpu/RField.h>            // template parameter
-#include <rpg/field/FieldIo.h>          // template parameter
+#include <prdc/cuda/RField.h>    // template parameter
+#include <rpg/field/FieldIo.h>   // template parameter
 
 namespace Pscf {
 namespace Rpg {
@@ -29,13 +29,14 @@ namespace Rpg {
    * \ingroup Rpg_Field_Module
    */
    template <int D>
-   class WFields : public WFieldsTmpl<D, Cuda::RField<D>, FieldIo<D> >
+   class WFields 
+    : public Rl::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >
    {
 
    public:
 
       /// Alias for base class template instantiation
-      typedef WFieldsTmpl<D, RField<D>, FieldIo<D> > Base;
+      using Base = Rl::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -98,9 +99,9 @@ namespace Rpg {
 
 namespace Prdc {
    // Explicit instantiation declarations for base class
-   extern template class WFieldsTmpl<1, Cuda::RField<1>, Rpg::FieldIo<1> >;
-   extern template class WFieldsTmpl<2, Cuda::RField<2>, Rpg::FieldIo<2> >;
-   extern template class WFieldsTmpl<3, Cuda::RField<3>, Rpg::FieldIo<3> >;
+   extern template class Rl::WFields<1, Cuda::RField<1>, Rpg::FieldIo<1> >;
+   extern template class Rl::WFields<2, Cuda::RField<2>, Rpg::FieldIo<2> >;
+   extern template class Rl::WFields<3, Cuda::RField<3>, Rpg::FieldIo<3> >;
 } // namespace Prdc
 
 } // namespace Pscf

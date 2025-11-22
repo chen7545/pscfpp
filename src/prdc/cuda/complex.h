@@ -498,9 +498,10 @@ namespace Pscf {
    * \param a argument (in)
    */
    template <> inline
-   void inverse(cudaComplex& z, cudaComplex const & a)
+   void inverse(Prdc::Cuda::cudaComplex& z, 
+                Prdc::Cuda::cudaComplex const & a)
    {
-      cudaReal aSq = a.x * a.x + a.y * a.y;
+      Prdc::Cuda::cudaReal aSq = a.x * a.x + a.y * a.y;
       z.x =   a.x/aSq;
       z.y = - a.y/aSq;
    }

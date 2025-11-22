@@ -220,7 +220,7 @@ namespace Rpg {
    * Integrate to calculate monomer concentration for this block
    */
    template <int D>
-   double Propagator<D>::computeQ()
+   void Propagator<D>::computeQ(double & Q)
    {
       // Preconditions
       UTIL_CHECK(meshPtr_);
@@ -236,7 +236,7 @@ namespace Rpg {
       }
       UTIL_CHECK(isHeadEnd() == partner().isTailEnd());
 
-      double Q = 0.0;
+      Q = 0.0;
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
          RField<D> const & qt = partner().q(ns_-2);
@@ -248,7 +248,6 @@ namespace Rpg {
          Q = Reduce::innerProduct(qh, qt);
       }
       Q /= double(meshPtr_->size());
-      return Q;
    }
 
 }

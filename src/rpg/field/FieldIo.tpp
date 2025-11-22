@@ -14,7 +14,7 @@
 
 #include <prdc/rl/FieldIo.tpp>      // base class implementation
 #include <prdc/field/rFieldIo.h>
-#include <prdc/field/fieldArrayUtil.h>
+#include <prdc/field/fieldCheck.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cuda/RFieldComparison.h>

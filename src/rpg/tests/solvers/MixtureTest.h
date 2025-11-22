@@ -118,20 +118,19 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
-
-      if (verbose()) {
-         std::cout << "Propagator(0,0), Q = "
-                   << mixture.polymer(0).propagator(0, 0).computeQ() << "\n";
-         std::cout << "Propagator(1,0), Q = "
-                   << mixture.polymer(0).propagator(1, 0).computeQ() << "\n";
-         std::cout << "Propagator(1,1), Q = "
-                   << mixture.polymer(0).propagator(1, 1).computeQ() << "\n";
-         std::cout << "Propagator(0,1), Q = "
-                   << mixture.polymer(0).propagator(0, 1).computeQ() << "\n";
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 0).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(1,1), Q = " << q11 << "\n";
       }
 
    }
@@ -207,26 +206,22 @@ public:
       // Solve MDE
       mixture.compute(wFields, cFields);
 
-      // Test if same Q is obtained from different vertices
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
-
-      if (verbose()) {
-         std::cout << "Propagator(0,0), Q = "
-                   << mixture.polymer(0).propagator(0, 0).computeQ() 
-		   << "\n";
-         std::cout << "Propagator(1,0), Q = "
-                   << mixture.polymer(0).propagator(1, 0).computeQ() 
-		   << "\n";
-         std::cout << "Propagator(1,1), Q = "
-                   << mixture.polymer(0).propagator(1, 1).computeQ() 
-		   << "\n";
-         std::cout << "Propagator(0,1), Q = "
-                   << mixture.polymer(0).propagator(0, 1).computeQ() 
-		   << "\n";
+      // Test if same Q is obtained from different methods
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 0).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(1,1), Q = " << q11 << "\n";
       }
+
 
    }
 
@@ -295,20 +290,19 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
-
-      if (verbose()) {
-         std::cout << "Propagator(0,0), Q = "
-                   << mixture.polymer(0).propagator(0, 0).computeQ() << "\n";
-         std::cout << "Propagator(1,0), Q = "
-                   << mixture.polymer(0).propagator(1, 0).computeQ() << "\n";
-         std::cout << "Propagator(1,1), Q = "
-                   << mixture.polymer(0).propagator(1, 1).computeQ() << "\n";
-         std::cout << "Propagator(0,1), Q = "
-                   << mixture.polymer(0).propagator(0, 1).computeQ() << "\n";
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 0).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(1,1), Q = " << q11 << "\n";
       }
 
    }
@@ -379,24 +373,19 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
-
-      if (verbose()) {
-         std::cout << "Propagator(0,0), Q = "
-                   << mixture.polymer(0).propagator(0, 0).computeQ() 
-		   << "\n";
-         std::cout << "Propagator(1,0), Q = "
-                   << mixture.polymer(0).propagator(1, 0).computeQ() 
-		   << "\n";
-         std::cout << "Propagator(1,1), Q = "
-                   << mixture.polymer(0).propagator(1, 1).computeQ() 
-		   << "\n";
-         std::cout << "Propagator(0,1), Q = "
-                   << mixture.polymer(0).propagator(0, 1).computeQ() 
-		   << "\n";
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 0).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(1,1), Q = " << q11 << "\n";
       }
 
    }
@@ -458,20 +447,19 @@ public:
       mixture.compute(wFields, cFields);
 
       // Test if same Q is obtained from different methods
-      double Q = mixture.polymer(0).propagator(1, 0).computeQ();
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 1).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(0, 0).computeQ()));
-      TEST_ASSERT(eq(Q, mixture.polymer(0).propagator(1, 1).computeQ()));
-
-      if (verbose()) {
-         std::cout << "Propagator(0,0), Q = "
-                   << mixture.polymer(0).propagator(0, 0).computeQ() << "\n";
-         std::cout << "Propagator(1,0), Q = "
-                   << mixture.polymer(0).propagator(1, 0).computeQ() << "\n";
-         std::cout << "Propagator(1,1), Q = "
-                   << mixture.polymer(0).propagator(1, 1).computeQ() << "\n";
-         std::cout << "Propagator(0,1), Q = "
-                   << mixture.polymer(0).propagator(0, 1).computeQ() << "\n";
+      double q00, q10, q01, q11;
+      mixture.polymer(0).propagator(0, 0).computeQ(q00);
+      mixture.polymer(0).propagator(0, 1).computeQ(q01);
+      mixture.polymer(0).propagator(1, 0).computeQ(q10);
+      mixture.polymer(0).propagator(1, 1).computeQ(q11);
+      TEST_ASSERT(eq(q01, q10));
+      TEST_ASSERT(eq(q01, q00));
+      TEST_ASSERT(eq(q01, q11));
+      if (verbose() > 0) {
+         std::cout << "Propagator(0,0), Q = " << q00 << "\n";
+         std::cout << "Propagator(0,1), Q = " << q01 << "\n";
+         std::cout << "Propagator(1,0), Q = " << q10 << "\n";
+         std::cout << "Propagator(1,1), Q = " << q11 << "\n";
       }
 
    }
