@@ -15,13 +15,13 @@ include $(SRC_DIR)/rpg/sources.mk
 include $(SRC_DIR)/rpg/patterns.mk
 
 #-----------------------------------------------------------------------
-# Paths to pscf_pg program files
+# Paths to pscf_rpg program files
 
-# Base path for *.o and *.d files for pscf_pg
-PSCF_PG=$(BLD_DIR)/rpg/pscf_pg
+# Base path for *.o and *.d files for pscf_rpg
+PSCF_PG=$(BLD_DIR)/rpg/pscf_rpg
 
-# Path to pscf_pg executable
-PSCF_PG_EXE=$(BIN_DIR)/pscf_pg
+# Path to pscf_rpg executable
+PSCF_PG_EXE=$(BIN_DIR)/pscf_rpg
 
 #-----------------------------------------------------------------------
 # Main targets 
@@ -37,19 +37,19 @@ clean:
 	rm -f lib*.a 
 	cd tests; $(MAKE) clean
 
-# Main pscf_pg executable file
+# Main pscf_rpg executable file
 $(PSCF_PG_EXE): $(PSCF_PG).o $(PSCF_LIBS)
 	$(NVXX) $(LDFLAGS) -o $(PSCF_PG_EXE) $(PSCF_PG).o $(LIBS)
 
 # Short phony target for executable file (for convenience)
-pscf_pg:
+pscf_rpg:
 	$(MAKE) $(PSCF_PG_EXE)
 
-# Note: In the linking rule for pscf_pg, we include the list $(PSCF_LIBS) 
+# Note: In the linking rule for pscf_rpg, we include the list $(PSCF_LIBS) 
 # of PSCF-specific libraries as pre-requisistes but link to the full list 
 # that includes relevant external libraries.
 
-.PHONY: all clean pscf_pg
+.PHONY: all clean pscf_rpg
 
 #-----------------------------------------------------------------------
 # Include dependency files

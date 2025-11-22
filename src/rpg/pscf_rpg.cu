@@ -13,7 +13,7 @@ namespace Pscf {
 namespace Rpg {
 
    /**
-   * Function template for main pscf_pg program.
+   * Function template for main pscf_rpg program.
    *
    * \ingroup Pscf_Rpg_Module
    *
@@ -41,7 +41,7 @@ namespace Rpg {
 }
 
 /**
-* Main pscf_pg program.
+* Main pscf_rpg program.
 *
 * \param argc  number of command line arguments
 * \param argv  array of command line arguments

@@ -1,5 +1,5 @@
 This directory contains C++ and C++/CUDA code used by a GPU-accelerated
-program pscf_pg for self-consistent field theory (SCFT) and field theoretic
+program pscf_rpg for self-consistent field theory (SCFT) and field theoretic
 simulation (FTS) with real fields and periodic boundary conditions.  All 
 FTS algorithms implemented in this directory rely on a partial saddle point
 approximation (PS-FTS).  Code in this directory are generally very closely 
@@ -29,7 +29,7 @@ tests/       - unit tests for code in src/rpg
 C++/CUDA Source File:
 ---------------------
 
-pscf_pg.cu   - Main program for real perodic systems using a GPU
+pscf_rpg.cu   - Main program for real perodic systems using a GPU
 
 Makefile and makefile fragments:
 --------------------------------
@@ -42,6 +42,6 @@ include.mk   - makefile include statements (makefile fragment)
 Doxygen documentation files:
 ----------------------------
 
-pscf_pg.dox  - command line interface for pscf_pg main program
+pscf_rpg.dox  - command line interface for pscf_rpg main program
 rpg.mod      - definition of Pscf_Rpg_Module doxygen topic module 
 

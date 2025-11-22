@@ -18,7 +18,7 @@ Subdirectories (with corresponding C++ namespace names in parentheses):
 
   Directories r1d, rpc, rpg, and cpc are "program level" directories 
   that each contain code that is only accessible to and used by a single 
-  executable program, namely, pscf_1d, pscf_pc, pscf_pg, or pscf_cpc.
+  executable program, namely, pscf_1d, pscf_pc, pscf_rpg, or pscf_cpc.
 
   Directories util, pscf, and prdc each contain code that may be used in
   multiple programs. Names defined in files located in the util and pscf 

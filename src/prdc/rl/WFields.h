@@ -76,7 +76,7 @@ namespace Rl {
    *  - Subclass Rpg::WFields \<D\> is derived from a partial
    *    specialization of WFields with template parameters 
    *    RFT = Cuda::RFT \<D\> and FIT = Rpg::FIT \<D\> , and is used in
-   *    the pscf_pg GPU accelerated program.
+   *    the pscf_rpg GPU accelerated program.
    *
    * <b> Signal </b>: A WFields owns an instance of class
    * Util::Signal<void> that notifies all observers whenever the fields
