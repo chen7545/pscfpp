@@ -2,7 +2,7 @@
 namespace Pscf{
 
    /**
-   * Flory-Huggins theory of spatially homogeneous mixtures.
+   * Flory-Huggins theory of homogeneous incompressible mixtures.
    */
    namespace FH{
 

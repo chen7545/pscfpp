@@ -21,7 +21,7 @@ namespace FH {
    /**
    * Flory-Huggins excess free energy model.
    *
-   * \ingroup Pscf_Inter_Module
+   * \ingroup Pscf_FloryHuggins_Module
    */
    class Interaction : public ParamComposite
    {
