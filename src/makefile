@@ -59,7 +59,7 @@ pscf_cpc:
 
 ifdef PSCF_CUDA
 # Build pscf_rpc GPU code for real periodic fields (install in BIN_DIR)
-pscf_pg:
+pscf_rpg:
 	cd util; $(MAKE) all
 	cd pscf; $(MAKE) all
 	cd prdc; $(MAKE) all

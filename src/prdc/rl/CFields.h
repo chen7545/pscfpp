@@ -64,7 +64,7 @@ namespace Rl {
    *  - Subclass Rpg::CFields \<D\> is derived from a partial
    *    specialization of CFields with template parameters
    *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and
-   *    is used in the pscf_pg GPU accelerated program.
+   *    is used in the pscf_rpg GPU accelerated program.
    *
    * \ingroup Prdc_Rl_Module
    */
