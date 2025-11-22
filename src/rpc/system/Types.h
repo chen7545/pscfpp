@@ -10,11 +10,13 @@
 
 // Forward declarations
 namespace Pscf {
-   class Interaction;
    template <typename WT> class Species;
    template <typename WT> class PolymerSpecies;
    template <typename WT> class SolventSpecies;
    template <typename WT> class MixtureBase;
+   namespace FH {
+      class Interaction;
+   }
    namespace Prdc {
       class Environment;
       namespace Cpu {
@@ -82,7 +84,7 @@ namespace Rpc {
       using SolventSpecies = Pscf::SolventSpecies<double>;
       using MixtureBase = Pscf::MixtureBase<double>;
 
-      using Interaction = Pscf::Interaction;
+      using Interaction = Pscf::FH::Interaction;
       using Domain = Rpc::Domain<D>;
       using FieldIo = Rpc::FieldIo<D>;
       using ScftThermo = Rpc::ScftThermo<D>;

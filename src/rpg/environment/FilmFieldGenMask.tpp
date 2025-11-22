@@ -19,7 +19,7 @@
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/paramIdConversions.h>
 #include <prdc/cuda/resources.h>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <cmath>
 
 namespace Pscf {

@@ -14,7 +14,7 @@
 #include <prdc/cuda/resources.h>
 #include <prdc/cuda/complex.h>
 
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
 
 #include <util/misc/FileMaster.h>

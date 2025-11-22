@@ -29,13 +29,13 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      FloryHuggins::Clump clump;
+      FH::Clump clump;
    } 
 
    void testSetters()
    {
       printMethod(TEST_FUNC);
-      FloryHuggins::Clump clump;
+      FH::Clump clump;
       clump.setMonomerId(0);
       clump.setSize(2.0);
       TEST_ASSERT(clump.monomerId() == 0);
@@ -45,7 +45,7 @@ public:
    void testReadWrite() {
       printMethod(TEST_FUNC);
 
-      FloryHuggins::Clump clump;
+      FH::Clump clump;
       std::ifstream in;
       openInputFile("in/Clump", in);
 

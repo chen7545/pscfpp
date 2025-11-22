@@ -17,8 +17,8 @@
 #include <r1d/misc/HomogeneousComparison.h>
 #include <r1d/misc/FieldIo.h>
 
-#include <pscf/inter/Interaction.h>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/floryHuggins/Clump.h>
 
 #include <util/format/Str.h>
@@ -66,7 +66,7 @@ namespace R1d
       setClassName("System"); 
 
       fieldIo_.associate(domain_, fileMaster_);
-      interactionPtr_ = new Interaction(); 
+      interactionPtr_ = new FH::Interaction(); 
       iteratorFactoryPtr_ = new IteratorFactory(*this); 
       sweepFactoryPtr_ = new SweepFactory(*this);
 
@@ -175,7 +175,7 @@ namespace R1d
       readParamComposite(in, mixture());
       hasMixture_ = true;
 
-      // Initialize FloryHuggins::Mixture object
+      // Initialize FH::Mixture object
       homogeneous_.initialize(mixture());
 
       interaction().setNMonomer(mixture().nMonomer());

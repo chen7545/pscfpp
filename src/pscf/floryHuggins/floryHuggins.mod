@@ -4,7 +4,7 @@ namespace Pscf{
    /**
    * Flory-Huggins theory of spatially homogeneous mixtures.
    */
-   namespace FloryHuggins{
+   namespace FH{
 
       /**
       * \defgroup Pscf_FloryHuggins_Module Flory-Huggins Theory

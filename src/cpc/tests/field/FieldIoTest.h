@@ -19,7 +19,6 @@
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/mesh/MeshIterator.h>
-#include <pscf/inter/Interaction.h>
 
 #include <util/containers/DArray.h>
 #include <util/misc/FileMaster.h>

@@ -10,7 +10,9 @@
 
 // Forward declarations
 namespace Pscf {
-   class Interaction;
+   namespace FH {
+     class Interaction;
+   }
    namespace Prdc {
       class Environment;
       namespace Cuda {
@@ -74,7 +76,7 @@ namespace Rpg {
       using Block = Rpg::Block<D>;
       using Propagator = Rpg::Propagator<D>;
 
-      using Interaction = Pscf::Interaction;
+      using Interaction = Pscf::FH::Interaction;
       using Domain = Rpg::Domain<D>;
       using FieldIo = Rpg::FieldIo<D>;
       using ScftThermo = Rpg::ScftThermo<D>;
@@ -82,9 +84,9 @@ namespace Rpg {
       using WFields = Rpg::WFields<D>;
       using CFields = Rpg::CFields<D>;
       using Mask = Rpg::Mask<D>;
-
       using Environment = Prdc::Environment;
       using EnvironmentFactory = Rpg::EnvironmentFactory<D>;
+
       using Iterator = Rpg::Iterator<D>;
       using IteratorFactory = Rpg::IteratorFactory<D>;
       using Sweep = Rpg::Sweep<D>;

@@ -27,13 +27,13 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      FloryHuggins::Molecule molecule;
+      FH::Molecule molecule;
    } 
 
    void testReadWrite() {
       printMethod(TEST_FUNC);
 
-      FloryHuggins::Molecule molecule;
+      FH::Molecule molecule;
       std::ifstream in;
       openInputFile("in/Molecule", in);
 
@@ -53,7 +53,7 @@ public:
    void testSetters()
    {
       printMethod(TEST_FUNC);
-      FloryHuggins::Molecule molecule;
+      FH::Molecule molecule;
 
       molecule.setNClump(2);
       molecule.clump(0).setMonomerId(0);

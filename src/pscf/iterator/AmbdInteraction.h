@@ -8,10 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/inter/Interaction.h>       // base class
-#include <util/containers/Array.h>        // argument (template)
-#include <util/containers/Matrix.h>       // argument (template)
-#include <util/global.h>                  
+#include <util/containers/DMatrix.h>       // member
+
+// Forward declaration
+namespace Pscf {
+   namespace FH {
+      class Interaction;
+   }
+}
 
 namespace Pscf {
 
@@ -63,7 +67,7 @@ namespace Pscf {
       *
       * \param interaction Interaction object with current chi matrix
       */
-      void update(Interaction const & interaction);
+      void update(FH::Interaction const & interaction);
 
       /**
       * Return one element of the chi matrix.

@@ -6,13 +6,13 @@
 */
 
 #include "Mixture.tpp"
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/math/LuSolver.h>
 #include <cmath>
 
 
 namespace Pscf {
-namespace FloryHuggins {
+namespace FH {
 
    using namespace Util;
 
@@ -417,5 +417,5 @@ namespace FloryHuggins {
 
    template void Mixture::initialize<double>(MixtureBase<double> const & );
 
-} // namespace FloryHuggins
+} // namespace FH
 } // namespace Pscf

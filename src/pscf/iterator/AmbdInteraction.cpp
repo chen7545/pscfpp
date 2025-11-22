@@ -6,6 +6,7 @@
 */
 
 #include "AmbdInteraction.h"
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/math/LuSolver.h>
 
 namespace Pscf 
@@ -42,7 +43,7 @@ namespace Pscf
       isAllocated_ = true;
    }
 
-   void AmbdInteraction::update(Interaction const & interaction)
+   void AmbdInteraction::update(FH::Interaction const & interaction)
    {
 
       // Set nMonomer and allocate memory if not done previously

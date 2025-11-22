@@ -85,22 +85,22 @@ namespace R1d {
       /**
       * Get interaction (i.e., excess free energy model) by reference.
       */
-      const Interaction& interaction() const;
+      const FH::Interaction& interaction() const;
 
       /**
       * Get interaction (i.e., excess free energy model) by reference.
       */
-      Interaction& interaction();
+      FH::Interaction& interaction();
 
       /**
       * Get homogeneous mixture by const reference.
       */
-      FloryHuggins::Mixture const & homogeneous() const;
+      FH::Mixture const & homogeneous() const;
 
       /**
       * Get homogeneous mixture by non-const reference.
       */
-      FloryHuggins::Mixture& homogeneous();
+      FH::Mixture& homogeneous();
 
       /**
       * Get FileMaster by reference.
@@ -207,18 +207,18 @@ namespace R1d {
    }
 
    /*
-   * Get the Interaction (excess free energy model).
+   * Get the FH::Interaction (excess free energy model).
    */
-   inline const Interaction& SystemAccess::interaction() const
+   inline const FH::Interaction& SystemAccess::interaction() const
    {  
       UTIL_ASSERT(systemPtr_);
       return systemPtr_->interaction(); 
    }
 
    /*
-   * Get the Interaction (excess free energy model).
+   * Get the FH::Interaction (excess free energy model).
    */
-   inline Interaction& SystemAccess::interaction()
+   inline FH::Interaction& SystemAccess::interaction()
    {  
       UTIL_ASSERT(systemPtr_);
       return systemPtr_->interaction(); 
@@ -234,10 +234,10 @@ namespace R1d {
    }
 
    /*
-   * Get the FloryHuggins::Mixture object.
+   * Get the FH::Mixture object.
    */
    inline 
-   FloryHuggins::Mixture& SystemAccess::homogeneous()
+   FH::Mixture& SystemAccess::homogeneous()
    {  
       UTIL_ASSERT(systemPtr_);
       return systemPtr_->homogeneous(); 

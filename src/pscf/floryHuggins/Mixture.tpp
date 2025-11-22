@@ -17,7 +17,7 @@
 #include <pscf/chem/Edge.h>
 
 namespace Pscf {
-namespace FloryHuggins {
+namespace FH {
 
    using namespace Util;
 
@@ -85,7 +85,7 @@ namespace FloryHuggins {
             }
             molecule(i).setNClump(nc);
     
-            // Set clump properties for this FloryHuggins::Molecule
+            // Set clump properties for this FH::Molecule
             k = 0; // Clump index
             for (j = 0; j < nm; ++j) {
                if (c_[j] > 1.0E-8) {
@@ -118,6 +118,6 @@ namespace FloryHuggins {
 
    }
 
-} // namespace FloryHuggins
+} // namespace FH
 } // namespace Pscf
 #endif

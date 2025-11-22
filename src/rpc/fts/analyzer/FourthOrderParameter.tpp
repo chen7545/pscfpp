@@ -12,7 +12,7 @@
 #include <prdc/cpu/FFT.h>
 #include <prdc/crystal/shiftToMinimum.h>
 
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
 

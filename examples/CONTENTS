@@ -3,14 +3,14 @@ calculations that use different PSCF programs:
 
   Directory    Program     Description
   ---------    --------    -------------
-   1d/         pscf_1d     one-dimensional (CPU)
-   pc/         pscf_pc     periodic  (CPU)
-   pg/         pscf_pg     periodic  (GPU)
+  r1d/         pscf_r1d    one-dimensional (CPU)
+  rpc/         pscf_rpc    periodic  (CPU)
+  rpg/         pscf_rpg    periodic  (GPU)
 
-The top level subdirectories of pc/ and pg/ each contain examples of 
-self-consistent field (scf/) or field theoretic simulation (fts/) 
-calculations. Top level subdirectories for 1d/ contain scft simulations
-for different types of system. 
+The top level subdirectories of rpc/ and rpg/ each contain examples 
+of self-consistent field (scf/) or field theoretic simulation (fts/) 
+calculations. Top level subdirectories for r1d/ contain scft 
+simulations for different types of system. 
 
 Most example directories contain an executable file named "run" that 
 can be used to run the example, by invoking "./run".

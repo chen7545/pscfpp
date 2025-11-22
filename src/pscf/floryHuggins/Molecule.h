@@ -17,16 +17,16 @@
 #include <cmath>
 
 namespace Pscf {
-   namespace FloryHuggins {
+   namespace FH {
 
       using namespace Util;
 
       /**
       * Descriptor of a molecular species in a homogeneous mixture.
       *
-      * A FloryHuggins::Molecule has:
+      * A FH::Molecule has:
       *
-      *  - An array of FloryHuggins::Clump objects
+      *  - An array of FH::Clump objects
       *  - An overall size (volume/monomer volume)
       *
       * Each Clump has a monomer type id and a size. The size is the
@@ -124,14 +124,14 @@ namespace Pscf {
    * Number of clumps.
    */
    inline 
-   int FloryHuggins::Molecule::nClump() const
+   int FH::Molecule::nClump() const
    {  return nClump_; }
 
    /*
    * Total size of all clumps = volume / reference volume
    */
    inline 
-   double FloryHuggins::Molecule::size() const
+   double FH::Molecule::size() const
    {
       UTIL_CHECK(hasSize_);
       return size_;
@@ -141,14 +141,14 @@ namespace Pscf {
    * Get a specified Clump (non-constant reference)
    */
    inline 
-   FloryHuggins::Clump& FloryHuggins::Molecule::clump(int id)
+   FH::Clump& FH::Molecule::clump(int id)
    {  return clumps_[id]; }
 
    /*
    * Get a specified Clump (constant reference)
    */
    inline 
-   const FloryHuggins::Clump& FloryHuggins::Molecule::clump(int id) const
+   const FH::Clump& FH::Molecule::clump(int id) const
    {  return clumps_[id]; }
 
 }

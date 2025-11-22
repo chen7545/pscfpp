@@ -17,13 +17,15 @@
 
 // Forward declarations
 namespace Pscf {
-   class Interaction;
    class LuSolver;
    template <typename WT> class MixtureBase;
+   namespace FH {
+      class Interaction;
+   }
 }
 
 namespace Pscf {
-namespace FloryHuggins {
+namespace FH {
 
    using namespace Util;
 
@@ -340,6 +342,6 @@ namespace FloryHuggins {
    extern template 
    void Mixture::initialize<double>(MixtureBase<double> const &);
 
-} // namespace FloryHuggins
+} // namespace FH
 } // namespace Pscf
 #endif

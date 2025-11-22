@@ -14,7 +14,7 @@
 #include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 
 namespace Pscf {
 namespace Rpg

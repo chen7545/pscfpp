@@ -13,7 +13,7 @@
 #include <iostream>
 
 namespace Pscf { 
-namespace FloryHuggins { 
+namespace FH { 
 
    using namespace Util;
 

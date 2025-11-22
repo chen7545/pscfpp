@@ -14,6 +14,7 @@
 #include <util/global.h>                  
 
 namespace Pscf {
+namespace FH {
 
    using namespace Util;
 
@@ -174,5 +175,6 @@ namespace Pscf {
    inline double Interaction::chiInverse(int i, int j) const
    {  return chiInverse_(i, j); }
 
+} // namespace FH
 } // namespace Pscf
 #endif

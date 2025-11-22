@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/iterator/AmbdInteraction.h>
 #include <util/param/BracketPolicy.h>
 

@@ -13,7 +13,7 @@
 #include <prdc/cuda/Reduce.h>
 #include <prdc/cuda/RField.h>
 #include <prdc/rl/ScftThermo.tpp>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 
 namespace Pscf {
 

@@ -9,7 +9,7 @@
 #include <r1d/System.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/chem/Ensemble.h>
 #include <util/misc/Log.h>
 

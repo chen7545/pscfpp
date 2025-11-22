@@ -9,7 +9,6 @@
 */
 
 #include "NanException.h"
-#include <pscf/inter/Interaction.h>
 #include <pscf/math/LuSolver.h>
 #include <util/format/Dbl.h>
 #include <util/format/Int.h>

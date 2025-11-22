@@ -9,6 +9,7 @@
 #include <pscf/math/LuSolver.h>
 
 namespace Pscf {
+namespace FH {
 
    using namespace Util;
 
@@ -177,4 +178,5 @@ namespace Pscf {
       }
    }
 
+} // namespace FH
 } // namespace Pscf

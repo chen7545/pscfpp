@@ -10,7 +10,7 @@
 #include <r1d/solvers/Block.h>
 #include <r1d/solvers/Polymer.h>
 #include <r1d/solvers/Solvent.h>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/floryHuggins/Clump.h>
 
 #include <util/format/Str.h>

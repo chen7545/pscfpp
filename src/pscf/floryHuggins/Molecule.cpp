@@ -12,7 +12,7 @@ namespace Pscf{
    /*
    * Constructor.
    */
-   FloryHuggins::Molecule::Molecule()
+   FH::Molecule::Molecule()
     : clumps_(),
       nClump_(0),
       size_(0.0),
@@ -22,13 +22,13 @@ namespace Pscf{
    /*
    * Destructor.
    */
-   FloryHuggins::Molecule::~Molecule()
+   FH::Molecule::~Molecule()
    {}
 
    /*
    * Read chemical composition from file. 
    */
-   void FloryHuggins::Molecule::readParameters(std::istream& in)
+   void FH::Molecule::readParameters(std::istream& in)
    {
       UTIL_ASSERT(clumps_.capacity() == 0);
 
@@ -37,14 +37,14 @@ namespace Pscf{
       // Allocate all arrays
       clumps_.allocate(nClump_);
 
-      readDArray<FloryHuggins::Clump>(in, "clumps", clumps_, nClump_);
+      readDArray<FH::Clump>(in, "clumps", clumps_, nClump_);
       computeSize();
    }
 
    /*
    * Allocate memory for specified number of clumps.
    */
-   void FloryHuggins::Molecule::setNClump(int nClump)
+   void FH::Molecule::setNClump(int nClump)
    {
       UTIL_ASSERT(clumps_.capacity() == 0);
 
@@ -55,7 +55,7 @@ namespace Pscf{
    /*
    * Compute molecular size, by adding all clump sizes.
    */
-   void FloryHuggins::Molecule::computeSize()
+   void FH::Molecule::computeSize()
    {
       UTIL_ASSERT(clumps_.capacity() > 0);
       UTIL_ASSERT(clumps_.capacity() == nClump_);

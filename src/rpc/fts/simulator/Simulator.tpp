@@ -22,7 +22,7 @@
 #include <rpc/fts/ramp/Ramp.h>
 #include <rpc/fts/ramp/RampFactory.h>
 
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>

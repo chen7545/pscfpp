@@ -31,7 +31,7 @@
 #include <prdc/cuda/RFieldDft.h>
 #include <prdc/environment/Environment.h>
 
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/cuda/ThreadArray.h>
 #include <pscf/cuda/ThreadMesh.h>
 

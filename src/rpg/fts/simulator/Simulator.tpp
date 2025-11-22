@@ -26,7 +26,7 @@
 #include <prdc/cuda/resources.h>
 
 #include <pscf/cuda/CudaRandom.h>
-#include <pscf/inter/Interaction.h>
+#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/math/IntVec.h>
 
 #include <util/misc/Timer.h>

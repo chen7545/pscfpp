@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+// Header file includes
 #include <util/param/ParamComposite.h>    // base class
 #include <r1d/misc/FieldIo.h>             // member
 #include <r1d/solvers/Mixture.h>          // member
@@ -17,18 +18,22 @@
 #include <util/containers/DArray.h>       // member template
 #include <util/containers/Array.h>        // function parameter
 
+// Forward declarations
 namespace Pscf {
+   namespace FH {
+      class Interaction;
+   }
+   namespace R1d {
+      class Iterator;
+      class IteratorFactory;
+      class Sweep;
+      class SweepFactory;
+      using namespace Util;
+   }
+}
 
-   class Interaction;
-
-namespace R1d
-{
-
-   class Iterator;
-   class IteratorFactory;
-   class Sweep;
-   class SweepFactory;
-   using namespace Util;
+namespace Pscf {
+namespace R1d {
 
    /**
    * Main class in SCFT simulation of one system.
@@ -38,7 +43,7 @@ namespace R1d
    * coordinates. Such a System has (among other components):
    *
    *    - a Mixture (a container for polymer and solvent solvers)
-   *    - an Interaction (list of binary chi parameters)
+   *    - an FH::Interaction (list of binary chi parameters)
    *    - a Domain (description of the 1D domain and discretization)
    *    - monomer chemical potential fields 
    *    - monomer concentration fields 
@@ -348,28 +353,28 @@ namespace R1d
       *
       * The array capacity is equal to the number of monomer types.
       */
-      DArray<CField>& cFields();
+      DArray<Field>& cFields();
 
       /**
       * Get const array of all chemical potential fields.
       *
       * The array capacity is equal to the number of monomer types.
       */
-      DArray<CField> const & cFields() const;
+      DArray<Field> const & cFields() const;
 
       /**
       * Get chemical potential field for a specific monomer type.
       *
       * \param monomerId integer monomer type index
       */
-      CField& cField(int monomerId);
+      Field& cField(int monomerId);
 
       /**
       * Get const chemical potential field for a specific monomer type.
       *
       * \param monomerId integer monomer type index
       */
-      CField const & cField(int monomerId) const;
+      Field const & cField(int monomerId) const;
 
       ///@}
       /// \name Member object accessors 
@@ -388,12 +393,12 @@ namespace R1d
       /**
       * Get interaction (i.e., excess free energy) by reference.
       */
-      Interaction & interaction();
+      FH::Interaction & interaction();
 
       /**
       * Get interaction (i.e., excess free energy) by const reference.
       */
-      Interaction const & interaction() const;
+      FH::Interaction const & interaction() const;
 
       /**
       * Get spatial domain (including grid info) by reference.
@@ -408,7 +413,7 @@ namespace R1d
       /**
       * Get the homogeneous Flory-Huggins mixture (for reference calculations).
       */
-      FloryHuggins::Mixture& homogeneous();
+      FH::Mixture& homogeneous();
 
       /**
       * Get FileMaster by reference.
@@ -442,12 +447,12 @@ namespace R1d
       /**
       * Homogeneous Flory-Huggins mixture, for reference.
       */
-      FloryHuggins::Mixture homogeneous_;
+      FH::Mixture homogeneous_;
 
       /**
-      * Pointer to Interaction (excess free energy model).
+      * Pointer to FH::Interaction (excess free energy model).
       */
-      Interaction* interactionPtr_;
+      FH::Interaction* interactionPtr_;
 
       /**
       * Pointer to associated iterator.
@@ -481,7 +486,7 @@ namespace R1d
       *
       * Indexed by monomer typeId, size = nMonomer.
       */
-      DArray<CField> cFields_;
+      DArray<Field> cFields_;
 
       /**
       * Work array (size = # of grid points).
@@ -569,18 +574,18 @@ namespace R1d
    { return mixture_; }
 
    /*
-   * Get the Interaction (excess free energy model).
+   * Get the FH::Interaction (excess free energy model).
    */
-   inline Interaction & System::interaction()
+   inline FH::Interaction & System::interaction()
    {
       UTIL_ASSERT(interactionPtr_);
       return *interactionPtr_;
    }
 
    /*
-   * Get the Interaction (excess free energy) by const reference.
+   * Get the FH::Interaction (excess free energy) by const reference.
    */
-   inline Interaction const & System::interaction() const
+   inline FH::Interaction const & System::interaction() const
    {
       UTIL_ASSERT(interactionPtr_);
       return *interactionPtr_;
@@ -593,10 +598,10 @@ namespace R1d
    { return domain_; }
 
    /*
-   * Get the FloryHuggins::Mixture object.
+   * Get the FH::Mixture object.
    */
    inline 
-   FloryHuggins::Mixture& System::homogeneous()
+   FH::Mixture& System::homogeneous()
    {  return homogeneous_; }
 
    /*
@@ -646,26 +651,26 @@ namespace R1d
    * Get array of all monomer concentration fields.
    */
    inline
-   DArray< System::CField >& System::cFields()
+   DArray< System::Field >& System::cFields()
    {  return cFields_; }
 
    /*
    * Get const array of all monomer concentration fields.
    */
    inline
-   DArray< System::CField > const & System::cFields() const
+   DArray< System::Field > const & System::cFields() const
    {  return cFields_; }
 
    /*
    * Get a single monomer concentration field.
    */
-   inline System::CField& System::cField(int id)
+   inline System::Field& System::cField(int id)
    {  return cFields_[id]; }
 
    /*
    * Get a single const monomer concentration field.
    */
-   inline System::CField const & System::cField(int id) const
+   inline System::Field const & System::cField(int id) const
    {  return cFields_[id]; }
 
    /*
