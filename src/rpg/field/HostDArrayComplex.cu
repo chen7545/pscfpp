@@ -16,21 +16,21 @@ namespace Rpg {
    * Default constructor.
    */
    HostDArrayComplex::HostDArrayComplex() 
-    : HostDArray<Complex>()
+    : HostDArray<ValueType>()
    {}
 
    /*
    * Allocating constructor.
    */
    HostDArrayComplex::HostDArrayComplex(int capacity)
-    : HostDArray<Complex>(capacity)
+    : HostDArray<ValueType>(capacity)
    {}
 
    /*
    * Copy constructor.
    */
    HostDArrayComplex::HostDArrayComplex(HostDArrayComplex const& other)
-    : HostDArray<Complex>(other)
+    : HostDArray<ValueType>(other)
    {}
 
    /*

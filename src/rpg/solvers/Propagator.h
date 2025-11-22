@@ -148,8 +148,10 @@ namespace Rpg {
       * This function computes the partition function Q for the molecule
       * as a spatial average of the pointwise product of the initial/head 
       * slice for this propagator and final/tail slice of its partner.
+      *
+      * \param Q output value, spatial average of q*q^{+} at head
       */
-      double computeQ();
+      void computeQ(double & Q);
 
       /**
       * Return q-field at specified slice.

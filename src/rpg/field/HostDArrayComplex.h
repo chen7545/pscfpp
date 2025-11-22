@@ -36,17 +36,17 @@ namespace Rpg {
       /**
       * Complex number type.
       */
-      typedef Prdc::Cuda::cudaComplex Complex;
+      using ComplexType = Prdc::Cuda::cudaComplex;
 
       /**
       * Type of real or imaginary part of a Complex number.
       */
-      typedef Prdc::Cuda::cudaReal    Real;
+      using RealType = Prdc::Cuda::cudaReal;
 
       /**
       * Base class type.
       */
-      typedef HostDArray<Complex> Base;
+      typedef HostDArray<Prdc::Cuda::cudaComplex> Base;
 
       // Member functions
 
