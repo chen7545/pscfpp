@@ -1,1 +1,1 @@
-pscf_pg -d 3 -e -p param -c command
+pscf_rpg -d 3 -e -p param -c command

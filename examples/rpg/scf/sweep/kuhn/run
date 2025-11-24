@@ -1,1 +1,1 @@
-pscf_pg -d 1 -p param -c command -e  > out/log
+pscf_rpg -d 1 -p param -c command -e  > out/log
