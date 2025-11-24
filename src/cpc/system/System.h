@@ -1,0 +1,67 @@
+#ifndef CPC_SYSTEM_H
+#define CPC_SYSTEM_H
+
+/*
+* PSCF - Polymer Self-Consistent Field
+*
+* Copyright 2015 - 2025, The Regents of the University of Minnesota
+* Distributed under the terms of the GNU General Public License.
+*/
+
+// Header file includes
+#include <prdc/cl/System.h>        // base class template
+#include <cpc/system/Types.h>      // base class template param
+#include <cpc/field/WFields.h>     // member of base class
+#include <cpc/field/CFields.h>     // member of base class
+
+namespace Pscf {
+namespace Cpc {
+
+   using namespace Util;
+   using namespace Prdc;
+
+   /**
+   * Main class for CL-FTS, representing a complete physical system.
+   *
+   * This class is derived from an instantiation of the class template
+   * Prdc::Cl::System, and has the same public interface as this base 
+   * class.  See the documentation of this base class template for 
+   * details.
+   *
+   * \ingroup Cpc_System_Module
+   */
+   template <int D>
+   class System : public Cl::System< D, Types<D> >
+   {
+   public:
+
+      /// Inherit default constructor.
+      using Cl::System< D, Types<D> >::System;
+
+      /// Copy constructor.
+      System(System<D> const &) = delete;
+
+      /// Destructor.
+      ~System() = default;
+
+      /// Assignment
+      System<D>& operator = (System<D> const &) = delete;
+
+   };
+
+   // Explicit instantiation declarations
+   extern template class System<1>;
+   extern template class System<2>;
+   extern template class System<3>;
+
+} // namespace Cpc
+namespace Prdc {
+
+   // Explicit instantiation declarations for base class template
+   extern template class Cl::System<1, Cpc::Types<1> >;
+   extern template class Cl::System<2, Cpc::Types<1> >;
+   extern template class Cl::System<3, Cpc::Types<1> >;
+
+} // namespace Prdc 
+} // namespace Pscf
+#endif

@@ -10,7 +10,9 @@
 
 // Forward declarations
 namespace Pscf {
-   class Interaction;
+   namespace FH {
+      class Interaction;
+   }
    template <typename WT> class Species;
    template <typename WT> class PolymerSpecies;
    template <typename WT> class SolventSpecies;
@@ -73,7 +75,7 @@ namespace Cpc {
       using SolventSpecies = Pscf::SolventSpecies<double>;
       using MixtureBase = Pscf::MixtureBase<double>;
 
-      using Interaction = Pscf::Interaction;
+      using Interaction = Pscf::FH::Interaction;
       using Domain = Cpc::Domain<D>;
       using FieldIo = Cpc::FieldIo<D>;
 

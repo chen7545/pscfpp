@@ -31,37 +31,38 @@ namespace Cl {
    /**
    * A container of complex-valued w fields.
    * 
-   * <b> Overview </b>: A WFields container has an array of nMonomer chemical
-   * fields (w fields) that are each associated with a monomer type. Fields 
-   * can be modified through set and read functions, accessed as const 
-   * references, or written to file. 
+   * <b> Overview </b>: A WFields container has an array of chemical
+   * fields (w fields) that are each associated with a monomer type. 
+   * Fields can be modified by the setFields and readFields member 
+   * functions, accessed as const references, or written to file.
    *
    * <b> Template parameters </b>: The template parameters represent:
    * 
    *     - D   : integer dimensionality of space, D=1,2, or 3
-   *     - CFT : field type for r-grid data (e.g., RField<D>)
+   *     - CFT : field type for complex data (e.g., CField<D>)
    *     - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
    * 
    * <b> Subclasses </b>: Partial specializations of WFields are used as
    * base classes for classes Cpc::WFields \<D \> and Rpg::WFields \<D\>:
    *
-   *  - Subclass Cpc::WFields \<D\> is derived from a partial
-   *    specialization of WFields with template parameters 
-   *    CFT = Cpu::CFT \<D\> and FIT = Cpc::FIT \<D\> , and is used in
-   *    the pscf_cpc CPU program.
+   *  - Subclass Cpc::WFields \<D\> is derived from an instantiation of 
+   *    this template with template arguments CFT = Cpu::CField \<D\> 
+   *    and FIT = Cpc::FieldIo \<D\> , and is used in the pscf_cpc CPU 
+   *    CL-FTS program.
    *
-   *  - Subclass Rpg::WFields \<D\> is derived from a partial
-   *    specialization of WFields with template parameters 
-   *    CFT = Cuda::CFT \<D\> and FIT = Rpg::FIT \<D\> , and is used in
-   *    the pscf_cpg GPU accelerated program.
+   *  - Subclass Rpg::WFields \<D\> is derived from an instantation of
+   *    this template with template arguments CFT = Cuda::CField \<D\> 
+   *    and FIT = Rpg::FieldIo \<D\> , and is used in the pscf_cpg GPU 
+   *    accelerated CL-FTS program.
    *
-   * <b> Signal </b>: A WFields owns an instance of class
+   * <b> Signal </b>: A WFields owns an instance of class 
    * Util::Signal<void> that notifies all observers whenever the fields
-   * owned by the WFields are modified by set or read functions. This 
-   * signal object may be accessed by reference using the signal() member 
-   * function. The Util::Signal<void>::addObserver function may used to 
-   * add "observer" objects and indicate a zero-parameter member function 
-   * of each observer that will be called whenever the fields are modified.
+   * owned by the WFields are modified by the set or readField function. 
+   * This signal object may be accessed by reference using the signal() 
+   * member function. The Util::Signal<void>::addObserver function may 
+   * used to add an "observer" object and indicate a zero-parameter member 
+   * function of each observer that will be called whenever the w fields 
+   * are modified.
    *
    * \ingroup Prdc_Cl_Module
    */
@@ -158,7 +159,7 @@ namespace Cl {
       void clear();
 
       /**
-      * Get a signal that notifies observers of field modification.
+      * Get the signal that notifies observers of w-field modification.
       */
       Signal<void>& signal();
 
@@ -210,8 +211,8 @@ namespace Cl {
       /**
       * Has field data been set since it was last cleared?
       *
-      * This flag is set true in setFields and readFields functions,
-      * and set false by the clear function.
+      * This flag is set true in the setFields and readFields functions,
+      * and set false in the clear function.
       */
       bool hasData() const;
 
@@ -278,7 +279,7 @@ namespace Cl {
       UnitCell<D> const * writeUnitCellPtr_;
 
       /*
-      * Pointer to an associated FIT (field IO) object.
+      * Pointer to an associated FIT (i.e., FieldIo<D>) object.
       */
       FIT const * fieldIoPtr_;
 
@@ -311,20 +312,20 @@ namespace Cl {
 
    // Inline member functions
 
-   // Mark data stored in this object as invalid or outdated.
+   // Mark field data stored in this object as invalid or outdated.
    template <int D, class CFT, class FIT> inline 
    void WFields<D,CFT,FIT>::clear()
    {  hasData_ = false; }
 
-   // Get the array of all fields (const reference)
+   // Get the array of all fields (const reference).
    template <int D, class CFT, class FIT> inline
    DArray< CFT > const & WFields<D,CFT,FIT>::fields() const
    {
-      UTIL_ASSERT(isAllocatedR_);
+      UTIL_ASSERT(isAllocated_);
       return fields_;
    }
 
-   // Get a single field (const reference)
+   // Get a single field (const reference).
    template <int D, class CFT, class FIT> inline
    CFT const & WFields<D,CFT,FIT>::field(int id) const
    {
@@ -360,7 +361,7 @@ namespace Cl {
    int WFields<D,CFT,FIT>::nMonomer() const
    {  return nMonomer_; }
 
-   // Get the associated the field Io (FIT) object (const reference).
+   // Get the associated FIT (FieldIo<D>) object (const reference).
    template <int D, class CFT, class FIT> inline 
    FIT const & WFields<D,CFT,FIT>::fieldIo() const
    {

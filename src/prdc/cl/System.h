@@ -30,29 +30,28 @@ namespace Cl {
    using namespace Util;
 
    /**
-   * Base class template for classes that represent a complete system.
+   * Base class template for a complex CL-FTS system.
    *
    * <b> Template parameters and typename aliases</b>:
    *
    *    D - integer dimensionality of space (D=1, 2, or 3)
-   *    T - "Types" class collection of aliases for other classes
+   *    T - "Types" class collection of aliases for related classes
    * 
-   * <b> Usage </b>: A specialization of System\<D, T\> is a base 
-   * class for each System\<D\> class defined in namespaces Cpc and Cpg, 
-   * for D=1, 2, or 3.  In this use, template parameter T is taken to be 
-   * an instance of a template \<int D\> class Types that is defined in 
-   * each of these two namespaces. For example, in namespace Cpc, for 
-   * each value of D, class Cpc::System\<D\> is derived from class
-   * Prdc::System\< D, Cpc::Types\<D\> >. For each such instance, 
-   * Types\<D\> defines a set of typename aliases for classes used in 
-   * the relevant namespace, for the specified value of D. For example,
-   * the typename Cpc::Types\<D\>::Mixture is an alias for the type 
-   * Cpc::Mixture<D> used to represent a mixture in the Cpc namespace 
-   * for systems of dimension D. See the definitions of Cpc::Types and 
-   * Cpg::Types for lists of all of the typenames defined in these two 
-   * class templates.
+   * <b> Usage </b>: An instantiation of System\<D, T\> is used as a base 
+   * class for System\<D\> classes defined in namespaces Cpc and Cpg, for
+   * D=1, 2, or 3.  In this usage, template parameter T must be an 
+   * instantiation named Types<D> of a template \<int D\> class Types that
+   * is defined in each of these two namespaces. For example, in namespace
+   * Cpc, for each value of D, class Cpc::System\<D\> is derived from the
+   * class Prdc::System\< D, Cpc::Types\<D\> >. For each such program
+   * level namespace, Types\<D\> defines a set of of typename aliases 
+   * for classes used in that namespace, for the specified value of D. 
+   * For example, the typename Cpc::Types\<D\>::Mixture is an alias for 
+   * the type Cpc::Mixture<D> used to represent a mixture in the Cpc 
+   * namespace for systems of dimension D. See the definitions of 
+   * Cpc::Types and Cpg::Types for details. 
    *
-   * In the remainder of the documentation for this template, System, 
+   * In the remainder of the documentation for this template, Cl::System, 
    * unqualified names such as "Mixture", "Iterator", etc. are often used 
    * as shorthand for typename aliases such as T::Mixture, T::Iterator 
    * that are defined in class T (i.e., in Cpc::Types\<D\> or 
@@ -67,10 +66,6 @@ namespace Cl {
    *    - a WFields container of monomer chemical potential (w) fields
    *    - a CFields container of monomer concentration (c) fields
    *    - a Simulator
-   *
-   * The container of external fields and the Mask are only needed to
-   * describe systems in inhomgeneous imposed environements (such as in 
-   * thin films) and are otherwise left empty and unused. 
    *
    * \ingroup Prdc_Cl_Module
    */
@@ -287,11 +282,6 @@ namespace Cl {
       */
       typename T::WFields const & w() const;
 
-      /**
-      * Get the external potential (h) fields (non-const).
-      */
-      typename T::WFields& h();
-
       ///@}
       /// \name Component Object Accessors
       ///@{
@@ -314,11 +304,21 @@ namespace Cl {
       typename T::Interaction& interaction();
 
       /**
+      * Get the %Interaction (const).
+      */
+      typename T::Interaction const & interaction() const;
+
+      /**
+      * Get the Domain (const).
+      */
+      typename T::Domain const & domain() const;
+
+      #if 0 // Delay until Simulator class is finished
+      /**
       * Get the Simulator (non-const).
       */
       typename T::Simulator& simulator();
 
-      #if 0 // Delay until Simulator class is finished
       /**
       * Get the Simulator (const).
       */
@@ -338,6 +338,7 @@ namespace Cl {
       FileMaster const & fileMaster() const;
 
       ///@}
+      #if 0
       /// \name Timers
       ///@{
 
@@ -354,6 +355,7 @@ namespace Cl {
       void clearTimers();
 
       ///@}
+      #endif
 
    protected:
 
@@ -429,11 +431,6 @@ namespace Cl {
       * Filemaster (holds path prefixes for input and output files).
       */
       FileMaster* fileMasterPtr_;
-
-      /**
-      * Pointer to mutable unit cell (work space).
-      */
-      UnitCell<D>* tmpUnitCellPtr_;
 
       /**
       * Polymer model enumeration (thread or bead), read from file.
