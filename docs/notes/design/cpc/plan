@@ -46,11 +46,11 @@ Mathematics:
 
   In namespaces Prdc::Cpu and Prdc::Cuda :
 
-  - Create class CField  (Done)
+  - Create class CField  (done)
 
-  - Create class CFieldComparison (Done)
+  - Create class CFieldComparison (done)
 
-  - Add complex->complex Fourier transform functions to FFT classes (Done)
+  - Add complex->complex Fourier transform functions to FFT classes (done)
 
   - Add complex.h files to define functions for basic arithmetic
     operations for both type so of complex number (done)
@@ -84,7 +84,7 @@ Solvers:
 Templates in namespace Prdc:
 
   - Create subdirectories rl and cl for code that is specific to real
-    and complex (or complex Langevin code)
+    and complex (or complex Langevin code)  (done)
 
   - Move templates that are specific to real periodic to prdc/rl. These
     include:
@@ -100,6 +100,8 @@ Templates in namespace Prdc:
        rl/ScftThermoTmpl
        rl/MixturePrdc
        rl/MixtureModifierPrdc
+
+       (done)
 
   - Create nested namespaces Prdc::Rl:: and Prdc::Cl, allowing use of
     short names
@@ -125,6 +127,7 @@ Templates in namespace Prdc:
        cl/SystemConstRef
        cl/Mixture
        cl/MixtureModifier
+       cl/Simulator
 
   - Differences between real and complex code:
 
@@ -147,31 +150,32 @@ Templates in namespace Prdc:
 
 Interaction Class:
 
-  - Each functionally distinct class of programs will have its own
-    interaction class. Cpu and Gpu versions of equivalent programs will 
-    share an Interaction class defined in Prdc::Rl or Prdc::Cl .
+  - The existing Pscf::Interaction class, which is apppopriate for
+    an incompressible Flory-Huggins theory with local interactions,
+    will be moved to namespace Pscf::FH. Code used by the pscf_r1d, 
+    pscf_rpc and pscf_rpg programs will be modified to use
+    FH::Interaction. (done)
 
-  - Copy existing Pscf::Interaction class to R1d::Interaction and
-    Prdc::Rl::Interaction
-
-  - Create a new Prdc::Cl::Interaction for compressible system with 
-    nonzero range interactions.
+  - A class Prdc::Cl::Interaction that is designed for use in complex
+    Langevin sampling will be added to directory prdc/cl . For the
+    moment, this will be the only compilable class in that directory.
 
 Sequence of programming tasks:
 ------------------------------
 
   Stage A: Make changes outlined above to get to the point of having a 
   functional version of existing code that is designed to allow easy
-  generalization to CL-FTS (implemented mostly by Morse)
+  generalization to CL-FTS (implemented mostly by Morse) (done)
 
   Stage B: Create actual new classes for CL-FTS. Possible order of 
   creation:
 
-    - Cl::FieldIo (simple version for r-grid file IO)
-    - Cl::Domain  (will need WaveList for solvers)
-    - Cpc::Solvers
-    - Cl:CFields and Cl::WFields (if needed)
+    - Cl::FieldIo (simple version for r-grid file IO)   (done)
+    - Cl::Domain  (will need WaveList for solvers)      (done)
+    - Cpc::Solvers                                      (done)
+    - Cl:CFields and Cl::WFields (if needed)            (done)
     - Cl::System
+    - Cl::Simulator
     - Cl::Step
     - Cl::Analyzer and Cl::AnalyzerManager
 
