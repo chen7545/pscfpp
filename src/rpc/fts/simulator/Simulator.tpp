@@ -513,7 +513,7 @@ namespace Rpc {
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
 
-         // Set cc_[i] to zero
+         // Initialize field cc_[i] to zero
          RField<D>& Cc = cc_[i];
          for (k = 0; k < meshSize; ++k) {
             Cc[k] = 0.0;
