@@ -36,12 +36,14 @@
 #include <pscf/cuda/ThreadMesh.h>
 
 namespace Pscf {
-   namespace Prdc {
-      // Explicit instantiation of base class
-      template class Rl::System< 1, Rpg::Types<1> >;
-      template class Rl::System< 2, Rpg::Types<2> >;
-      template class Rl::System< 3, Rpg::Types<3> >;
+
+   namespace Rl {
+      // Explicit instantiation definitions for base class
+      template class System< 1, Rpg::Types<1> >;
+      template class System< 2, Rpg::Types<2> >;
+      template class System< 3, Rpg::Types<3> >;
    }
+
    namespace Rpg {
 
       /*
@@ -65,7 +67,7 @@ namespace Pscf {
          ThreadMesh::setThreadsPerBlock(nThread);
       }
 
-      // Explicit instantiation
+      // Explicit instantiation definitions
       template class System<1>;
       template class System<2>;
       template class System<3>;

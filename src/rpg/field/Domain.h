@@ -25,14 +25,14 @@ namespace Pscf {
 
 // Explicit instantiation declarations for base class template
 namespace Pscf {
-   namespace Prdc {
-      using namespace Cuda;
+   namespace Rl {
+      using namespace Prdc::Cuda;
       extern template 
-      class Rl::Domain<1, FFT<1>, WaveList<1>, Rpg::FieldIo<1> >;
+      class Domain<1, FFT<1>, WaveList<1>, Rpg::FieldIo<1> >;
       extern template 
-      class Rl::Domain<2, FFT<2>, WaveList<2>, Rpg::FieldIo<2> >;
+      class Domain<2, FFT<2>, WaveList<2>, Rpg::FieldIo<2> >;
       extern template 
-      class Rl::Domain<3, FFT<3>, WaveList<3>, Rpg::FieldIo<3> >;
+      class Domain<3, FFT<3>, WaveList<3>, Rpg::FieldIo<3> >;
    }
 }
 

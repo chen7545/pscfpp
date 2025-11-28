@@ -54,13 +54,11 @@ namespace Rpg {
 
 }
 
-namespace Prdc {
-
+namespace Rl {
    // Explicit instantiation declarations for base class
-   extern template class Rl::SystemConstRef< Rpg::System<1> >;
-   extern template class Rl::SystemConstRef< Rpg::System<2> >;
-   extern template class Rl::SystemConstRef< Rpg::System<3> >;
-
+   extern template class SystemConstRef< Rpg::System<1> >;
+   extern template class SystemConstRef< Rpg::System<2> >;
+   extern template class SystemConstRef< Rpg::System<3> >;
 }
 
 } // namespace Pscf

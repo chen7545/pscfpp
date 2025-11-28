@@ -28,8 +28,8 @@ namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * File input/output operations and format conversions for fields.
@@ -338,11 +338,14 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Prdc {
-   using namespace Cuda;
-   extern template class Rl::FieldIo<1, RField<1>, RFieldDft<1>, FFT<1>>;
-   extern template class Rl::FieldIo<2, RField<2>, RFieldDft<2>, FFT<2>>;
-   extern template class Rl::FieldIo<3, RField<3>, RFieldDft<3>, FFT<3>>;
+namespace Rl {
+   using namespace Prdc::Cuda;
+   extern template 
+   class FieldIo<1, RField<1>, RFieldDft<1>, FFT<1>>;
+   extern template 
+   class FieldIo<2, RField<2>, RFieldDft<2>, FFT<2>>;
+   extern template 
+   class FieldIo<3, RField<3>, RFieldDft<3>, FFT<3>>;
 } 
 
 } // namespace Pscf

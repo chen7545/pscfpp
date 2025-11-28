@@ -10,24 +10,19 @@
 
 namespace Pscf {
 
-namespace Prdc {
-
-   using namespace Pscf::Prdc::Cuda;
-
-   // Explicit instantiation
-   template class Rl::FieldIo<1, Prdc::Cuda::RField<1>, Prdc::Cuda::RFieldDft<1>, Prdc::Cuda::FFT<1> >;
-   template class Rl::FieldIo<2, Prdc::Cuda::RField<2>, Prdc::Cuda::RFieldDft<2>, Prdc::Cuda::FFT<2> >;
-   template class Rl::FieldIo<3, Prdc::Cuda::RField<3>, Prdc::Cuda::RFieldDft<3>, Prdc::Cuda::FFT<3> >;
-
-}
-
-namespace Rpg {
-
-   // Explicit instantiations
-   template class FieldIo<1>;
-   template class FieldIo<2>;
-   template class FieldIo<3>;
-
-} 
+   namespace Rl {
+      // Explicit instantiation
+      using namespace Prdc::Cuda;
+      template class FieldIo<1, RField<1>, RFieldDft<1>, FFT<1> >;
+      template class FieldIo<2, RField<2>, RFieldDft<2>, FFT<2> >;
+      template class FieldIo<3, RField<3>, RFieldDft<3>, FFT<3> >;
+   }
+   
+   namespace Rpg {
+      // Explicit instantiations
+      template class FieldIo<1>;
+      template class FieldIo<2>;
+      template class FieldIo<3>;
+   } 
 
 } // namespace Pscf

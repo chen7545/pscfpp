@@ -138,14 +138,14 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Prdc {
+namespace Rl {
    // Explicit instantiation declarations for base class
    extern template 
-   class Rl::Mixture<1, Rpg::Polymer<1>, Rpg::Solvent<1>, Rpg::Types<1> >;
+   class Mixture<1, Rpg::Polymer<1>, Rpg::Solvent<1>, Rpg::Types<1> >;
    extern template 
-   class Rl::Mixture<2, Rpg::Polymer<2>, Rpg::Solvent<2>, Rpg::Types<2> >;
+   class Mixture<2, Rpg::Polymer<2>, Rpg::Solvent<2>, Rpg::Types<2> >;
    extern template 
-   class Rl::Mixture<3, Rpg::Polymer<3>, Rpg::Solvent<3>, Rpg::Types<3> >;
+   class Mixture<3, Rpg::Polymer<3>, Rpg::Solvent<3>, Rpg::Types<3> >;
 
 } // namespace Prdc
 

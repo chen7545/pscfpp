@@ -16,7 +16,6 @@ namespace Pscf {
 namespace Rl {
 
    using namespace Util;
-   using namespace Prdc;
 
    /**
    * %Base class for SCFT thermodynamic property calculators.

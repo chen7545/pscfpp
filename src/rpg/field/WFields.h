@@ -16,8 +16,8 @@ namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   //using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   //using namespace Prdc::Cuda;
 
    /**
    * A container of fields stored in both basis and r-grid format.
@@ -97,11 +97,12 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Prdc {
+namespace Rl {
    // Explicit instantiation declarations for base class
-   extern template class Rl::WFields<1, Cuda::RField<1>, Rpg::FieldIo<1> >;
-   extern template class Rl::WFields<2, Cuda::RField<2>, Rpg::FieldIo<2> >;
-   extern template class Rl::WFields<3, Cuda::RField<3>, Rpg::FieldIo<3> >;
+   using namespace Prdc::Cuda;
+   extern template class WFields<1, RField<1>, Rpg::FieldIo<1> >;
+   extern template class WFields<2, RField<2>, Rpg::FieldIo<2> >;
+   extern template class WFields<3, RField<3>, Rpg::FieldIo<3> >;
 } // namespace Prdc
 
 } // namespace Pscf

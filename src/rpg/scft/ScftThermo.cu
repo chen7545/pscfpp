@@ -17,10 +17,11 @@
 
 namespace Pscf {
 
-   namespace Prdc {
-      template class Rl::ScftThermo<1, Rpg::System<1> >;
-      template class Rl::ScftThermo<2, Rpg::System<2> >;
-      template class Rl::ScftThermo<3, Rpg::System<3> >;
+   namespace Rl {
+      // Explicit instantiation definitions for base class
+      template class ScftThermo<1, Rpg::System<1> >;
+      template class ScftThermo<2, Rpg::System<2> >;
+      template class ScftThermo<3, Rpg::System<3> >;
    }
 
    namespace Rpg {

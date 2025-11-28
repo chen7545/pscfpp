@@ -56,11 +56,11 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Prdc {
+namespace Rl {
    // Explicit instantiation declarations for base class 
-   extern template class Rl::MixtureModifier< Rpg::Mixture<1> >;
-   extern template class Rl::MixtureModifier< Rpg::Mixture<2> >;
-   extern template class Rl::MixtureModifier< Rpg::Mixture<3> >;
+   extern template class MixtureModifier< Rpg::Mixture<1> >;
+   extern template class MixtureModifier< Rpg::Mixture<2> >;
+   extern template class MixtureModifier< Rpg::Mixture<3> >;
 } // namespace Prdc
 
 } // namespace Pscf

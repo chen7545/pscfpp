@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/CFields.h>   // base class template
-#include <rpg/field/FieldIo.h>        // base class template parameter
-#include <prdc/cuda/RField.h>         // base class template parameter
+#include <prdc/rl/CFields.h>      // base class template
+#include <rpg/field/FieldIo.h>    // base class template argument
+#include <prdc/cuda/RField.h>     // base class template argument
 
 namespace Pscf {
 namespace Rpg {
@@ -67,11 +67,14 @@ namespace Rpg {
    extern template class CFields<3>;
 
 } // namespace Rpg
-namespace Prdc {
+
+namespace Rl {
    // Explicit instantiation declarations for base class
-   extern template class Rl::CFields<1, Cuda::RField<1>, Rpg::FieldIo<1> >;
-   extern template class Rl::CFields<2, Cuda::RField<2>, Rpg::FieldIo<2> >;
-   extern template class Rl::CFields<3, Cuda::RField<3>, Rpg::FieldIo<3> >;
-} 
+   using namespace Prdc::Cuda;
+   extern template class Rl::CFields<1, RField<1>, Rpg::FieldIo<1> >;
+   extern template class Rl::CFields<2, RField<2>, Rpg::FieldIo<2> >;
+   extern template class Rl::CFields<3, RField<3>, Rpg::FieldIo<3> >;
+}
+
 } // namespace Pscf
 #endif

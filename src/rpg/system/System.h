@@ -50,9 +50,9 @@ namespace Rpg {
       * Explicitly set maximum number of threads per block.
       *
       * This function is called in the setOptions function if the
-      * -t command line option is present. 
+      * -t command line option is present.
       *
-      * \param nThread  thread count (maximum per block). 
+      * \param nThread  thread count (maximum per block)
       */
       virtual void setThreadCount(int nThread) override;
 
@@ -64,13 +64,13 @@ namespace Rpg {
    extern template class System<3>;
 
 } // namespace Rpg
-namespace Prdc {
 
+namespace Rl {
    // Explicit instantiation declarations of base class
    extern template class Rl::System<1, Rpg::Types<1> >;
    extern template class Rl::System<2, Rpg::Types<1> >;
    extern template class Rl::System<3, Rpg::Types<1> >;
+}
 
-} // namespace Prdc 
 } // namespace Pscf
 #endif

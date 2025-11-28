@@ -8,14 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/ScftThermo.h>  // base class template
-#include <rpg/system/System.h>           // template argument
+#include <prdc/rl/ScftThermo.h>     // base class template
+#include <rpg/system/System.h>      // base class template argument
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
 
    /**
    * Computes SCFT free energies.
@@ -61,13 +60,11 @@ namespace Rpg {
 
 }
 
-namespace Prdc {
-
+namespace Rl {
    // Explicit instantiation declarations for base class
-   extern template class Rl::ScftThermo<1, Rpg::System<1> >;
-   extern template class Rl::ScftThermo<2, Rpg::System<2> >;
-   extern template class Rl::ScftThermo<3, Rpg::System<3> >;
-
+   extern template class ScftThermo<1, Rpg::System<1> >;
+   extern template class ScftThermo<2, Rpg::System<2> >;
+   extern template class ScftThermo<3, Rpg::System<3> >;
 } 
 
 } // namespace Pscf

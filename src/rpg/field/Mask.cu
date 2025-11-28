@@ -9,22 +9,18 @@
 #include <prdc/rl/Mask.tpp> // needed for implementation
 
 namespace Pscf {
-
-namespace Prdc {
-
-   // Explicit instantiation
-   template class Rl::Mask< 1, Cuda::RField<1>, Rpg::FieldIo<1> >;
-   template class Rl::Mask< 2, Cuda::RField<2>, Rpg::FieldIo<2> >;
-   template class Rl::Mask< 3, Cuda::RField<3>, Rpg::FieldIo<3> >;
-
-} // namespace Prdc
-
-namespace Rpg {
-
-   template class Mask<1>;
-   template class Mask<2>;
-   template class Mask<3>;
-   
-} // namespace Rpg
-
-} // namespace Pscf
+   namespace Rl {
+      // Explicit instantiation of base class
+      using namespace Prdc::Cuda;
+      template class Rl::Mask< 1, RField<1>, Rpg::FieldIo<1> >;
+      template class Rl::Mask< 2, RField<2>, Rpg::FieldIo<2> >;
+      template class Rl::Mask< 3, RField<3>, Rpg::FieldIo<3> >;
+   } 
+   namespace Rpg {
+      // Explicit instantiation of this class
+      template class Mask<1>;
+      template class Mask<2>;
+      template class Mask<3>;
+      
+   } 
+} 

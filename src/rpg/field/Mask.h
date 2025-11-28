@@ -78,11 +78,12 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Prdc {
+namespace Rl {
    // Explicit instantiation declarations for base class template
-   extern template class Rl::Mask< 1, Cuda::RField<1>, Rpg::FieldIo<1> >;
-   extern template class Rl::Mask< 2, Cuda::RField<2>, Rpg::FieldIo<2> >;
-   extern template class Rl::Mask< 3, Cuda::RField<3>, Rpg::FieldIo<3> >;
+   using namespace Prdc::Cuda;
+   extern template class Mask< 1, RField<1>, Rpg::FieldIo<1> >;
+   extern template class Mask< 2, RField<2>, Rpg::FieldIo<2> >;
+   extern template class Mask< 3, RField<3>, Rpg::FieldIo<3> >;
 }
 
 } // namespace Pscf

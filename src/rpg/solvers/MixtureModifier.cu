@@ -13,12 +13,14 @@
 #include <rpg/solvers/Block.h>
 
 namespace Pscf {
-   namespace Prdc { 
-      template class Rl::MixtureModifier< Rpg::Mixture<1> >;
-      template class Rl::MixtureModifier< Rpg::Mixture<2> >;
-      template class Rl::MixtureModifier< Rpg::Mixture<3> >;
+   namespace Rl { 
+      // Explicit instantiation definitions for base class
+      template class MixtureModifier< Rpg::Mixture<1> >;
+      template class MixtureModifier< Rpg::Mixture<2> >;
+      template class MixtureModifier< Rpg::Mixture<3> >;
    }
    namespace Rpg { 
+      // Explicit instantiation definitions for this class
       template class MixtureModifier<1>;
       template class MixtureModifier<2>;
       template class MixtureModifier<3>;
