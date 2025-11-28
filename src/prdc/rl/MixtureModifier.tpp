@@ -12,7 +12,6 @@
 #include <pscf/chem/Monomer.h>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    /*
@@ -127,6 +126,5 @@ namespace Rl {
    }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

@@ -9,11 +9,11 @@
 */
 
 // Header file includes
-#include <prdc/rl/System.h>    // base class template
-#include <rpc/system/Types.h>          // base class template param
-#include <rpc/field/WFields.h>         // member
-#include <rpc/field/CFields.h>         // member
-#include <rpc/field/Mask.h>            // member
+#include <prdc/rl/System.h>        // base class template
+#include <rpc/system/Types.h>      // base class template argument
+#include <rpc/field/WFields.h>     // member
+#include <rpc/field/CFields.h>     // member
+#include <rpc/field/Mask.h>        // member
 
 namespace Pscf {
 namespace Rpc {
@@ -55,13 +55,13 @@ namespace Rpc {
    extern template class System<3>;
 
 } // namespace Rpc
-namespace Prdc {
 
+namespace Rl {
    // Explicit instantiation declarations for base class template
-   extern template class Rl::System<1, Rpc::Types<1> >;
-   extern template class Rl::System<2, Rpc::Types<1> >;
-   extern template class Rl::System<3, Rpc::Types<1> >;
-
+   extern template class System<1, Rpc::Types<1> >;
+   extern template class System<2, Rpc::Types<1> >;
+   extern template class System<3, Rpc::Types<1> >;
 } // namespace Prdc 
+
 } // namespace Pscf
 #endif

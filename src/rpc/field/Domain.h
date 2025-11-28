@@ -27,8 +27,8 @@ namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * Spatial domain for a periodic structure with real fields, on a CPU.
@@ -91,15 +91,15 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Prdc {
+namespace Rl {
    // Explicit instantiation declarations of base class
-   using namespace Cpu;
+   using namespace Prdc::Cpu;
    extern template 
-   class Rl::Domain<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
+   class Domain<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
    extern template 
-   class Rl::Domain<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
+   class Domain<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
    extern template 
-   class Rl::Domain<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
+   class Domain<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
 } 
 
 } // namespace Pscf

@@ -23,10 +23,10 @@ namespace Pscf {
 }
  
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc; 
 
    /**
    * Container for a field to which the total density is constrained.
@@ -514,6 +514,5 @@ namespace Rl {
    {  return isSymmetric_; }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

@@ -19,10 +19,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc;
 
    /**
    * A list of c fields stored in both basis and r-grid format.
@@ -440,6 +440,5 @@ namespace Rl {
    }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

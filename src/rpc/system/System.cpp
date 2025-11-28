@@ -35,13 +35,11 @@
 
 namespace Pscf {
 
-   namespace Prdc {
-
+   namespace Rl {
       // Explicit instantiation of base class template
-      template class Rl::System< 1, Rpc::Types<1> >;
-      template class Rl::System< 2, Rpc::Types<2> >;
-      template class Rl::System< 3, Rpc::Types<3> >;
-
+      template class System< 1, Rpc::Types<1> >;
+      template class System< 2, Rpc::Types<2> >;
+      template class System< 3, Rpc::Types<3> >;
    }
 
    namespace Rpc {

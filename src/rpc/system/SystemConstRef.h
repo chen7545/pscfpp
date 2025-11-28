@@ -15,8 +15,8 @@ namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * Const access to a System<D>.
@@ -59,14 +59,13 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Prdc {
-
+namespace Rl {
    // Explicit instantiation declarations for base class template
-   extern template class Rl::SystemConstRef< Rpc::System<1> >;
-   extern template class Rl::SystemConstRef< Rpc::System<2> >;
-   extern template class Rl::SystemConstRef< Rpc::System<3> >;
+   extern template class SystemConstRef< Rpc::System<1> >;
+   extern template class SystemConstRef< Rpc::System<2> >;
+   extern template class SystemConstRef< Rpc::System<3> >;
 
-} // namespace Rpc
+} // namespace Rl
 
 } // namespace Pscf
 #endif

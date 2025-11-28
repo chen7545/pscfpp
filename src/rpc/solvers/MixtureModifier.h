@@ -9,7 +9,7 @@
 */
 
 #include <prdc/rl/MixtureModifier.h>  // base class template
-#include "Mixture.h"                  // base class parameter
+#include "Mixture.h"                  // base class template argument
 
 namespace Pscf {
 namespace Rpc {
@@ -55,11 +55,13 @@ namespace Rpc {
    extern template class MixtureModifier<3>;
 
 } // namespace Rpc
-namespace Prdc {
+
+namespace Rl {
    // Explicit instantiation declarations for base class
-   extern template class Rl::MixtureModifier< Rpc::Mixture<1> >;
-   extern template class Rl::MixtureModifier< Rpc::Mixture<2> >;
-   extern template class Rl::MixtureModifier< Rpc::Mixture<3> >;
-} // namespace Prdc
+   extern template class MixtureModifier< Rpc::Mixture<1> >;
+   extern template class MixtureModifier< Rpc::Mixture<2> >;
+   extern template class MixtureModifier< Rpc::Mixture<3> >;
+} 
+
 } // namespace Pscf
 #endif

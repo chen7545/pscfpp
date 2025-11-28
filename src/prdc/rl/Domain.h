@@ -28,7 +28,6 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
@@ -417,6 +416,5 @@ namespace Rl {
    {  return hasGroup_; }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

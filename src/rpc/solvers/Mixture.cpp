@@ -8,13 +8,13 @@
 #include "Mixture.tpp"
 
 namespace Pscf {
-   namespace Prdc { 
+   namespace Rl { 
       template 
-      class Rl::Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
+      class Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
       template 
-      class Rl::Mixture<2, Rpc::Polymer<2>, Rpc::Solvent<2>, Rpc::Types<2> >;
+      class Mixture<2, Rpc::Polymer<2>, Rpc::Solvent<2>, Rpc::Types<2> >;
       template 
-      class Rl::Mixture<3, Rpc::Polymer<3>, Rpc::Solvent<3>, Rpc::Types<3> >;
+      class Mixture<3, Rpc::Polymer<3>, Rpc::Solvent<3>, Rpc::Types<3> >;
    }
    namespace Rpc { 
       template class Mixture<1>;

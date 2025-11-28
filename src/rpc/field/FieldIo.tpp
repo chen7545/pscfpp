@@ -11,8 +11,6 @@
 #include "FieldIo.h"
 #include <prdc/rl/FieldIo.tpp>     // base class implementation
 
-#include <rpc/field/Domain.h>
-
 #include <prdc/field/rFieldIo.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>

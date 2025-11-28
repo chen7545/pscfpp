@@ -70,11 +70,14 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Prdc {
+namespace Rl {
    // Explicit instantiation declaration for base class
-   extern template class Rl::Mask< 1, Cpu::RField<1>, Rpc::FieldIo<1> >;
-   extern template class Rl::Mask< 2, Cpu::RField<2>, Rpc::FieldIo<2> >;
-   extern template class Rl::Mask< 3, Cpu::RField<3>, Rpc::FieldIo<3> >;
+   extern template 
+   class Mask< 1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
+   extern template 
+   class Mask< 2, Prdc::Cpu::RField<2>, Rpc::FieldIo<2> >;
+   extern template 
+   class Mask< 3, Prdc::Cpu::RField<3>, Rpc::FieldIo<3> >;
 }
 
 } // namespace Pscf

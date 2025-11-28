@@ -13,10 +13,10 @@
 #include <rpc/solvers/Block.h>
 
 namespace Pscf {
-   namespace Prdc { 
-      template class Rl::MixtureModifier< Rpc::Mixture<1> >;
-      template class Rl::MixtureModifier< Rpc::Mixture<2> >;
-      template class Rl::MixtureModifier< Rpc::Mixture<3> >;
+   namespace Rl { 
+      template class MixtureModifier< Rpc::Mixture<1> >;
+      template class MixtureModifier< Rpc::Mixture<2> >;
+      template class MixtureModifier< Rpc::Mixture<3> >;
    }
    namespace Rpc { 
       template class MixtureModifier<1>;

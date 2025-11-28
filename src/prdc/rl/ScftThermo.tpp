@@ -1,5 +1,5 @@
-#ifndef PRDC_SCFT_THERMO_TMPL_TPP
-#define PRDC_SCFT_THERMO_TMPL_TPP
+#ifndef PRDC_RL_SCFT_THERMO_TPP
+#define PRDC_RL_SCFT_THERMO_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -19,10 +19,10 @@
 #include <util/format/Dbl.h>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc;
 
    /*
    * Constructor.
@@ -319,6 +319,5 @@ namespace Rl {
    }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

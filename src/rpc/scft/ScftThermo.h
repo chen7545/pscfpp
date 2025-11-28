@@ -60,13 +60,11 @@ namespace Rpc {
 
 }
 
-namespace Prdc {
-
+namespace Rl {
    // Explicit instantiation declarations for base class
    extern template class Rl::ScftThermo<1, Rpc::System<1> >;
    extern template class Rl::ScftThermo<2, Rpc::System<2> >;
    extern template class Rl::ScftThermo<3, Rpc::System<3> >;
-
 }
 
 } // namespace Pscf

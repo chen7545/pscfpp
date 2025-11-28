@@ -113,16 +113,16 @@ namespace Rpc {
    extern template class Mixture<3>;
 
 } // namespace Rpc
-namespace Prdc {
 
+namespace Rl {
    // Explicit instantiation declarations for base class
    extern template 
-   class Rl::Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
+   class Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
    extern template 
-   class Rl::Mixture<2, Rpc::Polymer<2>, Rpc::Solvent<2>, Rpc::Types<2> >;
+   class Mixture<2, Rpc::Polymer<2>, Rpc::Solvent<2>, Rpc::Types<2> >;
    extern template 
-   class Rl::Mixture<3, Rpc::Polymer<3>, Rpc::Solvent<3>, Rpc::Types<3> >;
+   class Mixture<3, Rpc::Polymer<3>, Rpc::Solvent<3>, Rpc::Types<3> >;
+} 
 
-} // namespace Prdc
 } // namespace Pscf
 #endif

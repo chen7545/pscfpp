@@ -1,5 +1,5 @@
-#ifndef PRDC_SCFT_THERMO_TMPL_H
-#define PRDC_SCFT_THERMO_TMPL_H
+#ifndef PRDC_RL_SCFT_THERMO_H
+#define PRDC_RL_SCFT_THERMO_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -13,8 +13,10 @@
 #include <iostream>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
+
+   using namespace Util;
+   using namespace Prdc;
 
    /**
    * %Base class for SCFT thermodynamic property calculators.
@@ -266,6 +268,5 @@ namespace Rl {
    {  return hasData_; }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

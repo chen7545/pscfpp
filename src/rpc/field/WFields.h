@@ -16,8 +16,8 @@ namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * A container of fields stored in both basis and r-grid format.
@@ -85,15 +85,15 @@ namespace Rpc {
 } // namespace Rpc
 } // namespace Pscf
 
+// Explicit instantiation declarations for base class
 namespace Pscf {
-namespace Prdc {
-   // Explicit instantiation declarations for base class
-   extern template 
-   class Rl::WFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
-   extern template 
-   class Rl::WFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
-   extern template 
-   class Rl::WFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
-} 
+   namespace Rl {
+      extern template 
+      class WFields<1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
+      extern template 
+      class WFields<2, Prdc::Cpu::RField<2>, Rpc::FieldIo<2> >;
+      extern template 
+      class WFields<3, Prdc::Cpu::RField<3>, Rpc::FieldIo<3> >;
+   }
 } // namespace Pscf
 #endif

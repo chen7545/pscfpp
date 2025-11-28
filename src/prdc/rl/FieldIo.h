@@ -26,12 +26,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
-   using namespace Pscf;
-   using namespace Pscf::Prdc;
+   using namespace Prdc;
 
    /**
    * File input/output, format conversions and other utilities for fields.
@@ -1398,6 +1396,5 @@ namespace Rl {
    };
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

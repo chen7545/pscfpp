@@ -16,10 +16,10 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc;
 
    /*
    * Constructor.
@@ -262,6 +262,5 @@ namespace Rl {
    {  return basis().isInitialized(); }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

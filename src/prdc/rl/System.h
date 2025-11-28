@@ -23,11 +23,11 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    // Namespace that may be used implicitly
    using namespace Util;
+   using namespace Prdc; 
 
    /**
    * Base class template for classes that represent a complete system.
@@ -902,6 +902,5 @@ namespace Rl {
    {  return *domainPtr_; }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

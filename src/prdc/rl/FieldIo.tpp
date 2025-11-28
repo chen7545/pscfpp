@@ -36,10 +36,10 @@
 #include <string>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc;
 
    /*
    * Constructor.
@@ -1197,6 +1197,5 @@ namespace Rl {
    }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

@@ -23,10 +23,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc;
 
    /**
    * A container of w fields stored in both basis and r-grid format.
@@ -632,6 +632,5 @@ namespace Rl {
    }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

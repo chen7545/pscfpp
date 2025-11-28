@@ -17,10 +17,10 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
+   using namespace Prdc;
 
    // Public member functions
 
@@ -471,6 +471,5 @@ namespace Rl {
    {  UTIL_THROW("Unimplemented function WFields::assignRField"); }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

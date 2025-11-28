@@ -13,7 +13,6 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
 namespace Rl {
 
    using namespace Util;
@@ -201,6 +200,5 @@ namespace Rl {
    }
 
 } // namespace Rl
-} // namespace Prdc
 } // namespace Pscf
 #endif

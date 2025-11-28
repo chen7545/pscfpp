@@ -14,7 +14,7 @@
 namespace Pscf {
 namespace Rpg {
 
-   using namespace Prdc:
+   using namespace Prdc;
 
    /**
    * Parameter modifier for an associated Mixture.

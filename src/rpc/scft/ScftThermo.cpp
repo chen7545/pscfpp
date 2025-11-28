@@ -15,13 +15,11 @@
 
 namespace Pscf {
 
-   namespace Prdc {
-
+   namespace Rl {
       // Explicit instantiation of base class template
-      template class Rl::ScftThermo<1, Rpc::System<1> >;
-      template class Rl::ScftThermo<2, Rpc::System<2> >;
-      template class Rl::ScftThermo<3, Rpc::System<3> >;
-
+      template class ScftThermo<1, Rpc::System<1> >;
+      template class ScftThermo<2, Rpc::System<2> >;
+      template class ScftThermo<3, Rpc::System<3> >;
    }
 
    namespace Rpc {
