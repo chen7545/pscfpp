@@ -37,13 +37,13 @@ namespace Rl {
    *    D - integer dimensionality of space (D=1, 2, or 3)
    *    T - "Types" class collection of aliases for other classes
    * 
-   * <b> Usage </b>: A specialization of System\<D, T\> is a base 
-   * class for each System\<D\> class defined in namespaces Rpc and Rpg, 
-   * for D=1, 2, or 3.  In this use, template parameter T is taken to be 
-   * an instance of a template \<int D\> class Types that is defined in 
-   * each of these two namespaces. For example, in namespace Rpc, for 
-   * each value of D, class Rpc::System\<D\> is derived from class
-   * Prdc::System\< D, Rpc::Types\<D\> >. For each such instance, 
+   * <b> Usage </b>: An instantiation of Rl::System\<D, T\> is used as a 
+   * base class for each System\<D\> class defined in namespaces Rpc and 
+   * Rpg, for D=1, 2, or 3.  In this use, template parameter T is taken to 
+   * be an instance of a template \<int D\> class Types that is defined 
+   * in each of these two namespaces. For example, in namespace Rpc, for 
+   * each value of D, class Rpc::System\<D\> is derived from the class
+   * Prdc::System\< D, Rpc::Types\<D\> >. For each such instantiation,
    * Types\<D\> defines a set of typename aliases for classes used in 
    * the relevant namespace, for the specified value of D. For example,
    * the typename Rpc::Types\<D\>::Mixture is an alias for the type 
@@ -52,11 +52,11 @@ namespace Rl {
    * Rpg::Types for lists of all of the typenames defined in these two 
    * class templates.
    *
-   * In the remainder of the documentation for this template, System, 
+   * In the remainder of the documentation for this class template, 
    * unqualified names such as "Mixture", "Iterator", etc. are often used 
-   * as shorthand for typename aliases such as T::Mixture, T::Iterator 
-   * that are defined in class T (i.e., in Rpc::Types\<D\> or 
-   * Rpg::Types\<D\>)
+   * as shorthand for typename aliases such as T::Mixture or T::Iterator 
+   * that are defined in the types class T (i.e., in Rpc::Types\<D\> or 
+   * Rpg::Types\<D\>).
    *
    * <b> Class Components </b>:
    * A System object has (among other components):
@@ -80,11 +80,11 @@ namespace Rl {
    *    - a Sweep,
    *    - a Simulator
    *
-   * Optional components are constructed when the parameter file is read
-   * only if corresponding optional parameter file blocks are present.
-   * The %Environment is only used to generate external and mask fields 
-   * to describe inhomogeneos environments, and is omitted in standard 
-   * calculations of structures formed in a homogeneous environment. 
+   * Each optional component is constructed if and only if the parameter
+   * file contains a corresponding optional parameter file block. The
+   * %Environment is only used to generate external and mask fields to
+   * describe inhomogeneous environments, and is omitted in standard 
+   * calculations for structures formed in a homogeneous environment. 
    * Iterator and Sweep objects are only used for SCFT calculations. 
    * A Simulator is only used for PS-FTS calculations, for, i.e., field 
    * theoretic simulations based on a partial saddle-point approximation. 
@@ -122,12 +122,11 @@ namespace Rl {
       *
       * When an instantiation of System<D,T> is used as a base class for 
       * a concrete System class, such as Rpc::System\<D\>, the typename 
-      * T::System must be an alias for the name of the subclass. In this 
-      * usage, in the member initialization list of the T::System 
-      * subclass constructor,  a reference to the subclass instance 
-      * must be passed as "*this" to this System base class constructor. 
+      * T::System must be an alias for the name of the subclass. In 
+      * this usage, in the member initialization list of the T::System 
+      * subclass constructor,  a reference to the subclass instance must
       * The address of the instance of the T::System subclass is then 
-      * retained in the Prdc::Rl::System base class instance by a private 
+      * retained in the Rl::System base class instance by a private 
       * member variable named systemPtr_ that is of type T::System* .
       * See definitions of the constructors for the Rpc::System and 
       * Rpc::System class templates for examples of this usage.
@@ -154,9 +153,9 @@ namespace Rl {
       * Process command line options.
       *
       * This function takes the same arguments as any C/C++ main program
-      * function. The arguments of the main function should d be passed
+      * function. The arguments of the "main" function should be passed
       * to this function unaltered, to allow this function to process the
-      * command line options.
+      * command line options passed to the program executable.
       *
       * \param argc number of command line arguments
       * \param argv array of pointers to command line arguments

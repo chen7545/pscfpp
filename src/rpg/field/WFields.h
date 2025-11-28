@@ -23,8 +23,8 @@ namespace Rpg {
    * A container of fields stored in both basis and r-grid format.
    *
    * Almost all of the implementation of this class is defined by the base
-   * class template Prdc::WFieldsTmpl . See documentation of that
-   * template for information.
+   * class template Prdc::WFieldsTmpl . See documentation of that base 
+   * class template for documentation of most member functions.
    *
    * \ingroup Rpg_Field_Module
    */
@@ -35,7 +35,7 @@ namespace Rpg {
 
    public:
 
-      /// Alias for base class template instantiation
+      /// Alias for base class.
       using Base = Rl::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >;
 
       // Inherited public member functions

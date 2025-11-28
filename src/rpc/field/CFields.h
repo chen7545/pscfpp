@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/CFields.h>   // base class template
-#include <rpc/field/FieldIo.h>        // base class template parameter
-#include <prdc/cpu/RField.h>          // base class template parameter
+#include <prdc/rl/CFields.h>        // base class template
+#include <rpc/field/FieldIo.h>      // base class template argument
+#include <prdc/cpu/RField.h>        // base class template argument
 
 namespace Pscf {
 namespace Rpc {
@@ -22,10 +22,9 @@ namespace Rpc {
    /**
    * A list of c fields stored in both basis and r-grid format.
    *
-   * This class is simply a named partial specialization of the base 
-   * class template Pscf::Prdc::Rl::CFields, designed for use on CPU
-   * hardware. Please see documentation of the base class for API 
-   * documentation.
+   * This class is simply a named instantiation of the base class
+   * template Rl::CFields, designed for use on CPU hardware. Please
+   * see documentation of this base class for API documentation.
    *
    * \ingroup Rpc_Field_Module
    */
@@ -53,10 +52,6 @@ namespace Rpc {
       using Base::isSymmetric;
       using Base::setHasData;
       using Base::setIsSymmetric;
-
-   protected:
-
-      using Base::fieldIo;
 
    };
 

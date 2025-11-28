@@ -26,9 +26,9 @@ namespace Rpg {
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
    *
-   * A Mixture is derived from a partial specialization of the template
-   * Prdc::Rl::Mixture, and has the same public interface as this base
-   * class template. 
+   * A Mixture is derived from an instantiation of the class template
+   * Rl::Mixture, and has the same public interface as this base class
+   * template. 
    *
    * \ref user_param_mixture_page "Manual Page"
    * \ingroup Rpg_Solver_Module
@@ -42,7 +42,7 @@ namespace Rpg {
 
       /// Direct (parent) base class.
       using RlMixtureT
-       = typename Prdc::Rl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
+       = typename Rl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
 
       // Inherited public type name aliases
 

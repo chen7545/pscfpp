@@ -49,11 +49,11 @@ namespace Rl {
    *    symmetry-adapted Fourier expansion (i.e., in basis format). This 
    *    is accessed by the basis() member function.
    *
-   * A Mask is designed to automatically update one of these
+   * A Mask is designed to automatically update one of these 
    * representations when the other is modified, when appropriate. 
    * A pointer to an associated FIT (another template parameter) is
    * used for these conversions. The FieldIo class that is used to 
-   * instantiate this template should be a subclass of Prdc::Rl::FieldIo.
+   * instantiate this template should be a subclass of Rl::FieldIo.
    * 
    * The setBasis and readBasis functions allow the user to input field
    * components in basis format, and both internally recompute the values 
@@ -65,18 +65,18 @@ namespace Rl {
    * keep track of whether the current mask field is symmetric, and thus 
    * whether the symmetry-adapted basis representation exists.
    *
-   * <b> Subclasses </b>: Partial specializations of the template
+   * <b> Subclasses </b>: Instantiations of the class template 
    * Mask \<D, RFT, FIT\> are used as base classes for the class 
    * templates Rpc::Mask \<D \> and Rpg::Mask \<D\> that are used by
-   * pscf_rpc and pscf_rpg, respectively.
+   * the pscf_rpc and pscf_rpg programs, respectively.
    *
-   * <b> Signal </b>: A Mask owns an instance of class
+   * <b> Signal </b>: A Mask owns an instance of class 
    * Util::Signal<void> that notifies all observers whenever the field
-   * owned by the Mask is modified. This Signal object may be 
-   * accessed by reference using the signal() member function. The
-   * Util::Signal<void>::addObserver function may used to add observer 
-   * objects and indicate a zero-parameter member function of each 
-   * observer that will be called whenever the field is modified.
+   * owned by the Mask is modified. This Signal object may be accessed
+   * by reference using the signal() member function of Rl::Mask. The
+   * Util::Signal<void>::addObserver member function may used to add an
+   * observer object and indicate a zero-parameter member function of
+   * each observer that will be called whenever the field is modified.
    *
    * \ingroup Prdc_Rl_Module
    */

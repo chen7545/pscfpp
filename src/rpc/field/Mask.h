@@ -8,33 +8,35 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "FieldIo.h"              // parent class template parameter
-#include <prdc/cpu/RField.h>      // parent class template parameter
-#include <prdc/rl/Mask.h>  // parent class
+#include <prdc/rl/Mask.h>         // base class template
+#include "FieldIo.h"              // base class template argument
+#include <prdc/cpu/RField.h>      // base class template argument
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * A field to which the total density is constrained.
    *
-   * Please refer to the documentation of the base class Prdc::Rl::Mask
+   * Please refer to the documentation of the base class template Rl::Mask
    * for more complete API documentation for this class template. The
    * public interface of Rpc::Mask is identical to that of the base class
-   * template Prdc::Rl::Mask.
+   * template Rl::Mask.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
-   class Mask : public Prdc::Rl::Mask<D, Prdc::Cpu::RField<D>, FieldIo<D> >
+   class Mask : public Rl::Mask<D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Base class typedef
-      typedef Prdc::Rl::Mask< D, Prdc::Cpu::RField<D>, FieldIo<D> > Base;
+      using Base = Rl::Mask< D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -53,12 +55,6 @@ namespace Rpc {
       using Base::isSymmetric;
 
    protected:
-
-      // Inherited protected member functions
-      using Base::meshDimensions;
-      using Base::meshSize;
-      using Base::nBasis;
-      using Base::fieldIo;
 
       /**
       * Calculate the average value of the rgrid_ member.

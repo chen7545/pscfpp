@@ -26,7 +26,7 @@ namespace Rpg {
    * Main class, representing a complete physical system.
    *
    * This class is derived from a partial specialization of the base class
-   * template Prdc::Rl::System, and has the same public interface as the
+   * template Rl::System, and has the same public interface as the
    * base class. See the documentation of this template for details.
    *
    * \ingroup Rpg_System_Module

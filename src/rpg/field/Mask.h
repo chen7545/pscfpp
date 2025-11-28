@@ -8,35 +8,36 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "FieldIo.h"              // parent class template parameter
-#include <prdc/cuda/RField.h>     // parent class template parameter
-#include <prdc/rl/Mask.h>  // parent class
+#include <prdc/rl/Mask.h>        // base class template
+#include "FieldIo.h"             // base class template argument
+#include <prdc/cuda/RField.h>    // base class template argument
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
    using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * A field to which the total monomer concentration is constrained.
    *
-   * Please refer to the documentation of the Prdc::Rl::Mask base class
+   * Please refer to the documentation of the Rl::Mask base class
    * template for more complete API documentation for this class template.
    * The public interface of Rpg::Mask is identical to that of the base
-   * class template Prdc::Rl::Mask.
+   * class template Rl::Mask.
    *
    * \ingroup Rpg_Field_Module
    */
    template <int D>
    class Mask
-     : public Prdc::Rl::Mask< D, Cuda::RField<D>, FieldIo<D> >
+     : public Rl::Mask< D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Base class typedef
-      typedef Prdc::Rl::Mask< D, Prdc::Cuda::RField<D>, FieldIo<D> > Base;
+      using Base = Rl::Mask< D, Prdc::Cuda::RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;

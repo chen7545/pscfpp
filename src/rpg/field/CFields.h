@@ -22,9 +22,9 @@ namespace Rpg {
    /**
    * A list of c fields stored in both basis and r-grid format.
    *
-   * This class is simply a named partial specialization of the base 
-   * class template Pscf::Prdc::Rl::CFields, designed for use with a GPU.
-   * Please see documentation of the base class for API documentation.
+   * This class is simply a named partial instantiation of the base 
+   * class template Rl::CFields, designed for use with a GPU. Please see
+   * documentation of this base class template for API documentation.
    *
    * \ingroup Rpg_Field_Module
    */

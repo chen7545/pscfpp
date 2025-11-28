@@ -21,7 +21,7 @@ namespace Rpc {
    /**
    * Const access to a System<D>.
    *
-   * See documentation of the base class template Prdc::Rl::SystemConstRef
+   * See documentation of the base class template Rl::SystemConstRef
    * for documentation of the public interface.
    *
    * \ingroup Rpc_System_Module

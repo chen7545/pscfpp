@@ -25,7 +25,7 @@ namespace Rpc {
    * Main class, representing a complete physical system.
    *
    * This class is derived from a partial specialization of the class
-   * template Prdc::Rl::System, and has the same public interface as 
+   * template Rl::System, and has the same public interface as 
    * its base class.  See the documentation of this base class template 
    * for details.
    *
