@@ -92,7 +92,7 @@ public:
       mixture.readParam(in);
       in.close();
 
-      Interaction interaction;
+      FH::Interaction interaction;
       interaction.setNMonomer(mixture.nMonomer());
       openInputFile("in/Interaction", in);
       interaction.readParam(in);
@@ -132,7 +132,7 @@ public:
       mixture.readParam(in);
       in.close();
 
-      Interaction interaction;
+      FH::Interaction interaction;
       interaction.setNMonomer(mixture.nMonomer());
       openInputFile("in/Interaction", in);
       interaction.readParam(in);

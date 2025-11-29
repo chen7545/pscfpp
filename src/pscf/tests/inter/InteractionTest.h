@@ -7,11 +7,10 @@
 #include <pscf/floryHuggins/Interaction.h>
 #include <util/param/BracketPolicy.h>
 
-
 #include <fstream>
 
 using namespace Pscf;
-//using namespace Util;
+using namespace Util;
 
 class InteractionTest : public UnitTest 
 {
@@ -28,7 +27,7 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      Interaction v;
+      FH::Interaction v;
       v.setNMonomer(2);
    } 
 
@@ -36,7 +35,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FH::Interaction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -81,7 +80,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FH::Interaction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -121,7 +120,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FH::Interaction v;
       const int nMonomer = 3;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -160,7 +159,7 @@ public:
       printMethod(TEST_FUNC);
       //printEndl();
 
-      Interaction v;
+      FH::Interaction v;
       v.setNMonomer(2);
       std::ifstream in;
       openInputFile("in/Interaction", in);

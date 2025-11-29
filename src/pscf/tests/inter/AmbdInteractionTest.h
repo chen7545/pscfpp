@@ -36,7 +36,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FH::Interaction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -78,7 +78,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FH::Interaction v;
       const int nMonomer = 3;
       v.setNMonomer(nMonomer);
       std::ifstream in;
