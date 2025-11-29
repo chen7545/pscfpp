@@ -1,12 +1,12 @@
 namespace Pscf{
 
    /**
-   * Class templates for complex periodic fields.
+   * Complex-valued periodic fields (class templates).
    */
    namespace Cp{
    
       /**
-      * \defgroup Pscf_Cl_Module Complex Periodic Fields
+      * \defgroup Pscf_Cp_Module Complex Periodic Fields
       *
       * Class templates designed for use only in Cpc and Cpg, in code for
       * systems with complex-valued periodic fields. 

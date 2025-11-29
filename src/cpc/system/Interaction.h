@@ -1,5 +1,5 @@
-#ifndef PRDC_CL_INTERACTION_H
-#define PRDC_CL_INTERACTION_H
+#ifndef CPC_INTERACTION_H
+#define CPC_INTERACTION_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -12,14 +12,14 @@
 #include <util/containers/Matrix.h>       // argument (template)
 
 namespace Pscf {
-namespace Cp {
+namespace Cpc {
 
    using namespace Util;
 
    /**
    * Interaction model for complex Langevin FTS.
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    */
    class Interaction : public ParamComposite
    {
@@ -135,6 +135,6 @@ namespace Cp {
    inline double Interaction::range() const
    {  return range_; }
 
-} // namespace Cp
+} // namespace Cpc
 } // namespace Pscf
 #endif

@@ -13,11 +13,11 @@
 
 #include <cpc/solvers/Mixture.h>
 //#include <cpc/solvers/MixtureModifier.h>
+#include <cpc/system/Interaction.h>
 #include <cpc/field/Domain.h>
 //#include <cpc/fts/simulator/Simulator.h>
 //#include <cpc/fts/simulator/SimulatorFactory.h>
 
-#include <prdc/cl/Interaction.h>
 #include <prdc/cpu/WaveList.h>
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/CField.h>

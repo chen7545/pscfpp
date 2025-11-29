@@ -32,7 +32,7 @@ namespace Rp {
    * operations that modify parameters of the mixture that may be called 
    * via a non-const reference to a System.
    *
-   * \ingroup Pscf_Rl_Module
+   * \ingroup Pscf_Rp_Module
    */
    template <class MT>
    class MixtureModifier 

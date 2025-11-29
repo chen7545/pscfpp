@@ -67,7 +67,7 @@ namespace Cp {
    *    - a CFields container of monomer concentration (c) fields
    *    - a Simulator
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    */
    template <int D, class T>
    class System : public ParamComposite

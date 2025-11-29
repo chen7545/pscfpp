@@ -53,7 +53,7 @@ namespace Cp {
    * template are used as base classes for classes Cpc::Domain \<D\> and
    * Cpg::Domain \<D\>.
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    */
    template <int D, class FFT, class WLT, class FIT>
    class Domain : public ParamComposite

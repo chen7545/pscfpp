@@ -56,7 +56,7 @@ namespace Cp {
    * code, generally because the Cuda versions must explicitly transfer 
    * data between Cpu and Gpu memory.
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    */
    template <int D, class CFT, class FFT>
    class FieldIo

@@ -53,7 +53,7 @@ namespace Rp {
    * which it is derived, which can be used for systems tha are not
    * periodic. 
    *
-   * \ingroup Pscf_Rl_Module
+   * \ingroup Pscf_Rp_Module
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>

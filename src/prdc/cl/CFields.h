@@ -51,7 +51,7 @@ namespace Cp {
    *    the pscf_cpg GPU accelerated program.
    *
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    */
    template <int D, class CFT, class FIT>
    class CFields 

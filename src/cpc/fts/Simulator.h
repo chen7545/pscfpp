@@ -9,8 +9,6 @@
 */
 
 #include <util/param/ParamComposite.h>     // base class
-
-#include <rpc/fts/simulator/SimState.h>    // member
 #include <prdc/cpu/CField.h>               // member (template arg)
 #include <util/random/Random.h>            // member
 #include <util/containers/DArray.h>        // member (template)

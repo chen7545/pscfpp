@@ -78,7 +78,7 @@ namespace Rp {
    * Rpg::FieldIo<D> subclasses, differ because the Cuda versions must
    * explicitly transfer data between Cpu and Gpu memory.
    *
-   * \ingroup Pscf_Rl_Module
+   * \ingroup Pscf_Rp_Module
    */
    template <int D, class RFT, class KFT, class FFT>
    class FieldIo

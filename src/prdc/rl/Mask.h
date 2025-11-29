@@ -78,7 +78,7 @@ namespace Rp {
    * observer object and indicate a zero-parameter member function of
    * each observer that will be called whenever the field is modified.
    *
-   * \ingroup Pscf_Rl_Module
+   * \ingroup Pscf_Rp_Module
    */
    template <int D, class RFT, class FIT>
    class Mask 

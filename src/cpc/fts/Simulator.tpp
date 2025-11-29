@@ -11,12 +11,12 @@
 #include "Simulator.h"
 
 #include <cpc/system/System.h>
+#include <cpc/system/Interaction.h>
 #include <cpc/solvers/Mixture.h>
 #include <cpc/solvers/Polymer.h>
 #include <cpc/solvers/Solvent.h>
 #include <cpc/field/Domain.h>
 
-#include <prdc/cl/Interaction.h>
 
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>

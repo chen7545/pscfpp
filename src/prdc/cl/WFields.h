@@ -64,7 +64,7 @@ namespace Cp {
    * function of each observer that will be called whenever the w fields 
    * are modified.
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    */
    template <int D, class CFT, class FIT>
    class WFields 

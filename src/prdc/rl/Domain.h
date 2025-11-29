@@ -64,7 +64,7 @@ namespace Rp {
    * template are used as base classes for classes Rpc::Domain \<D\> and
    * Rpg::Domain \<D\>.
    *
-   * \ingroup Pscf_Rl_Module
+   * \ingroup Pscf_Rp_Module
    */
    template <int D, class FFT, class WLT, class FIT>
    class Domain : public ParamComposite

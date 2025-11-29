@@ -9,7 +9,7 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Cp {
+namespace Cpc {
 
    using namespace Util;
 
@@ -73,5 +73,5 @@ namespace Cp {
       return std::exp(alpha_ * kSq);
    }
 
-} // namespace Cp
+} // namespace Cpc
 } // namespace Pscf

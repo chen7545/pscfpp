@@ -25,7 +25,7 @@ namespace Rp {
    * interaction, external). It is used as a base class for 
    * classes named ScftThermo defined in Rpc and Rpg namespaces.
    *
-   * \ingroup Pscf_Rl_Module
+   * \ingroup Pscf_Rp_Module
    */
    template <int D, class ST>
    class ScftThermo : protected Rp::SystemConstRef<ST>

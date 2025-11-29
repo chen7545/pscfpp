@@ -44,7 +44,7 @@ namespace Cp {
    * different monomer types as an input and yields an array of total
    * monomer concentration fields (c fields) as an output.
    *
-   * \ingroup Pscf_Cl_Module
+   * \ingroup Pscf_Cp_Module
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>
