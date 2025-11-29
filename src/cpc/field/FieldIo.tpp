@@ -26,8 +26,8 @@ namespace Pscf {
 namespace Cpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /*
    * Read an array of fields in r-grid format.

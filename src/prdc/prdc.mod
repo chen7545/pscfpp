@@ -6,13 +6,13 @@ namespace Pscf{
    */
    namespace Prdc{
 
-   /**
-   * \defgroup Pscf_Prdc_Module Pscf::Prdc - Periodic Systems
-   *
-   * Periodic fields and crystallography (namespace Pscf::Prdc)
-   *
-   * \ingroup Pscf_NS_Module
-   */
+      /**
+      * \defgroup Pscf_Prdc_Module Periodic Systems
+      *
+      * Periodic fields and crystallography (namespace Pscf::Prdc)
+      *
+      * \ingroup Pscf_NS_Module
+      */
 
    }
 

@@ -8,10 +8,11 @@
 #include "FieldIo.tpp"
 
 namespace Pscf {
-   namespace Prdc {
-      template class Cl::FieldIo<1, Cpu::CField<1>, Cpu::FFT<1> >;
-      template class Cl::FieldIo<2, Cpu::CField<2>, Cpu::FFT<2> >;
-      template class Cl::FieldIo<3, Cpu::CField<3>, Cpu::FFT<3> >;
+   namespace Cp {
+      using namespace Prdc::Cpu;
+      template class FieldIo<1, CField<1>, FFT<1> >;
+      template class FieldIo<2, CField<2>, FFT<2> >;
+      template class FieldIo<3, CField<3>, FFT<3> >;
    }
    namespace Cpc {
       template class FieldIo<1>;

@@ -26,10 +26,10 @@
 #include <string>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    /*
    * Constructor.
@@ -280,7 +280,7 @@ namespace Cl {
       if (lattice() != unitCell.lattice()) {
          Log::file() << std::endl
                << "Error - Mismatched lattice types "
-               << "in Prdc::Cl::FieldIo::readFieldHeader:\n"
+               << "in Cp::FieldIo::readFieldHeader:\n"
                << "  FieldIo::lattice  :" << lattice() << "\n"
                << "  Unit cell lattice :" << unitCell.lattice()
                << "\n";
@@ -326,7 +326,6 @@ namespace Cl {
       isAllocated_ = true;
    }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

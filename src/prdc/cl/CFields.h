@@ -19,10 +19,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    /**
    * A container of complex-valued concentration fields (c fields).
@@ -51,7 +51,7 @@ namespace Cl {
    *    the pscf_cpg GPU accelerated program.
    *
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    */
    template <int D, class CFT, class FIT>
    class CFields 
@@ -318,7 +318,6 @@ namespace Cl {
       return *fieldIoPtr_;
    }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

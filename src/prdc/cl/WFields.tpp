@@ -16,10 +16,10 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    // Public member functions
 
@@ -214,7 +214,6 @@ namespace Cl {
    void WFields<D,CFT,FIT>::assignField(CFT & lhs, CFT const & rhs) const
    {  UTIL_THROW("Unimplemented function WFields::assignRField"); }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

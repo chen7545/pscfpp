@@ -22,6 +22,7 @@
 namespace Pscf {
 namespace Cpc {
 
+   using namespace Util;
    using namespace Prdc;
 
    template <int D>

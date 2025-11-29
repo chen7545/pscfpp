@@ -8,16 +8,16 @@
 #include "WFields.tpp"
 
 namespace Pscf {
-namespace Prdc {
-   // Explicit instantiation definitions for base class
-   template class Cl::WFields<1, Cpu::CField<1>, Cpc::FieldIo<1> >;
-   template class Cl::WFields<2, Cpu::CField<2>, Cpc::FieldIo<2> >;
-   template class Cl::WFields<3, Cpu::CField<3>, Cpc::FieldIo<3> >;
-}
-namespace Cpc {
-   // Explicit instantiation definitions
-   template class WFields<1>;
-   template class WFields<2>;
-   template class WFields<3>;
-}
+   namespace Cp {
+      // Explicit instantiation definitions for base class
+      template class WFields<1, Prdc::Cpu::CField<1>, Cpc::FieldIo<1> >;
+      template class WFields<2, Prdc::Cpu::CField<2>, Cpc::FieldIo<2> >;
+      template class WFields<3, Prdc::Cpu::CField<3>, Cpc::FieldIo<3> >;
+   }
+   namespace Cpc {
+      // Explicit instantiation definitions
+      template class WFields<1>;
+      template class WFields<2>;
+      template class WFields<3>;
+   }
 }

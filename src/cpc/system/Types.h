@@ -22,9 +22,9 @@ namespace Pscf {
          template <int D> class CFieldComparison;
          template <int D> class WaveList;
       }
-      namespace Cl {
-         class Interaction;
-      }
+   }
+   namespace Cp {
+      class Interaction;
    }
    namespace Cpc {
       template <int D> class System;
@@ -75,7 +75,7 @@ namespace Cpc {
       using SolventSpecies = Pscf::SolventSpecies<double>;
       using MixtureBase = Pscf::MixtureBase<double>;
 
-      using Interaction = Prdc::Cl::Interaction;
+      using Interaction = Cp::Interaction;
       using Domain = Cpc::Domain<D>;
       using FieldIo = Cpc::FieldIo<D>;
 

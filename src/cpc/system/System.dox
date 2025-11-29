@@ -10,7 +10,7 @@ line option of the main program.  Closely analogous class templates named
 System are defined in the Pscf::Cpc and Pscf::Cpg namespaces for use in 
 pscf_cpc and pscf_cpg, respectively. Both of these analogous class templates 
 are derived from partial specializations of a class template named 
-Pscf::Prdc::Cl::System, which defines a skeleton parameter file format that 
+Pscf::Cp::System, which defines a skeleton parameter file format that 
 is used by both classes. 
 
 Class API Documentation:

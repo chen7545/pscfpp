@@ -19,15 +19,15 @@ namespace Pscf {
 namespace Cpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /*
    * Constructor.
    */
    template <int D>
    Domain<D>::Domain()
-    : Cl::Domain<D, FFT<D>, WaveList<D>, FieldIo<D> >()
+    : Cp::Domain<D, FFT<D>, WaveList<D>, FieldIo<D> >()
    {  ParamComposite::setClassName("Domain"); }
 
 } // namespace Cpc

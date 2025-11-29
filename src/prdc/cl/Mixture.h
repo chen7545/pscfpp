@@ -23,10 +23,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
@@ -44,7 +44,7 @@ namespace Cl {
    * different monomer types as an input and yields an array of total
    * monomer concentration fields (c fields) as an output.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>
@@ -393,7 +393,6 @@ namespace Cl {
 
    };
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

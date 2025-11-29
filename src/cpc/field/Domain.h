@@ -25,14 +25,14 @@ namespace Pscf {
 
 // Explicit instantiation declarations of base class
 namespace Pscf {
-   namespace Prdc {
-      using namespace Cpu;
+   namespace Cp {
+      using namespace Prdc::Cpu;
       extern template 
-      class Cl::Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
+      class Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
       extern template 
-      class Cl::Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
+      class Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
       extern template 
-      class Cl::Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
+      class Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
    }
 }
 
@@ -47,11 +47,11 @@ namespace Cpc {
    * Spatial domain for a periodic structure with real fields, on a CPU.
    *
    * The public interface of this class is identical to that of the 
-   * Prdc::Cl::Domain base class template. Please see documentation of
+   * Cp::Domain base class template. Please see documentation of
    * that base class for API documentation. 
    *
    * The Cpc::Domain\<D\> class template is a named partial specialization
-   * of the base class template Prdc::Cl::Domain<D, FFT, WLT, FIT> that 
+   * of the base class template Cp::Domain<D, FFT, WLT, FIT> that 
    * is designed to use standard CPU hardware, defined using template type 
    * parameters FFT = Prdc::Cpu::FFT\<D\>, WLT = Prdc::Cpu::WaveList\<D\>, 
    * and FIT = Cpc::FieldIo\<D\> . 
@@ -60,7 +60,7 @@ namespace Cpc {
    */
    template <int D>
    class Domain 
-     : public Cl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
+     : public Cp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
    {
 
    public:
@@ -73,7 +73,7 @@ namespace Cpc {
       Domain();
 
       /// Alias for base class
-      using Base = Cl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >;
+      using Base = Cp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >;
 
       // Inherited pubic member functions
       using Base::setFileMaster;

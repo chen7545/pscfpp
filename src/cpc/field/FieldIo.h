@@ -25,10 +25,11 @@ namespace Pscf {
 
 // Explicit instantiation declaration for base class
 namespace Pscf {
-   namespace Prdc {
-      extern template class Cl::FieldIo<1, Cpu::CField<1>, Cpu::FFT<1> >;
-      extern template class Cl::FieldIo<2, Cpu::CField<2>, Cpu::FFT<2> >;
-      extern template class Cl::FieldIo<3, Cpu::CField<3>, Cpu::FFT<3> >;
+   namespace Cp {
+      using namespace Prdc::Cpu;
+      extern template class FieldIo<1, CField<1>, FFT<1> >;
+      extern template class FieldIo<2, CField<2>, FFT<2> >;
+      extern template class FieldIo<3, CField<3>, FFT<3> >;
    }
 }
 
@@ -43,18 +44,18 @@ namespace Cpc {
    * File input/output operations for fields.
    *
    * Please refer to the documentation of the base class template
-   * Prdc::Cl::FieldIo for complete API documentation. The public
+   * Cp::FieldIo for complete API documentation. The public
    * interface of this class is identical to that of the base class.
    *
    * This class template is derived from a partial specialization of
-   * the template Prdc::Cl::FieldIo<D, CFT, FFT> using classes
+   * the template Cp::FieldIo<D, CFT, FFT> using classes
    * CFT = CField<D> and FFT = FFT<D> that are all defined in the
    * Prdc::Cpu subspace, and that all use conventional CPU hardware.
    * An analogous class template named Rpg::FieldIo that is defined
    * in the Pscf::Rpg namespace instead uses a GPU.
    *
    * The member functions defined in this class are all implementations of
-   * pure virtual functions declared in the base class, Prdc::Cl::FieldIo.
+   * pure virtual functions declared in the base class, Cp::FieldIo.
    * These are all functions for which different implementations are
    * required for the CPU and GPU variants, usually because the GPU
    * implementation requires data transfer between host and device.
@@ -63,7 +64,7 @@ namespace Cpc {
    */
    template <int D>
    class FieldIo
-     : public  Cl::FieldIo< D, CField<D>, FFT<D> >
+     : public  Cp::FieldIo< D, CField<D>, FFT<D> >
    {
 
    public:
@@ -74,7 +75,7 @@ namespace Cpc {
       /**
       * Read multiple complex-valued fields from an input stream.
       *
-      * See documentation of analogous function in Prdc::Cl::FieldIo.
+      * See documentation of analogous function in Cp::FieldIo.
       *
       * \param in  input file stream
       * \param fields  array of complex fields
@@ -87,7 +88,7 @@ namespace Cpc {
       /**
       * Read data for multiple complex fields, with no header section.
       *
-      * See documentation of analogous function in Prdc::Cl::FieldIo.
+      * See documentation of analogous function in Cp::FieldIo.
       *
       * \param in  input file stream
       * \param fields  array of complex fields 
@@ -100,7 +101,7 @@ namespace Cpc {
       /**
       * Read a single CField (field on an r-space grid) from a stream.
       *
-      * See documentation of analogous function in Prdc::Cl::FieldIo.
+      * See documentation of analogous function in Cp::FieldIo.
       *
       * \param in  input file stream
       * \param field  fields defined on r-space grid
@@ -136,7 +137,7 @@ namespace Cpc {
       /**
       * Write array of CField objects (fields on r-space grid) to a stream.
       *
-      * See documentation of analogous function in Prdc::Cl::FieldIo.
+      * See documentation of analogous function in Cp::FieldIo.
       *
       * \param out  output stream (i.e., output file)
       * \param fields  array of CField objects (fields on r-space grid)
@@ -153,7 +154,7 @@ namespace Cpc {
       /**
       * Write a single CField (field on an r-space grid) to a stream.
       *
-      * See documentation of analogous function in Prdc::Cl::FieldIo.
+      * See documentation of analogous function in Cp::FieldIo.
       *
       * \param out  output stream
       * \param field  field defined on r-space grid
@@ -185,7 +186,7 @@ namespace Cpc {
       #endif
 
       /// Alias for base class
-      using Base = Prdc::Cl::FieldIo< D, CField<D>, FFT<D> >;
+      using Base = Cp::FieldIo< D, CField<D>, FFT<D> >;
 
       // Inherited public member functions
       using Base::associate;

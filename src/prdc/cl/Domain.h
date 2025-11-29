@@ -9,7 +9,6 @@
 */
 
 #include <util/param/ParamComposite.h>    // base class
-
 #include <prdc/crystal/UnitCell.h>        // member
 #include <pscf/mesh/Mesh.h>               // member
 
@@ -21,11 +20,10 @@ namespace Util {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
+   using namespace Prdc;
 
    /**
    * Spatial domain for a periodic structure with complex fields.
@@ -55,7 +53,7 @@ namespace Cl {
    * template are used as base classes for classes Cpc::Domain \<D\> and
    * Cpg::Domain \<D\>.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    */
    template <int D, class FFT, class WLT, class FIT>
    class Domain : public ParamComposite
@@ -289,7 +287,6 @@ namespace Cl {
    const
    {  return lattice_; }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

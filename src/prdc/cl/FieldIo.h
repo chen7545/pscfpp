@@ -21,12 +21,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
-   using namespace Pscf;
-   using namespace Pscf::Prdc;
+   using namespace Prdc;
 
    /**
    * File IO and other utilities for complex fields.
@@ -45,10 +43,10 @@ namespace Cl {
    * The Cl:FieldIo template is a base class for two class templates 
    * named FieldIo that are defined in namespaces Pscf::Cpc and Pscf::Cpg.
    * The Pscf::Cpc::FieldIo<int D> template is derived from a partial
-   * specialization of Cl::FieldIo with parameters CFT = Cpu::CField<D> 
+   * specialization of Cp::FieldIo with parameters CFT = Cpu::CField<D> 
    * and FFT = Cpu::FFT<D>, which both use standard CPU hardware.  The 
    * analogous class template Cpg::FieldIo<int D> in the Pscf::Cpg 
-   * namespace is derived from a partial specialization of Cl::FieldIo 
+   * namespace is derived from a partial specialization of Cp::FieldIo 
    * with CFT = Cuda::CField<D> and FFT = Cuda::FFT<D>, which use GPU 
    * hardware.
    *
@@ -58,7 +56,7 @@ namespace Cl {
    * code, generally because the Cuda versions must explicitly transfer 
    * data between Cpu and Gpu memory.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    */
    template <int D, class CFT, class FFT>
    class FieldIo
@@ -489,7 +487,6 @@ namespace Cl {
 
    };
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

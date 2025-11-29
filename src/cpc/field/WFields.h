@@ -16,26 +16,26 @@ namespace Pscf {
 namespace Cpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * A container of w fields.
    *
    * The public interface of this class is identical to that of the base
-   * class template Pscf::Prdc::Cl::WFields. Please see documentation
+   * class template Pscf::Cp::WFields. Please see documentation
    * of that base class for API documentation.
    *
    * \ingroup Cpc_Field_Module
    */
    template <int D>
    class WFields 
-     : public Cl::WFields<D, Prdc::Cpu::CField<D>, Cpc::FieldIo<D> >
+     : public Cp::WFields<D, Prdc::Cpu::CField<D>, Cpc::FieldIo<D> >
    {
    public:
 
       /// Alias for base class.
-      using Base = Cl::WFields< D, Prdc::Cpu::CField<D>, Cpc::FieldIo<D> >;
+      using Base = Cp::WFields< D, Prdc::Cpu::CField<D>, Cpc::FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -75,15 +75,15 @@ namespace Cpc {
 } // namespace Cpc
 } // namespace Pscf
 
+// Explicit instantiation declarations for base class
 namespace Pscf {
-namespace Prdc {
-   // Explicit instantiation declarations for base class
-   extern template 
-   class Cl::WFields<1, Cpu::CField<1>, Cpc::FieldIo<1> >;
-   extern template 
-   class Cl::WFields<2, Cpu::CField<2>, Cpc::FieldIo<2> >;
-   extern template 
-   class Cl::WFields<3, Cpu::CField<3>, Cpc::FieldIo<3> >;
+   namespace Cp {
+      extern template 
+      class WFields<1, Prdc::Cpu::CField<1>, Cpc::FieldIo<1> >;
+      extern template 
+      class WFields<2, Prdc::Cpu::CField<2>, Cpc::FieldIo<2> >;
+      extern template 
+      class WFields<3, Prdc::Cpu::CField<3>, Cpc::FieldIo<3> >;
+   } 
 } 
-} // namespace Pscf
 #endif

@@ -21,7 +21,6 @@
 #include <util/param/ParamComponent.h>
 #include <util/signal/Signal.h>
 #include <util/format/Str.h>
-#include <util/format/Int.h>
 #include <util/format/Dbl.h>
 #include <util/misc/ioUtil.h>
 #include <util/misc/FileMaster.h>
@@ -30,10 +29,10 @@
 #include <unistd.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    /*
    * Constructor.
@@ -659,7 +658,6 @@ namespace Cl {
       Log::file() << " " << Dbl(value, 20) << std::endl;
    }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

@@ -19,8 +19,7 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    // Construction, destruction, and initialization
 
@@ -457,7 +456,6 @@ namespace Cl {
    }
    #endif
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

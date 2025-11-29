@@ -23,11 +23,11 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    // Namespace that may be used implicitly
    using namespace Util;
+   using namespace Prdc;
 
    /**
    * Base class template for a complex CL-FTS system.
@@ -51,7 +51,7 @@ namespace Cl {
    * namespace for systems of dimension D. See the definitions of 
    * Cpc::Types and Cpg::Types for details. 
    *
-   * In the remainder of the documentation for this template, Cl::System, 
+   * In the remainder of the documentation for this template, Cp::System, 
    * unqualified names such as "Mixture", "Iterator", etc. are often used 
    * as shorthand for typename aliases such as T::Mixture, T::Iterator 
    * that are defined in class T (i.e., in Cpc::Types\<D\> or 
@@ -67,7 +67,7 @@ namespace Cl {
    *    - a CFields container of monomer concentration (c) fields
    *    - a Simulator
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    */
    template <int D, class T>
    class System : public ParamComposite
@@ -96,7 +96,7 @@ namespace Cl {
       * subclass constructor,  a reference to the subclass instance must
       * be passed as "*this" to this System base class constructor. 
       * The address of the instance of the T::System subclass is then 
-      * retained in the Prdc::Cl::System base class instance by a private 
+      * retained in the Cp::System base class instance by a private 
       * member variable named systemPtr_ that is of type T::System* . 
       * See definitions of the constructors for the Cpc::System and 
       * Cpc::System class templates for examples of this usage.
@@ -581,7 +581,6 @@ namespace Cl {
    typename T::Domain & System<D,T>::domain_() 
    {  return *domainPtr_; }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

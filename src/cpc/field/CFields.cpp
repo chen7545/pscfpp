@@ -11,16 +11,16 @@
 #include <cpc/field/FieldIo.h>
 
 namespace Pscf {
-namespace Prdc {
-   // Explicit instantiation definitions for base class
-   template class Cl::CFields<1, Cpu::CField<1>, Cpc::FieldIo<1> >;
-   template class Cl::CFields<2, Cpu::CField<2>, Cpc::FieldIo<2> >;
-   template class Cl::CFields<3, Cpu::CField<3>, Cpc::FieldIo<3> >;
-}
-namespace Cpc {
-   // Explicit instantiation definitions
-   template class CFields<1>;
-   template class CFields<2>;
-   template class CFields<3>;
-}
+   namespace Cp {
+      // Explicit instantiation definitions for base class
+      template class CFields<1, Prdc::Cpu::CField<1>, Cpc::FieldIo<1> >;
+      template class CFields<2, Prdc::Cpu::CField<2>, Cpc::FieldIo<2> >;
+      template class CFields<3, Prdc::Cpu::CField<3>, Cpc::FieldIo<3> >;
+   }
+   namespace Cpc {
+      // Explicit instantiation definitions
+      template class CFields<1>;
+      template class CFields<2>;
+      template class CFields<3>;
+   }
 }

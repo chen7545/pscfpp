@@ -23,10 +23,10 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    /**
    * A container of complex-valued w fields.
@@ -64,7 +64,7 @@ namespace Cl {
    * function of each observer that will be called whenever the w fields 
    * are modified.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    */
    template <int D, class CFT, class FIT>
    class WFields 
@@ -369,7 +369,6 @@ namespace Cl {
       return *fieldIoPtr_;
    }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

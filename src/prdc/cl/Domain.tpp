@@ -14,10 +14,10 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    /*
    * Constructor.
@@ -161,7 +161,6 @@ namespace Cl {
       isInitialized_ = true;
    }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

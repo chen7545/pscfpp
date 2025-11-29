@@ -8,11 +8,11 @@
 #include "Domain.tpp"
 
 namespace Pscf {
-   namespace Prdc {
-      using namespace Cpu;
-      template class Cl::Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
-      template class Cl::Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
-      template class Cl::Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
+   namespace Cp {
+      using namespace Prdc::Cpu;
+      template class Domain<1, FFT<1>, WaveList<1>, Cpc::FieldIo<1> >;
+      template class Domain<2, FFT<2>, WaveList<2>, Cpc::FieldIo<2> >;
+      template class Domain<3, FFT<3>, WaveList<3>, Cpc::FieldIo<3> >;
    } 
    namespace Cpc {
       template class Domain<1>;

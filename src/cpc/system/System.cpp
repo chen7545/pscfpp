@@ -22,15 +22,13 @@
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/CField.h>
 
-#include <pscf/floryHuggins/Interaction.h>
-
 namespace Pscf {
 
-   namespace Prdc {
+   namespace Cp {
       // Explicit instantiation of base class
-      template class Cl::System< 1, Cpc::Types<1> >;
-      template class Cl::System< 2, Cpc::Types<2> >;
-      template class Cl::System< 3, Cpc::Types<3> >;
+      template class System< 1, Cpc::Types<1> >;
+      template class System< 2, Cpc::Types<2> >;
+      template class System< 3, Cpc::Types<3> >;
    }
 
    namespace Cpc {

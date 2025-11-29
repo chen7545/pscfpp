@@ -12,15 +12,14 @@
 #include <util/containers/Matrix.h>       // argument (template)
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
 
    /**
    * Interaction model for complex Langevin FTS.
    *
-   * \ingroup Prdc_Cl_Module
+   * \ingroup Pscf_Cl_Module
    */
    class Interaction : public ParamComposite
    {
@@ -136,7 +135,6 @@ namespace Cl {
    inline double Interaction::range() const
    {  return range_; }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif

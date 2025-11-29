@@ -15,10 +15,10 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cl {
+namespace Cp {
 
    using namespace Util;
+   using namespace Prdc;
 
    // Public member functions
 
@@ -133,7 +133,6 @@ namespace Cl {
    void CFields<D,CFT,FIT>::setHasData(bool hasData) 
    {  hasData_ = hasData; }
 
-} // namespace Cl
-} // namespace Prdc
+} // namespace Cp
 } // namespace Pscf
 #endif
