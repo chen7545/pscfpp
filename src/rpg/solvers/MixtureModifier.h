@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/MixtureModifier.h>   // base class template
-#include "Mixture.h"                   // base class template argument
+#include <rp/MixtureModifier.h>    // base class template
+#include "Mixture.h"               // base class template argument
 
 namespace Pscf {
 namespace Rpg {

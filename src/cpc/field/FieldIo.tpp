@@ -9,7 +9,7 @@
 */
 
 #include "FieldIo.h"
-#include <prdc/cl/FieldIo.tpp>        // base class implementation
+#include <cp/FieldIo.tpp>        // base class implementation
 
 #include <prdc/field/fieldCheck.h>
 #include <prdc/field/cFieldIo.h>

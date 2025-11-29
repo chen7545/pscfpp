@@ -8,11 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "FieldIo.h"
+#include "FieldIo.h"               // class header
+#include <rp/FieldIo.tpp>          // base class template implementation
 
 #include <rpg/field/HostDArrayComplex.h>
 
-#include <prdc/rl/FieldIo.tpp>      // base class implementation
 #include <prdc/field/rFieldIo.h>
 #include <prdc/field/fieldCheck.h>
 #include <prdc/crystal/Basis.h>

@@ -5,14 +5,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "ScftThermo.h"
+#include "ScftThermo.h"         // class header
+#include <rp/ScftThermo.tpp>    // base class template implementation
+
 #include <rpg/solvers/Mixture.h>
 #include <rpg/solvers/Polymer.h>
 #include <rpg/solvers/Solvent.h>
 #include <rpg/field/Domain.h>
 #include <prdc/cuda/Reduce.h>
 #include <prdc/cuda/RField.h>
-#include <prdc/rl/ScftThermo.tpp>
 #include <pscf/floryHuggins/Interaction.h>
 
 namespace Pscf {

@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Domain.h"
-#include <prdc/cl/Domain.tpp>
+#include "Domain.h"           // Class header
+#include <cp/Domain.tpp>      // Base class template implementation
 
 #include <cpc/field/FieldIo.tpp>
 #include <prdc/cpu/WaveList.h>

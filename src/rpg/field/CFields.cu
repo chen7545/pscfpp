@@ -5,10 +5,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "CFields.h"
-#include <rpg/field/FieldIo.h>
-#include <prdc/cuda/RField.h>
-#include <prdc/rl/CFields.tpp>    // base class implementation
+#include "CFields.h"              // class header
+#include <rp/CFields.tpp>         // base class implementation
 
 namespace Pscf {
    namespace Rp {

@@ -5,8 +5,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mask.tpp"                 // class implementation
-#include <prdc/rl/Mask.tpp>  // base class implementation
+#include "Mask.tpp"        // class template implementation
+#include <rp/Mask.tpp>     // base class template implementation
 
 namespace Pscf {
    namespace Rp {
@@ -15,7 +15,6 @@ namespace Pscf {
       template class Rp::Mask< 1, RField<1>, Rpc::FieldIo<1> >;
       template class Rp::Mask< 2, RField<2>, Rpc::FieldIo<2> >;
       template class Rp::Mask< 3, RField<3>, Rpc::FieldIo<3> >;
-   
    } // namespace Prdc
    namespace Rpc {
       // Explicit instantiation definitions for base class

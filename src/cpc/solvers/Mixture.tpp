@@ -14,7 +14,7 @@
 #include "Block.h"
 #include "Propagator.h"
 #include <cpc/field/FieldIo.h>
-#include <prdc/cl/Mixture.tpp>
+#include <cp/Mixture.tpp>
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/RField.h>
 #include <prdc/cpu/complex.h>

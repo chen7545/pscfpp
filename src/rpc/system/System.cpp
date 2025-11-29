@@ -9,7 +9,7 @@
 */
 
 #include "System.h"
-#include <prdc/rl/System.tpp>
+#include <rp/System.tpp>
 
 #include <rpc/environment/EnvironmentFactory.h>
 #include <rpc/fts/simulator/Simulator.h>

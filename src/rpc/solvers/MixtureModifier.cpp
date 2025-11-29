@@ -6,8 +6,7 @@
 */
 
 #include "MixtureModifier.h"
-#include <prdc/rl/MixtureModifier.tpp>
-#include <rpc/solvers/Mixture.h>
+#include <rp/MixtureModifier.tpp>
 #include <rpc/solvers/Polymer.h>
 #include <rpc/solvers/Solvent.h>
 #include <rpc/solvers/Block.h>

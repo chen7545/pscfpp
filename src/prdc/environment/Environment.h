@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/Mixture.h>         // method parameter
 #include <pscf/environment/EnvironmentBase.h> // base class
+#include <rp/Mixture.h>                       // method parameter
 #include <util/containers/FSArray.h>          // container
 #include <iostream>
 

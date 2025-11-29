@@ -6,7 +6,7 @@
 */
 
 #include "MixtureModifier.h"
-#include <prdc/rl/MixtureModifier.tpp>
+#include <rp/MixtureModifier.tpp>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/solvers/Polymer.h>
 #include <rpg/solvers/Solvent.h>

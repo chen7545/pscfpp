@@ -11,12 +11,11 @@
 #include "Mask.h"
 
 namespace Pscf {
-namespace Rpc
-{
+namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /*
    * Return volume fraction of the unit cell occupied by the 

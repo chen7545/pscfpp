@@ -8,13 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mixture.h"
+#include "Mixture.h"         // class header
+#include <rp/Mixture.tpp>    // base class template implementation
+
 #include "Polymer.h"
 #include "Solvent.h"
 #include "Block.h"
 #include "Propagator.h"
 #include <rpg/field/FieldIo.h>
-#include <prdc/rl/Mixture.tpp>
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/RField.h>
 

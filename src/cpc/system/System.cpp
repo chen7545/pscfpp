@@ -9,7 +9,7 @@
 */
 
 #include "System.h"                // header
-#include <prdc/cl/System.tpp>      // base class template implementation 
+#include <cp/System.tpp>      // base class template implementation 
 
 #include <cpc/solvers/Mixture.h>
 //#include <cpc/solvers/MixtureModifier.h>

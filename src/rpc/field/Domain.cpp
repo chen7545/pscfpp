@@ -13,10 +13,10 @@ namespace Pscf {
       template class Domain<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
       template class Domain<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
       template class Domain<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
-   } 
+   }
    namespace Rpc {
       template class Domain<1>;
       template class Domain<2>;
       template class Domain<3>;
-   } 
-} 
+   }
+}

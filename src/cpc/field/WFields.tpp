@@ -9,7 +9,7 @@
 */
 
 #include "WFields.h"             // class header
-#include <prdc/cl/WFields.tpp>   // base class implementation
+#include <cp/WFields.tpp>   // base class implementation
 
 namespace Pscf {
 namespace Cpc {

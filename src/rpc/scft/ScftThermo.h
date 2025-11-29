@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/ScftThermo.h>   // base class template
+#include <rp/ScftThermo.h>   // base class template
 #include <rpc/system/System.h>            // template argument
 
 namespace Pscf {

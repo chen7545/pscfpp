@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cl/WFields.h>     // base class template
-#include <prdc/cpu/CField.h>     // template parameter
-#include <cpc/field/FieldIo.h>   // template parameter
+#include <cp/WFields.h>          // base class template
+#include <prdc/cpu/CField.h>     // base class template argument
+#include <cpc/field/FieldIo.h>   // base class template argument
 
 namespace Pscf {
 namespace Cpc {
@@ -30,12 +30,12 @@ namespace Cpc {
    */
    template <int D>
    class WFields 
-     : public Cp::WFields<D, Prdc::Cpu::CField<D>, Cpc::FieldIo<D> >
+     : public Cp::WFields<D, CField<D>, FieldIo<D> >
    {
    public:
 
       /// Alias for base class.
-      using Base = Cp::WFields< D, Prdc::Cpu::CField<D>, Cpc::FieldIo<D> >;
+      using Base = Cp::WFields< D, CField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;

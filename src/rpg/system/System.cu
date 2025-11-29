@@ -8,9 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "System.h"
-#include <prdc/rl/System.tpp>
-#include <prdc/cuda/WaveList.h>
+#include "System.h"                // class header
+#include <rp/System.tpp>           // base class template implementation
 
 #include <rpg/environment/EnvironmentFactory.h>
 #include <rpg/fts/simulator/Simulator.h>
@@ -29,6 +28,7 @@
 
 #include <prdc/cuda/RField.h>
 #include <prdc/cuda/RFieldDft.h>
+#include <prdc/cuda/WaveList.h>
 #include <prdc/environment/Environment.h>
 
 #include <pscf/floryHuggins/Interaction.h>

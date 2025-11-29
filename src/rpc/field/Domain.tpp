@@ -8,12 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Domain.h"
-#include <prdc/rl/Domain.tpp>
-
-#include <rpc/field/FieldIo.tpp>
-#include <prdc/cpu/WaveList.h>
-#include <prdc/cpu/FFT.h>
+#include "Domain.h"                 // class header
+#include <rp/Domain.tpp>            // base class template implementation
+#include <rpc/field/FieldIo.tpp>    // base class template argument
+#include <prdc/cpu/WaveList.h>      // base class template argument
+#include <prdc/cpu/FFT.h>           // base class template argument
 
 namespace Pscf {
 namespace Rpc {

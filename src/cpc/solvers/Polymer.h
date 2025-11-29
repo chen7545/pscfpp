@@ -9,7 +9,6 @@
 */
 
 #include <pscf/solvers/PolymerTmpl.h>  // base class template
-#include <prdc/cpu/types.h>            // base class template
 
 // Forward declarations
 namespace Util {
@@ -25,8 +24,10 @@ namespace Pscf {
          template <int D> class CField;
       }
    }
+}
 
-   // Explicit instantiation declarations for base class
+// Explicit instantiation declarations for base class
+namespace Pscf { 
    extern template 
    class PolymerTmpl< Cpc::Block<1>, Cpc::Propagator<1>, std::complex<double> >;
    extern template 

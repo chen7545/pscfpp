@@ -5,8 +5,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mask.tpp"
-#include <prdc/rl/Mask.tpp> // needed for implementation
+#include "Mask.tpp"       // class template implementation
+#include <rp/Mask.tpp>    // base class template implementation
 
 namespace Pscf {
    namespace Rp {

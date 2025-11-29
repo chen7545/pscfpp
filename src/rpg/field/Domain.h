@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/Domain.h>        // base class template
+#include <rp/Domain.h>        // base class template
 
 // Forward declarations
 namespace Pscf {

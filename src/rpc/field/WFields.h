@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/WFields.h>       // base class template
-#include <prdc/cpu/RField.h>       // base class template argument
-#include <rpc/field/FieldIo.h>     // base class template argument
+#include <rp/WFields.h>          // base class template
+#include <prdc/cpu/RField.h>     // base class template argument
+#include <rpc/field/FieldIo.h>   // base class template argument
 
 namespace Pscf {
 namespace Rpc {
@@ -23,7 +23,7 @@ namespace Rpc {
    * A container of fields stored in both basis and r-grid format.
    *
    * The public interface of this class is identical to that of the base
-   * class template Rp::WFields.  Please see documentation of that base 
+   * class template Rp::WFields. Please see documentation of that base 
    * class template for API documentation.
    *
    * \ingroup Rpc_Field_Module

@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cl/Mixture.h>     // base class template
-#include <cpc/system/Types.h>    // base class argument
+#include <cp/Mixture.h>          // base class template
+#include <cpc/system/Types.h>    // base class template argument
 
 namespace Pscf {
 namespace Cpc {

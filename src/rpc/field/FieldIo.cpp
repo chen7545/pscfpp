@@ -18,5 +18,5 @@ namespace Pscf {
       template class FieldIo<1>;
       template class FieldIo<2>;
       template class FieldIo<3>;
-   } 
+   }
 }

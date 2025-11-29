@@ -9,11 +9,11 @@
 */
 
 // Header file includes
-#include <prdc/rl/System.h>    // base class template
-#include <rpg/system/Types.h>          // base class template param
-#include <rpg/field/WFields.h>         // member
-#include <rpg/field/CFields.h>         // member
-#include <rpg/field/Mask.h>            // member
+#include <rp/System.h>              // base class template
+#include <rpg/system/Types.h>       // base class template argument
+#include <rpg/field/WFields.h>      // member
+#include <rpg/field/CFields.h>      // member
+#include <rpg/field/Mask.h>         // member
 
 namespace Pscf {
 namespace Rpg {

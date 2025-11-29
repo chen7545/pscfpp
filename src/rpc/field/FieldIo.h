@@ -8,10 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/FieldIo.h>        // base class template
-#include <prdc/cpu/RField.h>        // base class template argument
-#include <prdc/cpu/RFieldDft.h>     // base class template argument
-#include <prdc/cpu/FFT.h>           // base class template argument
+#include <rp/FieldIo.h>            // base class template
+#include <prdc/cpu/RField.h>       // base class template argument
+#include <prdc/cpu/RFieldDft.h>    // base class template argument
+#include <prdc/cpu/FFT.h>          // base class template argument
 
 // Forward declarations 
 namespace Util {

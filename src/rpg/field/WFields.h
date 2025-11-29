@@ -8,16 +8,16 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/WFields.h>     // base class template
-#include <prdc/cuda/RField.h>    // template parameter
-#include <rpg/field/FieldIo.h>   // template parameter
+#include <rp/WFields.h>          // base class template
+#include <prdc/cuda/RField.h>    // base class template argument
+#include <rpg/field/FieldIo.h>   // base class template argument
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
    using namespace Prdc;
-   //using namespace Prdc::Cuda;
+   using namespace Prdc::Cuda;
 
    /**
    * A container of fields stored in both basis and r-grid format.
@@ -30,13 +30,13 @@ namespace Rpg {
    */
    template <int D>
    class WFields 
-    : public Rp::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >
+    : public Rp::WFields<D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Alias for base class.
-      using Base = Rp::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >;
+      using Base = Rp::WFields<D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;

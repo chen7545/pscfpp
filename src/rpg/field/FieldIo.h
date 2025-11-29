@@ -8,10 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/FieldIo.h>     // base class template
-#include <prdc/cuda/RField.h>           // template parameter
-#include <prdc/cuda/RFieldDft.h>        // template parameter
-#include <prdc/cuda/FFT.h>              // template parameter
+#include <rp/FieldIo.h>             // base class template
+#include <prdc/cuda/RField.h>       // base class template argument
+#include <prdc/cuda/RFieldDft.h>    // base class template argument
+#include <prdc/cuda/FFT.h>          // base class template argument
 
 // Forward declarations for classes used only via references or pointers
 namespace Util {

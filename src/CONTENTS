@@ -9,22 +9,30 @@ Subdirectories (with corresponding C++ namespace names in parentheses):
 
   util - general utilities for scientific computation (Util)
   pscf - classes accessible throughout the PSCF package (Pscf)
-  prdc - shared classes for periodic structures (Pscf::Prdc)
   r1d  - real fields, one-dimensional SCFT (Pscf::R1d)
-  rpc  - real periodic fields, SCFT & PS-FTS on CPU (Pscf::Rpc)
-  rpg  - real periodic fields, SCFT & PS-FTS on GPU (Pscf::Rpg)
-  cpc  - complex periodic fields, CL-FTS on CPU (Pscf::Cpc)
+  prdc - periodic systems (Pscf::Prdc)
+  rp   - SCFT & PS-FTS with real periodic fields, CPU & GPU (Pscf::Rp)
+  rpc  - SCFT & PS-FTS with real periodic fields, CPU  (Pscf::Rpc)
+  rpc  - SCFT & PS-FTS with real periodic fields, GPU  (Pscf::Rpc)
+  cp   - CL-FTS with complex periodic fields, CPU & GPU (Pscf:Cp)
+  cpc  - CL-FTS with complex periodic fields, CPU (Pscf:Cpc)
+  cpg  - CL-FTS with complex periodic fields, GPU (Pscf:Cpg)
   test - unit testing framework (base classes)
 
-  Directories r1d, rpc, rpg, and cpc are "program level" directories 
+  Directories r1d, rpc, rpg, cpc, and cpg are "program level" directories 
   that each contain code that is only accessible to and used by a single 
-  executable program, namely, pscf_1d, pscf_pc, pscf_rpg, or pscf_cpc.
+  executable program, namely, pscf_1d, pscf_pc, pscf_rpg, pscf_cpc, or
+  pscf_cpg.
 
-  Directories util, pscf, and prdc each contain code that may be used in
-  multiple programs. Names defined in files located in the util and pscf 
-  directories are accessible anywhere in PSCF. Names defined in the prdc 
-  directory are accessible in the rpc, rpg and cpc program-level
-  directories, but not in the r1d directory.
+  Directories util, pscf, prdc, rp, and cp each contain code that is
+  used in multiple programs. Names defined in files located in the util 
+  and pscf directories are accessible anywhere in PSCF. Names defined 
+  in the prdc directory are accessible in the other directories 
+  containing code designed for periodic boundary conditions (rp, rpc, 
+  rpg, cp, cpc, and cpg), but are not used in the r1d directory. Names 
+  defined in the rp directory are used in the rpc and rpg program level 
+  directories. Names defined in the cp directory are used in the cpc 
+  and cpg program level directories
 
 Files (maintained in the git repository):
 

@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/rl/Mask.h>        // base class template
+#include <rp/Mask.h>             // base class template
 #include "FieldIo.h"             // base class template argument
 #include <prdc/cuda/RField.h>    // base class template argument
 
