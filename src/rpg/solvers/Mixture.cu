@@ -8,7 +8,7 @@
 #include "Mixture.tpp"
 
 namespace Pscf {
-   namespace Rl { 
+   namespace Rp { 
       // Explicit instantiation definitions for base class
       template 
       class Mixture<1, Rpg::Polymer<1>, Rpg::Solvent<1>, Rpg::Types<1> >;

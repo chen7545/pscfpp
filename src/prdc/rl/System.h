@@ -23,7 +23,7 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    // Namespace that may be used implicitly
    using namespace Util;
@@ -37,7 +37,7 @@ namespace Rl {
    *    D - integer dimensionality of space (D=1, 2, or 3)
    *    T - "Types" class collection of aliases for other classes
    * 
-   * <b> Usage </b>: An instantiation of Rl::System\<D, T\> is used as a 
+   * <b> Usage </b>: An instantiation of Rp::System\<D, T\> is used as a 
    * base class for each System\<D\> class defined in namespaces Rpc and 
    * Rpg, for D=1, 2, or 3.  In this use, template parameter T is taken to 
    * be an instance of a template \<int D\> class Types that is defined 
@@ -97,7 +97,7 @@ namespace Rl {
    *  <li> \ref scft_command_pc_page "Command File Format" </li>
    * </ul>
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class T>
    class System : public ParamComposite
@@ -126,7 +126,7 @@ namespace Rl {
       * this usage, in the member initialization list of the T::System 
       * subclass constructor,  a reference to the subclass instance must
       * The address of the instance of the T::System subclass is then 
-      * retained in the Rl::System base class instance by a private 
+      * retained in the Rp::System base class instance by a private 
       * member variable named systemPtr_ that is of type T::System* .
       * See definitions of the constructors for the Rpc::System and 
       * Rpc::System class templates for examples of this usage.
@@ -901,6 +901,6 @@ namespace Rl {
    typename T::Domain & System<D,T>::domain_() 
    {  return *domainPtr_; }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

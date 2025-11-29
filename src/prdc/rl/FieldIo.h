@@ -26,7 +26,7 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -78,7 +78,7 @@ namespace Rl {
    * Rpg::FieldIo<D> subclasses, differ because the Cuda versions must
    * explicitly transfer data between Cpu and Gpu memory.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class RFT, class KFT, class FFT>
    class FieldIo
@@ -1395,6 +1395,6 @@ namespace Rl {
 
    };
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

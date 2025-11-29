@@ -23,7 +23,7 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -86,7 +86,7 @@ namespace Rl {
    * objects and indicate a zero-parameter member function of each 
    * observer that will be called whenever the fields are modified.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class RFT, class FIT>
    class WFields 
@@ -631,6 +631,6 @@ namespace Rl {
       return *fieldIoPtr_;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

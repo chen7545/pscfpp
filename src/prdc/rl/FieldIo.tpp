@@ -36,7 +36,7 @@
 #include <string>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -1196,6 +1196,6 @@ namespace Rl {
       isAllocatedBasis_ = true;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

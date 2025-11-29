@@ -27,7 +27,7 @@ namespace Rpg {
    */
    template <int D>
    Domain<D>::Domain()
-    : Rl::Domain<D, FFT<D>, WaveList<D>, FieldIo<D> >()
+    : Rp::Domain<D, FFT<D>, WaveList<D>, FieldIo<D> >()
    {  ParamComposite::setClassName("Domain"); }
 
 } // namespace Rpg

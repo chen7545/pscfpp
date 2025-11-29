@@ -9,7 +9,7 @@
 */
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    /**
    * Modifier for parameters of an associated mixture.
@@ -32,7 +32,7 @@ namespace Rl {
    * operations that modify parameters of the mixture that may be called 
    * via a non-const reference to a System.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <class MT>
    class MixtureModifier 
@@ -160,6 +160,6 @@ namespace Rl {
 
    };
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

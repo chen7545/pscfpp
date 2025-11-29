@@ -11,7 +11,7 @@
 #include <rpc/field/FieldIo.h>
 
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       // Explicit instantiations of base class
       template class CFields<1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
       template class CFields<2, Prdc::Cpu::RField<2>, Rpc::FieldIo<2> >;

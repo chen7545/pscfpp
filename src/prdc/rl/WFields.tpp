@@ -17,7 +17,7 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -470,6 +470,6 @@ namespace Rl {
    WFields<D,RFT,FIT>::assignRField(RFT & lhs, RFT const & rhs) const
    {  UTIL_THROW("Unimplemented function WFields::assignRField"); }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

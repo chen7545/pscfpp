@@ -25,44 +25,44 @@ namespace Rpc {
    * Solver and descriptor for a mixture of polymers and solvents.
    *
    * A Mixture is derived from an instantiation of the class template
-   * Rl::Mixture, and has the same public interface as this base class
+   * Rp::Mixture, and has the same public interface as this base class
    * class template.
    *
    * \ref user_param_mixture_page "Manual Page"
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
-   class Mixture : public Rl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >
+   class Mixture : public Rp::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >
    {
 
    public:
 
       /// Direct (parent) base class.
-      using RlMixtureT
-         = typename Rl::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
+      using RpMixtureT
+         = typename Rp::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
 
       // Inherited public type name aliases
 
-      using typename RlMixtureT::MixtureTmplT;
-      using typename RlMixtureT::PolymerT;
-      using typename RlMixtureT::SolventT;
-      using typename RlMixtureT::BlockT;
-      using typename RlMixtureT::PropagatorT;
-      using typename RlMixtureT::FieldT;
-      using typename RlMixtureT::FFTT;
-      using typename RlMixtureT::WaveListT;
+      using typename RpMixtureT::MixtureTmplT;
+      using typename RpMixtureT::PolymerT;
+      using typename RpMixtureT::SolventT;
+      using typename RpMixtureT::BlockT;
+      using typename RpMixtureT::PropagatorT;
+      using typename RpMixtureT::FieldT;
+      using typename RpMixtureT::FFTT;
+      using typename RpMixtureT::WaveListT;
 
       // Inherited public member functions
 
-      using RlMixtureT::readParameters;
-      using RlMixtureT::associate;
-      using RlMixtureT::allocate;
-      using RlMixtureT::clearUnitCellData;
-      using RlMixtureT::setKuhn;
-      using RlMixtureT::compute;
-      using RlMixtureT::computeStress;
-      using RlMixtureT::hasStress;
-      using RlMixtureT::createBlockCRGrid;
+      using RpMixtureT::readParameters;
+      using RpMixtureT::associate;
+      using RpMixtureT::allocate;
+      using RpMixtureT::clearUnitCellData;
+      using RpMixtureT::setKuhn;
+      using RpMixtureT::compute;
+      using RpMixtureT::computeStress;
+      using RpMixtureT::hasStress;
+      using RpMixtureT::createBlockCRGrid;
 
       using MixtureTmplT::polymer;
       using MixtureTmplT::polymerSpecies;
@@ -79,8 +79,8 @@ namespace Rpc {
 
    protected:
 
-      using RlMixtureT::mesh;
-      using RlMixtureT::ds;
+      using RpMixtureT::mesh;
+      using RpMixtureT::ds;
 
    private:
 
@@ -114,7 +114,7 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
    extern template 
    class Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;

@@ -22,22 +22,22 @@ namespace Rpg {
    /**
    * A field to which the total monomer concentration is constrained.
    *
-   * Please refer to the documentation of the Rl::Mask base class
+   * Please refer to the documentation of the Rp::Mask base class
    * template for more complete API documentation for this class template.
    * The public interface of Rpg::Mask is identical to that of the base
-   * class template Rl::Mask.
+   * class template Rp::Mask.
    *
    * \ingroup Rpg_Field_Module
    */
    template <int D>
    class Mask
-     : public Rl::Mask< D, RField<D>, FieldIo<D> >
+     : public Rp::Mask< D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Base class typedef
-      using Base = Rl::Mask< D, Prdc::Cuda::RField<D>, FieldIo<D> >;
+      using Base = Rp::Mask< D, Prdc::Cuda::RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -78,7 +78,7 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class template
    using namespace Prdc::Cuda;
    extern template class Mask< 1, RField<1>, Rpg::FieldIo<1> >;

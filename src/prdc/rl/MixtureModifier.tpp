@@ -12,7 +12,7 @@
 #include <pscf/chem/Monomer.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    /*
    * Constructor
@@ -125,6 +125,6 @@ namespace Rl {
       return *mixturePtr_;  
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

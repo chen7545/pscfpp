@@ -10,7 +10,7 @@
 
 namespace Pscf {
 
-   namespace Rl {
+   namespace Rp {
       // Explicit instantiation
       using namespace Prdc::Cuda;
       template class FieldIo<1, RField<1>, RFieldDft<1>, FFT<1> >;

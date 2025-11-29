@@ -13,7 +13,7 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
 
@@ -199,6 +199,6 @@ namespace Rl {
       isSymmetric_ = isSymmetric;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

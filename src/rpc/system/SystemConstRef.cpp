@@ -9,7 +9,7 @@
 #include <prdc/rl/SystemConstRef.tpp>
 
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       template class SystemConstRef< Rpc::System<1> >;
       template class SystemConstRef< Rpc::System<2> >;
       template class SystemConstRef< Rpc::System<3> >;

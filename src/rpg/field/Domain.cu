@@ -8,7 +8,7 @@
 #include "Domain.tpp"
 
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       using namespace Prdc::Cuda;
       template class Domain<1, FFT<1>, WaveList<1>, Rpg::FieldIo<1> >;
       template class Domain<2, FFT<2>, WaveList<2>, Rpg::FieldIo<2> >;

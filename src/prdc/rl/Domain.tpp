@@ -16,7 +16,7 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -261,6 +261,6 @@ namespace Rl {
    bool Domain<D,FFT,WLT,FIT>::hasBasis() const
    {  return basis().isInitialized(); }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

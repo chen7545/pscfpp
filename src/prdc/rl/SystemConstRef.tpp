@@ -11,7 +11,7 @@
 #include "SystemConstRef.h"
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    /*
    * Default constructor.
@@ -66,6 +66,6 @@ namespace Rl {
       fileMasterPtr_ = &(system.fileMaster());
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

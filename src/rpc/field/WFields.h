@@ -23,19 +23,19 @@ namespace Rpc {
    * A container of fields stored in both basis and r-grid format.
    *
    * The public interface of this class is identical to that of the base
-   * class template Rl::WFields.  Please see documentation of that base 
+   * class template Rp::WFields.  Please see documentation of that base 
    * class template for API documentation.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
    class WFields 
-     : public Rl::WFields<D, RField<D>, FieldIo<D> >
+     : public Rp::WFields<D, RField<D>, FieldIo<D> >
    {
    public:
 
       /// Alias for base class.
-      using Base = Rl::WFields< D, RField<D>, FieldIo<D> >;
+      using Base = Rp::WFields< D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -87,7 +87,7 @@ namespace Rpc {
 
 // Explicit instantiation declarations for base class
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       extern template 
       class WFields<1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
       extern template 

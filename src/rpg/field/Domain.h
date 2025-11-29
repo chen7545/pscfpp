@@ -25,7 +25,7 @@ namespace Pscf {
 
 // Explicit instantiation declarations for base class template
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       using namespace Prdc::Cuda;
       extern template 
       class Domain<1, FFT<1>, WaveList<1>, Rpg::FieldIo<1> >;
@@ -46,7 +46,7 @@ namespace Rpg {
    /**
    * Spatial domain for a periodic structure with real fields, on a GPU.
    *
-   * See the interface of the Rl::Domain base class template for
+   * See the interface of the Rp::Domain base class template for
    * complete API documentation. The Rpg::Domain class template is 
    * basically a named partial specialization of the base class template, 
    * defined using template type parameters FFT = Prdc::Cuda::FFT<D>, 
@@ -57,7 +57,7 @@ namespace Rpg {
    */
    template <int D>
    class Domain 
-     : public Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
+     : public Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
    {
 
    public:
@@ -70,7 +70,7 @@ namespace Rpg {
       Domain();
 
       /// Typename alias base class
-      using Base = Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >;
+      using Base = Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >;
 
       // Inherited pubic member functions
 

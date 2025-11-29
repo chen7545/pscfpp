@@ -34,11 +34,11 @@ namespace Rpc {
    * Spatial domain for a periodic structure with real fields, on a CPU.
    *
    * The public interface of this class is identical to that of the 
-   * Rl::Domain base class template. Please see documentation of
+   * Rp::Domain base class template. Please see documentation of
    * that base class for API documentation. 
    *
    * The Rpc::Domain\<D\> class template is a named partial specialization
-   * of the base class template Rl::Domain<D, FFT, WLT, FIT> that 
+   * of the base class template Rp::Domain<D, FFT, WLT, FIT> that 
    * is designed to use standard CPU hardware, defined using template type 
    * parameters FFT = Prdc::Cpu::FFT\<D\>, WLT = Prdc::Cpu::WaveList\<D\>, 
    * and FIT = Rpc::FieldIo\<D\> . 
@@ -47,7 +47,7 @@ namespace Rpc {
    */
    template <int D>
    class Domain 
-     : public Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
+     : public Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
    {
 
    public:
@@ -60,7 +60,7 @@ namespace Rpc {
       Domain();
 
       /// Typedef for base class
-      typedef Rl::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> > Base;
+      typedef Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> > Base;
 
       // Inherited pubic member functions
       using Base::setFileMaster;
@@ -91,7 +91,7 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations of base class
    using namespace Prdc::Cpu;
    extern template 

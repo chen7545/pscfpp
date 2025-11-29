@@ -14,7 +14,7 @@ namespace Util {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
 
@@ -27,7 +27,7 @@ namespace Rl {
    * conditions. Accessor functions return the system and its components 
    * as const references.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <class ST>
    class SystemConstRef 
@@ -134,6 +134,6 @@ namespace Rl {
 
    };
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

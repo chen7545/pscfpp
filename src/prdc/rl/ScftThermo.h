@@ -13,7 +13,7 @@
 #include <iostream>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
 
@@ -25,16 +25,16 @@ namespace Rl {
    * interaction, external). It is used as a base class for 
    * classes named ScftThermo defined in Rpc and Rpg namespaces.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class ST>
-   class ScftThermo : protected Rl::SystemConstRef<ST>
+   class ScftThermo : protected Rp::SystemConstRef<ST>
    {
 
    public:
 
       /// Base class type name alias.
-      using Base = Rl::SystemConstRef<ST>;
+      using Base = Rp::SystemConstRef<ST>;
 
       /// Parent System type name alias.
       using SystemT = typename Base::SystemT;
@@ -266,6 +266,6 @@ namespace Rl {
    inline bool ScftThermo<D,ST>::hasData() const
    {  return hasData_; }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

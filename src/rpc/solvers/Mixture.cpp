@@ -8,7 +8,7 @@
 #include "Mixture.tpp"
 
 namespace Pscf {
-   namespace Rl { 
+   namespace Rp { 
       template 
       class Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
       template 

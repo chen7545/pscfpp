@@ -23,19 +23,19 @@ namespace Rpc {
    * A list of c fields stored in both basis and r-grid format.
    *
    * This class is simply a named instantiation of the base class
-   * template Rl::CFields, designed for use on CPU hardware. Please
+   * template Rp::CFields, designed for use on CPU hardware. Please
    * see documentation of this base class for API documentation.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
-   class CFields : public Rl::CFields<D, RField<D>, FieldIo<D> >
+   class CFields : public Rp::CFields<D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Alias for direct base class.
-      using Base = Rl::CFields<D, RField<D>, FieldIo<D> >;
+      using Base = Rp::CFields<D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -65,7 +65,7 @@ namespace Rpc {
 
 // Explicit instantiation declarations of base class
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       extern template 
       class CFields<1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
       extern template 

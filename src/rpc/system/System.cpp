@@ -35,7 +35,7 @@
 
 namespace Pscf {
 
-   namespace Rl {
+   namespace Rp {
       // Explicit instantiation of base class template
       template class System< 1, Rpc::Types<1> >;
       template class System< 2, Rpc::Types<2> >;
@@ -49,7 +49,7 @@ namespace Pscf {
       */
       template <int D>
       System<D>::System()
-       : Rl::System<D, Types<D> >(*this)
+       : Rp::System<D, Types<D> >(*this)
       {  ParamComposite::setClassName("System"); }
 
       // Explicit instantiation

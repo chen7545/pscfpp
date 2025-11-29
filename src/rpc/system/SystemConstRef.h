@@ -21,18 +21,18 @@ namespace Rpc {
    /**
    * Const access to a System<D>.
    *
-   * See documentation of the base class template Rl::SystemConstRef
+   * See documentation of the base class template Rp::SystemConstRef
    * for documentation of the public interface.
    *
    * \ingroup Rpc_System_Module
    */
    template <int D>
-   class SystemConstRef : public Rl::SystemConstRef< System<D> >
+   class SystemConstRef : public Rp::SystemConstRef< System<D> >
    {
    public:
 
       /// Alias for base class
-      using Base = Rl::SystemConstRef< System<D> >;
+      using Base = Rp::SystemConstRef< System<D> >;
 
       /**
       * Default constructor.
@@ -59,13 +59,13 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class template
    extern template class SystemConstRef< Rpc::System<1> >;
    extern template class SystemConstRef< Rpc::System<2> >;
    extern template class SystemConstRef< Rpc::System<3> >;
 
-} // namespace Rl
+} // namespace Rp
 
 } // namespace Pscf
 #endif

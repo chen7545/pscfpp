@@ -21,19 +21,19 @@ namespace Rpc {
    * Parameter modifier for an associated Mixture.
    *
    * A MixtureModifier<D> is derived from the template specialization 
-   * Rl::MixtureModifier< Rpc::Mixture<D> > and has the same public
+   * Rp::MixtureModifier< Rpc::Mixture<D> > and has the same public
    * interface as this base class. See documentation of base class.
    *
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
-   class MixtureModifier : public Rl::MixtureModifier< Mixture<D> >
+   class MixtureModifier : public Rp::MixtureModifier< Mixture<D> >
    {
 
    public:
  
       /// Direct (parent) base class.
-      using Base = typename Rl::MixtureModifier< Mixture<D> >;
+      using Base = typename Rp::MixtureModifier< Mixture<D> >;
 
       // Inherited public member functions
 
@@ -56,7 +56,7 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
    extern template class MixtureModifier< Rpc::Mixture<1> >;
    extern template class MixtureModifier< Rpc::Mixture<2> >;

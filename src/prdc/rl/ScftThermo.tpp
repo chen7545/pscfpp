@@ -19,7 +19,7 @@
 #include <util/format/Dbl.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -29,7 +29,7 @@ namespace Rl {
    */
    template <int D, class ST>
    ScftThermo<D,ST>::ScftThermo(SystemT const & system)
-    : Rl::SystemConstRef<ST>(system),
+    : Rp::SystemConstRef<ST>(system),
       fHelmholtz_(0.0),
       fIdeal_(0.0),
       fInter_(0.0),
@@ -318,6 +318,6 @@ namespace Rl {
       out << std::endl;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

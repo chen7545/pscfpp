@@ -24,7 +24,7 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -53,7 +53,7 @@ namespace Rl {
    * which it is derived, which can be used for systems tha are not
    * periodic. 
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class PT, class ST, class TT>
@@ -488,6 +488,6 @@ namespace Rl {
       return stress_[parameterId];
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

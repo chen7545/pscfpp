@@ -17,7 +17,7 @@
 #include <util/misc/FileMaster.h> 
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -400,6 +400,6 @@ namespace Rl {
       return *signalPtr_;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

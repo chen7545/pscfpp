@@ -8,7 +8,7 @@
 #include "WFields.tpp"
 
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       using namespace Prdc::Cuda;
       template class WFields<1, RField<1>, Rpg::FieldIo<1> >;
       template class WFields<2, RField<2>, Rpg::FieldIo<2> >;

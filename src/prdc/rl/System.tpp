@@ -30,7 +30,7 @@
 #include <unistd.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -1176,6 +1176,6 @@ namespace Rl {
       Log::file() << " " << Dbl(value, 20) << std::endl;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

@@ -23,7 +23,7 @@ namespace Pscf {
 }
  
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc; 
@@ -53,7 +53,7 @@ namespace Rl {
    * representations when the other is modified, when appropriate. 
    * A pointer to an associated FIT (another template parameter) is
    * used for these conversions. The FieldIo class that is used to 
-   * instantiate this template should be a subclass of Rl::FieldIo.
+   * instantiate this template should be a subclass of Rp::FieldIo.
    * 
    * The setBasis and readBasis functions allow the user to input field
    * components in basis format, and both internally recompute the values 
@@ -73,12 +73,12 @@ namespace Rl {
    * <b> Signal </b>: A Mask owns an instance of class 
    * Util::Signal<void> that notifies all observers whenever the field
    * owned by the Mask is modified. This Signal object may be accessed
-   * by reference using the signal() member function of Rl::Mask. The
+   * by reference using the signal() member function of Rp::Mask. The
    * Util::Signal<void>::addObserver member function may used to add an
    * observer object and indicate a zero-parameter member function of
    * each observer that will be called whenever the field is modified.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class RFT, class FIT>
    class Mask 
@@ -513,6 +513,6 @@ namespace Rl {
    inline bool Mask<D,RFT,FIT>::isSymmetric() const
    {  return isSymmetric_; }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

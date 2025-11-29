@@ -19,7 +19,7 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -66,7 +66,7 @@ namespace Rl {
    *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and
    *    is used in the pscf_rpg GPU accelerated program.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class RFT, class FIT>
    class CFields
@@ -439,6 +439,6 @@ namespace Rl {
       return *fieldIoPtr_;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

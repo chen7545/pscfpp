@@ -28,7 +28,7 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -64,7 +64,7 @@ namespace Rl {
    * template are used as base classes for classes Rpc::Domain \<D\> and
    * Rpg::Domain \<D\>.
    *
-   * \ingroup Prdc_Rl_Module
+   * \ingroup Pscf_Rl_Module
    */
    template <int D, class FFT, class WLT, class FIT>
    class Domain : public ParamComposite
@@ -415,6 +415,6 @@ namespace Rl {
    inline bool Domain<D,FFT,WLT,FIT>::hasGroup() const
    {  return hasGroup_; }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

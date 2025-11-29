@@ -5,13 +5,13 @@ conditions.
 
 Classes:
 
-  Prdc::Rl::System          - base for (Rpc|Rpg)::System
-  Prdc::Rl::SystemConstRef  - base for (Rpc|Rpg)::System
-  Prdc::Rl::Domain          - base class for (Rpc|Rpg)::Domain
-  Prdc::Rl::FieldIo         - base class for (Rpc|Rpg)::FieldIo
-  Prdc::Rl::WFields         - base class for (Rpc|Rpg)::WFields 
-  Prdc::Rl::CFields         - base class for (Rpc|Rpg)::CFields 
-  Prdc::Rl::Mask            - base class for (Rpc|Rpg)::Mask
+  Rp::System          - base for (Rpc|Rpg)::System
+  Rp::SystemConstRef  - base for (Rpc|Rpg)::System
+  Rp::Domain          - base class for (Rpc|Rpg)::Domain
+  Rp::FieldIo         - base class for (Rpc|Rpg)::FieldIo
+  Rp::WFields         - base class for (Rpc|Rpg)::WFields 
+  Rp::CFields         - base class for (Rpc|Rpg)::CFields 
+  Rp::Mask            - base class for (Rpc|Rpg)::Mask
 
 Files that define global function templates:
 

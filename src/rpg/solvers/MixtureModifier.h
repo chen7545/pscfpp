@@ -20,20 +20,20 @@ namespace Rpg {
    * Parameter modifier for an associated Mixture.
    *
    * Class MixtureModifier<D> is derived from the class template 
-   * instantiation Rl::MixtureModifier< Rpg::Mixture<D> >, and has the 
+   * instantiation Rp::MixtureModifier< Rpg::Mixture<D> >, and has the 
    * same public interface as its base class. See documentation of the 
-   * base class template Rl::MixtureModifier for details.
+   * base class template Rp::MixtureModifier for details.
    *
    * \ingroup Rpg_Solver_Module
    */
    template <int D>
-   class MixtureModifier : public Rl::MixtureModifier< Mixture<D> >
+   class MixtureModifier : public Rp::MixtureModifier< Mixture<D> >
    {
 
    public:
  
       /// Direct base class.
-      using Base = typename Rl::MixtureModifier< Mixture<D> >;
+      using Base = typename Rp::MixtureModifier< Mixture<D> >;
 
       // Inherited public member functions
 
@@ -56,7 +56,7 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class 
    extern template class MixtureModifier< Rpg::Mixture<1> >;
    extern template class MixtureModifier< Rpg::Mixture<2> >;

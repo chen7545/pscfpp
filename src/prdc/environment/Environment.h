@@ -102,7 +102,7 @@ namespace Prdc {
       * \param flexibleParams  array indicating which stresses to compute
       */
       template <int D, class PT, class ST, class TT>
-      void computeStress(Rl::Mixture<D, PT, ST, TT> const & mixture, 
+      void computeStress(Rp::Mixture<D, PT, ST, TT> const & mixture, 
                          FSArray<bool, 6> const & flexibleParams);
 
       /**
@@ -173,7 +173,7 @@ namespace Prdc {
    * be implicitly instantiated by the compiler wherever needed)
    */
    template <int D, class PT, class ST, class TT>
-   void Environment::computeStress(Rl::Mixture<D, PT, ST, TT> const & mixture, 
+   void Environment::computeStress(Rp::Mixture<D, PT, ST, TT> const & mixture, 
                                    FSArray<bool, 6> const & flexibleParams)
    {
       if (hasStress_) return;

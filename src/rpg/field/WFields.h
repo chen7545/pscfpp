@@ -30,13 +30,13 @@ namespace Rpg {
    */
    template <int D>
    class WFields 
-    : public Rl::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >
+    : public Rp::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >
    {
 
    public:
 
       /// Alias for base class.
-      using Base = Rl::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >;
+      using Base = Rp::WFields<D, Cuda::RField<D>, Rpg::FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -97,7 +97,7 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
    using namespace Prdc::Cuda;
    extern template class WFields<1, RField<1>, Rpg::FieldIo<1> >;

@@ -22,12 +22,12 @@ namespace Rpg {
    * \ingroup Rpg_Field_Module
    */
    template <int D>
-   class ScftThermo : public Rl::ScftThermo<D, System<D> >
+   class ScftThermo : public Rp::ScftThermo<D, System<D> >
    {
    public:
 
       /// Alias for base class
-      using Base = Rl::ScftThermo<D, System<D> >;
+      using Base = Rp::ScftThermo<D, System<D> >;
 
       /**
       * Constructor
@@ -60,7 +60,7 @@ namespace Rpg {
 
 }
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
    extern template class ScftThermo<1, Rpg::System<1> >;
    extern template class ScftThermo<2, Rpg::System<2> >;

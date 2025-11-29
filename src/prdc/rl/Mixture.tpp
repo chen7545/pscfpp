@@ -19,7 +19,7 @@
 #include <util/misc/FileMaster.h>
 
 namespace Pscf {
-namespace Rl {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
@@ -541,6 +541,6 @@ namespace Rl {
       out << std::endl;
    }
 
-} // namespace Rl
+} // namespace Rp
 } // namespace Pscf
 #endif

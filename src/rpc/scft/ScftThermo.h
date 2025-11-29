@@ -23,12 +23,12 @@ namespace Rpc {
    * \ingroup Rpc_Scft_Module
    */
    template <int D>
-   class ScftThermo : public Rl::ScftThermo<D, System<D> >
+   class ScftThermo : public Rp::ScftThermo<D, System<D> >
    {
    public:
 
       /// Alias for base class.
-      using Base = Rl::ScftThermo<D, System<D> >;
+      using Base = Rp::ScftThermo<D, System<D> >;
 
       /**
       * Constructor.
@@ -60,11 +60,11 @@ namespace Rpc {
 
 }
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
-   extern template class Rl::ScftThermo<1, Rpc::System<1> >;
-   extern template class Rl::ScftThermo<2, Rpc::System<2> >;
-   extern template class Rl::ScftThermo<3, Rpc::System<3> >;
+   extern template class Rp::ScftThermo<1, Rpc::System<1> >;
+   extern template class Rp::ScftThermo<2, Rpc::System<2> >;
+   extern template class Rp::ScftThermo<3, Rpc::System<3> >;
 }
 
 } // namespace Pscf

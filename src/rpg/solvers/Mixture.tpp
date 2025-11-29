@@ -29,7 +29,7 @@ namespace Rpg {
    */
    template <int D>
    Mixture<D>::Mixture()
-    : RlMixtureT(),
+    : RpMixtureT(),
       useBatchedFFT_(true)
    {}
 
@@ -39,7 +39,7 @@ namespace Rpg {
    template <int D>
    void Mixture<D>::readParameters(std::istream& in)
    {
-      RlMixtureT::readParameters(in);
+      RpMixtureT::readParameters(in);
 
       // Optionally read useBatchedFFT boolean
       useBatchedFFT_ = true;

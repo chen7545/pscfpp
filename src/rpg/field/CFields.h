@@ -23,19 +23,19 @@ namespace Rpg {
    * A list of c fields stored in both basis and r-grid format.
    *
    * This class is simply a named partial instantiation of the base 
-   * class template Rl::CFields, designed for use with a GPU. Please see
+   * class template Rp::CFields, designed for use with a GPU. Please see
    * documentation of this base class template for API documentation.
    *
    * \ingroup Rpg_Field_Module
    */
    template <int D>
-   class CFields : public Rl::CFields<D, RField<D>, FieldIo<D> >
+   class CFields : public Rp::CFields<D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Alias for base class
-      typedef Rl::CFields<D, RField<D>, FieldIo<D> >  Base;
+      typedef Rp::CFields<D, RField<D>, FieldIo<D> >  Base;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -68,12 +68,12 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
    using namespace Prdc::Cuda;
-   extern template class Rl::CFields<1, RField<1>, Rpg::FieldIo<1> >;
-   extern template class Rl::CFields<2, RField<2>, Rpg::FieldIo<2> >;
-   extern template class Rl::CFields<3, RField<3>, Rpg::FieldIo<3> >;
+   extern template class Rp::CFields<1, RField<1>, Rpg::FieldIo<1> >;
+   extern template class Rp::CFields<2, RField<2>, Rpg::FieldIo<2> >;
+   extern template class Rp::CFields<3, RField<3>, Rpg::FieldIo<3> >;
 }
 
 } // namespace Pscf

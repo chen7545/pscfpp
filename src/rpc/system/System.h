@@ -25,14 +25,14 @@ namespace Rpc {
    * Main class, representing a complete physical system.
    *
    * This class is derived from a partial specialization of the class
-   * template Rl::System, and has the same public interface as 
+   * template Rp::System, and has the same public interface as 
    * its base class.  See the documentation of this base class template 
    * for details.
    *
    * \ingroup Rpc_System_Module
    */
    template <int D>
-   class System : public Rl::System< D, Types<D> >
+   class System : public Rp::System< D, Types<D> >
    {
    public:
 
@@ -56,7 +56,7 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class template
    extern template class System<1, Rpc::Types<1> >;
    extern template class System<2, Rpc::Types<1> >;

@@ -34,23 +34,23 @@ namespace Rpg {
    /**
    * File input/output operations and format conversions for fields.
    *
-   * Please refer to the documentation of the base class Rl::FieldIo 
+   * Please refer to the documentation of the base class Rp::FieldIo 
    * for more complete API documentation for this class template, for 
    * reasons discussed below.
    *
    * Class template Rpg::FieldIo<int D> is derived from an instantiation
-   * of the base class template Rl::FieldIo<D, RFT, KFT, FFT> that is
+   * of the base class template Rp::FieldIo<D, RFT, KFT, FFT> that is
    * implemented using arguments RFT = RField<D>, KFT = RFieldDft<D>, 
    * and FFT = FFT<D> that are all defined in the Prdc::Cuda namespace, 
    * and that use GPU hardware. Rpg::FieldIo is thus a specialization of
-   * the Rl::FieldIo template with GPU acceleration. An analogous class
+   * the Rp::FieldIo template with GPU acceleration. An analogous class
    * named Rpc::FieldIo that is designed for standard CPU hardware is
    * defined in the Pscf::Rpc namespace 
    *
    * The public interface of Rpg::FieldIo is identical to that of the
-   * base class template Rl::FieldIo. All member functions defined 
+   * base class template Rp::FieldIo. All member functions defined 
    * in this Rpg::FieldIo are implementations of pure virtual functions 
-   * declared in Rl::FieldIo. These are all functions for which
+   * declared in Rp::FieldIo. These are all functions for which
    * different implementations are required for the CPU and GPU variants,
    * usually because the GPU variant requires data transfer between the
    * CPU host and the GPU device.
@@ -59,7 +59,7 @@ namespace Rpg {
    */
    template <int D>
    class FieldIo 
-     : public  Rl::FieldIo< D, RField<D>, RFieldDft<D>, FFT<D> >
+     : public  Rp::FieldIo< D, RField<D>, RFieldDft<D>, FFT<D> >
    {
 
    public:
@@ -67,7 +67,7 @@ namespace Rpg {
       /**
       * Read array of RField objects (r-grid fields) from a stream.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param in  input file stream 
       * \param fields  array of RField fields (r-space grid)
@@ -82,7 +82,7 @@ namespace Rpg {
       /**
       * Read data for an array of r-grid fields, with no header section.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param in  input file stream
       * \param fields  array of RField fields (r-space grid)
@@ -96,7 +96,7 @@ namespace Rpg {
       /**
       * Read a single RField (field on an r-space grid) from a stream.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param in  input file stream 
       * \param field  fields defined on r-space grid
@@ -111,7 +111,7 @@ namespace Rpg {
       /**
       * Write array of RField objects (fields on r-space grid) to a stream.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param out  output stream (i.e., output file)
       * \param fields  array of RField objects (fields on r-space grid)
@@ -131,7 +131,7 @@ namespace Rpg {
       /**
       * Write a single RField (field on an r-space grid) to a stream.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param out  output stream
       * \param field  field defined on r-space grid
@@ -149,7 +149,7 @@ namespace Rpg {
       /**
       * Read array of RFieldDft objects (k-space fields) from a stream.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param in  input stream (i.e., input file)
       * \param fields  array of RFieldDft fields (k-space grid)
@@ -163,7 +163,7 @@ namespace Rpg {
       /**
       * Write array of RFieldDft objects (k-space fields) to file.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param out  output stream (i.e., output file)
       * \param fields  array of RFieldDft fields
@@ -179,7 +179,7 @@ namespace Rpg {
       /**
       * Convert a field from symmetrized basis to Fourier grid (k-grid).
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param components  coefficients of in symmetry-adapted basis
       * \param dft  discrete Fourier transform of a real field
@@ -191,7 +191,7 @@ namespace Rpg {
       /**
       * Convert a field from Fourier (k-grid) to symmetrized basis form.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param in  discrete Fourier transform (k-grid) of a field
       * \param out  components of field in asymmetry-adapted Fourier basis
@@ -207,7 +207,7 @@ namespace Rpg {
       /**
       * Check if a k-grid field has the declared space group symmetry.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param in field in real space grid (r-grid) format
       * \param epsilon error threshold used to test for symmetry
@@ -235,7 +235,7 @@ namespace Rpg {
       /**
       * Rescale a single r-grid field by a scalar factor.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       * Multiplication is done in-place, and so modifies the input.
       *
       * \param field  real space (r-grid) field (in-out)
@@ -247,7 +247,7 @@ namespace Rpg {
       /**
       * Expand spatial dimension of an array of r-grid fields.
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param out  output file stream 
       * \param fields  input array of D-dimensional r-grid fields
@@ -266,7 +266,7 @@ namespace Rpg {
       /**
       * Write r-grid fields in a replicated unit cell to std::ostream.  
       *
-      * See documentation of analogous function in Rl::FieldIo.
+      * See documentation of analogous function in Rp::FieldIo.
       *
       * \param out  output file stream 
       * \param fields  array of RField (r-space) fields to be replicated
@@ -284,7 +284,7 @@ namespace Rpg {
       /**
       * Alias for base class (partial template specialization)
       */
-      typedef Rl::FieldIo<D, RField<D>, RFieldDft<D>, FFT<D> > Base;
+      typedef Rp::FieldIo<D, RField<D>, RFieldDft<D>, FFT<D> > Base;
 
       // Inherited public member functions
       using Base::associate;
@@ -338,7 +338,7 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Rl {
+namespace Rp {
    using namespace Prdc::Cuda;
    extern template 
    class FieldIo<1, RField<1>, RFieldDft<1>, FFT<1>>;

@@ -26,13 +26,13 @@ namespace Rpg {
    * Main class, representing a complete physical system.
    *
    * This class is derived from a partial specialization of the base class
-   * template Rl::System, and has the same public interface as the
+   * template Rp::System, and has the same public interface as the
    * base class. See the documentation of this template for details.
    *
    * \ingroup Rpg_System_Module
    */
    template <int D>
-   class System : public Rl::System< D, Types<D> >
+   class System : public Rp::System< D, Types<D> >
    {
    public:
 
@@ -65,11 +65,11 @@ namespace Rpg {
 
 } // namespace Rpg
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations of base class
-   extern template class Rl::System<1, Rpg::Types<1> >;
-   extern template class Rl::System<2, Rpg::Types<1> >;
-   extern template class Rl::System<3, Rpg::Types<1> >;
+   extern template class Rp::System<1, Rpg::Types<1> >;
+   extern template class Rp::System<2, Rpg::Types<1> >;
+   extern template class Rp::System<3, Rpg::Types<1> >;
 }
 
 } // namespace Pscf

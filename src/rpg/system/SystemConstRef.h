@@ -24,12 +24,12 @@ namespace Rpg {
    * \ingroup Rpg_System_Module
    */
    template <int D>
-   class SystemConstRef : public Rl::SystemConstRef< System<D> >
+   class SystemConstRef : public Rp::SystemConstRef< System<D> >
    {
    public:
 
       /// Alias for base class
-      using Base = Rl::SystemConstRef< System<D> >;
+      using Base = Rp::SystemConstRef< System<D> >;
 
       /**
       * Default constructor.
@@ -54,7 +54,7 @@ namespace Rpg {
 
 }
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declarations for base class
    extern template class SystemConstRef< Rpg::System<1> >;
    extern template class SystemConstRef< Rpg::System<2> >;

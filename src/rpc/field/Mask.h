@@ -22,21 +22,21 @@ namespace Rpc {
    /**
    * A field to which the total density is constrained.
    *
-   * Please refer to the documentation of the base class template Rl::Mask
+   * Please refer to the documentation of the base class template Rp::Mask
    * for more complete API documentation for this class template. The
    * public interface of Rpc::Mask is identical to that of the base class
-   * template Rl::Mask.
+   * template Rp::Mask.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
-   class Mask : public Rl::Mask<D, RField<D>, FieldIo<D> >
+   class Mask : public Rp::Mask<D, RField<D>, FieldIo<D> >
    {
 
    public:
 
       /// Base class typedef
-      using Base = Rl::Mask< D, RField<D>, FieldIo<D> >;
+      using Base = Rp::Mask< D, RField<D>, FieldIo<D> >;
 
       // Inherited public member functions
       using Base::setFieldIo;
@@ -70,7 +70,7 @@ namespace Rpc {
 
 } // namespace Rpc
 
-namespace Rl {
+namespace Rp {
    // Explicit instantiation declaration for base class
    extern template 
    class Mask< 1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;

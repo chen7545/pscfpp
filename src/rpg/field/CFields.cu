@@ -11,7 +11,7 @@
 #include <prdc/rl/CFields.tpp>    // base class implementation
 
 namespace Pscf {
-   namespace Rl {
+   namespace Rp {
       // Explicit instantiations of base class
       using namespace Prdc::Cuda;
       template class CFields<1, RField<1>, Rpg::FieldIo<1> >;

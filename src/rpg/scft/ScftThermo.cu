@@ -17,7 +17,7 @@
 
 namespace Pscf {
 
-   namespace Rl {
+   namespace Rp {
       // Explicit instantiation definitions for base class
       template class ScftThermo<1, Rpg::System<1> >;
       template class ScftThermo<2, Rpg::System<2> >;
