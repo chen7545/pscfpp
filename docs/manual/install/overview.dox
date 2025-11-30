@@ -5,36 +5,36 @@
 <BR>
 
 Below is a brief overview of instructions for compiling all of the PSCF
-programs using default settings. Using git to clone the PSCF repository
-will create a directory named pscfpp/, which we hereafter refer to as the
-PSCF root directory.
+programs using default settings, with links to pages containing more
+detailed instrucctions. 
 
-Directory name conventions: Here and herafter, a backslash after a name
-is used to indicate that a string is the name of a directory. In what
-follows, we also often use PSCF as an adjective when specifying a
+Using git to clone the PSCF repository will create a directory named 
+pscfpp/. We hereafter refer to this as the PSCF root directory. In 
+what follows, we also often use PSCF as an adjective when specifying a
 directory name to indicate a directory within the PSCF directory tree
 that is specified by a path relative to the PSCF root directory. For
-example, the "PSCF src/ directory" thus refers to the src/ subdirectory
+example, the "PSCF src directory" thus refers to the src subdirectory
 of the PSCF root directory.
 
-Below, have divided the instructions into a set of instructions for
-compiling and installing the programs that use only CPU hardware, and
-additional instructions for compiling programs that use an NVIDIA GPU.
-
-\section install_overview_configure_sec Preliminary steps
-
-The following steps must be taken before attempting to compile any
-part of the PSCF package. The first two steps have been described
-in previous pages:
+The following steps must be taken to compile any part of the PSCF 
+package. The first few steps have been described in previous pages:
 
    - **Check environment for C++ compiler, python and git:** This was
-     previously discussed \ref install_require_page "here"
+     previously discussed \ref install_require_page "here" .
 
-   - **Install GSL and FFTW dependencies:** This was previously discussed
-     \ref install_external_page "here"
+   - **Install GSL and FFTW dependencies:** The external GSL and FFTW 
+     packages must either be installed or (if already installed on a 
+     linux clusters that uses linux modules) loaded to make them 
+     accessible.  Instructions for how to do this in several common
+     environments have been given \ref install_external_page "here" .
 
-   - **Clone source code repository:** This was previously discussed
-     \ref install_source_page "here"
+   - **Clone source code repository:** The source code must be 
+     obtained by cloning the git repository. Using the unix command 
+     line interface for git, issue the command
+     \code
+     git clone --recursive https://github.com/dmorse/pscfpp.git
+     \endcode
+     as previously discussed \ref install_source_page "here" .
 
    - **Modify environment variables:**
      Modify the users PATH unix environment variable so as to include
@@ -45,142 +45,24 @@ in previous pages:
    - **Configure:**
      Invoke the "configure" script from the PSCF root directory.  To
      configure the build system with default compiler options appropriate
-     to most linux or Mac OS X systems, simply change directory (cd) to
-     the PSCF root directory, and enter the command "./configure" from
-     within that directory. The purpose and use of the configure script
-     is discussed in detail \ref install_configure_page "here".
-
-\section install_overview_CPU_sec Compiling C++ code (CPU hardware)
-
-We recommend that users first compile only the pscf_1d and pscf_rpc CPU
-programs, leaving compilation of the GPU-enabled pscf_rpg program to a
-separate step.
-
-Compilation of GPU-enabled code is disabled by default.  To compile only
-the pscf_1d and pscf_rpc CPU programs, you may simply enter
-\code
-    make all
-\endcode
-from the PSCF directory immediately after running the configure script.
-If successful, this will install executables named "pscf_1d" and
-"pscf_rpc" in the PSCF bin/ directory.
-
-Compiling all the PSCF C++ code using "make all" takes a bit of time
-(e.g., 2 to 3 minutes on a 2020 Mac air laptop with an M1 chip). This
-can be completed more quickly on a multi-core machine by using the -j
-option of the "make" command to use multiple CPU cores in parallel to
-compile different C++ files.  The argument of the -j option is the
-number of cores that should be used, if available. For example, you
-could enter
-\code
-   make -j8 all
-\endcode
-to use all 8 CPU cores of an 8-core computer to compile.
-
-Entering "make all" or "make -jn all" from the PSCF root directory,
-as described above, will create a large number of intermediate object
-(*.o), dependency (*.d) and library (*.a) files in subdirectories of
-the PSCF bld/ directory, in addition to the executable files that are
-created in the PSCF bin/ directory.
-
-\section install_overview_GPU_sec Compiling CUDA C++ Code (GPU hardware)
-
-The GPU-enabled pscf_rpg program can only be compiled on computers that
-have an NVIDIA CUDA development kit installed, and can only be run on
-machines that have an appropriate CUDA-capable NVIDIA GPU and CUDA driver
-software installed.  Before compiling pscf_rpg, the user must first enable
-compilation of CUDA code and set the appropriate target GPU architecture,
-as described below.  The following instructions assume that you have
-already completed the preliminary steps described above.
-
-   - **Enable compilation of GPU-enabled programs:**
-     To enable compilation of CUDA code for GPU-enabled programs on a
-     machine that is set up to allow this, enter
+     to most linux or Mac OS X systems, simply change directory (cd) 
+     to the PSCF root directory, and enter the command 
      \code
-     ./setopts -c1
+     ./configure 
      \endcode
-     from the PSCF root directory. If you later want to disable
-     compilation of CUDA code, instead enter
-     \code
-     ./setopts -c0
-     \endcode
-     Commands issued by the setops script set variables that
-     affect subsequent behavior of the build system and compiler.
-     Usage of the setopts script is discussed in more detail
-     \ref install_setopts_page "here".
+     from within that directory. The purpose and use of the configure 
+     script is discussed in detail \ref install_configure_page "here".
 
-     To check if CUDA compilation is currently enabled, change directory
-     to the PSCF bld/ directory, and enter
-     \code
-     ./setopts -q
-     \endcode
-     from that directory. This should yield a report that indicates
-     (among other things) whether the "CUDA" options is currently set
-     to be enabled (ON) or disabled (OFF) for code built in the bld/
-     directory (the default build directory).
-
-   - **Set the target GPU architecture:**
-     CUDA must be compiled for a particular target GPU architecture.
-     To set the target architecture to correspond to the GPU on your
-     computer, you must change directory to PSCF root directory and
-     issue a command of the form
-     \code
-     ./setopts -a [architecture id]
-     \endcode
-     where [architecture id] denotes a string that identifies the
-     architecture of the GPU for which you are compiling. Valid values
-     of this string have the form "sm_IJ", where IJ denotes a integer
-     string that represents the NVIDIA "compute capability" for the
-     target GPU. You can look up the compute capabability for the
-     type of NVIDIA GPU installed on your computer by consulting the
-     <a href="https://developer.nvidia.com/cuda-gpus">NVIDIA developer
-     documentation</a>. The compute capability for an NVIDIA GPU is a
-     number of the form I.J in which I is an integer major version number
-     and J is a minor version number. The architecture id required as
-     an argument of the -a option, however, uses a string of the form
-     sm_IJ that drops the dot between the major and minor version.
-
-     For example, an NVIDIA A100 GPU has a compute capability of 8.0.
-     To set this as the target architecture, one would enter
-     \code
-     ./setopts -a sm_80
-     \endcode
-     from the PSCF root directory, using "sm_80" as the architecture id.
-
-     By default, the target architecture is set to compute capability
-     7.0 , or sm_70, which is the appropriate level for a slightly older
-     V100 GPU.
-
-   - **Compile all programs (including pscf_rpg):**
-     After enabling CUDA compilation and setting the appropriate
-     architecture, you can compile all programs, including pscf_rpg, by
-     simply re-entering
+   - **Compile:** To compile the programs in PSCF that use standard CPU
+     hardware, simple enter 
      \code
      make all
      \endcode
-     from within the PSCF root directory. As when compiling pure C++
-     code, one may use multiple cores to compile by instead entering
-     "make -jn all", where "n" is the number of CPU cores to be used.
+     from the PSCF root directory.  Further information about 
+     compilation, including instructions for compiling GPU-enabled 
+     programs, is given \ref install_compile_page "here".
 
-If successful, the "make all" command will install an executable file
-named pscf_rpg in the PSCF bin/ directory in addition to the executable
-files named pscf_1d and pscf_rpc that are created by compiling only C++
-code.
-
-Several of the above steps are discussed in more detail in subsequent
-pages.
-
-\section user_overview_inout_sec Out-of-source vs. in-source compilation
-
-The above instructions explain how to perform an "out-of-source" build in
-which intermediate files created during compilation process are placed in
-the PSCF bld/ sub-directory tree. One can instead perform an "in-source"
-build in which these files are instead placed in the PSCF src/ directory
-that also contains all C++ and CUDA source code files. The option of
-in-source compilation is discussed in more detail \ref install_inout_page
-"here".  We recommend out-of-source compilation for users who are not
-actively working on development. Some programmers may prefer to use
-in-source compilation during development.
+Follow the links given above for more details about each step.
 
 <BR>
 \ref install_source_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp;

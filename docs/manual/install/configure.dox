@@ -1,7 +1,7 @@
 /*! \page install_configure_page Configure Script
 
 \ref install_environment_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
-\ref install_inout_page (Next)
+\ref install_compile_page (Next)
 <BR>
 
 Users must run a bash script named "configure" after installing all required
@@ -257,7 +257,7 @@ package has been compiled in a previous location.
 
 <BR>
 \ref install_environment_page (Prev) &nbsp; &nbsp; &nbsp; &nbsp;
-\ref install_page   (Up) &nbsp; &nbsp; &nbsp; &nbsp;
-\ref install_inout_page (Next)
+\ref install_page             (Up) &nbsp; &nbsp; &nbsp; &nbsp;
+\ref install_compile_page     (Next)
 
 */
