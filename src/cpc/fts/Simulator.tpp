@@ -16,10 +16,16 @@
 #include <cpc/solvers/Polymer.h>
 #include <cpc/solvers/Solvent.h>
 #include <cpc/field/Domain.h>
+#include <cpc/fts/step/Step.h>
+#if 0
+#include <cpc/fts/step/StepFactory.h>
+#include <cpc/fts/analyzer/AnalyzerFactory.h>
+#include <cpc/fts/trajectory/TrajectoryReader.h>
+#include <cpc/fts/trajectory/TrajectoryReaderFactory.h>
+#endif
 
-
-#include <util/misc/Timer.h>
 #include <util/random/Random.h>
+#include <util/misc/Timer.h>
 #include <util/global.h>
 
 // Gnu scientific library
@@ -37,10 +43,21 @@ namespace Cpc {
    */
    template <int D>
    Simulator<D>::Simulator(System<D>& system)
-    : random_(),
-      hamiltonian_(0),
-      idealHamiltonian_(0),
-      fieldHamiltonian_(0),
+    : //analyzerManager_(*this, system),
+      random_(),
+      wc_(),
+      cc_(),
+      dc_(),
+      u_(),
+      evecs_(),
+      evals_(),
+      hamiltonian_(0.0),
+      idealHamiltonian_(0.0),
+      fieldHamiltonian_(0.0),
+      systemPtr_(&system),
+      stepPtr_(nullptr),
+      //stepFactoryPtr_(nullptr),
+      //trajectoryReaderFactoryPtr_(nullptr)
       iStep_(0),
       iTotalStep_(0), 
       seed_(0),
@@ -48,16 +65,32 @@ namespace Cpc {
       hasWc_(false),
       hasCc_(false),
       hasDc_(false),
-      systemPtr_(&system),
       isAllocated_(false)
-   {  ParamComposite::setClassName("Simulator"); }
+   {  
+      ParamComposite::setClassName("Simulator"); 
+      // stepFactoryPtr_ = new StepFactory<D>(*this);
+      // trajectoryReaderFactoryPtr_
+      //       = new TrajectoryReaderFactory<D>(system);
+   }
 
    /*
    * Destructor.
    */
    template <int D>
    Simulator<D>::~Simulator()
-   { }
+   {
+      if (stepPtr_) {
+         delete stepPtr_;
+      }
+      #if 0
+      if (stepFactoryPtr_) {
+         delete stepFactoryPtr_;
+      }
+      if (trajectoryReaderFactoryPtr_) {
+         delete trajectoryReaderFactoryPtr_;
+      }
+      #endif
+   }
 
    /*
    * Allocate required memory.
@@ -87,16 +120,61 @@ namespace Cpc {
 
       isAllocated_ = true;
    }
-
+   
    /*
-   * Default implementation - designed to be used by subclasses to read the
-   * initial common part of the parameter file block. 
+   * Read parameter file block for a BD simulator.
    */
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)
    {
-      // Optionally read a random number generator seed
+      // Optionally read a random seed value
       readRandomSeed(in);
+  
+      #if 0 
+      // Optionally read a Step block
+      bool isEnd = false;
+      std::string className;
+      stepPtr_ =
+         stepFactoryPtr_->readObjectOptional(in, *this, 
+                                               className, 
+                                               isEnd);
+      if (!hasStep() && ParamComponent::echo()) {
+         Log::file() << indent() << "  Step{ [absent] }\n";
+      }
+
+      // Optionally read an AnalyzerManager
+      Analyzer<D>::baseInterval = 0; // default value
+      readParamCompositeOptional(in, analyzerManager_);
+      #endif
+
+   }
+
+   /*
+   * Setup before main loop of a BD simulation.
+   */
+   template <int D>
+   void Simulator<D>::setup(int nStep)
+   {
+      UTIL_CHECK(system().w().hasData());
+
+      // Eigenanalysis of the interaction matrix
+      analyzeInteraction();
+
+      // Solve MDE and compute c-fields for the intial state
+      system().compute();
+
+      // Compute field components and Hamiltonian for initial state.
+      computeWc();
+      computeCc();
+      computeDc();
+      // computeHamiltonian();
+
+      #if 0
+      step().setup();
+      if (analyzerManager_.size() > 0){
+         analyzerManager_.setup();
+      }
+      #endif
 
    }
 
@@ -109,6 +187,91 @@ namespace Cpc {
 
    #if 0
    /*
+   * Perform a field theoretic MC simulation of nStep steps.
+   */
+   template <int D>
+   void Simulator<D>::simulate(int nStep)
+   {
+      UTIL_CHECK(hasStep());
+      UTIL_CHECK(system().w().hasData());
+
+      // Initial setup
+      setup(nStep);
+
+      // Main simulation loop
+      Timer timer;
+      Timer analyzerTimer;
+      timer.start();
+      iStep_ = 0;
+
+      // Analysis for initial state (if any)
+      analyzerTimer.start();
+      if (analyzerManager_.size() > 0){
+         analyzerManager_.sample(iStep_);
+      }
+      analyzerTimer.stop();
+
+      for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
+
+         // Take a step (modifies W fields)
+         bool converged;
+         converged = step().step();
+
+         if (converged){
+            iStep_++;
+
+            // Analysis (if any)
+            analyzerTimer.start();
+            if (Analyzer<D>::baseInterval != 0) {
+               if (analyzerManager_.size() > 0) {
+                  if (iStep_ % Analyzer<D>::baseInterval == 0) {
+                     analyzerManager_.sample(iStep_);
+                  }
+               }
+            }
+            analyzerTimer.stop();
+
+         } else {
+            Log::file() << "Step: "<< iTotalStep_
+                        << " failed to converge" << "\n";
+         }
+
+      }
+
+      timer.stop();
+      double time = timer.time();
+      double analyzerTime = analyzerTimer.time();
+
+      // Output results analyzers to files
+      if (Analyzer<D>::baseInterval > 0){
+         analyzerManager_.output();
+      }
+
+      // Output times for the simulation run
+      Log::file() << std::endl;
+      Log::file() << "nStep               " << nStep << std::endl;
+      if (iStep_ != nStep){
+         Log::file() << "nFail Step          " << (nStep - iStep_) << std::endl;
+      }
+      Log::file() << "Total run time      " << time
+                  << " sec" << std::endl;
+      double rStep = double(nStep);
+      Log::file() << "time / nStep        " <<  time / rStep
+                  << " sec" << std::endl;
+      Log::file() << "Analyzer run time   " << analyzerTime
+                  << " sec" << std::endl;
+      Log::file() << std::endl;
+
+      // Output number of times MDE were solved during the run
+      Log::file() << "MDE counter   "
+                  << compressor().mdeCounter() << std::endl;
+      Log::file() << std::endl;
+
+   }
+   #endif
+
+   #if 0
+   /*
    * Open, read and analyze a trajectory file (unimplemented by base class).
    */
    template <int D>
@@ -116,6 +279,79 @@ namespace Cpc {
                               std::string classname,
                               std::string filename)
    {  UTIL_THROW("Error: Unimplemented function Simulator<D>::analyze"); }
+   #endif
+
+   #if 0
+   /*
+   * Open, read and analyze a trajectory file
+   */
+   template <int D>
+   void Simulator<D>::analyze(int min, int max,
+                                std::string classname,
+                                std::string filename)
+   {
+      // Preconditions
+      UTIL_CHECK(min >= 0);
+      UTIL_CHECK(max >= min);
+      UTIL_CHECK(Analyzer<D>::baseInterval > 0);
+      UTIL_CHECK(analyzerManager_.size() > 0);
+
+      // Construct TrajectoryReader
+      TrajectoryReader<D>* trajectoryReaderPtr;
+      trajectoryReaderPtr = trajectoryReaderFactory().factory(classname);
+      if (!trajectoryReaderPtr) {
+         std::string message;
+         message = "Invalid TrajectoryReader class name " + classname;
+         UTIL_THROW(message.c_str());
+      }
+
+      // Open trajectory file
+      trajectoryReaderPtr->open(filename);
+      trajectoryReaderPtr->readHeader();
+
+      // Main loop over trajectory frames
+      Timer timer;
+      bool hasFrame;
+      timer.start();
+      hasFrame = trajectoryReaderPtr->readFrame();
+      
+      for (iStep_ = 0; iStep_ <= max && hasFrame; ++iStep_) {
+         if (hasFrame) {
+            clearData();
+
+            // Initialize analyzers
+            if (iStep_ == min) {
+               //analyzerManager_.setup();
+               setup(iStep_);
+            }
+
+            // Sample property values only for iStep >= min
+            if (iStep_ >= min) {
+               analyzerManager_.sample(iStep_);
+            }
+         }
+         
+         hasFrame = trajectoryReaderPtr->readFrame();
+      }
+      timer.stop();
+      Log::file() << "end main loop" << std::endl;
+      int nFrames = iStep_ - min;
+      trajectoryReaderPtr->close();
+      delete trajectoryReaderPtr;
+
+      // Output results of all analyzers to output files
+      analyzerManager_.output();
+
+      // Output number of frames and times
+      Log::file() << std::endl;
+      Log::file() << "# of frames   " << nFrames << std::endl;
+      Log::file() << "run time      " << timer.time()
+                  << "  sec" << std::endl;
+      Log::file() << "time / frame " << timer.time()/double(nFrames)
+                  << "  sec" << std::endl;
+      Log::file() << std::endl;
+
+   }
    #endif
 
    /*
@@ -216,6 +452,9 @@ namespace Cpc {
       hasHamiltonian_ = true;
    }
 
+   /*
+   * Construct and diagonalize the interaction matrix, U.
+   */ 
    template <int D>
    void Simulator<D>::analyzeInteraction()
    {
@@ -426,22 +665,6 @@ namespace Cpc {
       hasDc_ = true;
    }
    
-   /*
-   * Output all timer results.
-   */
-   template<int D>
-   void Simulator<D>::outputTimers(std::ostream& out) const
-   {  
-   }
-
-   /*
-   * Clear all timers.
-   */
-   template<int D>
-   void Simulator<D>::clearTimers()
-   {  
-   }
-
    // Protected Functions
 
    /*

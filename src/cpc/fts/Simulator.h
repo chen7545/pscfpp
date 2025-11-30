@@ -14,11 +14,14 @@
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 
+
 namespace Pscf {
 namespace Cpc {
 
    // Forward declarations 
    template <int D> class System;
+   template <int D> class Step;
+   // template <int D> class TrajectoryReader;
 
    using namespace Util;
    using namespace Prdc;
@@ -211,6 +214,7 @@ namespace Cpc {
       */
       double evecs(int a, int i) const;
 
+      #if 0
       /**
       * Get all components of the vector S.
       *
@@ -236,6 +240,7 @@ namespace Cpc {
       * \param a  eigenvector index (0, ..., nMonomer - 1)
       */
       double sc(int a) const;
+      #endif
 
       ///@}
       /// \name Field Theoretic Hamiltonian 
@@ -402,45 +407,6 @@ namespace Cpc {
       bool hasDc() const;
       
       ///@}
-      /// \name Utilities for moves
-      ///@{
-      
-      /**
-      * Save a copy of the fts move state.
-      *
-      * This function and restoreState() are intended for use 
-      * in the implementation of field theoretic moves. 
-      * This function stores the current w fields and the corresponding
-      * Hamiltonian value. Current cc fields and dc fields are saved 
-      * based on save policy. This is normally the first step of a fts
-      * move, prior to an attempted modification of the fields stored
-      * in the system w field container.
-      */
-      void saveState();
-      
-      /**
-      * Restore the saved copy of the fts move state.
-      *
-      * This function and saveState() are intended to be used
-      * together in the implementation of fts moves. If an
-      * attempted Monte-Carle move is rejected or an fts move 
-      * fails to converge restoreState() is called to restore 
-      * the fields and Hamiltonian value that were saved
-      * by a previous call to the function saveState().
-      */
-      void restoreState();
-      
-      /**
-      * Clear the saved copy of the fts state.
-      *
-      * This function, restoreState(), and saveState() are intended
-      * to be used together in the implementation of reversible fts moves. 
-      * If an attempted move is accepted, clearState() is called to 
-      * indicate the need to recompute some quantities.
-      */
-      void clearState();
-      
-      ///@}
       /// \name Miscellaneous
       ///@{
 
@@ -454,16 +420,45 @@ namespace Cpc {
       */
       Random& random();
       
+      /**
+      * Does this Simulator have a Step object?
+      */
+      bool hasStep() const;
+
+      /**
+      * Get the Step by reference.
+      */
+      Step<D>& step();
+
+      #if 0
+      /**
+      * Get the AnalyzerManager by reference.
+      */
+      AnalyzerManager<D>& analyzerManager();
+
+      /**
+      * Get the trajectory reader factory by reference.
+      */
+      Factory<TrajectoryReader<D>>& trajectoryReaderFactory();
+      #endif
+
       ///@}
 
-   protected:
+   private:
 
-      // Protected data members
+      #if 0
+      /**
+      * Manager for Analyzer.
+      */
+      AnalyzerManager<D> analyzerManager_;
+      #endif
 
       /**
       * Random number generator
       */
       Random random_;
+
+      // Field components in eigenvector basis
 
       /**
       * Eigenvector components of w fields on a real space grid.
@@ -494,7 +489,34 @@ namespace Cpc {
       * with respect to one eigenvector w-field component.
       */
       DArray< CField<D> > dc_;
-      
+     
+      // Interaction matrix and eigen-properties
+
+      /**
+      * Projected chi matrix
+      */
+      DMatrix<double> u_;
+
+      /**
+      * Eigenvectors of the interaction matrix, U.
+      *
+      * Each row (identified by first index) is an eigenvector. 
+      * The last eigenvector, with index nMonomer - 1, is always the
+      * vector e = [1, 1, ...., 1]. Distinct eigenvectors are orthogonal.
+      * Eigenvectors normalized such that the sum of the square of the 
+      * elements is equal to nMonomer.
+      */
+      DMatrix<double> evecs_;
+
+      /**
+      * Eigenvalues of the interaction matrix.
+      *
+      * The last eigenvalue, with index nMonomer - 1, is always zero.
+      */
+      DArray<double>  evals_;
+
+      // Hamiltonian and components
+ 
       /**
       * Total field theoretic Hamiltonian H[W] (extensive value).
       */
@@ -509,6 +531,32 @@ namespace Cpc {
       * Field contribution (H_W) to Hamiltonian
       */
       std::complex<double> fieldHamiltonian_;
+
+      // Pointers to associated and child objects
+
+      /**
+      * Pointer to the parent system.
+      */
+      System<D>* systemPtr_;
+
+      /**
+      * Pointer to Brownian dynamics step algorithm.
+      */
+      Step<D>* stepPtr_;
+
+      #if 0
+      /**
+      * Pointer to a Step factory.
+      */
+      Factory< Step<D> >* stepFactoryPtr_;
+
+      /**
+      * Pointer to a trajectory reader/writer factory.
+      */
+      Factory< TrajectoryReader<D> >* trajectoryReaderFactoryPtr_;
+      #endif
+
+      // Counters and random seed
 
       /**
       * Step counter - attempted steps for which compressor converges.
@@ -555,7 +603,12 @@ namespace Cpc {
       */
       bool hasDc_;
 
-      // Protected member functions
+      /**
+      * Has required memory been allocated?
+      */
+      bool isAllocated_;
+
+      // Private member functions
 
       /**
       * Optionally read a random number generator seed.
@@ -564,40 +617,10 @@ namespace Cpc {
       */
       void readRandomSeed(std::istream& in);
 
-   private:
-
       /**
-      * Projected chi matrix
+      * Called at the beginning of the simulation.
       */
-      DMatrix<double> u_;
-
-      /**
-      * Eigenvectors of the interaction matrix chiP_.
-      *
-      * Each row (identified by first index) is an eigenvector. 
-      * The last eigenvector, with index nMonomer - 1, is always the
-      * vector e = [1, 1, ...., 1]. Distinct eigenvectors are orthogonal.
-      * Eigenvectors normalized such that the sum of the square of the 
-      * elements is equal to nMonomer.
-      */
-      DMatrix<double> evecs_;
-
-      /**
-      * Eigenvalues of the interaction matrix.
-      *
-      * The last eigenvalue, with index nMonomer - 1, is always zero.
-      */
-      DArray<double>  evals_;
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
-
-      /**
-      * Has required memory been allocated?
-      */
-      bool isAllocated_;
+      void setup(int nStep);
 
    };
 
@@ -617,6 +640,35 @@ namespace Cpc {
    template <int D>
    inline Random& Simulator<D>::random()
    {  return random_; }
+
+   // Get the Brownian dynamics stepper.
+   template <int D>
+   inline bool Simulator<D>::hasStep() const
+   {  return (bool)stepPtr_; }
+
+   // Get the Brownian dynamics stepper.
+   template <int D>
+   inline Step<D>& Simulator<D>::step()
+   {
+      UTIL_CHECK(hasStep());  
+      return *stepPtr_; 
+   }
+
+   #if 0
+   // Get the analyzer manager.
+   template <int D>
+   inline AnalyzerManager<D>& Simulator<D>::analyzerManager()
+   {  return analyzerManager_; }
+
+   // Get the TrajectoryReaderfactory
+   template <int D>
+   inline
+   Factory<TrajectoryReader<D> >& Simulator<D>::trajectoryReaderFactory()
+   {
+      UTIL_ASSERT(trajectoryReaderFactoryPtr_);
+      return *trajectoryReaderFactoryPtr_;
+   }
+   #endif
 
    // Interaction Matrix
 
@@ -733,6 +785,6 @@ namespace Cpc {
    extern template class Simulator<2>;
    extern template class Simulator<3>;
 
-}
-}
+} // namespace Cpc
+} // namespace Pscf
 #endif
