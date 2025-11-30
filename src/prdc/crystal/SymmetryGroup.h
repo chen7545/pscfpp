@@ -24,11 +24,11 @@ namespace Prdc {
    * The algorithm requires only the template parameter class Symmetry 
    * satisfy the following requirements:
    *
-   *  1) A Symmetry must be default constructible.
-   *  2) An operator * is provided to represent element multiplication.
-   *  3) Operators == and != are provided to represent equality & inequality.
-   *  4) A method Symmetry::inverse() must return the inverse of a Symmetry. 
-   *  5) A static method Symmetry::identity() must return the identity.
+   *  - A Symmetry must be default constructible.
+   *  - An operator * is provided to represent element multiplication.
+   *  - Operators == and != are provided to represent equality & inequality.
+   *  - A method Symmetry::inverse() must return the inverse of a Symmetry. 
+   *  - A static method Symmetry::identity() must return the identity.
    *
    * \ingroup Prdc_Crystal_Module
    */

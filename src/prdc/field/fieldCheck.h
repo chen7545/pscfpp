@@ -168,10 +168,8 @@ namespace Prdc {
    *
    * \ingroup Prdc_Field_Module
    *
-   * \param in  DArray of arrays (out)
-   * \param in  DArray of arrays (in)
-   * \param nMonomer  number of arrays, or monomer types (out)
-   * \param capacity  capacity of each array (out)
+   * \param out  DArray of arrays (lhs, out)
+   * \param in  DArray of arrays (rhs, in)
    */
    template <class OAT, class IAT>
    void copyArrays(DArray<OAT>& out, DArray<IAT> const& in);

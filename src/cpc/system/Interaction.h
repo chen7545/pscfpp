@@ -19,7 +19,7 @@ namespace Cpc {
    /**
    * Interaction model for complex Langevin FTS.
    *
-   * \ingroup Pscf_Cp_Module
+   * \ingroup Cpc_System_Module
    */
    class Interaction : public ParamComposite
    {
@@ -95,7 +95,7 @@ namespace Cpc {
       * Compute the Fourier-space damping factor for pair interactions.
       *
       * \param kSq  squared wavenumber (input)
-      * \param damping Fourier-space factor for pair interactions
+      * \return damping Fourier-space factor for pair interactions
       */
       double g(double kSq) const;
 
