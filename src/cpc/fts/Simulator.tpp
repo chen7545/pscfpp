@@ -17,8 +17,8 @@
 #include <cpc/solvers/Solvent.h>
 #include <cpc/field/Domain.h>
 #include <cpc/fts/step/Step.h>
-#if 0
 #include <cpc/fts/step/StepFactory.h>
+#if 0
 #include <cpc/fts/analyzer/AnalyzerFactory.h>
 #include <cpc/fts/trajectory/TrajectoryReader.h>
 #include <cpc/fts/trajectory/TrajectoryReaderFactory.h>
@@ -56,7 +56,7 @@ namespace Cpc {
       fieldHamiltonian_(0.0),
       systemPtr_(&system),
       stepPtr_(nullptr),
-      //stepFactoryPtr_(nullptr),
+      stepFactoryPtr_(nullptr),
       //trajectoryReaderFactoryPtr_(nullptr)
       iStep_(0),
       iTotalStep_(0), 
@@ -68,7 +68,7 @@ namespace Cpc {
       isAllocated_(false)
    {  
       ParamComposite::setClassName("Simulator"); 
-      // stepFactoryPtr_ = new StepFactory<D>(*this);
+      stepFactoryPtr_ = new StepFactory<D>(*this);
       // trajectoryReaderFactoryPtr_
       //       = new TrajectoryReaderFactory<D>(system);
    }
@@ -82,10 +82,10 @@ namespace Cpc {
       if (stepPtr_) {
          delete stepPtr_;
       }
-      #if 0
       if (stepFactoryPtr_) {
          delete stepFactoryPtr_;
       }
+      #if 0
       if (trajectoryReaderFactoryPtr_) {
          delete trajectoryReaderFactoryPtr_;
       }
@@ -130,18 +130,17 @@ namespace Cpc {
       // Optionally read a random seed value
       readRandomSeed(in);
   
-      #if 0 
       // Optionally read a Step block
       bool isEnd = false;
       std::string className;
       stepPtr_ =
-         stepFactoryPtr_->readObjectOptional(in, *this, 
-                                               className, 
-                                               isEnd);
+         stepFactoryPtr_->readObjectOptional(in, *this, className, 
+                                             isEnd);
       if (!hasStep() && ParamComponent::echo()) {
          Log::file() << indent() << "  Step{ [absent] }\n";
       }
 
+      #if 0 
       // Optionally read an AnalyzerManager
       Analyzer<D>::baseInterval = 0; // default value
       readParamCompositeOptional(in, analyzerManager_);
@@ -167,10 +166,10 @@ namespace Cpc {
       computeWc();
       computeCc();
       computeDc();
-      // computeHamiltonian();
+      computeHamiltonian();
 
-      #if 0
       step().setup();
+      #if 0
       if (analyzerManager_.size() > 0){
          analyzerManager_.setup();
       }
@@ -204,37 +203,33 @@ namespace Cpc {
       timer.start();
       iStep_ = 0;
 
+      #if 0
       // Analysis for initial state (if any)
       analyzerTimer.start();
       if (analyzerManager_.size() > 0){
          analyzerManager_.sample(iStep_);
       }
       analyzerTimer.stop();
+      #endif
 
       for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
 
          // Take a step (modifies W fields)
-         bool converged;
-         converged = step().step();
+         step().step();
+         iStep_++;
 
-         if (converged){
-            iStep_++;
-
-            // Analysis (if any)
-            analyzerTimer.start();
-            if (Analyzer<D>::baseInterval != 0) {
-               if (analyzerManager_.size() > 0) {
-                  if (iStep_ % Analyzer<D>::baseInterval == 0) {
-                     analyzerManager_.sample(iStep_);
-                  }
+         #if 0
+         // Analysis (if any)
+         analyzerTimer.start();
+         if (Analyzer<D>::baseInterval != 0) {
+            if (analyzerManager_.size() > 0) {
+               if (iStep_ % Analyzer<D>::baseInterval == 0) {
+                  analyzerManager_.sample(iStep_);
                }
             }
-            analyzerTimer.stop();
-
-         } else {
-            Log::file() << "Step: "<< iTotalStep_
-                        << " failed to converge" << "\n";
          }
+         analyzerTimer.stop();
+         #endif
 
       }
 
@@ -242,17 +237,16 @@ namespace Cpc {
       double time = timer.time();
       double analyzerTime = analyzerTimer.time();
 
+      #if 0
       // Output results analyzers to files
       if (Analyzer<D>::baseInterval > 0){
          analyzerManager_.output();
       }
+      #endif
 
       // Output times for the simulation run
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;
-      if (iStep_ != nStep){
-         Log::file() << "nFail Step          " << (nStep - iStep_) << std::endl;
-      }
       Log::file() << "Total run time      " << time
                   << " sec" << std::endl;
       double rStep = double(nStep);
@@ -260,11 +254,6 @@ namespace Cpc {
                   << " sec" << std::endl;
       Log::file() << "Analyzer run time   " << analyzerTime
                   << " sec" << std::endl;
-      Log::file() << std::endl;
-
-      // Output number of times MDE were solved during the run
-      Log::file() << "MDE counter   "
-                  << compressor().mdeCounter() << std::endl;
       Log::file() << std::endl;
 
    }
@@ -355,7 +344,7 @@ namespace Cpc {
    #endif
 
    /*
-   * Clear all local state data (Hamiltonian, eigen-components of w, c, and d)
+   * Clear all state data (Hamiltonian, eigen-components of w, c, and d)
    */
    template <int D>
    void Simulator<D>::clearData()
@@ -475,17 +464,17 @@ namespace Cpc {
       // Eigenvalue calculations use data structures and
       // functions from the Gnu Scientific Library (GSL)
 
-      // Allocate GSL matrix A that will hold a copy of chiP
+      // Allocate GSL matrix A that will hold a copy of U matrix
       gsl_matrix* A = gsl_matrix_alloc(nMonomer, nMonomer);
 
-      // Copy DMatrix<double> u_ to gsl_matrix A
+      // Copy elements of DMatrix<double> u_ to gsl_matrix A
       for (i = 0; i < nMonomer; ++i) {
          for (j = 0; j < nMonomer; ++j) {
             gsl_matrix_set(A, i, j, u_(i, j));
          }
       }
 
-      // Compute eigenvalues and eigenvectors of chiP (or A)
+      // Compute eigenvalues and eigenvectors of u_ (or A)
       gsl_eigen_symmv_workspace* work = gsl_eigen_symmv_alloc(nMonomer);
       gsl_vector* Avals = gsl_vector_alloc(nMonomer);
       gsl_matrix* Avecs = gsl_matrix_alloc(nMonomer, nMonomer);
@@ -493,7 +482,7 @@ namespace Cpc {
       error = gsl_eigen_symmv(A, Avals, Avecs, work);
       UTIL_CHECK(error == 0);
 
-      // Copy eigenpairs with non-null eigenvalues
+      // Copy eigenpairs 
       double val;
       for (i = 0; i < nMonomer; ++i) {
          val = gsl_vector_get(Avals, i);

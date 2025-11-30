@@ -1,5 +1,5 @@
-#ifndef RPC_BD_STEP_H
-#define RPC_BD_STEP_H
+#ifndef CPC_BD_STEP_H
+#define CPC_BD_STEP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -26,7 +26,7 @@ namespace Cpc {
    *
    * The virtual step() method must generate a single step.
    *
-   * \ingroup Cpc_Fts_Brownian_Module
+   * \ingroup Cpc_Fts_Step_Module
    */
    template <int D>
    class Step : public ParamComposite
@@ -119,7 +119,7 @@ namespace Cpc {
       Simulator<D>& simulator();
 
       /**
-      * Get Random number generator of parent System.
+      * Get Random number generator of parent Simulator.
       */
       Random& random();
 
@@ -131,7 +131,7 @@ namespace Cpc {
       /// Pointer to parent System object
       System<D>* systemPtr_;
 
-      /// Pointer to random number generator
+      /// Pointer to random number generator of parent Simulator
       Random  *randomPtr_;
 
    };

@@ -52,7 +52,9 @@ namespace Cpc {
 
    public:
 
+      // Suppress automatically generated functions
       Simulator() = delete;
+      Simulator(Simulator<D>& ) = delete;
 
       /**
       * Constructor.
@@ -78,8 +80,6 @@ namespace Cpc {
 
       /**
       * Read parameters for a simulation.
-      *
-      * The default implementation reads an optional randoms seed.
       *
       * \param in input parameter stream
       */
@@ -544,12 +544,12 @@ namespace Cpc {
       */
       Step<D>* stepPtr_;
 
-      #if 0
       /**
       * Pointer to a Step factory.
       */
       Factory< Step<D> >* stepFactoryPtr_;
 
+      #if 0
       /**
       * Pointer to a trajectory reader/writer factory.
       */
