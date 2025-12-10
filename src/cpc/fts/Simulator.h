@@ -173,6 +173,11 @@ namespace Cpc {
       void analyzeInteraction();
 
       /**
+      * Get the interaction matrix U by const reference.
+      */
+      DMatrix<double> const & u() const;
+
+      /**
       * Get an array of the eigenvalues of the interaction matrix U.
       */
       DArray<double> const & evals() const;
@@ -180,9 +185,16 @@ namespace Cpc {
       /**
       * Get a single eigenvalue of the interaction matrix.
       *
-      * \param a index of eigenvalue (0, ... , nMonomer - 1)
+      * \param i  index of eigenvalue (0, ... , nMonomer - 1)
       */
-      double eval(int a) const;
+      double eval(int i) const;
+
+      /**
+      * Is the associated eigenvalue of U positive?
+      *
+      * \param i  index of eigenvalue (0, ... , nMonomer - 1)
+      */
+      bool isPositiveEval(int i) const;
 
       /**
       * Get the matrix of all eigenvectors of the interaction matrix.
@@ -510,10 +522,13 @@ namespace Cpc {
 
       /**
       * Eigenvalues of the interaction matrix.
-      *
-      * The last eigenvalue, with index nMonomer - 1, is always zero.
       */
       DArray<double>  evals_;
+
+      /**
+      * Array of bools - true for positive eigenvalues.
+      */
+      DArray<bool> isPositiveEval_;
 
       // Hamiltonian and components
  
@@ -619,6 +634,8 @@ namespace Cpc {
 
       /**
       * Called at the beginning of the simulation.
+      *
+      * \param nStep  number of time steps planned for simulation
       */
       void setup(int nStep);
 
@@ -671,6 +688,11 @@ namespace Cpc {
    #endif
 
    // Interaction Matrix
+
+   // Return the interaction matrix U.
+   template <int D>
+   inline DMatrix<double> const & Simulator<D>::u() const
+   {  return u_; }
 
    // Return an array of eigenvalues of the interaction matrix U.
    template <int D>

@@ -37,7 +37,11 @@ namespace Prdc {
    * for multiple monomer types, with no header.
    *
    * The template parameter AT must be an array type that provides
-   * an overloaded [] subscript operator that returns a real number.
+   * an overloaded [] subscript operator that returns a value of
+   * a type WT for which the template assign(WT&, double const &) 
+   * can be used to assign a real value. Data type WT can thus be
+   * either a real type or a complex number type for which this
+   * assign operator is defined. 
    *
    * \ingroup Prdc_Field_Module
    *

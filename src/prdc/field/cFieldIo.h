@@ -30,9 +30,10 @@ namespace Prdc {
    *
    * The template parameter AT must be an array type that provides an
    * overloaded [] subscript operator that returns a complex number of
-   * some type CT. The function template <typename CT, typename RT> 
-   * assign(CT&, RT const&, RT const&) must be defined. Valid complex
-   * array types include DArray<fftw_complex> and HostDArray<cudaReal>.
+   * some type CT, where CT supports assignment from real and imaginary
+   * parts via a function assign(CT&, double const&, double const&). 
+   * Valid complex array types include DArray<fftw_complex> and 
+   * HostDArray<cudaReal>.
    *
    * \ingroup Prdc_Field_Module
    *
@@ -46,13 +47,15 @@ namespace Prdc {
                         IntVec<D> const & dimensions);
  
    /**
-   * Read data for a single r-grid field, with no header section.
+   * Read data for a single complex field, with no header section.
    *
    * This function reads the data section of a complex field file for
    * a single monomer type, with no header section.
    *
    * The template parameter AT must be an array type that provides an
-   * overloaded [] subscript operator that returns a complex number.
+   * overloaded [] subscript operator that returns a complex number
+   * of type that supports assignment from double precision real and
+   * imaginary parts, assign(CT& , double const& , double const&).
    *
    * \ingroup Prdc_Field_Module
    *
@@ -66,13 +69,15 @@ namespace Prdc {
                       IntVec<D> const& dimensions);
  
    /**
-   * Write data for array of r-grid fields, with no header section.
+   * Write data for an array of complex fields, with no header section.
    *
    * This function writes the data section of the complex field file
    * format for a multiple monomer types, with no header section.
    *
-   * The template parameter AT must be an array type that provides 
-   * an overloaded [] subscript operator that returns a complex number.
+   * The template parameter AT must be an array type that provides an
+   * overloaded [] subscript operator that returns a complex number of
+   * a type CT for which there exist real(CT const&) and imag(CT const&) 
+   * functions that return real and imaginary parts. 
    *
    * \ingroup Prdc_Field_Module
    *
@@ -86,13 +91,15 @@ namespace Prdc {
                          IntVec<D> const& dimensions);
  
    /**
-   * Write data for a single r-grid field, with no header section.
+   * Write data for a single complex field, with no header section.
    *
    * This function writes the data section of complex field file format
-   * for a single monomer type, with no header.
+   * for a single monomer type, with no header section.
    *
-   * The template parameter AT must be an array type that provides 
-   * an overloaded [] subscript operator that returns a complex number.
+   * The template parameter AT must be an array type that provides an
+   * overloaded [] subscript operator that returns a complex number a
+   * type CT for which there exist real(CT const&) and imag(CT const&) 
+   * functions that return real and imaginary parts. 
    *
    * \ingroup Prdc_Field_Module
    *
@@ -102,8 +109,8 @@ namespace Prdc {
    */
    template <int D, class AT, typename CT, typename RT>
    void writeCFieldData(std::ostream& out, 
-                       AT const& field,
-                       IntVec<D> const& dimensions);
+                        AT const& field,
+                        IntVec<D> const& dimensions);
 
 } // namespace Prdc
 } // namespace Pscf

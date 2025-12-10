@@ -6,38 +6,62 @@ Design choices / conventions:
    will be placed in directory src/cpc and code for the gpu version will be 
    in directory src/cpg. 
 
-   (1) Program-level namespaces for CL-FTS will be named Pscf::Cpc (CPU 
-   version) and Pscf::Cpg (GPU version), where the acronyms stand for 
-   Cpc -> complex periodic CPU and Cpg -> complex periodic GPU
+   (2) Program-level namespaces for CL-FTS will be named Pscf::Cpc (CPU 
+   version, directory src/cpc) and Pscf::Cpg (GPU version, directory 
+   src/cpg), where the acronyms stand for Cpc -> complex periodic CPU and 
+   Cpg -> complex periodic GPU. 
 
-   (2) There will be no Basis class used in these program-level namespaces, 
-   and thus no symmetry-adapted Fourier basis avialable for use in these 
-   complex Langevin codes.
+   (3) Code files in Pscf::Cpc and Pscf:Cpg may both contain directives
+   "using namespace Util" "using namespace Prdc" at the namespace level.
+   Code files in Pscf::Cpc may also contain "using namespace Prdc::Cpu"
+   directives to allow use of unqualified names for the CField, FFT, 
+   WaveList and other building-block classes defined there. Similarly,
+   Code files in Pscf::Cpg may contain "using namespace Prdc::Cuda"
+   directives to allow unqualified names for Cuda-accelerated analogs.
+
+   (4) Templates used to create classes for both Cpc and Cpg versions 
+   will be placed in namespace Pscf::Cp, and in directory src/cp. Code
+   in Pscf::Cpc and Pscf::Cpg may *not* include "using namespace Cp"
+   directories, but must instead use the namespace name Cp:: as an
+   explicit qualifier. This will allow templates defined in Pscf::Cp
+   to use simple names, such as System or Mixture, without name clashes.
+   
+   (5) There will be no Basis class used in these program-level 
+   namespaces, and thus no symmetry-adapted Fourier basis avialable for 
+   use in these complex Langevin codes.
 
    Rationale: 
 
-       (1) SCFT with an imposed symmetry can already be done with existing
+       - SCFT with an imposed symmetry can already be done with existing
        codes. Fluctuating FTS fields don't have an exact symmetry.
 
-       (2) The Basis class was originally designed for real fields, 
+       - The Basis class was originally designed for real fields, 
        using the indexing system for RFieldDft with implicit waves. 
        It would have to be redesigned to describe a Fourier bassis 
        for a general complex field.
 
-       (3) Leaving out the space group symmetry doesn't prevent the
+       - Leaving out the space group symmetry doesn't prevent the
        later addition of SCFT with complex fields, which could still
        be done using iterator algorithms that don't impose a symmetry.
 
-   (3) In Pscf::Cpc CPU code, use double and fftw_complex as basic types
+   (6) In Pscf::Cpc CPU code, use double and fftw_complex as basic types
+   for complex fields. The fftw_complex type is an alias for double[2]
+   that is used for complex field values in the FFTW library.
 
-   (4) In Pscf::Cpg GPU code use the cudaReal and cudaComplex as defined
-   in the prdc/cuda/types.h file. 
+   (7) In Pscf::Cpg GPU code use the cudaReal and cudaComplex as defined
+   in the prdc/cuda/types.h file. The cudaComplex type is an alias for 
+   a C struct that used to represent complex field values by the NVidia
+   cufft library. This struct has x and y member variables that represent 
+   real and imaginary parts.
 
-   (5) In Pscf::Cpg namespace, allow "using namespace Pscf::Prdc" and
-   "using namespace Pscf::Prdc::Cuda", so that field and FFT classes 
-   defined in Prdc::Cuda are used by default (e.g., for RField, RFieldDft, 
-   CField, and FFT), but allow explicit use of the Cpu:: qualifier to 
-   specify occasional use of classes defined in Prdc::Cpu.
+   (8) Values for complex scalar properties of molecules phi, mu and
+   and q that are defined in the Pscf::Species base class are type 
+   std::complex<double>. This allows these quantities to be returned 
+   by value by member functions of that class, as done in the current 
+   interface of Pscf::Species.  (Function return values cannot be array 
+   types in C/C++, and fftw_complex is an array type. We thus cannot
+   templatize this type to be the same as that used for fields and 
+   also allow it to be returned by value).
 
 Programming tasks:
 ==================
@@ -70,95 +94,155 @@ Solvers:
     use function templates for assignment, computation of exponential,
     logarithms etc. 
 
-  - Modify solver template classes (PropagatorTmpl, BlockTmpl) as
-    needed.
+  - In Cpc and Cpg, create Propagator and Block classes (done)
 
-  - In Cpc and Cpg, create Propagator and Block classes
+  - In Cpc and Cpg, create Polymer and Mixture classes (done)
 
-  - In Cpc and Cpg, create Polymer and Mixture classes (almost unchanged)
-
-  - Create an appropriate Interaction class (nonlocal by default)
+  - Create an appropriate Interaction class (allows compressibility)
 
   - Create System (Mixture, Interaction, Step) with built-in CL sampling
 
-Templates in namespace Prdc:
+Templates in namespaces Rp and Cp:
 
   - Create subdirectories rl and cl for code that is specific to real
     and complex (or complex Langevin code)  (done)
 
-  - Move templates that are specific to real periodic to prdc/rl. These
-    include:
+  - Create namespaces Pscf::Rl:: and Pscf::Cl, allowing use of short 
+    names for base class templates
 
-       rl/DomainTmpl
-       rl/CFieldsTmpl
-       rl/WFieldsTmpl
-       rl/FieldIoTmpl
-       rl/MaskTmpl
-       rl/fieldIoUtil
-       rl/SystemTmpl
-       rl/SystemConstRefTmpl
-       rl/ScftThermoTmpl
-       rl/MixturePrdc
-       rl/MixtureModifierPrdc
+       rp/Domain  ->  Pscf:Rl::Domain, etc.
+       rp/FieldIo
+       rp/WFields
+       rp/CFields
+       rp/Mask
+       rp/System
+       rp/SystemConstRef
+       rp/ScftThermo
+       rp/Mixture
+       rp/MixtureModifier
 
-       (done)
+       cp/Domain  -> Pscf::Cp::Domain, etc.
+       cp/FieldIo
+       cp/CFields
+       cp/WFields
+       cp/SystemConstRef
+       cp/Mixture
+       cp/MixtureModifier
+       cp/Simulator
+       cp/System
 
-  - Create nested namespaces Prdc::Rl:: and Prdc::Cl, allowing use of
-    short names
-
-       rl/Domain  ->  Pscf::Prdc::Rl::Domain, etc.
-       rl/CFields
-       rl/WFields
-       rl/FieldIo
-       rl/Mask
-       rl/fieldIoUtil
-       rl/System
-       rl/SystemConstRef
-       rl/ScftThermo
-       rl/Mixture
-       rl/MixtureModifier
-
-       cl/Domain  -> Pscf::Prdc::Cl::Domain, etc.
-       cl/CFields
-       cl/WFields
-       cl/FieldIo
-       cl/fieldIoUtil
-       cl/System
-       cl/SystemConstRef
-       cl/Mixture
-       cl/MixtureModifier
-       cl/Simulator
+       (Done)
 
   - Differences between real and complex code:
 
-      * Cl::Domain will not contain a SpaceGroup or Basis
+      * Cp::Domain does not contain a SpaceGroup or Basis
 
-      * Cl::FieldIoCl will not support basis format, and will not
+      * Cp::FieldIo does not support basis format, and does not
         need to provide any conversion functions involving basis
         format.
 
-      * Cl::Fields and Cl::WFields will not support basis format
+      * Cp::CFields and Cp::WFields do not support basis format
 
-      * There will not be any class Prdc::Cl::Mask
+      * Cp::System initially does not support SCFT
 
-      * Functions in cl/fieldIoUtil will be defined in Prdc::Prdc::Cl
+      * Cp::System initiall does not support Mask, external field or 
+        Environment. Mask and Environment classes do not exist in
+        the relevant namespaces.
 
-      * Cl::System will not support SCFT or an Environment.
-
-      * Cl::System will contain built in support for CL sampling,
+      * Cp::Simulate will contain built in support for CL sampling,
         including a Step class and an AnalyzerManager.
 
 Interaction Class:
 
+  - Interaction classes must be placed in namespaces that are 
+    enclosed namespaces of Pscf that are not program-level namespaces
+    and that are not used implicity via "using namespace .." directives.
+    Class names must be qualified with namespaces. Possible locations
+    include Pscf::FH (for local and incompressible), Pscf::Rl and
+    Pscf::Cp.
+
   - The existing Pscf::Interaction class, which is apppopriate for
     an incompressible Flory-Huggins theory with local interactions,
-    will be moved to namespace Pscf::FH. Code used by the pscf_r1d, 
-    pscf_rpc and pscf_rpg programs will be modified to use
-    FH::Interaction. (done)
+    will be moved to namespace Pscf::FH. Code used by the existing
+    pscf_r1d, pscf_rpc and pscf_rpg programs will initially be 
+    modified to use FH::Interaction. (done)
 
-  - A class Prdc::Cl::Interaction that is designed for use in complex
-    Langevin sampling will be added to directory prdc/cl . For the
-    moment, this will be the only compilable class in that directory.
+  - Create a class Pscf::Cp::Interaction that is designed for use in 
+    complex Langevin sampling with compressible interactions. This
+    class contains chi parameters and an optional value for zeta, 
+    but not information about the kernel or (equivalently) the range
+    of interactions.  The zeta parameter will be read in as an optional
+    parameter, and isCompressible_ is set true if the parameter zeta
+    appears in the parameter file. If zeta is absent, the model is 
+    assumed to be incompressible.
+
+    namespace Pscf {
+    namespace Cp {
+
+       class Interaction : public ParamComposite {
+
+          void readParameters(...);
+
+          DMatrix<double>& chi() const;
+          double chi(int i, int j) const;
+          double zeta() const;
+          bool isCompressible() const;
+   
+       private:
+   
+          DMatrix<double> chi_;
+          double zeta_;
+          bool isCompressible_;
+   
+       };
+
+    }
+    }
+
+  - Problem: It is natural to make this a compilable concrete class, 
+    rather than a class template. This would make it the first 
+    compilable class in namespace Pscf::Cp - everything else in this
+    namespace is currently a class template. Putting a compilable
+    Cp::Interaction class in directory pscf/cp would necessitate
+    creation of a static library for this this directory just to
+    contain this one class.
+
+  - Stop gap solution: Define Pscf::Cp::Interaction in namespace 
+    Pscf::Cp but in directory pscf/prdc, and add it to the prdc
+    static library file src/prdc/libprdc.a .
+
+  - Longer term solution: Define Interaction in namespace Prdc, and
+    allow it to be used in either real-periodic or complex-periodic
+    codes. Codes that are not designed for compressible models can
+    check isCompressible and throw and error if a value has been 
+    assigned to zeta.
+
+Kernel and Filter Classes:
+
+  - Create a class template Prdc::Kernel in src/prdc/filter that 
+    defines Fourier transforms of the functions G and F, with 
+    F = G * G.  
+
+  - Create a class template Prdc::Filter that stores values of 
+    G and F on a Fourier grid, and that can efficiently apply filter 
+    operations to CField data. Create subclasses for Pscf::Cpc and 
+    Pscf::Cpg that use different field types.
+
+Parameter File Format:
+----------------------
+
+System {
+   Mixture{ ... }
+   Interaction{ ... }  (contains chi and optionally a zeta parameter)
+   Kernel{ ... }       (contains a range parameter)
+   Domain{ ... }
+   Simulator{ ... }
+}
+
+Parameter file format for Simulator can be similiar to that used
+for PS-FTS in pscf_rpc and pscf_rpg.  Needs a random number seed,
+a step, and an analyzer manager block. No need for a compressor 
+in this context.
 
 Sequence of programming tasks:
 ------------------------------
@@ -170,12 +254,15 @@ Sequence of programming tasks:
   Stage B: Create actual new classes for CL-FTS. Possible order of 
   creation:
 
-    - Cl::FieldIo (simple version for r-grid file IO)   (done)
-    - Cl::Domain  (will need WaveList for solvers)      (done)
+    - Cp::FieldIo (simple version for r-grid file IO)   (done)
+    - Cp::Domain  (will need WaveList for solvers)      (done)
     - Cpc::Solvers                                      (done)
-    - Cl:CFields and Cl::WFields (if needed)            (done)
-    - Cl::System
-    - Cl::Simulator
-    - Cl::Step
-    - Cl::Analyzer and Cl::AnalyzerManager
+    - Cp:CFields and Cp::WFields (if needed)            (done)
+    - Cp::System                                        (done)
+    - Cp::Simulator
+    - Cp::Interaction
+    - Cp::Kernel
+    - Cp::Filter
+    - Cp::Step
+    - Cp::Analyzer and Cp::AnalyzerManager
 

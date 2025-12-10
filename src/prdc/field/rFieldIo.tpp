@@ -34,9 +34,9 @@ namespace Prdc {
 
    // RGrid File Io Templates
 
-   template <int D, class ART>
+   template <int D, class AT>
    void readRGridData(std::istream& in,
-                      DArray<ART>& fields,
+                      DArray<AT>& fields,
                       int nMonomer,
                       IntVec<D> const& dimensions)
    {
@@ -57,9 +57,9 @@ namespace Prdc {
       UTIL_CHECK(in.good());
    }
 
-   template <int D, class ART>
+   template <int D, class AT>
    void readRGridData(std::istream& in, 
-                      ART& field,
+                      AT& field,
                       IntVec<D> const & dimensions)
    {
       MeshIteratorFortran<D> iter(dimensions);
@@ -74,9 +74,9 @@ namespace Prdc {
       UTIL_CHECK(in.good());
    }
 
-   template <int D, class ART>
+   template <int D, class AT>
    void writeRGridData(std::ostream& out,
-                       DArray<ART> const& fields,
+                       DArray<AT> const& fields,
                        int nMonomer,
                        IntVec<D> const& dimensions)
    {
@@ -95,9 +95,9 @@ namespace Prdc {
 
    }
 
-   template <int D, class ART>
+   template <int D, class AT>
    void writeRGridData(std::ostream& out,
-                       ART const& field,
+                       AT const& field,
                        IntVec<D> const& dimensions)
    {
       MeshIteratorFortran<D> iter(dimensions);
@@ -907,9 +907,9 @@ namespace Prdc {
 
    // Field file manipulations
 
-   template <int D, class ART>
+   template <int D, class AT>
    void replicateUnitCell(std::ostream &out,
-                          DArray<ART> const & fields,
+                          DArray<AT> const & fields,
                           IntVec<D> const & meshDimensions,
                           UnitCell<D> const & unitCell,
                           IntVec<D> const & replicas)
@@ -978,10 +978,10 @@ namespace Prdc {
       writeRGridData(out, repFields, nMonomer, repDimensions);
    }
 
-   template <int D, class ART>
+   template <int D, class AT>
    void
    expandRGridDimension(std::ostream &out,
-                        DArray<ART> const & fields,
+                        DArray<AT> const & fields,
                         IntVec<D> const & meshDimensions,
                         UnitCell<D> const & unitCell,
                         int d,
@@ -990,10 +990,10 @@ namespace Prdc {
       UTIL_THROW("Unimplemented base template"); 
    }
 
-   template <class ART>
+   template <class AT>
    void
    expandRGridDimension(std::ostream &out,
-                        DArray<ART> const & fields,
+                        DArray<AT> const & fields,
                         IntVec<1> const & meshDimensions,
                         UnitCell<1> const & unitCell,
                         int d,
@@ -1107,9 +1107,9 @@ namespace Prdc {
 
    }
 
-   template <class ART>
+   template <class AT>
    void expandRGridDimension(std::ostream &out,
-                             DArray<ART> const & fields,
+                             DArray<AT> const & fields,
                              IntVec<2> const & meshDimensions,
                              UnitCell<2> const & unitCell,
                              int d,
@@ -1196,9 +1196,9 @@ namespace Prdc {
 
    }
 
-   template <class ART>
+   template <class AT>
    void expandRGridDimension(std::ostream &out,
-                             DArray<ART> const & fields,
+                             DArray<AT> const & fields,
                              IntVec<3> const & meshDimensions,
                              UnitCell<3> const & unitCell,
                              int d,

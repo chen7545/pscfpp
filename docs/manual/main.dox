@@ -43,6 +43,7 @@ online at
     <li> \ref install_overview_page  </li>
     <li> \ref install_environment_page  </li>
     <li> \ref install_configure_page  </li>
+    <li> \ref install_compile_page  </li>
     <li> \ref install_inout_page  </li>
     <li> \ref install_setopts_page  </li>
     <li> \ref install_targets_page  </li>

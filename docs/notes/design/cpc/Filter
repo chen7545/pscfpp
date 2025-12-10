@@ -1,0 +1,140 @@
+Possible plan for kernel / filter:
+
+  - Notation: G is the kernel used to smear c-fields in "smeared field" 
+    formalism.  F is the kernel that represents the range of interaction 
+    between particles. In Fourier space, F = G^2.
+
+  - Kernel is a abstract class that defines the Fourier transforms for
+    both G and F, which are returned by virtual functions. I propose to 
+    develop code that allows computation of both to allow us to write 
+    algorithms that either do or do not use the formalism with smeared 
+    c-fields and desmeared w-fields.
+
+  - Kernel is a subclass of ParamComposite, and an optional selectable 
+    element of the parameter file.  Exact placement within the parameter
+    file be determined, but easy to change. Making it selectiable 
+    requires a KernelFactory.  We could initially hard code construction 
+    of a particular a choice and create a KernelFactory later.
+
+  - Class Filter provides methods to apply either F or G, or their
+    inverses, to a field. A Filter is a member of a System that has
+    an association with a Kernel.
+
+  - Efficiency: This design requires use of virtual functions of the 
+    Kernel class in loops in the Filter class that create filter values. 
+    I assume that this is done only once, however, or infrequently. If
+    so, the extra time to dereference a pointer per element to access 
+    a virtual function should be a negligible contribution to overall 
+    computation time.
+
+  - Get this version working, measure time and confirm that its fast
+    enough. Rewrite for efficiency only if it becomes necessary, e.g.,
+    if we develop methods that adjust the unit cell every time step.
+
+  - Class LangevinRandom is a class for generating random forces for
+    use in CL sampling. It will have an option to provide noise with
+    a spectrum filtered by kernel F. 
+
+/**
+* Kernel base class.
+*/
+class Kernel : public ParamComposite
+{
+
+public:
+
+   /**
+   * Return smearing function "Gamma" used in smear-field formalism.
+   *
+   * \param kSq  squared wavenumber
+   */
+   virtual double g(double kSq) = 0;
+
+   /**
+   * Return kernel for two-particle interactions
+   *
+   * In Fourier space f(kSq) = g(kS)*g(kSq).
+   *
+   * \param kSq  squared wavenumber
+   */
+   virtual double f(double kSq) = 0;
+
+}
+
+/**
+* Class to efficiently apply convolutions with filter kernels.
+*
+* Template parameters:
+*
+*     D  - dimension of space
+*     T - Types class, containing forward declarations and aliases
+*
+*/
+template <int D, class T>
+class Filter {
+
+   using RealT = T::Real;
+   using ComplexT = T::Complex;
+   using CFieldT = T::CField;
+   using RFieldT = T::RField;
+   using WaveListT = T::WaveList;
+   using FftT = T::Fft;
+
+   // Initialization
+
+   /**
+   * Create associations with the Kernel and WaveList.
+   */
+   void associate(KT kernel, WaveListT&, FftT&  );
+
+   /**
+   * Allocate memory.
+   */
+   void allocate(IntVec<D> meshDimensions);
+
+   // Management for private data
+
+   /**
+   * Update array F kernel values
+   */
+   void updateF();
+
+   /**
+   * Update array of G kernel values
+   */
+   void updateG();
+
+   /**
+   * Mark kernel values as outdated.
+   */
+   void clear();
+
+   // Filter calculators (const)
+  
+   void applyF(CFieldT& out, CFieldT const & in)
+
+   void applyFInv(CFieldT& out, CFieldT const & in)
+
+   void applyG(CFieldT& out, CFieldT const & in)
+
+   void applyGInv(CFieldT& out, CFieldT const & in)
+
+private:
+
+   // Array with stored values of Fourier transform G(k)
+   RField<double> g_;
+
+   // Array with stored values of Fourier transform F(k)
+   RField<double> f_;
+
+   Kernel* kernelPtr_;
+
+   WaveListT* waveListPtr_;
+
+   FftT* fftPtr_;
+
+   bool hasG_;
+
+   bool hasF_;
+
+};

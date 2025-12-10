@@ -51,6 +51,7 @@ namespace Cpc {
       u_(),
       evecs_(),
       evals_(),
+      isPositiveEval_(),
       hamiltonian_(0.0),
       idealHamiltonian_(0.0),
       fieldHamiltonian_(0.0),
@@ -104,8 +105,9 @@ namespace Cpc {
 
       // Allocate interaction matrix u_ and associated arrays
       u_.allocate(nMonomer, nMonomer);
-      evals_.allocate(nMonomer);
       evecs_.allocate(nMonomer, nMonomer);
+      evals_.allocate(nMonomer);
+      isPositiveEval_.allocate(nMonomer);
 
       // Allocate memory for eignevector components of w and c fields
       wc_.allocate(nMonomer);
@@ -482,11 +484,16 @@ namespace Cpc {
       error = gsl_eigen_symmv(A, Avals, Avecs, work);
       UTIL_CHECK(error == 0);
 
-      // Copy eigenpairs 
+      // Copy eigenvalues and eigenvectors
       double val;
       for (i = 0; i < nMonomer; ++i) {
          val = gsl_vector_get(Avals, i);
          evals_[i] = val;
+         if (val > 0.0) {
+            isPositiveEval_[i] = true;
+         } else {
+            isPositiveEval_[i] = false;
+         }
          for (j = 0; j < nMonomer; ++j) {
             evecs_(i, j) = gsl_matrix_get(Avecs, j, i);
          }
@@ -654,7 +661,7 @@ namespace Cpc {
       hasDc_ = true;
    }
    
-   // Protected Functions
+   // Private Functions
 
    /*
    * Optionally read a random number generator seed.
