@@ -28,8 +28,18 @@ namespace Cpc {
 
       /**
       * Constructor.
+      * 
+      * If the isCompressible parameter of this contructor is false, the 
+      * physical model will be assumed to be incompressible, in which case 
+      * a zeta parameter may not appear in the readParameters function. 
+      * If this constructor parameter is true, then zeta is treated as 
+      * an optional parameter in the parameter file, and the model is 
+      * taken to be compressible if a value for zeta is given in the 
+      * parameter file, and incompressible otherwise.
+      *
+      * \param isCompressible  allow use of a finite zeta parameter
       */
-      Interaction();
+      Interaction(bool isCompressible = false);
 
       /**
       * Destructor.
@@ -87,17 +97,16 @@ namespace Cpc {
       double zeta() const; 
 
       /** 
-      * Return the range of binary interactions.
-      */
-      double range() const; 
-
-      /**
-      * Compute the Fourier-space damping factor for pair interactions.
+      * Is the system compressible?
       *
-      * \param kSq  squared wavenumber (input)
-      * \return damping Fourier-space factor for pair interactions
+      * The boolean flag that is returned by this function is initially
+      * set equal to the value of the parameter passed to the constructor.
+      * If this initial value is false, it may not be changed later. If
+      * this initial value is true, then the value it may be reset in the
+      * readParameters method, which sets isCompressible false if the
+      * parameter file does not contain a zeta parameter.
       */
-      double g(double kSq) const;
+      bool isCompressible() const; 
 
    private:
 
@@ -107,14 +116,14 @@ namespace Cpc {
       // Dimensionless compression modulus (a la Helfand)
       double zeta_;
 
-      // Range of interaction
-      double range_;
-
-      // Constant used in computation of g(k)
-      double alpha_;
-
-      // Number of monomers
+      // Number of monomers.
       int nMonomer_;
+
+      // True if a finite value of zeta is defined.
+      bool isCompressible_;
+
+      // Have the object been initialized via readParameters.
+      bool isInitialized_;
 
    };
 
@@ -132,8 +141,8 @@ namespace Cpc {
    inline double Interaction::zeta() const
    {  return zeta_; }
 
-   inline double Interaction::range() const
-   {  return range_; }
+   inline bool Interaction::isCompressible() const
+   {  return isCompressible_; }
 
 } // namespace Cpc
 } // namespace Pscf

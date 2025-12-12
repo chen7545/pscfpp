@@ -16,12 +16,12 @@ namespace Cpc {
    /*
    * Constructor.
    */
-   Interaction::Interaction()
+   Interaction::Interaction(bool isCompressible)
     : chi_(),
       zeta_(-1.0),
-      range_(-1.0),
-      alpha_(1.0),
-      nMonomer_(0)
+      nMonomer_(0),
+      isCompressible_(isCompressible),
+      isInitialized_(false)
    {  setClassName("Interaction"); }
 
    /*
@@ -36,6 +36,7 @@ namespace Cpc {
    void Interaction::setNMonomer(int nMonomer)
    {  
       UTIL_CHECK(nMonomer_ == 0);
+      UTIL_CHECK(!isInitialized_);
       UTIL_CHECK(nMonomer > 0);
       nMonomer_ = nMonomer; 
       chi_.allocate(nMonomer, nMonomer);
@@ -46,12 +47,15 @@ namespace Cpc {
    */
    void Interaction::readParameters(std::istream& in)
    {
-      UTIL_CHECK(nMonomer() > 0);
+      UTIL_CHECK(nMonomer_ > 0);
+      UTIL_CHECK(!isInitialized_);
       readDSymmMatrix(in, "chi", chi_, nMonomer());
-      read(in, "zeta", zeta_);
-      read(in, "range", range_);
-
-      alpha_ = -0.5/(range_ * range_);
+      if (isCompressible_) {
+         //isCompressible_ = readOptional(in, "zeta", zeta_).isActive();
+         auto& param = readOptional(in, "zeta", zeta_);
+         isCompressible_ = param.isActive();
+      }
+      isInitialized_ = true;
    }
 
    /*
@@ -59,18 +63,11 @@ namespace Cpc {
    */
    void Interaction::setChi(int i, int j, double chi)
    {
+      UTIL_CHECK(isInitialized_);
       chi_(i,j) =  chi; 
       if (i != j) {
          chi_(j,i) = chi;
       }
-   }
-
-   /*
-   * Compute & return Fourier-space damping factor for pair interactions.
-   */
-   double Interaction::g(double kSq) const
-   {
-      return std::exp(alpha_ * kSq);
    }
 
 } // namespace Cpc
