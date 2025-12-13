@@ -14,7 +14,6 @@
 #include <r1d/solvers/Block.h>
 
 #include <pscf/chem/Vertex.h>
-#include <pscf/floryHuggins/Clump.h>
 
 #include <util/misc/FileMaster.h>
 #include <util/format/Str.h>

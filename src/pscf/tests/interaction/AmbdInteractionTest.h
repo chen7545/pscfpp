@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/iterator/AmbdInteraction.h>
 #include <util/param/BracketPolicy.h>
 
@@ -36,7 +36,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      FH::Interaction v;
+      Interaction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -77,7 +77,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      FH::Interaction v;
+      Interaction v;
       const int nMonomer = 3;
       v.setNMonomer(nMonomer);
       std::ifstream in;

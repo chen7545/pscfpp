@@ -18,8 +18,6 @@
 #include <r1d/misc/FieldIo.h>
 
 #include <pscf/interaction/Interaction.h>
-#include <pscf/floryHuggins/Interaction.h>
-//#include <pscf/floryHuggins/Clump.h>
 
 #include <util/format/Str.h>
 #include <util/format/Int.h>
@@ -44,7 +42,6 @@ namespace R1d
       domain_(),
       fileMaster_(),
       fieldIo_(),
-      homogeneous_(),
       interactionPtr_(0),
       iteratorPtr_(0),
       iteratorFactoryPtr_(0),
@@ -174,9 +171,6 @@ namespace R1d
    {
       readParamComposite(in, mixture());
       hasMixture_ = true;
-
-      // Initialize FH::Mixture object
-      homogeneous_.initialize(mixture());
 
       interaction().setNMonomer(mixture().nMonomer());
       readParamComposite(in, interaction());
@@ -559,15 +553,23 @@ namespace R1d
       int nx = domain().nx();
       if (!f_.isAllocated()) f_.allocate(nx);
       if (!c_.isAllocated()) c_.allocate(nm);
-      int j;
-      FH::Interaction fhInteraction(interaction());
+      int j, k;
+      // FhInteraction fhInteraction(interaction());
+      Matrix<double> const & chi = interaction().chi();
       for (int i = 0; i < nx; ++i) { 
          // Store c_[j] = local concentration of species j
          for (j = 0; j < nm; ++j) {
             c_[j] = cFields_[j][i];
          }
          // Compute f_[i] = excess free eenrgy at grid point i
-         f_[i] = fhInteraction.fHelmholtz(c_);
+         // f_[i] = fhInteraction.fHelmholtz(c_);
+         f_[i] = 0.0;
+         for (j = 0; j < nm; ++j) {
+            for (k = 0; k < nm; ++k) {
+              f_[i] += c_[j]*chi(j, k)*c_[k];
+            }
+         }
+         f_[i] *= 0.5;
       }
       fHelmholtz_ += domain().spatialAverage(f_);
       fInter_ = fHelmholtz_ - fIdeal_;

@@ -11,7 +11,6 @@
 #include <r1d/solvers/Polymer.h>
 #include <r1d/solvers/Solvent.h>
 #include <pscf/chem/Ensemble.h>
-#include <pscf/floryHuggins/Interaction.h>
 #include <pscf/iterator/NanException.h>
 #include <util/global.h>
 

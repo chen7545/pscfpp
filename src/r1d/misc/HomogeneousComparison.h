@@ -11,6 +11,11 @@
 #include <r1d/SystemAccess.h>             // base class
 
 namespace Pscf {
+   class FhMixture;
+   class FhInteraction;
+}
+
+namespace Pscf {
 namespace R1d {
 
    /**
@@ -69,12 +74,17 @@ namespace R1d {
       void compute(int mode);
 
       /**
+      * Compute computed properties of a homogeneous reference system.
+      */
+      void clear();
+
+      /**
       * Output comparison to a homogeneous reference system.
       *
       * \param mode mode index
       * \param out output stream 
       */
-      void output(int mode, std::ostream& out);
+      void output(int mode, std::ostream& out) const;
 
    private:
 
@@ -97,6 +107,40 @@ namespace R1d {
       * Work array (size = # of molecular species).
       */
       DArray<double> m_;
+
+      /**
+      * Pointer to a FhMixture.
+      */
+      FhMixture* fhMixturePtr_;
+
+      /**
+      * Pointer to a private FhInteraction.
+      */
+      FhInteraction* fhInteractionPtr_;
+
+      /**
+      * Get the FhMixture by reference.
+      */
+      FhMixture& fhMixture() { return *fhMixturePtr_; }
+
+      /**
+      * Get the FhMixture by const reference.
+      */
+      FhMixture const & fhMixture() const 
+      { return *fhMixturePtr_; }
+
+      /**
+      * Get the FhInteraction by reference.
+      */
+      FhInteraction& fhInteraction() { return *fhInteractionPtr_; }
+
+      /**
+      * Get the FhInteraction by const reference.
+      */
+      FhInteraction const & fhInteraction() const
+      { return *fhInteractionPtr_; } 
+
+      bool hasData_;
 
    };
 

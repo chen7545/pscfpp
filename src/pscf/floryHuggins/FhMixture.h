@@ -1,5 +1,5 @@
-#ifndef PSCF_FLORY_HUGGINS_MIXTURE_H
-#define PSCF_FLORY_HUGGINS_MIXTURE_H
+#ifndef PSCF_FH_MIXTURE_H
+#define PSCF_FH_MIXTURE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,24 +8,21 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/ParamComposite.h>    // base class
+#include <util/param/ParamComposite.h>      // base class
 
-#include <pscf/chem/Monomer.h>            // member 
-#include <pscf/floryHuggins/Molecule.h>   // member 
-#include <util/containers/DArray.h>       // member 
-#include <util/containers/DMatrix.h>      // member 
+#include <pscf/chem/Monomer.h>              // member 
+#include <pscf/floryHuggins/FhMolecule.h>   // member 
+#include <util/containers/DArray.h>         // member 
+#include <util/containers/DMatrix.h>        // member 
 
 // Forward declarations
 namespace Pscf {
+   class FhInteraction;
    class LuSolver;
    template <typename WT> class MixtureBase;
-   namespace FH {
-      class Interaction;
-   }
 }
 
 namespace Pscf {
-namespace FH {
 
    using namespace Util;
 
@@ -34,19 +31,19 @@ namespace FH {
    *
    * \ingroup Pscf_FloryHuggins_Module
    */
-   class Mixture : public ParamComposite
+   class FhMixture : public ParamComposite
    {
    public:
 
       /**
       * Constructor.
       */
-      Mixture();
+      FhMixture();
 
       /**
       * Destructor.
       */
-      ~Mixture();
+      ~FhMixture();
 
       /// \name Initialization.
       //@{
@@ -59,7 +56,7 @@ namespace FH {
       virtual void readParameters(std::istream& in);
 
       /**
-      * Initialize to properties of a MixtureBase Mixture descriptor.
+      * Initialize to properties of a MixtureBase descriptor.
       *
       * \param mixture  descriptor for a SCFT or FTS mixture
       */
@@ -100,7 +97,7 @@ namespace FH {
       * \param interaction  excess free energy model (input)
       * \param xi  Lagrange multiplier field (input)
       */
-      void computeMu(Interaction const & interaction, double xi = 0.0);
+      void computeMu(FhInteraction const & interaction, double xi = 0.0);
 
       /**
       * Compute composition from chemical potentials.
@@ -110,7 +107,7 @@ namespace FH {
       * \param phi guess of molecular volume fractions (input)
       * \param xi  Lagrange multiplier field (input/output)
       */
-      void computePhi(Interaction const & interaction, 
+      void computePhi(FhInteraction const & interaction, 
                       DArray<double> const & mu, 
                       DArray<double> const & phi, 
                       double&  xi);
@@ -126,7 +123,7 @@ namespace FH {
       *
       * \param interaction  excess free energy model (input)
       */
-      void computeFreeEnergy(Interaction const & interaction);
+      void computeFreeEnergy(FhInteraction const & interaction);
 
       //@}
       /// \name Accessors 
@@ -137,7 +134,7 @@ namespace FH {
       *
       * \param id integer molecule species index (0 <= id < nMolecule)
       */
-      Molecule& molecule(int id);
+      FhMolecule& molecule(int id);
 
       /** 
       * Return chemical potential for one species.
@@ -196,7 +193,7 @@ namespace FH {
       *
       * Array capacity = nMolecule.
       */
-      DArray<Molecule> molecules_;
+      DArray<FhMolecule> molecules_;
 
       /**
       * Array of molecular chemical potentials. 
@@ -298,50 +295,49 @@ namespace FH {
 
    // Inline member functions
 
-   inline Molecule& Mixture::molecule(int id)
+   inline FhMolecule& FhMixture::molecule(int id)
    {  
       UTIL_ASSERT(id >= 0);  
       UTIL_ASSERT(id < nMolecule_);  
       return molecules_[id]; 
    }
 
-   inline double Mixture::mu(int id) const
+   inline double FhMixture::mu(int id) const
    {  
       UTIL_ASSERT(id >= 0);  
       UTIL_ASSERT(id < nMolecule_);  
       return mu_[id]; 
    }
 
-   inline double Mixture::phi(int id) const
+   inline double FhMixture::phi(int id) const
    {
       UTIL_ASSERT(id >= 0);  
       UTIL_ASSERT(id < nMolecule_);  
       return phi_[id]; 
    }
 
-   inline double Mixture::c(int id) const
+   inline double FhMixture::c(int id) const
    {  
       UTIL_ASSERT(id >= 0);  
       UTIL_ASSERT(id < nMonomer_);  
       return c_[id]; 
    }
 
-   inline double Mixture::fHelmholtz() const
+   inline double FhMixture::fHelmholtz() const
    {  return fHelmholtz_; }
 
-   inline double Mixture::pressure() const
+   inline double FhMixture::pressure() const
    {  return pressure_; }
 
-   inline int Mixture::nMolecule() const
+   inline int FhMixture::nMolecule() const
    {  return nMolecule_; }
 
-   inline int Mixture::nMonomer() const
+   inline int FhMixture::nMonomer() const
    {  return nMonomer_; }
 
    // Explicit instantiation declaration for member function template
    extern template 
-   void Mixture::initialize<double>(MixtureBase<double> const &);
+   void FhMixture::initialize<double>(MixtureBase<double> const &);
 
-} // namespace FH
 } // namespace Pscf
 #endif

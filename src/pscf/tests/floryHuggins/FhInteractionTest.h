@@ -4,8 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/interaction/Interaction.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/floryHuggins/FhInteraction.h>
 #include <util/param/BracketPolicy.h>
 
 #include <fstream>
@@ -13,7 +12,7 @@
 using namespace Pscf;
 using namespace Util;
 
-class InteractionTest : public UnitTest 
+class FhInteractionTest : public UnitTest 
 {
 
 public:
@@ -28,7 +27,7 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      Interaction v;
+      FhInteraction v;
       v.setNMonomer(2);
    } 
 
@@ -36,11 +35,11 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FhInteraction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
-      openInputFile("in/Interaction", in);
+      openInputFile("in/FhInteraction", in);
 
       v.readParam(in);
       if (verbose() > 0){
@@ -50,8 +49,8 @@ public:
 
       TEST_ASSERT(eq(v.chi(0,0), 0.0));
       TEST_ASSERT(eq(v.chi(1,1), 0.0));
-      TEST_ASSERT(eq(v.chi(0,1), 1.0));
-      TEST_ASSERT(eq(v.chi(1,0), 1.0));
+      TEST_ASSERT(eq(v.chi(0,1), 2.0));
+      TEST_ASSERT(eq(v.chi(1,0), 2.0));
       TEST_ASSERT(eq(v.chi(1,0), v.chi(0,1)));
 
    }
@@ -60,11 +59,11 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FhInteraction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
-      openInputFile("in/Interaction2", in);
+      openInputFile("in/FhInteraction2", in);
 
       v.readParam(in);
       if (verbose() > 0){
@@ -78,11 +77,11 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Interaction v;
+      FhInteraction v;
       const int nMonomer = 3;
       v.setNMonomer(nMonomer);
       std::ifstream in;
-      openInputFile("in/Interaction3", in);
+      openInputFile("in/FhInteraction3", in);
 
       v.readParam(in);
       if (verbose() > 0){
@@ -101,10 +100,10 @@ public:
       printMethod(TEST_FUNC);
       //printEndl();
 
-      FH::Interaction v;
+      FhInteraction v;
       v.setNMonomer(2);
       std::ifstream in;
-      openInputFile("in/Interaction", in);
+      openInputFile("in/FhInteraction", in);
       v.readParam(in);
 
       // Test computeW
@@ -115,8 +114,10 @@ public:
       c[0] = 0.3;
       c[1] = 0.7;
       v. computeW(c, w);
-      TEST_ASSERT(eq(w[0], 0.7));
-      TEST_ASSERT(eq(w[1], 0.3));
+      //TEST_ASSERT(eq(w[0], 0.7));
+      //TEST_ASSERT(eq(w[1], 0.3));
+      TEST_ASSERT(eq(w[0], 1.4));
+      TEST_ASSERT(eq(w[1], 0.6));
 
       // Test computeC
       w[0] += 0.4;
@@ -130,12 +131,12 @@ public:
 
 };
 
-TEST_BEGIN(InteractionTest)
-TEST_ADD(InteractionTest, testConstructor)
-TEST_ADD(InteractionTest, testReadWrite1)
-TEST_ADD(InteractionTest, testReadWrite2)
-TEST_ADD(InteractionTest, testReadWrite3)
-TEST_ADD(InteractionTest, testComputeW)
-TEST_END(InteractionTest)
+TEST_BEGIN(FhInteractionTest)
+TEST_ADD(FhInteractionTest, testConstructor)
+TEST_ADD(FhInteractionTest, testReadWrite1)
+TEST_ADD(FhInteractionTest, testReadWrite2)
+TEST_ADD(FhInteractionTest, testReadWrite3)
+TEST_ADD(FhInteractionTest, testComputeW)
+TEST_END(FhInteractionTest)
 
 #endif

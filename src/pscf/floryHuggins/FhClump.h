@@ -1,5 +1,5 @@
-#ifndef PSCF_FLORY_HUGGINS_CLUMP_H
-#define PSCF_FLORY_HUGGINS_CLUMP_H
+#ifndef PSCF_FH_CLUMP_H
+#define PSCF_FH_CLUMP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -13,33 +13,33 @@
 #include <iostream>
 
 namespace Pscf { 
-namespace FH { 
 
    using namespace Util;
 
    /**
-   * All monomers of a specific monomer type in a molecule.
+   * Sub-unit of a molecule in Flory-Huggins theory.
    *
-   * A clump has a monomer id and a size. The size of a clump is 
-   * the volume occupied by all monomers of the specified type in
-   * a particular molecular species, divided by a monomer reference 
+   * A clump is an aggregate of all monomers of a specified type within 
+   * a molecule. A clump has a monomer id and a size. The size of a clump 
+   * is the total volume occupied by all monomers of the specified type 
+   * in a molecule of a specific species, divided by the monomer reference 
    * volume. 
    * 
-   * For a block copolymer, a clump is generally different than 
-   * a block because a clump may include the monomers in two or 
-   * more blocks of the same monomer type. Hompolymer and point
-   * solvent molecular species each have only one clump.
+   * For a block copolymer, a clump is generally different than a block
+   * because a clump may include the monomers in two or more blocks of 
+   * the same monomer type. Hompolymer and solvent molecular species 
+   * each have only one clump.
    *
    * \ingroup Pscf_FloryHuggins_Module
    */
-   class Clump
+   class FhClump
    {
    public:
   
       /**
       * Constructor.
       */ 
-      Clump();
+      FhClump();
   
       /**
       * Serialize to/from archive.
@@ -94,55 +94,54 @@ namespace FH {
       double size_;
 
       friend 
-      std::istream& operator >> (std::istream& in, Clump &block);
+      std::istream& operator >> (std::istream& in, FhClump &block);
 
       friend 
-      std::ostream& operator << (std::ostream& out, const Clump &block);
+      std::ostream& operator << (std::ostream& out, const FhClump &block);
 
    };
 
    /**
-   * istream extractor for a Clump.
+   * istream extractor for a FhClump.
    *
    * \param in  input stream
-   * \param block  Clump to be read from stream
+   * \param block  FhClump to be read from stream
    * \return modified input stream
    */
-   std::istream& operator >> (std::istream& in, Clump &block);
+   std::istream& operator >> (std::istream& in, FhClump &block);
 
    /**
-   * ostream inserter for a Clump.
+   * ostream inserter for a FhClump.
    *
    * \param out  output stream
-   * \param block  Clump to be written to stream
+   * \param block  FhClump to be written to stream
    * \return modified output stream
    */
-   std::ostream& operator << (std::ostream& out, const Clump &block);
+   std::ostream& operator << (std::ostream& out, const FhClump &block);
 
    // Inline member functions
 
    /*
    * Get the monomer type id.
    */ 
-   inline int Clump::monomerId() const
+   inline int FhClump::monomerId() const
    {  return monomerId_; }
 
    /*
    * Get the size (number of monomers) in this block.
    */
-   inline double Clump::size() const
+   inline double FhClump::size() const
    {  return size_; }
     
    /*
    * Serialize to/from an archive.
    */
    template <class Archive>
-   void Clump::serialize(Archive& ar, unsigned int)
+   void FhClump::serialize(Archive& ar, unsigned int)
    {
       ar & monomerId_;
       ar & size_;
    }
     
-}
 } 
 #endif 

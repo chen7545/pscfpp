@@ -5,21 +5,19 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mixture.tpp"
-#include <pscf/floryHuggins/Interaction.h>
+#include "FhMixture.tpp"
+#include <pscf/floryHuggins/FhInteraction.h>
 #include <pscf/math/LuSolver.h>
 #include <cmath>
 
-
 namespace Pscf {
-namespace FH {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   Mixture::Mixture()
+   FhMixture::FhMixture()
     : ParamComposite(),
       molecules_(),
       mu_(),
@@ -38,12 +36,12 @@ namespace FH {
       nMolecule_(0),
       nMonomer_(0),
       hasComposition_(false)
-   {  setClassName("Mixture"); }
+   {  setClassName("FhMixture"); }
 
    /*
    * Destructor.
    */
-   Mixture::~Mixture()
+   FhMixture::~FhMixture()
    {
       if (solverPtr_) {
          delete solverPtr_;
@@ -53,7 +51,7 @@ namespace FH {
    /*
    * Read all parameters and initialize.
    */
-   void Mixture::readParameters(std::istream& in)
+   void FhMixture::readParameters(std::istream& in)
    {
       // Precondition
       UTIL_ASSERT(molecules_.capacity() == 0);
@@ -73,7 +71,7 @@ namespace FH {
       validate();
    }
 
-   void Mixture::setNMolecule(int nMolecule)
+   void FhMixture::setNMolecule(int nMolecule)
    {
       UTIL_CHECK(molecules_.capacity() == 0);
       UTIL_CHECK(nMolecule > 0);
@@ -83,7 +81,7 @@ namespace FH {
       phi_.allocate(nMolecule_);
    }
 
-   void Mixture::setNMonomer(int nMonomer)
+   void FhMixture::setNMonomer(int nMonomer)
    {
       UTIL_CHECK(nMonomer_ == 0);
       UTIL_CHECK(nMonomer > 0);
@@ -95,7 +93,7 @@ namespace FH {
    /*
    * Set molecular and monomer volume fractions.
    */
-   void Mixture::setComposition(DArray<double> const & phi)
+   void FhMixture::setComposition(DArray<double> const & phi)
    {
       validate();
       UTIL_ASSERT(phi.capacity() == nMolecule_);
@@ -115,7 +113,7 @@ namespace FH {
       hasComposition_ = true;
    }
 
-   void Mixture::computeC()
+   void FhMixture::computeC()
    {
       // Initialize monomer fractions to zero
       int k;
@@ -127,7 +125,7 @@ namespace FH {
       double concentration;
       int i, j;
       for (i = 0; i < nMolecule_; ++i) {
-         Molecule& mol = molecules_[i];
+         FhMolecule& mol = molecules_[i];
          concentration = phi_[i]/mol.size();
          for (j = 0; j < molecules_[i].nClump(); ++j) {
             k = mol.clump(j).monomerId();
@@ -153,8 +151,8 @@ namespace FH {
    /*
    * Compute thermodynamic properties.
    */
-   void Mixture::computeMu(Interaction const & interaction, 
-                           double xi)
+   void FhMixture::computeMu(FhInteraction const & interaction, 
+                             double xi)
    {
       UTIL_CHECK(interaction.nMonomer() == nMonomer_);
       UTIL_CHECK(hasComposition_);
@@ -167,7 +165,7 @@ namespace FH {
       int t; // monomer type index
       double mu, size;
       for (m = 0; m < nMolecule_; ++m) {
-         Molecule& mol = molecules_[m];
+         FhMolecule& mol = molecules_[m];
          mu = log( phi_[m] );
          mu += xi*mol.size();
          for (c = 0; c < mol.nClump(); ++c) {
@@ -182,8 +180,8 @@ namespace FH {
    /*
    * Compute composition from chemical potentials.
    */
-   void Mixture::computePhi(Interaction const & interaction, 
-                           DArray<double> const & mu, 
+   void FhMixture::computePhi(FhInteraction const & interaction, 
+                              DArray<double> const & mu, 
                            DArray<double> const & phi, 
                            double& xi)
    {
@@ -347,7 +345,7 @@ namespace FH {
       UTIL_THROW("Failed to converge");
    }
 
-   void Mixture::adjustXi(DArray<double> const & mu, double& xi)
+   void FhMixture::adjustXi(DArray<double> const & mu, double& xi)
    {
       double dxi = 0.0;
       double sum = 0.0;
@@ -362,7 +360,7 @@ namespace FH {
       xi += dxi;
    }
 
-   void Mixture::computeResidual(DArray<double> const & mu, double& error)
+   void FhMixture::computeResidual(DArray<double> const & mu, double& error)
    {
       error = 0.0;
       for (int i = 0; i < nMolecule_; ++i) {
@@ -376,7 +374,7 @@ namespace FH {
    /*
    * Compute Helmoltz free energy and pressure
    */
-   void Mixture::computeFreeEnergy(Interaction const & interaction)
+   void FhMixture::computeFreeEnergy(FhInteraction const & interaction)
    {
       fHelmholtz_ = 0.0;
  
@@ -402,12 +400,12 @@ namespace FH {
    /*
    * Check validity after completing initialization.
    */
-   void Mixture::validate() const
+   void FhMixture::validate() const
    {
       UTIL_ASSERT(nMolecule_ > 0);
       UTIL_ASSERT(nMonomer_ > 0);
       for (int i = 0; i < nMolecule_; ++i) {
-         Molecule const & mol = molecules_[i];
+         FhMolecule const & mol = molecules_[i];
          UTIL_ASSERT(mol.nClump() > 0);
          for (int j = 0; j < mol.nClump(); ++j) {
             UTIL_ASSERT(mol.clump(j).monomerId() < nMonomer_);
@@ -415,7 +413,10 @@ namespace FH {
       }
    }
 
-   template void Mixture::initialize<double>(MixtureBase<double> const & );
+   /*
+   * Explicit instantiation definition for member function template.
+   */
+   template 
+   void FhMixture::initialize<double>(MixtureBase<double> const & );
 
-} // namespace FH
 } // namespace Pscf

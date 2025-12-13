@@ -1,10 +1,10 @@
-#ifndef PSCF_CLUMP_TEST_H
-#define PSCF_CLUMP_TEST_H
+#ifndef PSCF_FH_CLUMP_TEST_H
+#define PSCF_FH_CLUMP_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/floryHuggins/Clump.h>
+#include <pscf/floryHuggins/FhClump.h>
 #include <util/misc/Log.h>
 
 #include <fstream>
@@ -12,7 +12,7 @@
 using namespace Pscf;
 using namespace Util;
 
-class ClumpTest : public UnitTest 
+class FhClumpTest : public UnitTest 
 {
 
 public:
@@ -29,13 +29,13 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      FH::Clump clump;
+      FhClump clump;
    } 
 
    void testSetters()
    {
       printMethod(TEST_FUNC);
-      FH::Clump clump;
+      FhClump clump;
       clump.setMonomerId(0);
       clump.setSize(2.0);
       TEST_ASSERT(clump.monomerId() == 0);
@@ -45,9 +45,9 @@ public:
    void testReadWrite() {
       printMethod(TEST_FUNC);
 
-      FH::Clump clump;
+      FhClump clump;
       std::ifstream in;
-      openInputFile("in/Clump", in);
+      openInputFile("in/FhClump", in);
 
       in >> clump;
       TEST_ASSERT(clump.monomerId() == 0);
@@ -60,10 +60,10 @@ public:
 
 };
 
-TEST_BEGIN(ClumpTest)
-TEST_ADD(ClumpTest, testConstructor)
-TEST_ADD(ClumpTest, testSetters)
-TEST_ADD(ClumpTest, testReadWrite)
-TEST_END(ClumpTest)
+TEST_BEGIN(FhClumpTest)
+TEST_ADD(FhClumpTest, testConstructor)
+TEST_ADD(FhClumpTest, testSetters)
+TEST_ADD(FhClumpTest, testReadWrite)
+TEST_END(FhClumpTest)
 
 #endif

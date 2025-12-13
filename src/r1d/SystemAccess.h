@@ -93,16 +93,6 @@ namespace R1d {
       Interaction& interaction();
 
       /**
-      * Get homogeneous mixture by const reference.
-      */
-      FH::Mixture const & homogeneous() const;
-
-      /**
-      * Get homogeneous mixture by non-const reference.
-      */
-      FH::Mixture& homogeneous();
-
-      /**
       * Get FileMaster by reference.
       */
       FileMaster& fileMaster();
@@ -231,16 +221,6 @@ namespace R1d {
    {  
       UTIL_ASSERT(systemPtr_);
       return systemPtr_->fileMaster(); 
-   }
-
-   /*
-   * Get the FH::Mixture object.
-   */
-   inline 
-   FH::Mixture& SystemAccess::homogeneous()
-   {  
-      UTIL_ASSERT(systemPtr_);
-      return systemPtr_->homogeneous(); 
    }
 
    /*

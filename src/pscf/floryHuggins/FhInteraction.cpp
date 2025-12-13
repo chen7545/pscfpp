@@ -5,49 +5,90 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Interaction.h"
+#include "FhInteraction.h"
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/LuSolver.h>
 
 namespace Pscf {
-namespace FH {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   Interaction::Interaction()
+   FhInteraction::FhInteraction()
     : nMonomer_(0)
-   {  setClassName("Interaction"); }
+   {  setClassName("FhInteraction"); }
 
    /*
-   * Constructor.
+   * Copy constructor.
    */
-   Interaction::Interaction(Pscf::Interaction const & other)
+   FhInteraction::FhInteraction(FhInteraction const & other)
+    : nMonomer_(0)
+   {  
+      setClassName("FhInteraction"); 
+      if (other.nMonomer() > 0) {
+         setNMonomer(other.nMonomer());
+         setChi(other.chi());
+      }
+   }
+
+   /*
+   * Constructor, copy from from Pscf::Interaction
+   */
+   FhInteraction::FhInteraction(Interaction const & other)
     : nMonomer_(0)
    {  
       UTIL_CHECK(other.nMonomer() > 0);
-      setClassName("Interaction"); 
+      setClassName("FhInteraction"); 
       setNMonomer(other.nMonomer());
-      for (int i = 0; i < nMonomer_; ++i) {
-         for (int j = 0; j < nMonomer_; ++j) {
-            chi_(i, j) = other.chi(i, j);
-         }
-      }
-      updateMembers();
+      setChi(other.chi());
    }
 
    /*
    * Destructor.
    */
-   Interaction::~Interaction()
+   FhInteraction::~FhInteraction()
    {}
+
+   /*
+   * Assignment from FhInteraction
+   */
+   FhInteraction& 
+   FhInteraction::operator = (FhInteraction const & other)
+   {  
+      if (this != &other) {
+         if (other.nMonomer() == 0) {
+            UTIL_CHECK(nMonomer_ == 0);
+         } else {
+            if (nMonomer_ == 0) {
+               setNMonomer(other.nMonomer());
+            }
+            UTIL_CHECK(nMonomer_ == other.nMonomer());
+            setChi(other.chi());
+         }
+      }
+      return *this;
+   }
+
+   /*
+   * Assignment from Interaction
+   */
+   FhInteraction& FhInteraction::operator = (Interaction const & other)
+   {  
+      UTIL_CHECK(other.nMonomer() > 0);
+      if (nMonomer_ == 0) {
+         setNMonomer(other.nMonomer());
+      }
+      UTIL_CHECK(nMonomer_ == other.nMonomer());
+      setChi(other.chi());
+      return *this;
+   }
 
    /*
    * Set the number of monomer types.
    */
-   void Interaction::setNMonomer(int nMonomer)
+   void FhInteraction::setNMonomer(int nMonomer)
    {  
       UTIL_CHECK(nMonomer_ == 0);
       UTIL_CHECK(nMonomer > 0);
@@ -59,7 +100,7 @@ namespace FH {
    /*
    * Read chi matrix from file.
    */
-   void Interaction::readParameters(std::istream& in)
+   void FhInteraction::readParameters(std::istream& in)
    {
       UTIL_CHECK(nMonomer() > 0);
       readDSymmMatrix(in, "chi", chi_, nMonomer());
@@ -68,7 +109,7 @@ namespace FH {
       updateMembers();
    }
 
-   void Interaction::updateMembers()
+   void FhInteraction::updateMembers()
    {
       UTIL_CHECK(chi_.isAllocated());
       UTIL_CHECK(chiInverse_.isAllocated());
@@ -94,8 +135,43 @@ namespace FH {
 
    }
 
-   void Interaction::setChi(int i, int j, double chi)
+   /*
+   * Set values for all chi parameters.
+   */
+   void FhInteraction::setChi(Matrix<double> const & other)
+   {
+      UTIL_CHECK(nMonomer_ > 0);
+      UTIL_CHECK(other.capacity1() == nMonomer_);
+      UTIL_CHECK(other.capacity2() == nMonomer_);
+      double value, diff;
+      int i, j;
+      for (i = 0; i < nMonomer_; ++i) {
+         chi_(i, i) = chi(i, i);
+      }
+      if (nMonomer_ > 1) {
+         for (i = 0; i < nMonomer_; ++i) {
+            for (j = 0; j < i; ++j) {
+               diff = std::abs( chi(i, j) - chi(j, i));
+               UTIL_CHECK(diff < 1.0E-10);
+               value = chi(i,j);
+               chi_(i, j) = value;
+               chi_(j, i) = value;
+            }
+         }
+      }
+      updateMembers();
+   }
+
+   /*
+   * Set a single chi parameter.
+   */
+   void FhInteraction::setChi(int i, int j, double chi)
    {  
+      UTIL_CHECK(nMonomer_ > 0);
+      UTIL_CHECK(i >= 0);
+      UTIL_CHECK(i < nMonomer_);
+      UTIL_CHECK(j >= 0);
+      UTIL_CHECK(j < nMonomer_);
       chi_(i,j) =  chi; 
       if (i != j) {
          chi_(j,i) = chi;
@@ -108,7 +184,7 @@ namespace FH {
    /*
    * Compute and return excess Helmholtz free energy per monomer.
    */
-   double Interaction::fHelmholtz(Array<double> const & c) const
+   double FhInteraction::fHelmholtz(Array<double> const & c) const
    {
       int i, j;
       double sum = 0.0;
@@ -124,7 +200,7 @@ namespace FH {
    * Compute chemical potential from monomer concentrations
    */
    void
-   Interaction::computeW(Array<double> const & c,
+   FhInteraction::computeW(Array<double> const & c,
                             Array<double>& w) const
    {
       int i, j;
@@ -140,7 +216,7 @@ namespace FH {
    * Compute concentrations and xi from chemical potentials.
    */
    void
-   Interaction::computeC(Array<double> const & w,
+   FhInteraction::computeC(Array<double> const & w,
                             Array<double>& c, double& xi)
    const
    {
@@ -166,7 +242,7 @@ namespace FH {
    * Compute Langrange multiplier from chemical potentials.
    */
    void
-   Interaction::computeXi(Array<double> const & w, double& xi)
+   FhInteraction::computeXi(Array<double> const & w, double& xi)
    const
    {
       double sum1 = 0.0;
@@ -185,7 +261,7 @@ namespace FH {
    * Return dWdC = chi matrix.
    */
    void
-   Interaction::computeDwDc(Array<double> const & c, 
+   FhInteraction::computeDwDc(Array<double> const & c, 
                                Matrix<double>& dWdC) const
    {
       int i, j;
@@ -196,5 +272,4 @@ namespace FH {
       }
    }
 
-} // namespace FH
 } // namespace Pscf

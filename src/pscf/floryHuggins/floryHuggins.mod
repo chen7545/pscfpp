@@ -1,18 +1,11 @@
-
 namespace Pscf{
 
    /**
-   * Flory-Huggins theory of homogeneous incompressible mixtures.
+   * \defgroup Pscf_FloryHuggins_Module Flory-Huggins Theory
+   *
+   * Flory-Huggins theory of spatially homogeneous mixtures.
+   *
+   * \ingroup Pscf_Base_Module
    */
-   namespace FH{
 
-      /**
-      * \defgroup Pscf_FloryHuggins_Module Flory-Huggins Theory
-      *
-      * Flory-Huggins theory of spatially homogeneous mixtures.
-      *
-      * \ingroup Pscf_Base_Module
-      */
-
-   }
 }

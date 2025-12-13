@@ -35,7 +35,7 @@ clean-outputs:
 	-cd $(SRC_DIR)/pscf/tests/cuda; $(MAKE) clean-outputs
 	-cd $(SRC_DIR)/pscf/tests/floryHuggins; $(MAKE) clean-outputs
 	-cd $(SRC_DIR)/pscf/tests/correlation; $(MAKE) clean-outputs
-	-cd $(SRC_DIR)/pscf/tests/inter; $(MAKE) clean-outputs
+	-cd $(SRC_DIR)/pscf/tests/interaction; $(MAKE) clean-outputs
 	-cd $(SRC_DIR)/pscf/tests/math; $(MAKE) clean-outputs
 	-cd $(SRC_DIR)/pscf/tests/mesh; $(MAKE) clean-outputs
 	-cd $(SRC_DIR)/pscf/tests/solvers; $(MAKE) clean-outputs
@@ -50,7 +50,7 @@ clean:
 	-cd $(SRC_DIR)/pscf/tests/cuda; $(MAKE) clean
 	-cd $(SRC_DIR)/pscf/tests/floryHuggins; $(MAKE) clean
 	-cd $(SRC_DIR)/pscf/tests/correlation; $(MAKE) clean
-	-cd $(SRC_DIR)/pscf/tests/inter; $(MAKE) clean
+	-cd $(SRC_DIR)/pscf/tests/interaction; $(MAKE) clean
 	-cd $(SRC_DIR)/pscf/tests/math; $(MAKE) clean
 	-cd $(SRC_DIR)/pscf/tests/mesh; $(MAKE) clean
 	-cd $(SRC_DIR)/pscf/tests/solvers; $(MAKE) clean

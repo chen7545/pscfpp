@@ -5,15 +5,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Clump.h"
+#include "FhClump.h"
 
 namespace Pscf { 
-namespace FH { 
 
    /*
    * Constructor.
    */ 
-   Clump::Clump()
+   FhClump::FhClump()
     : monomerId_(-1),
       size_(0.0)
    {}
@@ -21,19 +20,19 @@ namespace FH {
    /*
    * Set the monomer id.
    */ 
-   void Clump::setMonomerId(int monomerId)
+   void FhClump::setMonomerId(int monomerId)
    {  monomerId_ = monomerId; }
   
    /*
    * Set the size of this block.
    */ 
-   void Clump::setSize(double size)
+   void FhClump::setSize(double size)
    {  size_ = size; }
   
    /* 
-   * Extract a Clump from an istream.
+   * Extract a FhClump from an istream.
    */
-   std::istream& operator>>(std::istream& in, Clump &block)
+   std::istream& operator>>(std::istream& in, FhClump &block)
    {
       in >> block.monomerId_;
       in >> block.size_;
@@ -41,9 +40,9 @@ namespace FH {
    }
    
    /* 
-   * Output a Clump to an ostream, without line breaks.
+   * Output a FhClump to an ostream, without line breaks.
    */
-   std::ostream& operator<<(std::ostream& out, const Clump &block) 
+   std::ostream& operator<<(std::ostream& out, const FhClump &block) 
    {
       out << "  " << block.monomerId_;
       out << "  ";
@@ -54,5 +53,4 @@ namespace FH {
       return out;
    }
 
-} 
 } 

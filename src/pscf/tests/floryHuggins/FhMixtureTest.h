@@ -1,12 +1,12 @@
-#ifndef PSCF_FLORY_HUGGINS_MIXTURE_TEST_H
-#define PSCF_FLORY_HUGGINS_MIXTURE_TEST_H
+#ifndef PSCF_FH_MIXTURE_TEST_H
+#define PSCF_FH_MIXTURE_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/floryHuggins/Mixture.h>
-#include <pscf/floryHuggins/Molecule.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/floryHuggins/FhMixture.h>
+#include <pscf/floryHuggins/FhMolecule.h>
+#include <pscf/floryHuggins/FhInteraction.h>
 #include <util/containers/DArray.h>
 #include <util/misc/Log.h>
 
@@ -15,7 +15,7 @@
 using namespace Pscf;
 using namespace Util;
 
-class MixtureTest : public UnitTest 
+class FhMixtureTest : public UnitTest 
 {
 
 public:
@@ -31,15 +31,15 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      FH::Mixture mixture;
+      FhMixture mixture;
    } 
 
    void testReadWrite() {
       printMethod(TEST_FUNC);
 
-      FH::Mixture mixture;
+      FhMixture mixture;
       std::ifstream in;
-      openInputFile("in/Mixture", in);
+      openInputFile("in/FhMixture", in);
       mixture.readParam(in);
 
       TEST_ASSERT(mixture.nMolecule() == 2);
@@ -65,9 +65,9 @@ public:
    void testSetComposition() {
       printMethod(TEST_FUNC);
 
-      FH::Mixture mixture;
+      FhMixture mixture;
       std::ifstream in;
-      openInputFile("in/Mixture", in);
+      openInputFile("in/FhMixture", in);
       mixture.readParam(in);
 
       DArray<double> phi;
@@ -86,15 +86,15 @@ public:
    void testComputeMu() {
       printMethod(TEST_FUNC);
 
-      FH::Mixture mixture;
+      FhMixture mixture;
       std::ifstream in;
-      openInputFile("in/Mixture", in);
+      openInputFile("in/FhMixture", in);
       mixture.readParam(in);
       in.close();
 
-      FH::Interaction interaction;
+      FhInteraction interaction;
       interaction.setNMonomer(mixture.nMonomer());
-      openInputFile("in/Interaction", in);
+      openInputFile("in/FhInteraction", in);
       interaction.readParam(in);
       in.close();
 
@@ -126,15 +126,15 @@ public:
    void testComputePhi() {
       printMethod(TEST_FUNC);
 
-      FH::Mixture mixture;
+      FhMixture mixture;
       std::ifstream in;
-      openInputFile("in/Mixture", in);
+      openInputFile("in/FhMixture", in);
       mixture.readParam(in);
       in.close();
 
-      FH::Interaction interaction;
+      FhInteraction interaction;
       interaction.setNMonomer(mixture.nMonomer());
-      openInputFile("in/Interaction", in);
+      openInputFile("in/FhInteraction", in);
       interaction.readParam(in);
       in.close();
 
@@ -175,12 +175,12 @@ public:
 
 };
 
-TEST_BEGIN(MixtureTest)
-TEST_ADD(MixtureTest, testConstructor)
-TEST_ADD(MixtureTest, testReadWrite)
-TEST_ADD(MixtureTest, testSetComposition)
-TEST_ADD(MixtureTest, testComputeMu)
-TEST_ADD(MixtureTest, testComputePhi)
-TEST_END(MixtureTest)
+TEST_BEGIN(FhMixtureTest)
+TEST_ADD(FhMixtureTest, testConstructor)
+TEST_ADD(FhMixtureTest, testReadWrite)
+TEST_ADD(FhMixtureTest, testSetComposition)
+TEST_ADD(FhMixtureTest, testComputeMu)
+TEST_ADD(FhMixtureTest, testComputePhi)
+TEST_END(FhMixtureTest)
 
 #endif

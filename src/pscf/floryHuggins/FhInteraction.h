@@ -1,5 +1,5 @@
-#ifndef PSCF_INTERACTION_H
-#define PSCF_INTERACTION_H
+#ifndef PSCF_FH_INTERACTION_H
+#define PSCF_FH_INTERACTION_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,8 +9,9 @@
 */
 
 #include <util/param/ParamComposite.h>    // base class
-#include <util/containers/Array.h>        // argument (template)
+#include <util/containers/DMatrix.h>      // member (template)
 #include <util/containers/Matrix.h>       // argument (template)
+#include <util/containers/Array.h>        // argument (template)
 #include <util/global.h>                  
 
 // Forward declaration
@@ -19,16 +20,15 @@ namespace Pscf {
 }
 
 namespace Pscf {
-namespace FH {
 
    using namespace Util;
 
    /**
-   * Flory-Huggins excess free energy model.
+   * Flory-Huggins interaction model.
    *
    * \ingroup Pscf_FloryHuggins_Module
    */
-   class Interaction : public ParamComposite
+   class FhInteraction : public ParamComposite
    {
 
    public:
@@ -36,17 +36,36 @@ namespace FH {
       /**
       * Constructor.
       */
-      Interaction();
+      FhInteraction();
 
       /**
-      * Constructor.
+      * Copy constructor. 
       */
-      Interaction(Pscf::Interaction const & other);
+      FhInteraction(FhInteraction const & other);
+
+      /**
+      * Constructor - copy from Interaction.
+      */
+      FhInteraction(Interaction const & other);
 
       /**
       * Destructor.
       */
-      virtual ~Interaction();
+      virtual ~FhInteraction();
+
+      /**
+      * Assignment.
+      * 
+      * \param other  rhs of assignment
+      */
+      FhInteraction& operator = (FhInteraction const & other);
+
+      /**
+      * Assignment from Interaction.
+      *
+      * \param other  rhs of assignment
+      */
+      FhInteraction& operator = (Interaction const & other);
 
       /**
       * Set the number of monomer types.
@@ -63,7 +82,20 @@ namespace FH {
       virtual void readParameters(std::istream& in);
 
       /**
-      * Change one element of the chi matrix.
+      * Assign values for all elements of the chi matrix.
+      *
+      * On entry:
+      *
+      *   - nMonomer must be set to a positive value
+      *   - The input chi matrix must be nMonomer x nMonomer
+      *   - The input chi matrix must be a symmetric 
+      *
+      * \param chi  input chi matrix
+      */
+      void setChi(Matrix<double> const & chi);
+
+      /**
+      * Assign one element of the chi matrix.
       *
       * \param i row index
       * \param j column index
@@ -129,7 +161,7 @@ namespace FH {
       /**
       * Return the chi matrix by const reference.
       */
-      DMatrix<double> const & chi() const;
+      Matrix<double> const & chi() const;
 
       /**
       * Return one element of the chi matrix.
@@ -173,18 +205,17 @@ namespace FH {
 
    // Inline function
 
-   inline int Interaction::nMonomer() const
+   inline int FhInteraction::nMonomer() const
    {  return nMonomer_; }
 
-   inline DMatrix<double> const &  Interaction::chi() const
+   inline Matrix<double> const &  FhInteraction::chi() const
    {  return chi_; }
 
-   inline double Interaction::chi(int i, int j) const
+   inline double FhInteraction::chi(int i, int j) const
    {  return chi_(i, j); }
 
-   inline double Interaction::chiInverse(int i, int j) const
+   inline double FhInteraction::chiInverse(int i, int j) const
    {  return chiInverse_(i, j); }
 
-} // namespace FH
 } // namespace Pscf
 #endif

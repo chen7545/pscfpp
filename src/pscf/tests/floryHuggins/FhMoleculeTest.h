@@ -1,10 +1,10 @@
-#ifndef PSCF_FLORY_HUGGINS_MOLECULE_TEST_H
-#define PSCF_FLORY_HUGGINS_MOLECULE_TEST_H
+#ifndef PSCF_FH_MOLECULE_TEST_H
+#define PSCF_FH_MOLECULE_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/floryHuggins/Molecule.h>
+#include <pscf/floryHuggins/FhMolecule.h>
 #include <util/misc/Log.h>
 
 #include <fstream>
@@ -12,7 +12,7 @@
 using namespace Pscf;
 //using namespace Util;
 
-class MoleculeTest : public UnitTest 
+class FhMoleculeTest : public UnitTest 
 {
 
 public:
@@ -27,15 +27,15 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      FH::Molecule molecule;
+      FhMolecule molecule;
    } 
 
    void testReadWrite() {
       printMethod(TEST_FUNC);
 
-      FH::Molecule molecule;
+      FhMolecule molecule;
       std::ifstream in;
-      openInputFile("in/Molecule", in);
+      openInputFile("in/FhMolecule", in);
 
       molecule.readParam(in);
       TEST_ASSERT(molecule.nClump() == 2);
@@ -53,7 +53,7 @@ public:
    void testSetters()
    {
       printMethod(TEST_FUNC);
-      FH::Molecule molecule;
+      FhMolecule molecule;
 
       molecule.setNClump(2);
       molecule.clump(0).setMonomerId(0);
@@ -72,10 +72,10 @@ public:
 
 };
 
-TEST_BEGIN(MoleculeTest)
-TEST_ADD(MoleculeTest, testConstructor)
-TEST_ADD(MoleculeTest, testReadWrite)
-TEST_ADD(MoleculeTest, testSetters)
-TEST_END(MoleculeTest)
+TEST_BEGIN(FhMoleculeTest)
+TEST_ADD(FhMoleculeTest, testConstructor)
+TEST_ADD(FhMoleculeTest, testReadWrite)
+TEST_ADD(FhMoleculeTest, testSetters)
+TEST_END(FhMoleculeTest)
 
 #endif

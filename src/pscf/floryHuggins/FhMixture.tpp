@@ -8,21 +8,20 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mixture.h"
-#include "Molecule.h"
-#include "Clump.h"
+#include "FhMixture.h"
+#include "FhMolecule.h"
+#include "FhClump.h"
 #include <pscf/chem/MixtureBase.h>
 #include <pscf/chem/PolymerSpecies.h>
 #include <pscf/chem/SolventSpecies.h>
 #include <pscf/chem/Edge.h>
 
 namespace Pscf {
-namespace FH {
 
    using namespace Util;
 
    template <typename WT>
-   void Mixture::initialize(MixtureBase<WT> const & mixture)
+   void FhMixture::initialize(MixtureBase<WT> const & mixture)
    {
 
       // Set number of molecular species and monomers
@@ -31,7 +30,7 @@ namespace FH {
       int ns = mixture.nSolvent(); 
       int nt = np + ns;
 
-      // Check nMonomer
+      // Check nMonomer, set if necessary
       if (nMonomer() == 0) {
          setNMonomer(nm);
       } 
@@ -39,7 +38,7 @@ namespace FH {
       UTIL_CHECK(c_.capacity() == nm);
       UTIL_CHECK(w_.capacity() == nm);
 
-      // Check nMolecule
+      // Check nMolecule, set if necessary
       if (nMolecule() == 0) {
          setNMolecule(nt);
       }
@@ -85,7 +84,7 @@ namespace FH {
             }
             molecule(i).setNClump(nc);
     
-            // Set clump properties for this FH::Molecule
+            // Set clump properties for this FhMolecule
             k = 0; // Clump index
             for (j = 0; j < nm; ++j) {
                if (c_[j] > 1.0E-8) {
@@ -118,6 +117,5 @@ namespace FH {
 
    }
 
-} // namespace FH
 } // namespace Pscf
 #endif

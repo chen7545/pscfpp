@@ -5,30 +5,30 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Molecule.h"  
+#include "FhMolecule.h"  
 
 namespace Pscf{ 
 
    /*
    * Constructor.
    */
-   FH::Molecule::Molecule()
+   FhMolecule::FhMolecule()
     : clumps_(),
       nClump_(0),
       size_(0.0),
       hasSize_(false)
-   {  setClassName("Molecule"); }
+   {  setClassName("FhMolecule"); }
 
    /*
    * Destructor.
    */
-   FH::Molecule::~Molecule()
+   FhMolecule::~FhMolecule()
    {}
 
    /*
    * Read chemical composition from file. 
    */
-   void FH::Molecule::readParameters(std::istream& in)
+   void FhMolecule::readParameters(std::istream& in)
    {
       UTIL_ASSERT(clumps_.capacity() == 0);
 
@@ -37,14 +37,14 @@ namespace Pscf{
       // Allocate all arrays
       clumps_.allocate(nClump_);
 
-      readDArray<FH::Clump>(in, "clumps", clumps_, nClump_);
+      readDArray<FhClump>(in, "clumps", clumps_, nClump_);
       computeSize();
    }
 
    /*
    * Allocate memory for specified number of clumps.
    */
-   void FH::Molecule::setNClump(int nClump)
+   void FhMolecule::setNClump(int nClump)
    {
       UTIL_ASSERT(clumps_.capacity() == 0);
 
@@ -55,7 +55,7 @@ namespace Pscf{
    /*
    * Compute molecular size, by adding all clump sizes.
    */
-   void FH::Molecule::computeSize()
+   void FhMolecule::computeSize()
    {
       UTIL_ASSERT(clumps_.capacity() > 0);
       UTIL_ASSERT(clumps_.capacity() == nClump_);
