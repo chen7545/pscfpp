@@ -31,7 +31,7 @@
 #include <prdc/cuda/WaveList.h>
 #include <prdc/environment/Environment.h>
 
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/cuda/ThreadArray.h>
 #include <pscf/cuda/ThreadMesh.h>
 

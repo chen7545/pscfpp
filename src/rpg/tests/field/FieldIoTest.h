@@ -19,7 +19,7 @@
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/mesh/MeshIterator.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 
 #include <util/tests/LogFileUnitTest.h>
 #include <util/containers/DArray.h>
@@ -461,7 +461,7 @@ public:
       domain.fieldIo().setNMonomer(nMonomer_);
       readHeader("in/c_c15_1.rf", domain);
 
-      FH::Interaction v;
+      Interaction v;
       v.setNMonomer(nMonomer_);
       std::ifstream in;
       openInputFile("in/Interaction", in);

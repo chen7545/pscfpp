@@ -17,7 +17,7 @@
 #include <rpg/field/Domain.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/sweep/SweepTmpl.tpp>
 #include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>

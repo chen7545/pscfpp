@@ -14,7 +14,7 @@
 #include <rpg/field/Domain.h>
 #include <prdc/cuda/Reduce.h>
 #include <prdc/cuda/RField.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 
 namespace Pscf {
 

@@ -13,7 +13,7 @@
 #include <prdc/cuda/RFieldComparison.h>
 #include <prdc/cuda/resources.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <util/containers/DArray.h>  
 #include <util/misc/FileMaster.h>  
 
