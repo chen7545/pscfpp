@@ -12,7 +12,7 @@
 #include <prdc/cpu/RField.h>
 #include <prdc/crystal/shiftToMinimum.h>
 
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
 

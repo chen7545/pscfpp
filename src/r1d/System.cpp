@@ -17,9 +17,9 @@
 #include <r1d/misc/HomogeneousComparison.h>
 #include <r1d/misc/FieldIo.h>
 
+#include <pscf/interaction/Interaction.h>
 #include <pscf/floryHuggins/Interaction.h>
-#include <pscf/floryHuggins/Interaction.h>
-#include <pscf/floryHuggins/Clump.h>
+//#include <pscf/floryHuggins/Clump.h>
 
 #include <util/format/Str.h>
 #include <util/format/Int.h>
@@ -66,7 +66,7 @@ namespace R1d
       setClassName("System"); 
 
       fieldIo_.associate(domain_, fileMaster_);
-      interactionPtr_ = new FH::Interaction(); 
+      interactionPtr_ = new Interaction(); 
       iteratorFactoryPtr_ = new IteratorFactory(*this); 
       sweepFactoryPtr_ = new SweepFactory(*this);
 
@@ -560,13 +560,14 @@ namespace R1d
       if (!f_.isAllocated()) f_.allocate(nx);
       if (!c_.isAllocated()) c_.allocate(nm);
       int j;
+      FH::Interaction fhInteraction(interaction());
       for (int i = 0; i < nx; ++i) { 
          // Store c_[j] = local concentration of species j
          for (j = 0; j < nm; ++j) {
             c_[j] = cFields_[j][i];
          }
          // Compute f_[i] = excess free eenrgy at grid point i
-         f_[i] = interaction().fHelmholtz(c_);
+         f_[i] = fhInteraction.fHelmholtz(c_);
       }
       fHelmholtz_ += domain().spatialAverage(f_);
       fInter_ = fHelmholtz_ - fIdeal_;

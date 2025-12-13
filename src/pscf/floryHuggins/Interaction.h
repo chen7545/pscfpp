@@ -13,6 +13,11 @@
 #include <util/containers/Matrix.h>       // argument (template)
 #include <util/global.h>                  
 
+// Forward declaration
+namespace Pscf {
+   class Interaction;
+}
+
 namespace Pscf {
 namespace FH {
 
@@ -32,6 +37,11 @@ namespace FH {
       * Constructor.
       */
       Interaction();
+
+      /**
+      * Constructor.
+      */
+      Interaction(Pscf::Interaction const & other);
 
       /**
       * Destructor.

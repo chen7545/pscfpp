@@ -14,7 +14,7 @@
 #include <rpc/fts/simulator/Simulator.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 
 namespace Pscf {
 namespace Rpc 

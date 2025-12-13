@@ -16,7 +16,7 @@
 #include <rpc/solvers/Solvent.h>
 #include <rpc/field/Domain.h>
 #include <prdc/crystal/UnitCell.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/sweep/ParameterModifier.h>
 #include <util/global.h>
 #include <util/containers/FSArray.h>

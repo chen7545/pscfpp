@@ -11,7 +11,7 @@
 #include <rpc/solvers/Solvent.h>
 #include <rpc/field/Domain.h>
 #include <rp/ScftThermo.tpp>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 
 namespace Pscf {
 

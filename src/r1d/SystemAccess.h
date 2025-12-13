@@ -85,12 +85,12 @@ namespace R1d {
       /**
       * Get interaction (i.e., excess free energy model) by reference.
       */
-      const FH::Interaction& interaction() const;
+      const Interaction& interaction() const;
 
       /**
       * Get interaction (i.e., excess free energy model) by reference.
       */
-      FH::Interaction& interaction();
+      Interaction& interaction();
 
       /**
       * Get homogeneous mixture by const reference.
@@ -207,18 +207,18 @@ namespace R1d {
    }
 
    /*
-   * Get the FH::Interaction (excess free energy model).
+   * Get the Interaction (excess free energy model).
    */
-   inline const FH::Interaction& SystemAccess::interaction() const
+   inline const Interaction& SystemAccess::interaction() const
    {  
       UTIL_ASSERT(systemPtr_);
       return systemPtr_->interaction(); 
    }
 
    /*
-   * Get the FH::Interaction (excess free energy model).
+   * Get the Interaction (excess free energy model).
    */
-   inline FH::Interaction& SystemAccess::interaction()
+   inline Interaction& SystemAccess::interaction()
    {  
       UTIL_ASSERT(systemPtr_);
       return systemPtr_->interaction(); 

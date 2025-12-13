@@ -5,6 +5,7 @@
 include $(SRC_DIR)/pscf/chem/sources.mk
 include $(SRC_DIR)/pscf/math/sources.mk
 include $(SRC_DIR)/pscf/mesh/sources.mk
+include $(SRC_DIR)/pscf/interaction/sources.mk
 include $(SRC_DIR)/pscf/floryHuggins/sources.mk
 include $(SRC_DIR)/pscf/correlation/sources.mk
 include $(SRC_DIR)/pscf/environment/sources.mk
@@ -14,7 +15,7 @@ include $(SRC_DIR)/pscf/sweep/sources.mk
 # C++ source files
 
 pscf_CPP= \
-  $(pscf_chem_) $(pscf_math_) $(pscf_mesh_) \
+  $(pscf_chem_) $(pscf_math_) $(pscf_mesh_) $(pscf_interaction_) \
   $(pscf_floryHuggins_) $(pscf_correlation_) \
   $(pscf_environment_) $(pscf_iterator_) \
   $(pscf_sweep_)

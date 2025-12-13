@@ -19,7 +19,7 @@
 #include <rpc/field/Domain.h>
 #include <prdc/crystal/UnitCell.h>
 #include <pscf/chem/Monomer.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <util/containers/FSArray.h>
 #include <util/global.h>
 

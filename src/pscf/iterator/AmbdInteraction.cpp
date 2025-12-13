@@ -6,7 +6,7 @@
 */
 
 #include "AmbdInteraction.h"
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/math/LuSolver.h>
 
 namespace Pscf 
@@ -43,7 +43,7 @@ namespace Pscf
       isAllocated_ = true;
    }
 
-   void AmbdInteraction::update(FH::Interaction const & interaction)
+   void AmbdInteraction::update(Interaction const & interaction)
    {
 
       // Set nMonomer and allocate memory if not done previously
@@ -57,8 +57,27 @@ namespace Pscf
       for (i = 0; i < nMonomer_; ++i) {
          for (j = 0; j < nMonomer_; ++j) {
            chi_(i, j) = interaction.chi(i, j);
-           chiInverse_(i, j) = interaction.chiInverse(i, j);
+           //chiInverse_(i, j) = interaction.chiInverse(i, j);
          }
+      }
+
+      if (nMonomer() == 2) {
+         double det = chi_(0,0)*chi_(1, 1) - chi_(0,1)*chi_(1,0);
+         double norm = chi_(0,0)*chi_(0, 0) + chi_(1,1)*chi_(1,1)
+                     + 2.0*chi_(0,1)*chi_(1,0);
+         if (fabs(det/norm) < 1.0E-8) {
+            UTIL_THROW("Singular chi matrix");
+         }
+         chiInverse_(0,1) = -chi_(0,1)/det;
+         chiInverse_(1,0) = -chi_(1,0)/det;
+         chiInverse_(1,1) = chi_(0,0)/det;
+         chiInverse_(0,0) = chi_(1,1)/det;
+
+      } else {
+         LuSolver solver;
+         solver.allocate(nMonomer());
+         solver.computeLU(chi_);
+         solver.inverse(chiInverse_);
       }
 
       // Compute p and sumChiInverse

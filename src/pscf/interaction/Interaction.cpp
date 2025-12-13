@@ -9,7 +9,6 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Cpc {
 
    using namespace Util;
 
@@ -70,5 +69,4 @@ namespace Cpc {
       }
    }
 
-} // namespace Cpc
 } // namespace Pscf

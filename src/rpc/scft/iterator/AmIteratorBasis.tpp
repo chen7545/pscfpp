@@ -14,7 +14,7 @@
 #include <rpc/field/Domain.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/iterator/NanException.h>
 #include <util/containers/DArray.h>
 #include <util/global.h>

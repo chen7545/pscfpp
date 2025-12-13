@@ -9,7 +9,7 @@
 #include <r1d/System.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/chem/Ensemble.h>
 #include <util/misc/Log.h>
 
@@ -84,10 +84,11 @@ namespace R1d
                                     Array<FieldT> const & cFields,
                                     Array<double>& residual)
    {
+      DMatrix<double> const & chi = system().interaction().chi();
       int nm = system().mixture().nMonomer();  // number of monomer types
       int nx = domain().nx();         // number of grid points
       int i;                          // grid point index
-      int j;                          // monomer indices
+      int j, k;                       // monomer indices
       int ir;                         // residual index
 
       // Loop over grid points
@@ -99,7 +100,13 @@ namespace R1d
          }
 
          // Compute w fields, without Langrange multiplier, from c fields
-         system().interaction().computeW(cArray_, wArray_);
+         //system().interaction().computeW(cArray_, wArray_);
+         for (j = 0; j < nm; ++j) {
+            wArray_[j] = 0.0;
+            for (k = 0; k < nm; ++k) {
+               wArray_[j] += chi(j, k)*cArray_[k];
+            }
+         }
 
          // Initial residual = wPredicted(from above) - actual w
          for (j = 0; j < nm; ++j) {

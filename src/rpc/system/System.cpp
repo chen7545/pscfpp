@@ -31,7 +31,7 @@
 #include <prdc/cpu/RFieldDft.h>
 #include <prdc/environment/Environment.h>
 
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 
 namespace Pscf {
 

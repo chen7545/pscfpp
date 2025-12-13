@@ -11,7 +11,7 @@
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
 #include <r1d/solvers/Solvent.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/sweep/ParameterModifier.h>
 #include <util/containers/FSArray.h>
 #include <util/global.h>

@@ -10,7 +10,7 @@
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
 #include <pscf/chem/Ensemble.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <util/misc/Log.h>
 #include <util/misc/Timer.h>
 #include <math.h>

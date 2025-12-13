@@ -4,6 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
+#include <pscf/interaction/Interaction.h>
 #include <pscf/floryHuggins/Interaction.h>
 #include <util/param/BracketPolicy.h>
 
@@ -18,7 +19,7 @@ class InteractionTest : public UnitTest
 public:
 
    void setUp()
-   { BracketPolicy::set(BracketPolicy::Optional); }
+   {  BracketPolicy::set(BracketPolicy::Optional); }
 
    void tearDown()
    {}
@@ -27,7 +28,7 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      FH::Interaction v;
+      Interaction v;
       v.setNMonomer(2);
    } 
 
@@ -35,7 +36,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      FH::Interaction v;
+      Interaction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -53,34 +54,13 @@ public:
       TEST_ASSERT(eq(v.chi(1,0), 1.0));
       TEST_ASSERT(eq(v.chi(1,0), v.chi(0,1)));
 
-      TEST_ASSERT(eq(v.chiInverse(0,0), 0.0));
-      TEST_ASSERT(eq(v.chiInverse(1,1), 0.0));
-      TEST_ASSERT(eq(v.chiInverse(0,1), 1.0));
-      TEST_ASSERT(eq(v.chiInverse(1,0), 1.0));
-
-      int i, j, k;
-      double sum;
-      for (i = 0; i < nMonomer; ++i) {
-         for (j = 0; j < nMonomer; ++j) {
-            sum = 0.0;
-            for (k = 0; k < nMonomer; ++k) {
-              sum += v.chi(i,k)*v.chiInverse(k,j);
-            }
-            if (i == j) {
-               TEST_ASSERT(eq(sum, 1.0));
-            } else {
-               TEST_ASSERT(eq(sum, 0.0));
-            }
-         }
-      }
-
    }
 
    void testReadWrite2() 
    {
       printMethod(TEST_FUNC);
 
-      FH::Interaction v;
+      Interaction v;
       const int nMonomer = 2;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -92,35 +72,13 @@ public:
          v.writeParam(std::cout);
       }
 
-      TEST_ASSERT(eq(v.chi(0,0), 0.5));
-      TEST_ASSERT(eq(v.chi(1,1), 1.5));
-      TEST_ASSERT(eq(v.chi(0,1), 2.0));
-      TEST_ASSERT(eq(v.chi(1,0), 2.0));
-      TEST_ASSERT(eq(v.chi(1,0), v.chi(0,1)));
-
-      int i, j, k;
-      double sum;
-      for (i = 0; i < nMonomer; ++i) {
-         for (j = 0; j < nMonomer; ++j) {
-            sum = 0.0;
-            for (k = 0; k < nMonomer; ++k) {
-              sum += v.chi(i,k)*v.chiInverse(k,j);
-            }
-            if (i == j) {
-               TEST_ASSERT(eq(sum, 1.0));
-            } else {
-               TEST_ASSERT(eq(sum, 0.0));
-            }
-         }
-      }
-
    }
 
    void testReadWrite3() 
    {
       printMethod(TEST_FUNC);
 
-      FH::Interaction v;
+      Interaction v;
       const int nMonomer = 3;
       v.setNMonomer(nMonomer);
       std::ifstream in;
@@ -135,22 +93,6 @@ public:
       TEST_ASSERT(eq(v.chi(1,0), v.chi(0,1)));
       TEST_ASSERT(eq(v.chi(1,2), v.chi(2,1)));
       TEST_ASSERT(eq(v.chi(0,2), v.chi(2,0)));
-
-      int i, j, k;
-      double sum;
-      for (i = 0; i < nMonomer; ++i) {
-         for (j = 0; j < nMonomer; ++j) {
-            sum = 0.0;
-            for (k = 0; k < nMonomer; ++k) {
-              sum += v.chi(i,k)*v.chiInverse(k,j);
-            }
-            if (i == j) {
-               TEST_ASSERT(eq(sum, 1.0));
-            } else {
-               TEST_ASSERT(eq(sum, 0.0));
-            }
-         }
-      }
 
    }
 

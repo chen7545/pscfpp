@@ -6,6 +6,7 @@
 */
 
 #include "Interaction.h"
+#include <pscf/interaction/Interaction.h>
 #include <pscf/math/LuSolver.h>
 
 namespace Pscf {
@@ -19,6 +20,23 @@ namespace FH {
    Interaction::Interaction()
     : nMonomer_(0)
    {  setClassName("Interaction"); }
+
+   /*
+   * Constructor.
+   */
+   Interaction::Interaction(Pscf::Interaction const & other)
+    : nMonomer_(0)
+   {  
+      UTIL_CHECK(other.nMonomer() > 0);
+      setClassName("Interaction"); 
+      setNMonomer(other.nMonomer());
+      for (int i = 0; i < nMonomer_; ++i) {
+         for (int j = 0; j < nMonomer_; ++j) {
+            chi_(i, j) = other.chi(i, j);
+         }
+      }
+      updateMembers();
+   }
 
    /*
    * Destructor.

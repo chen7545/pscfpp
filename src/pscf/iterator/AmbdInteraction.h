@@ -12,9 +12,7 @@
 
 // Forward declaration
 namespace Pscf {
-   namespace FH {
-      class Interaction;
-   }
+   class Interaction;
 }
 
 namespace Pscf {
@@ -67,7 +65,7 @@ namespace Pscf {
       *
       * \param interaction Interaction object with current chi matrix
       */
-      void update(FH::Interaction const & interaction);
+      void update(Interaction const & interaction);
 
       /**
       * Return one element of the chi matrix.

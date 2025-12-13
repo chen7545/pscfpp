@@ -20,9 +20,7 @@
 
 // Forward declarations
 namespace Pscf {
-   namespace FH {
-      class Interaction;
-   }
+   class Interaction;
    namespace R1d {
       class Iterator;
       class IteratorFactory;
@@ -43,7 +41,7 @@ namespace R1d {
    * coordinates. Such a System has (among other components):
    *
    *    - a Mixture (a container for polymer and solvent solvers)
-   *    - an FH::Interaction (list of binary chi parameters)
+   *    - an Interaction (list of binary chi parameters)
    *    - a Domain (description of the 1D domain and discretization)
    *    - monomer chemical potential fields 
    *    - monomer concentration fields 
@@ -393,12 +391,12 @@ namespace R1d {
       /**
       * Get interaction (i.e., excess free energy) by reference.
       */
-      FH::Interaction & interaction();
+      Interaction & interaction();
 
       /**
       * Get interaction (i.e., excess free energy) by const reference.
       */
-      FH::Interaction const & interaction() const;
+      Interaction const & interaction() const;
 
       /**
       * Get spatial domain (including grid info) by reference.
@@ -450,9 +448,9 @@ namespace R1d {
       FH::Mixture homogeneous_;
 
       /**
-      * Pointer to FH::Interaction (excess free energy model).
+      * Pointer to Interaction (excess free energy model).
       */
-      FH::Interaction* interactionPtr_;
+      Interaction* interactionPtr_;
 
       /**
       * Pointer to associated iterator.
@@ -574,18 +572,18 @@ namespace R1d {
    { return mixture_; }
 
    /*
-   * Get the FH::Interaction (excess free energy model).
+   * Get the Interaction (excess free energy model).
    */
-   inline FH::Interaction & System::interaction()
+   inline Interaction & System::interaction()
    {
       UTIL_ASSERT(interactionPtr_);
       return *interactionPtr_;
    }
 
    /*
-   * Get the FH::Interaction (excess free energy) by const reference.
+   * Get the Interaction (excess free energy) by const reference.
    */
-   inline FH::Interaction const & System::interaction() const
+   inline Interaction const & System::interaction() const
    {
       UTIL_ASSERT(interactionPtr_);
       return *interactionPtr_;

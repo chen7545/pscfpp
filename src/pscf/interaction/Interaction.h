@@ -12,7 +12,6 @@
 #include <util/containers/Matrix.h>       // argument (template)
 
 namespace Pscf {
-namespace Cpc {
 
    using namespace Util;
 
@@ -144,6 +143,5 @@ namespace Cpc {
    inline bool Interaction::isCompressible() const
    {  return isCompressible_; }
 
-} // namespace Cpc
 } // namespace Pscf
 #endif

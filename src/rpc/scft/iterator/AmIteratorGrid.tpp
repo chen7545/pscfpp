@@ -15,7 +15,7 @@
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/Reduce.h>
 #include <prdc/cpu/VecOp.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/iterator/NanException.h>
 #include <util/containers/RingBuffer.h>
 #include <util/containers/DArray.h>

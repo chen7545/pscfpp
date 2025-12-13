@@ -18,7 +18,7 @@
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/paramIdConversions.h>
-#include <pscf/floryHuggins/Interaction.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
 #include <cmath>
 

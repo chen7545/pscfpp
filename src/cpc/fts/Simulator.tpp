@@ -11,7 +11,6 @@
 #include "Simulator.h"
 
 #include <cpc/system/System.h>
-#include <cpc/system/Interaction.h>
 #include <cpc/solvers/Mixture.h>
 #include <cpc/solvers/Polymer.h>
 #include <cpc/solvers/Solvent.h>
@@ -24,6 +23,7 @@
 #include <cpc/fts/trajectory/TrajectoryReaderFactory.h>
 #endif
 
+#include <pscf/interaction/Interaction.h>
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
 #include <util/global.h>
