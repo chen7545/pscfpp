@@ -95,6 +95,7 @@ namespace Pscf {
       nMonomer_ = nMonomer; 
       chi_.allocate(nMonomer, nMonomer);
       chiInverse_.allocate(nMonomer, nMonomer);
+      setChiZero();
    }
 
    /*
@@ -143,19 +144,26 @@ namespace Pscf {
       UTIL_CHECK(nMonomer_ > 0);
       UTIL_CHECK(other.capacity1() == nMonomer_);
       UTIL_CHECK(other.capacity2() == nMonomer_);
-      double value, diff;
+      double value1, value2, diff;
       int i, j;
       for (i = 0; i < nMonomer_; ++i) {
-         chi_(i, i) = chi(i, i);
+         chi_(i, i) = other(i, i);
       }
       if (nMonomer_ > 1) {
          for (i = 0; i < nMonomer_; ++i) {
             for (j = 0; j < i; ++j) {
-               diff = std::abs( chi(i, j) - chi(j, i));
-               UTIL_CHECK(diff < 1.0E-10);
-               value = chi(i,j);
-               chi_(i, j) = value;
-               chi_(j, i) = value;
+               value1 = other(i, j);
+               value2 = other(j, i);
+               diff = std::abs( value1 - value2 );
+	       if (diff > 1.0E-10) {
+                  Log::file() << "Diff     = " << diff << "\n";
+                  Log::file() << " i, j    = " << i << "  " << j << "\n";
+                  Log::file() << "chi(i,j) = " << value1 << "\n";
+                  Log::file() << "chi(j,i) = " << value2 << "\n";
+                  UTIL_THROW("Error: Asymmetric chi matrix");
+               }
+               chi_(i, j) = value1;
+               chi_(j, i) = value1;
             }
          }
       }
@@ -179,6 +187,21 @@ namespace Pscf {
 
       // Compute relevant AM iterator quantities. 
       updateMembers();
+   }
+
+   /*
+   * Set all elements of the chi matrix to zero.
+   */
+   void FhInteraction::setChiZero()
+   {
+      UTIL_CHECK(nMonomer_ > 0);
+      int i, j;
+      for (i = 0; i < nMonomer_; i++) {
+         for (j = 0; j < nMonomer_; j++) {
+            chi_(i, j) = 0.0;
+            chiInverse_(i, j) = 0.0;
+         }
+      }
    }
 
    /*

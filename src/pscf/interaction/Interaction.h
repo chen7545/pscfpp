@@ -124,6 +124,8 @@ namespace Pscf {
       // Have the object been initialized via readParameters.
       bool isInitialized_;
 
+      void setChiZero();
+
    };
 
    // Inline function

@@ -21,7 +21,9 @@ namespace Pscf {
       nMonomer_(0),
       isCompressible_(isCompressible),
       isInitialized_(false)
-   {  setClassName("Interaction"); }
+   {  
+      setClassName("Interaction"); 
+   }
 
    /*
    * Destructor.
@@ -39,6 +41,7 @@ namespace Pscf {
       UTIL_CHECK(nMonomer > 0);
       nMonomer_ = nMonomer; 
       chi_.allocate(nMonomer, nMonomer);
+      setChiZero();
    }
 
    /*
@@ -48,6 +51,7 @@ namespace Pscf {
    {
       UTIL_CHECK(nMonomer_ > 0);
       UTIL_CHECK(!isInitialized_);
+      setChiZero();
       readDSymmMatrix(in, "chi", chi_, nMonomer());
       if (isCompressible_) {
          //isCompressible_ = readOptional(in, "zeta", zeta_).isActive();
@@ -62,10 +66,29 @@ namespace Pscf {
    */
    void Interaction::setChi(int i, int j, double chi)
    {
+      UTIL_CHECK(nMonomer_ > 0);
       UTIL_CHECK(isInitialized_);
-      chi_(i,j) =  chi; 
+      UTIL_CHECK(i >= 0);
+      UTIL_CHECK(i < nMonomer_);
+      UTIL_CHECK(j >= 0);
+      UTIL_CHECK(j < nMonomer_);
+      chi_(i,j) =  chi;
       if (i != j) {
          chi_(j,i) = chi;
+      }
+   }
+
+   /*
+   * Set a single Flory-Huggins chi parameter.
+   */
+   void Interaction::setChiZero()
+   {
+      UTIL_CHECK(nMonomer_ > 0);
+      int i, j;
+      for (i = 0; i < nMonomer_; ++i) {
+         for (j = 0; j < nMonomer_; ++j) {
+            chi_(i, j) = 0.0;
+         }
       }
    }
 

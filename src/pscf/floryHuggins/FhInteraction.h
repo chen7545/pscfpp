@@ -201,6 +201,8 @@ namespace Pscf {
       */
       void updateMembers();
 
+      void setChiZero();
+
    };
 
    // Inline function
