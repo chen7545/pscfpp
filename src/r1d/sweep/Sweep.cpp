@@ -7,8 +7,8 @@
 
 #include "Sweep.h"
 //#include <pscf/sweep/SweepTmpl.h>
-#include <r1d/System.h>
-#include <r1d/domain/Domain.h>
+#include <r1d/system/System.h>
+#include <r1d/field/Domain.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/iterator/Iterator.h>
 #include <util/misc/ioUtil.h>

@@ -8,11 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/sweep/SweepTmpl.h>             // base class
-#include <r1d/SystemAccess.h>                // base class
-#include <r1d/misc/HomogeneousComparison.h>  // member
-#include <r1d/misc/FieldIo.h>                // member
-#include <util/containers/DArray.h>           // member
+#include <pscf/sweep/SweepTmpl.h>              // base class
+#include <r1d/system/SystemAccess.h>           // base class
+#include <r1d/system/HomogeneousComparison.h>  // member
+#include <r1d/field/FieldIo.h>                 // member
+#include <util/containers/DArray.h>            // member
 
 #include <util/global.h>
 

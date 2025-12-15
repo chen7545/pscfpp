@@ -8,14 +8,14 @@ include $(SRC_DIR)/r1d/patterns.mk
 #-----------------------------------------------------------------------
 # Main targets 
 
-all: $(r1d_misc_OBJS) 
+all: $(r1d_system_OBJS) 
 
 clean:
-	rm -f $(r1d_misc_OBJS) $(r1d_misc_OBJS:.o=.d)
+	rm -f $(r1d_system_OBJS) $(r1d_system_OBJS:.o=.d)
 
 .PHONY: all clean
 
 #-----------------------------------------------------------------------
 # Include dependency files
 
--include $(r1d_misc_OBJS:.o=.d)
+-include $(r1d_system_OBJS:.o=.d)

@@ -14,8 +14,8 @@
 #include <r1d/sweep/Sweep.h>
 #include <r1d/sweep/SweepFactory.h>
 #include <r1d/iterator/NrIterator.h>
-#include <r1d/misc/HomogeneousComparison.h>
-#include <r1d/misc/FieldIo.h>
+#include <r1d/system/HomogeneousComparison.h>
+#include <r1d/field/FieldIo.h>
 
 #include <pscf/interaction/Interaction.h>
 

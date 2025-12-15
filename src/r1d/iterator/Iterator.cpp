@@ -6,8 +6,8 @@
 */
 
 #include "Iterator.h"
-#include <r1d/System.h>
-#include <r1d/domain/Domain.h>
+#include <r1d/system/System.h>
+#include <r1d/field/Domain.h>
 #include <r1d/solvers/Mixture.h>
 
 namespace Pscf {

@@ -7,8 +7,8 @@
 
 #include "Block.h"
 #include "Propagator.h"
-#include <r1d/domain/Domain.h>
-#include <r1d/domain/GeometryMode.h>
+#include <r1d/field/Domain.h>
+#include <r1d/field/GeometryMode.h>
 #include <pscf/solvers/BlockTmpl.tpp>
 
 namespace Pscf {

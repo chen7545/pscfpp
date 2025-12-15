@@ -6,7 +6,7 @@
  */
 
 #include "BinaryRelaxIterator.h"
-#include <r1d/System.h>
+#include <r1d/system/System.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
 #include <pscf/chem/Ensemble.h>

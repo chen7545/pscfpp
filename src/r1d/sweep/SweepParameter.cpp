@@ -6,7 +6,7 @@
 */
 
 #include <r1d/sweep/SweepParameter.h>
-#include <r1d/System.h>
+#include <r1d/system/System.h>
 #include <r1d/solvers/Block.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>

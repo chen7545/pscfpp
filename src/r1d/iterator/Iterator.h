@@ -10,7 +10,7 @@
 
 #include <pscf/sweep/ParameterModifier.h> // base class
 #include <util/param/ParamComposite.h>    // base class
-#include <r1d/SystemAccess.h>             // base class
+#include <r1d/system/SystemAccess.h>             // base class
 #include <util/global.h>                  
 #include <r1d/sweep/Sweep.h>
 

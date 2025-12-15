@@ -21,7 +21,7 @@ namespace R1d {
    * One-dimensional spatial domain and discretization grid.
    *
    * \ref r1d_Domain_page "Parameter File Format"
-   * \ingroup R1d_Domain_Module
+   * \ingroup R1d_Field_Module
    */
    class Domain : public ParamComposite
    {

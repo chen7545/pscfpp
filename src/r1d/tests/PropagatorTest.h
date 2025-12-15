@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <r1d/domain/Domain.h>
+#include <r1d/field/Domain.h>
 #include <r1d/solvers/Block.h>
 #include <r1d/solvers/Propagator.h>
 #include <util/math/Constants.h>

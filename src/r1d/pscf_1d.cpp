@@ -7,7 +7,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <r1d/System.h>
+#include <r1d/system/System.h>
 
 /**
 * Main function for pscf_1d program.

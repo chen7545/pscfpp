@@ -10,7 +10,7 @@
 #include "Solvent.h"
 #include "Block.h"
 #include "Propagator.h"
-#include <r1d/domain/Domain.h>
+#include <r1d/field/Domain.h>
 #include <pscf/solvers/MixtureTmpl.tpp>
 
 #include <cmath>

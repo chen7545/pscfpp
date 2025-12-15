@@ -58,11 +58,16 @@ namespace Pscf {
       * Read model parameters.
       *
       * \pre Must be called after setNMonomer.
+      *
+      * \param in  input parameter file stream
       */
       virtual void readParameters(std::istream& in);
 
       /**
       * Change one element of the chi matrix.
+      *
+      * Before entry, the interaction must have been initialized
+      * by calling readParameters.
       *
       * \param i row index
       * \param j column index
@@ -118,30 +123,46 @@ namespace Pscf {
       // Number of monomers.
       int nMonomer_;
 
-      // True if a finite value of zeta is defined.
+      // Is the model compressible (does it allow a finite zeta value)?
       bool isCompressible_;
 
-      // Have the object been initialized via readParameters.
+      // Has the object been initialized via readParameters?
       bool isInitialized_;
 
+      /// Set all elements of chi to zero.
       void setChiZero();
 
    };
 
-   // Inline function
+   // Inline functions
 
+   /*
+   * Return the number of monomer types.
+   */
    inline int Interaction::nMonomer() const
    {  return nMonomer_; }
 
+   /*
+   * Return the entire chi matrix by const reference.
+   */
    inline DMatrix<double> const &  Interaction::chi() const
    {  return chi_; }
 
+   /*
+   * Return one element of the chi matrix.
+   */
    inline double Interaction::chi(int i, int j) const
    {  return chi_(i, j); }
 
+   /*
+   * Return the dimensionless compression modulus, zeta.
+   */
    inline double Interaction::zeta() const
    {  return zeta_; }
 
+   /*
+   * Is this model compressible?
+   */
    inline bool Interaction::isCompressible() const
    {  return isCompressible_; }
 

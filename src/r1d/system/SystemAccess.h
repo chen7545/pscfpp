@@ -22,7 +22,7 @@ namespace R1d {
    * maintain a pointer to an associated system, and that implement
    * code that frequently accesses the main members of that System.
    *
-   * \ingroup Pscf_R1d_Module
+   * \ingroup R1d_System_Module
    */
    class SystemAccess 
    {

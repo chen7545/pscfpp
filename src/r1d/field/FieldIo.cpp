@@ -7,7 +7,7 @@
 
 #include "FieldIo.h"
 
-#include <r1d/domain/Domain.h>
+#include <r1d/field/Domain.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
 #include <r1d/solvers/Solvent.h>

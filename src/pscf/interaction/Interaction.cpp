@@ -21,9 +21,7 @@ namespace Pscf {
       nMonomer_(0),
       isCompressible_(isCompressible),
       isInitialized_(false)
-   {  
-      setClassName("Interaction"); 
-   }
+   {  setClassName("Interaction"); }
 
    /*
    * Destructor.
@@ -79,7 +77,7 @@ namespace Pscf {
    }
 
    /*
-   * Set a single Flory-Huggins chi parameter.
+   * Set all elements of the chi matrix to zero.
    */
    void Interaction::setChiZero()
    {

@@ -22,7 +22,7 @@ namespace R1d {
    /**
    * Read and write fields to file.
    *
-   * \ingroup Pscf_R1d_Module
+   * \ingroup R1d_Field_Module
    */
    class FieldIo 
    {

@@ -6,7 +6,7 @@
 */
 
 #include "LinearSweep.h"
-#include <r1d/System.h>
+#include <r1d/system/System.h>
 #include <cstdio>
 
 namespace Pscf {

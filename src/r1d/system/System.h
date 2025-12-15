@@ -10,9 +10,9 @@
 
 // Header file includes
 #include <util/param/ParamComposite.h>    // base class
-#include <r1d/misc/FieldIo.h>             // member
+#include <r1d/field/FieldIo.h>             // member
 #include <r1d/solvers/Mixture.h>          // member
-#include <r1d/domain/Domain.h>            // member
+#include <r1d/field/Domain.h>            // member
 #include <util/misc/FileMaster.h>         // member
 #include <util/containers/DArray.h>       // member template
 #include <util/containers/Array.h>        // function parameter
@@ -61,7 +61,7 @@ namespace R1d {
    * The actual main program is given in the file pscf_1d.cpp.
    *
    * \ref scft_param_1d_page "Parameter File Format"
-   * \ingroup Pscf_R1d_Module
+   * \ingroup R1d_System_Module
    */
    class System : public ParamComposite
    {

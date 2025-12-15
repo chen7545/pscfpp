@@ -5,21 +5,17 @@ All code in this directory is defined in C++ namespace Pscf::R1d.
 Subdirectories:
 ---------------
 
-domain/    - classes that define the spatial domain
+field/     - spatial domain and field IO
 iterator/  - iterative SCF equation solvers
-misc/      - miscellaneous utility classes
 solvers/   - modified diffusion equation solvers
 sweep/     - classes to implement continuation of solutions ("sweep")
+system/    - main System class and related classes
 tests/     - unit cell tests for R1d code
 
 C++ Files:
 ----------
 
-pscf_1d.cpp - Main program 
-System.h    - System class (main object)
-System.cpp  - System class (main object) 
-SystemAccess.h   - base class for concise access to a System 
-SystemAccess.cpp - base class for concise access to a System
+pscf_1d.cpp - Main program for 1D SCFT
 
 Makefile and makefile fragments:
 --------------------------------
@@ -32,5 +28,5 @@ Doxygen documentation files:
 ----------------------------
 
 r1d.mod      - definition of R1d doxygen topic module 
-pscf_1d.dox  - command line interface for pscf_1d
+pscf_1d.dox  - command line interface for pscf_1d program
 

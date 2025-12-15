@@ -25,7 +25,7 @@ namespace R1d
    * representations of the three values are "planar", "cylindrical" and
    * "spherical".
    *
-   * \ingroup R1d_Domain_Module
+   * \ingroup R1d_Field_Module
    */
    enum GeometryMode {Planar, Cylindrical, Spherical};
 

@@ -4,12 +4,12 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <r1d/System.h>
-#include <r1d/domain/Domain.h>
+#include <r1d/system/System.h>
+#include <r1d/field/Domain.h>
 #include <r1d/solvers/Mixture.h>
 #include <r1d/solvers/Polymer.h>
 #include <r1d/iterator/Iterator.h>
-#include <r1d/misc/FieldIo.h>
+#include <r1d/field/FieldIo.h>
 
 #include <fstream>
 

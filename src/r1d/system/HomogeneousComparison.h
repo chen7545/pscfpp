@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <r1d/SystemAccess.h>             // base class
+#include <r1d/system/SystemAccess.h>             // base class
 
 namespace Pscf {
    class FhMixture;
@@ -21,7 +21,7 @@ namespace R1d {
    /**
    * Command to compute properties of homogeneous reference system.
    *
-   * \ingroup Pscf_R1d_Module
+   * \ingroup R1d_System_Module
    */
    class HomogeneousComparison : public SystemAccess
    {
