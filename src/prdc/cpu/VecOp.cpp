@@ -1,5 +1,5 @@
 /*
-* PSCF - Polymer Self-Consistent Field 
+* PSCF - Polymer Self-Consistent Field
 *
 * Copyright 2015 - 2025, The Regents of the University of Minnesota
 * Distributed under the terms of the GNU General Public License.
@@ -7,18 +7,18 @@
 
 
 #include "VecOp.h"
-#include <util/containers/Array.h> 
-#include <cmath> 
+#include <util/containers/Array.h>
+#include <cmath>
 
 namespace Pscf {
 namespace Prdc {
 namespace Cpu {
 namespace VecOp {
 
-   // Assignment 
-   
+   // Assignment
+
    /*
-   * Vector assignment, a[i] = b[i].
+   * Vector assignment, a[i] = b[i] (real).
    */
    void eqV(Array<double>& a, Array<double> const & b)
    {
@@ -29,9 +29,9 @@ namespace VecOp {
          a[i] = b[i];
       }
    }
-   
+
    /*
-   * Vector assignment to a scalar, a[i] = b.
+   * Vector assignment to a scalar, a[i] = b (real).
    */
    void eqS(Array<double>& a, double b)
    {
@@ -41,13 +41,13 @@ namespace VecOp {
          a[i] = b;
       }
    }
-   
+
    // Addition
-   
+
    /*
-   * Vector addition, a[i] = b[i] + c[i].
+   * Vector-vector addition, a[i] = b[i] + c[i] (real).
    */
-   void addVV(Array<double>& a, 
+   void addVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
       const int n = a.capacity();
@@ -58,27 +58,27 @@ namespace VecOp {
          a[i] = b[i] + c[i];
       }
    }
-   
+
    /*
-   * Vector addition, a[i] = b[i] + c.
+   * Vector-scalar addition, a[i] = b[i] + c (real).
    */
    void addVS(Array<double>& a, Array<double> const & b, double c)
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
       UTIL_CHECK(b.capacity() == n);
-   
+
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] + c;
       }
    }
-   
+
    // Subtraction
-   
+
    /*
-   * Vector-vector subtraction, a[i] = b[i] - c[i].
+   * Vector-vector subtraction, a[i] = b[i] - c[i] (real).
    */
-   void subVV(Array<double>& a, 
+   void subVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
       const int n = a.capacity();
@@ -89,9 +89,9 @@ namespace VecOp {
          a[i] = b[i] - c[i];
       }
    }
-   
+
    /*
-   * Vector-scalar subtraction, a[i] = b[i] - c.
+   * Vector-scalar subtraction, a[i] = b[i] - c (real).
    */
    void subVS(Array<double>& a, Array<double> const & b, double c)
    {
@@ -102,13 +102,13 @@ namespace VecOp {
          a[i] = b[i] - c;
       }
    }
-   
+
    // Multiplication
-   
+
    /*
-   * Vector-vector multiplication, a[i] = b[i] * c[i].
+   * Vector-vector multiplication, a[i] = b[i] * c[i] (real).
    */
-   void mulVV(Array<double>& a, 
+   void mulVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
       const int n = a.capacity();
@@ -119,9 +119,9 @@ namespace VecOp {
          a[i] = b[i]*c[i];
       }
    }
-   
+
    /*
-   * Vector-scalar multiplication, a[i] = b[i] * c.
+   * Vector-scalar multiplication, a[i] = b[i] * c (real).
    */
    void mulVS(Array<double>& a, Array<double> const & b, double c)
    {
@@ -132,13 +132,13 @@ namespace VecOp {
          a[i] = b[i]*c;
       }
    }
-   
+
    // Division
-   
+
    /*
-   * Vector-vector division, a[i] = b[i] / c[i].
+   * Vector-vector division, a[i] = b[i] / c[i] (real).
    */
-   void divVV(Array<double>& a, 
+   void divVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
       const int n = a.capacity();
@@ -149,9 +149,9 @@ namespace VecOp {
          a[i] = b[i] / c[i];
       }
    }
-   
+
    /*
-   * Vector-scalar division, a[i] = b[i] / c.
+   * Vector-scalar division, a[i] = b[i] / c (real).
    */
    void divVS(Array<double>& a, Array<double> const & b, double c)
    {
@@ -162,9 +162,9 @@ namespace VecOp {
          a[i] = b[i] / c;
       }
    }
-   
+
    /*
-   * Scalar-vector division, a[i] = b / c[i].
+   * Scalar-vector division, a[i] = b / c[i] (real).
    */
    void divSV(Array<double>& a, double b, Array<double> const & c)
    {
@@ -175,11 +175,11 @@ namespace VecOp {
          a[i] = b/c[i];
       }
    }
-   
+
    // Exponentiation
-   
+
    /*
-   * Vector exponentiation, a[i] = exp(b[i]).
+   * Vector exponentiation, a[i] = exp(b[i]) (real).
    */
    void expV(Array<double>& a, Array<double> const & b)
    {
@@ -190,9 +190,9 @@ namespace VecOp {
          a[i] = exp(b[i]);
       }
    }
-   
+
    // Compound addition
-   
+
    /*
    * Vector-vector in-place addition, a[i] += b[i].
    */
@@ -205,7 +205,7 @@ namespace VecOp {
          a[i] += b[i];
       }
    }
-   
+
    /*
    * Vector-scalar in-place addition, a[i] += b.
    */
@@ -217,10 +217,10 @@ namespace VecOp {
          a[i] += b;
       }
    }
-   
-   
+
+
    // Compound subtraction
-   
+
    /*
    * Vector-vector in-place subtraction, a[i] -= b[i].
    */
@@ -233,7 +233,7 @@ namespace VecOp {
          a[i] -= b[i];
       }
    }
-   
+
    /*
    * Vector-scalar in-place subtraction, a[i] -= b.
    */
@@ -245,9 +245,9 @@ namespace VecOp {
          a[i] -= b;
       }
    }
-   
+
    // Compound multiplication
-   
+
    /*
    * Vector-vector in-place multiplication, a[i] *= b[i].
    */
@@ -260,7 +260,7 @@ namespace VecOp {
          a[i] *= b[i];
       }
    }
-   
+
    /*
    * Vector-scalar in-place multiplication, a[i] *= b.
    */
@@ -272,9 +272,9 @@ namespace VecOp {
          a[i] *= b;
       }
    }
-   
+
    // Compound division
-   
+
    /*
    * Vector-vector in-place division, a[i] /= b[i].
    */
@@ -287,7 +287,7 @@ namespace VecOp {
          a[i] /= b[i];
       }
    }
-   
+
    /*
    * Vector-scalar in-place division, a[i] /= b.
    */

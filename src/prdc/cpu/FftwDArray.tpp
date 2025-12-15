@@ -33,8 +33,9 @@ namespace Cpu {
    {
       if (isAllocated()) {
          fftw_free(data_);
-         capacity_ = 0;
       }
+      data_ = nullptr;
+      capacity_ = 0;
    }
 
    /*
@@ -53,8 +54,8 @@ namespace Cpu {
       if (capacity <= 0) {
          UTIL_THROW("Attempt to allocate FftwDArray with capacity <= 0");
       }
-      capacity_ = capacity;
       data_ = (Data*) fftw_malloc(sizeof(Data)*capacity);
+      capacity_ = capacity;
    }
 
    /*
@@ -69,6 +70,7 @@ namespace Cpu {
          UTIL_THROW("Array is not allocated");
       }
       fftw_free(data_);
+      data_ = nullptr;
       capacity_ = 0;
    }
 
