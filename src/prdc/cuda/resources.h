@@ -1,8 +1,8 @@
 #ifndef PSCF_CUDA_RESOURCES_H
 #define PSCF_CUDA_RESOURCES_H
 
-#include "VecOp.h"                  // Vector operations 
-#include "Reduce.h"                 // Parallel reduction algorithms
+#include <pscf/cuda/VecOp.h>        // Vector operations 
+#include <pscf/cuda/Reduce.h>       // Parallel reduction algorithms
 #include <pscf/cuda/cudaTypes.h>    // typedefs for real and complex 
 #include <pscf/cuda/DeviceArray.h>  // Array container stored on device
 #include <pscf/cuda/HostDArray.h>   // Array container stored on host

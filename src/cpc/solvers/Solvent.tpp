@@ -10,7 +10,7 @@
 
 #include "Solvent.h"
 #include <pscf/mesh/Mesh.h>
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 
 namespace Pscf {
 namespace Cpc { 

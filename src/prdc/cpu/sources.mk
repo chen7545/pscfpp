@@ -7,11 +7,7 @@ prdc_cpu_= \
   prdc/cpu/RFieldDftComparison.cpp \
   prdc/cpu/CFieldComparison.cpp \
   prdc/cpu/FieldBasisConverter.cpp \
-  prdc/cpu/WaveList.cpp \
-  prdc/cpu/Reduce.cpp \
-  prdc/cpu/VecOp.cpp \
-  prdc/cpu/VecOpCx.cpp \
-  prdc/cpu/complex.cpp
+  prdc/cpu/WaveList.cpp
 
 prdc_cpu_OBJS=\
      $(addprefix $(BLD_DIR)/, $(prdc_cpu_:.cpp=.o))

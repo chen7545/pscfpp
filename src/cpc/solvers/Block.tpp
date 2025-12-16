@@ -13,7 +13,7 @@
 
 #include <prdc/cpu/WaveList.h>
 #include <prdc/cpu/FFT.h>
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/shiftToMinimum.h>
 

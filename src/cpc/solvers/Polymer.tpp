@@ -12,7 +12,7 @@
 #include "Block.h"
 #include "Propagator.h"
 #include <prdc/cpu/CField.h>
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 
 namespace Pscf {
 namespace Cpc { 

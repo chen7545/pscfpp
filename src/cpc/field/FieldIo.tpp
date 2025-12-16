@@ -16,7 +16,7 @@
 #include <prdc/field/rFieldIo.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/CFieldComparison.h>
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>

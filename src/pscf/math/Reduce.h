@@ -1,5 +1,5 @@
-#ifndef PSCF_CPU_REDUCE_H
-#define PSCF_CPU_REDUCE_H
+#ifndef PSCF_REDUCE_H
+#define PSCF_REDUCE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field

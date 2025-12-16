@@ -9,7 +9,7 @@
 */
 
 #include "FFT.h"
-#include "VecOp.h"
+#include <pscf/cuda/VecOp.h>
 
 /*
 * A note about const_casts:

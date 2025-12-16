@@ -9,7 +9,7 @@
 */
 
 #include <prdc/cpu/FftwDArray.h>
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 

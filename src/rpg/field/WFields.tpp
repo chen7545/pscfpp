@@ -10,7 +10,7 @@
 
 #include "WFields.h"
 #include <rp/WFields.tpp>
-#include <prdc/cuda/VecOp.h>
+#include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/DeviceArray.h>
 
 namespace Pscf {

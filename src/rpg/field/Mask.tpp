@@ -9,7 +9,7 @@
 */
 
 #include "Mask.h"
-#include <prdc/cuda/Reduce.h>
+#include <pscf/cuda/Reduce.h>
 
 namespace Pscf {
 namespace Rpg

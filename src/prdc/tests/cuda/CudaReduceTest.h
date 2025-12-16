@@ -1,11 +1,11 @@
-#ifndef PRDC_CUDA_REDUCE_TEST_H
-#define PRDC_CUDA_REDUCE_TEST_H
+#ifndef PSCF_CUDA_REDUCE_TEST_H
+#define PSCF_CUDA_REDUCE_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
 #include <pscf/cuda/cudaTypes.h>
-#include <prdc/cuda/Reduce.h>
+#include <pscf/cuda/Reduce.h>
 #include <pscf/cuda/CudaRandom.h>
 #include <pscf/cuda/DeviceArray.h>
 #include <pscf/cuda/HostDArray.h>
@@ -18,7 +18,6 @@
 
 using namespace Util;
 using namespace Pscf;
-using namespace Pscf::Prdc;
 
 class CudaReduceTest : public UnitTest
 {
@@ -107,7 +106,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         cudaReal sumGPU = Cuda::Reduce::sum(num);
+         cudaReal sumGPU = Reduce::sum(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -170,7 +169,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         cudaReal maxGPU = Cuda::Reduce::max(num);
+         cudaReal maxGPU = Reduce::max(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -232,7 +231,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         cudaReal maxGPU = Cuda::Reduce::maxAbs(num);
+         cudaReal maxGPU = Reduce::maxAbs(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -292,7 +291,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         cudaReal minGPU = Cuda::Reduce::min(num);
+         cudaReal minGPU = Reduce::min(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -354,7 +353,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         cudaReal minGPU = Cuda::Reduce::minAbs(num);
+         cudaReal minGPU = Reduce::minAbs(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -431,7 +430,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         cudaReal ipGPU = Cuda::Reduce::innerProduct(a, b);
+         cudaReal ipGPU = Reduce::innerProduct(a, b);
          
          // Check answer
          if (verbose() > 0) {

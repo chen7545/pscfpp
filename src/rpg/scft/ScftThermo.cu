@@ -12,7 +12,7 @@
 #include <rpg/solvers/Polymer.h>
 #include <rpg/solvers/Solvent.h>
 #include <rpg/field/Domain.h>
-#include <prdc/cuda/Reduce.h>
+#include <pscf/cuda/Reduce.h>
 #include <prdc/cuda/RField.h>
 #include <pscf/interaction/Interaction.h>
 

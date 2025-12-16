@@ -19,7 +19,7 @@
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cuda/RFieldComparison.h>
 #include <pscf/cuda/cudaTypes.h>
-#include <prdc/cuda/complex.h>
+#include <pscf/cuda/complex.h>
 #include <prdc/cuda/resources.h>
 
 #include <pscf/mesh/Mesh.h>

@@ -99,7 +99,7 @@ namespace Reduce {
    cudaReal innerProduct(DeviceArray<cudaReal> const & a,
                          DeviceArray<cudaReal> const & b);
 
-/** @} */
+   /** @} */
 
 } // namespace Reduce
 } // namespace Pscf

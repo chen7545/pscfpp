@@ -1,5 +1,5 @@
-#ifndef PRDC_VEC_OP_MISC_H
-#define PRDC_VEC_OP_MISC_H
+#ifndef PSCF_CUDA_VEC_OP_MISC_H
+#define PSCF_CUDA_VEC_OP_MISC_H
 
 /*
 * PSCF - Polymer Self-Consistent Field 
@@ -27,30 +27,31 @@ namespace VecOp {
 * an anonymous namespace in VecOpMisc.cu.
 *
 * The functions defined in this file combine 2 or more element-wise 
-* vector operations into a single kernel launch, which will perform the 
-* operation faster than consecutively calling multiple of the functions 
-* in VecOp.h. These functions are not intended to be comprehensive. 
-* Rather, they are written and included as needed during the development 
-* of other code.
+* vector operations into a single kernel launch, which will perform 
+* the operation faster than consecutively calling multiple of the 
+* functions in VecOp.h. These functions are not intended to be 
+* comprehensive.  Rather, they are written and included as needed during 
+* the development of other code.
 *
-* The names of these functions follow the same conventions as those in
-* VecOp, using add, sub, mul, div, exp, eq, and combinations thereof to
-* indicate the operation(s) being performed. V denotes a vector, S 
+* The names of these functions follow the same conventions as those 
+* in VecOp, using add, sub, mul, div, exp, eq, and combinations thereof 
+* to indicate the operation(s) being performed. V denotes a vector, S 
 * denotes a scalar, and Vc denotes a vector that is multiplied by a 
 * scalar coefficient and then used in another operation. For example, 
 * addEqVc(a, b, c) performs a[i] += b[i] * c for all i. 
 *
 * Another set of functions defined in this file contain the word Pair, 
-* indicating that these functions perform the same operation for a pair
-* of output arrays. For example, eqVPair performs a1[i] = s[i] and 
-* a2[i] = s[i] for all i. Performing these operations in pairs is 
-* faster because the array s only needs to be loaded from global memory
-* once. 
+* indicating that these functions perform the same operation for a
+* pair of output arrays. For example, eqVPair performs a1[i] = s[i]
+* and a2[i] = s[i] for all i. Performing these operations in pairs 
+* is faster because the array s only needs to be loaded from global
+* memory once. 
 * 
-* A third set of functions defined in this file contain the word "Many",
-* indicating that an undefined number of vectors (>2) are involved in an 
-* operation. For example, addVMany adds >2 vectors together by passing 
-* an array of vectors, rather than a discrete set of vectors.
+* A third set of functions defined in this file contain the word 
+* "Many", indicating that an undefined number of vectors (>2) are 
+* involved in an operation. For example, addVMany adds >2 vectors 
+* together by passing an array of vectors, rather than a discrete 
+* set of vectors.
 */
 
 // Functions that combine multiple VecOp operations
@@ -240,7 +241,8 @@ void mulVMany(DeviceArray<cudaReal>& a,
 * \param a  output array (LHS)
 * \param b  input array (RHS)
 */
-void sqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
+void sqNormV(DeviceArray<cudaReal>& a, 
+             DeviceArray<cudaComplex> const & b);
 
 /**
 * Norm of complex number to the 4th power, a[i] = norm(b[i])^4, kernel wrapper.
@@ -248,7 +250,8 @@ void sqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
 * \param a  output array (LHS)
 * \param b  input array (RHS)
 */
-void sqSqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
+void sqSqNormV(DeviceArray<cudaReal>& a, 
+	       DeviceArray<cudaComplex> const & b);
 
 } // namespace VecOp
 } // namespace Pscf

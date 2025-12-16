@@ -12,7 +12,7 @@
 #include <prdc/cuda/WaveList.h>
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/resources.h>
-#include <prdc/cuda/complex.h>
+#include <pscf/cuda/complex.h>
 
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>

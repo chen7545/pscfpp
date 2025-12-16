@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 
 using namespace Util;
 using namespace Pscf;

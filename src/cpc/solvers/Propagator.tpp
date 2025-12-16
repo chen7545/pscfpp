@@ -11,7 +11,7 @@
 #include "Propagator.h"
 #include "Block.h"
 
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 #include <pscf/math/arithmetic.h>
 #include <pscf/mesh/Mesh.h>
 

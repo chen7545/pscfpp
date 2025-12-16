@@ -17,7 +17,7 @@
 #include <cp/Mixture.tpp>
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/RField.h>
-#include <prdc/cpu/complex.h>
+#include <pscf/cpu/complex.h>
 
 namespace Pscf {
 namespace Cpc {

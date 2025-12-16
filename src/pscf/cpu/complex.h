@@ -1,5 +1,5 @@
-#ifndef PSCF_CPU_ARITHMETIC_CX_H
-#define PSCF_CPU_ARITHMETIC_CX_H
+#ifndef PSCF_CPU_COMPLEX_H
+#define PSCF_CPU_COMPLEX_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
