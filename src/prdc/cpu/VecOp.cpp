@@ -18,7 +18,6 @@ namespace VecOp {
    /*
    * Vector assignment, a[i] = b[i] (real).
    */
-   template <>
    void eqV(Array<double>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -32,7 +31,6 @@ namespace VecOp {
    /*
    * Vector assignment to a scalar, a[i] = b (real).
    */
-   template <>
    void eqS(Array<double>& a, double b)
    {
       const int n = a.capacity();
@@ -47,7 +45,6 @@ namespace VecOp {
    /*
    * Vector-vector addition, a[i] = b[i] + c[i] (real).
    */
-   template <>
    void addVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
@@ -63,7 +60,6 @@ namespace VecOp {
    /*
    * Vector-scalar addition, a[i] = b[i] + c (real).
    */
-   template <>
    void addVS(Array<double>& a, Array<double> const & b, double c)
    {
       const int n = a.capacity();
@@ -80,7 +76,6 @@ namespace VecOp {
    /*
    * Vector-vector subtraction, a[i] = b[i] - c[i] (real).
    */
-   template <>
    void subVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
@@ -96,7 +91,6 @@ namespace VecOp {
    /*
    * Vector-scalar subtraction, a[i] = b[i] - c (real).
    */
-   template <>
    void subVS(Array<double>& a, Array<double> const & b, double c)
    {
       const int n = a.capacity();
@@ -112,7 +106,6 @@ namespace VecOp {
    /*
    * Vector-vector multiplication, a[i] = b[i] * c[i] (real).
    */
-   template <>
    void mulVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
@@ -128,7 +121,6 @@ namespace VecOp {
    /*
    * Vector-scalar multiplication, a[i] = b[i] * c (real).
    */
-   template <>
    void mulVS(Array<double>& a, Array<double> const & b, double c)
    {
       const int n = a.capacity();
@@ -144,7 +136,6 @@ namespace VecOp {
    /*
    * Vector-vector division, a[i] = b[i] / c[i] (real).
    */
-   template <>
    void divVV(Array<double>& a,
               Array<double> const & b, Array<double> const & c)
    {
@@ -160,7 +151,6 @@ namespace VecOp {
    /*
    * Vector-scalar division, a[i] = b[i] / c (real).
    */
-   template <>
    void divVS(Array<double>& a, Array<double> const & b, double c)
    {
       const int n = a.capacity();
@@ -174,7 +164,6 @@ namespace VecOp {
    /*
    * Scalar-vector division, a[i] = b / c[i] (real).
    */
-   template <>
    void divSV(Array<double>& a, double b, Array<double> const & c)
    {
       const int n = a.capacity();
@@ -190,7 +179,6 @@ namespace VecOp {
    /*
    * Vector exponentiation, a[i] = exp(b[i]) (real).
    */
-   template <>
    void expV(Array<double>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -206,7 +194,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place addition, a[i] += b[i].
    */
-   template <>
    void addEqV(Array<double>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -220,7 +207,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place addition, a[i] += b.
    */
-   template <>
    void addEqS(Array<double>& a, double b)
    {
       const int n = a.capacity();
@@ -236,7 +222,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place subtraction, a[i] -= b[i].
    */
-   template <>
    void subEqV(Array<double>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -250,7 +235,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place subtraction, a[i] -= b.
    */
-   template <>
    void subEqS(Array<double>& a, double b)
    {
       const int n = a.capacity();
@@ -265,7 +249,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place multiplication, a[i] *= b[i].
    */
-   template <>
    void mulEqV(Array<double>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -279,7 +262,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place multiplication, a[i] *= b.
    */
-   template <>
    void mulEqS(Array<double>& a, double b)
    {
       const int n = a.capacity();
@@ -294,7 +276,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place division, a[i] /= b[i].
    */
-   template <>
    void divEqV(Array<double>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -308,7 +289,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place division, a[i] /= b.
    */
-   template <>
    void divEqS(Array<double>& a, double b)
    {
       const int n = a.capacity();

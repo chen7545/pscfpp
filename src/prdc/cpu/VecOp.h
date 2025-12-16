@@ -1,5 +1,5 @@
-#ifndef PRDC_CPU_VEC_OP_H
-#define PRDC_CPU_VEC_OP_H
+#ifndef PSCF_VEC_OP_H
+#define PSCF_VEC_OP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -7,8 +7,6 @@
 * Copyright 2015 - 2025, The Regents of the University of Minnesota
 * Distributed under the terms of the GNU General Public License.
 */
-
-#include <pscf/math/VecOp.h>
 
 // Forward declaration
 namespace Util {
@@ -55,7 +53,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
-      template <>
       void eqV(Array<double>& a, Array<double> const & b);
 
       /**
@@ -64,7 +61,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
       */
-      template <>
       void eqS(Array<double>& a, double b);
 
       // Addition
@@ -76,8 +72,8 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input array (RHS)
       */
-      template <>
-      void addVV(Array<double>& a, Array<double> const & b,
+      void addVV(Array<double>& a, 
+                 Array<double> const & b, 
                  Array<double> const & c);
 
       /**
@@ -87,7 +83,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       */
-      template <>
       void addVS(Array<double>& a, Array<double> const & b, double c);
 
       // Subtraction
@@ -99,7 +94,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input array (RHS)
       */
-      template <>
       void subVV(Array<double>& a,
                  Array<double> const & b, Array<double> const & c);
 
@@ -110,7 +104,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       */
-      template <>
       void subVS(Array<double>& a, Array<double> const & b, double c);
 
       // Multiplication
@@ -122,7 +115,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input array (RHS)
       */
-      template <>
       void mulVV(Array<double>& a,
                  Array<double> const & b, Array<double> const & c);
 
@@ -133,7 +125,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       */
-      template <>
       void mulVS(Array<double>& a, Array<double> const & b, double c);
 
       // Division
@@ -145,7 +136,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input array (RHS)
       */
-      template <>
       void divVV(Array<double>& a,
                  Array<double> const & b, Array<double> const & c);
 
@@ -156,7 +146,6 @@ namespace Pscf {
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       */
-      template <>
       void divVS(Array<double>& a, Array<double> const & b, double c);
 
       /**
@@ -166,7 +155,6 @@ namespace Pscf {
       * \param b  input scalar (RHS)
       * \param c  input array (RHS)
       */
-      template <>
       void divSV(Array<double>& a, double b, Array<double> const & c);
 
       // Compound addition
@@ -177,7 +165,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
-      template <>
       void addEqV(Array<double>& a, Array<double> const & b);
 
       /**
@@ -186,7 +173,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
       */
-      template <>
       void addEqS(Array<double>& a, double b);
 
       // Compound subtraction
@@ -197,7 +183,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
-      template <>
       void subEqV(Array<double>& a, Array<double> const & b);
 
       /**
@@ -206,7 +191,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
       */
-      template <>
       void subEqS(Array<double>& a, double b);
 
       // Compound multiplication
@@ -217,7 +201,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
-      template <>
       void mulEqV(Array<double>& a, Array<double> const & b);
 
       /**
@@ -226,7 +209,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
       */
-      template <>
       void mulEqS(Array<double>& a, double b);
 
       // Compound division
@@ -237,7 +219,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
-      template <>
       void divEqV(Array<double>& a, Array<double> const & b);
 
       /**
@@ -246,7 +227,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
       */
-      template <>
       void divEqS(Array<double>& a, double b);
 
       // Exponentiation
@@ -257,7 +237,6 @@ namespace Pscf {
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
-      template <>
       void expV(Array<double>& a, Array<double> const & b);
 
    /** @} */

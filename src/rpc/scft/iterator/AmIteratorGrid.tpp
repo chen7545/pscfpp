@@ -340,7 +340,7 @@ namespace Rpc {
          for (int i = 0; i < nMonomer; ++i) {
             wAve = Reduce::sum(wFields[i]);
             wAve /= double(nMesh);
-            VecOp::subEqS<Array, double>(wFields[i], wAve);
+            VecOp::subEqS(wFields[i], wAve);
          }
 
          // Compute spatial averages of all concentration fields
@@ -359,7 +359,7 @@ namespace Rpc {
                chi = interaction_.chi(i,j);
                wAve += chi * cAve[j];
             }
-            VecOp::addEqS<Array,double>(wFields[i], wAve);
+            VecOp::addEqS(wFields[i], wAve);
          }
 
          // If external fields exist, add their spatial averages
@@ -368,7 +368,7 @@ namespace Rpc {
             for (int i = 0; i < nMonomer; ++i) {
                hAve = Reduce::sum(system().h().rgrid(i));
                hAve /= double(nMesh);
-               VecOp::addEqS<Array,double>(wFields[i], hAve);
+               VecOp::addEqS(wFields[i], hAve);
             }
          }
       }

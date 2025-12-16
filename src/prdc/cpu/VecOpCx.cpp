@@ -8,6 +8,7 @@
 #include "VecOpCx.h"
 #include <util/containers/Array.h>
 #include <cmath>
+
 #include <fftw3.h>
 
 namespace Pscf {
@@ -20,7 +21,6 @@ namespace VecOp {
    /*
    * Vector-vector assignment, a[i] = b[i] (complex).
    */
-   template <>
    void eqV(Array<fftw_complex> & a, Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -35,7 +35,6 @@ namespace VecOp {
    /*
    * Vector-vector assignment, a[i] = b[i] (mixed).
    */
-   template <>
    void eqV(Array<fftw_complex> & a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -50,7 +49,6 @@ namespace VecOp {
    /*
    * Vector-scalar assignment, a[i][0] = b (complex).
    */
-   template <>
    void eqS(Array<fftw_complex> & a, fftw_complex b)
    {
       const int n = a.capacity();
@@ -64,7 +62,6 @@ namespace VecOp {
    /*
    * Vector-scalar assignment, a[i] = b (mixed).
    */
-   template <>
    void eqS(Array<fftw_complex> & a, double b)
    {
       const int n = a.capacity();
@@ -80,7 +77,6 @@ namespace VecOp {
    /*
    * Vector-vector addition, a[i] = b[i] + c[i] (complex).
    */
-   template <>
    void addVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b, 
               Array<fftw_complex> const & c)
@@ -98,7 +94,6 @@ namespace VecOp {
    /*
    * Vector-vector addition, a[i] = b[i] + c[i] (mixed).
    */
-   template <>
    void addVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b, 
               Array<double> const & c)
@@ -116,7 +111,6 @@ namespace VecOp {
    /*
    * Vector-scalar addition, a[i][0] = b[i][0] + c (complex).
    */
-   template <>
    void addVS(Array<fftw_complex> & a, 
               Array<fftw_complex> const & b, 
               fftw_complex c)
@@ -134,7 +128,6 @@ namespace VecOp {
    /*
    * Vector-scalar addition, a[i][0] = b[i][0] + c (mixed).
    */
-   template <>
    void addVS(Array<fftw_complex> & a, 
               Array<fftw_complex> const & b, 
               double c)
@@ -153,7 +146,6 @@ namespace VecOp {
    /*
    * Vector-vector subtraction, a[i] = b[i] - c[i] (complex).
    */
-   template <>
    void subVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b, 
               Array<fftw_complex> const & c)
@@ -171,7 +163,6 @@ namespace VecOp {
    /*
    * Vector-vector subtraction, a[i] = b[i] - c[i] (mixed).
    */
-   template <>
    void subVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b, 
               Array<double> const & c)
@@ -189,7 +180,6 @@ namespace VecOp {
    /*
    * Vector-scalar subtraction, a[i] = b[i] - c (complex).
    */
-   template <>
    void subVS(Array<fftw_complex>& a,
               Array<fftw_complex> const & b,
               fftw_complex c)
@@ -206,7 +196,6 @@ namespace VecOp {
    /*
    * Vector-scalar subtraction, a[i] = b[i] - c (mixed).
    */
-   template <>
    void subVS(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
               double c)
@@ -225,7 +214,6 @@ namespace VecOp {
    /*
    * Vector-vector multiplication, a[i] = b[i] * c[i] (complex).
    */
-   template <>
    void mulVV(Array<fftw_complex>& a,
               Array<fftw_complex> const & b, 
               Array<fftw_complex> const & c)
@@ -243,7 +231,6 @@ namespace VecOp {
    /*
    * Vector-vector multiplication, a[i] = b[i] * c[i] (mixed).
    */
-   template <>
    void mulVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b, 
               Array<double> const & c)
@@ -261,7 +248,6 @@ namespace VecOp {
    /*
    * Vector-scalar multiplication, a[i] = b[i] * c (complex)
    */
-   template <>
    void mulVS(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
               fftw_complex c)
@@ -278,7 +264,6 @@ namespace VecOp {
    /*
    * Vector-scalar multiplication, a[i] = b[i] * c (mixed).
    */
-   template <>
    void mulVS(Array<fftw_complex>& a,
               Array<fftw_complex> const & b,
               double c)
@@ -297,7 +282,6 @@ namespace VecOp {
    /*
    * Vector-vector division, a[i] = b[i] / c[i] (complex).
    */
-   template <>
    void divVV(Array<fftw_complex>& a,
               Array<fftw_complex> const & b, 
               Array<fftw_complex> const & c)
@@ -319,7 +303,6 @@ namespace VecOp {
    /*
    * Vector-vector division, a[i] = b[i] / c[i] (mixed).
    */
-   template <>
    void divVV(Array<fftw_complex>& a,
               Array<fftw_complex> const & b, 
               Array<double> const & c)
@@ -337,7 +320,6 @@ namespace VecOp {
    /*
    * Vector-scalar division, a[i][0] = b[i][0] / c (complex).
    */
-   template <>
    void divVS(Array<fftw_complex>& a, 
                     Array<fftw_complex> const & b, 
                     fftw_complex c)
@@ -357,7 +339,6 @@ namespace VecOp {
    /*
    * Vector-scalar division, a[i][0] = b[i][0] / c (mixed).
    */
-   template <>
    void divVS(Array<fftw_complex>& a, 
                     Array<fftw_complex> const & b, 
                     double c)
@@ -376,7 +357,6 @@ namespace VecOp {
    /*
    * Vector exponentiation, a[i] = exp(b[i]) (complex).
    */
-   template <>
    void expV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -395,7 +375,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place addition, a[i][0] += b[i][0] (complex).
    */
-   template <>
    void addEqV(Array<fftw_complex> & a, Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -410,7 +389,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place addition, a[i][0] += b[i][0] (mixed).
    */
-   template <>
    void addEqV(Array<fftw_complex> & a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -424,7 +402,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place addition, a[i][0] += b (complex).
    */
-   template <>
    void addEqS(Array<fftw_complex>& a, fftw_complex b)
    {
       const int n = a.capacity();
@@ -438,7 +415,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place addition, a[i][0] += b (mixed).
    */
-   template <>
    void addEqS(Array<fftw_complex>& a, double b)
    {
       const int n = a.capacity();
@@ -453,7 +429,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place subtraction, a[i] -= b[i] (complex).
    */
-   template <>
    void subEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -468,7 +443,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place subtraction, a[i] -= b[i] (mixed).
    */
-   template <>
    void subEqV(Array<fftw_complex>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -482,7 +456,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place subtraction, a[i][0] -= b (complex).
    */
-   template <>
    void subEqS(Array<fftw_complex>& a, fftw_complex b)
    {
       const int n = a.capacity();
@@ -496,7 +469,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place subtraction, a[i][0] -= b (mixed).
    */
-   template <>
    void subEqS(Array<fftw_complex>& a, double b)
    {
       const int n = a.capacity();
@@ -511,7 +483,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place multiplication, a[i] *= b[i] (complex).
    */
-   template <>
    void mulEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -529,7 +500,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place multiplication, a[i] *= b[i] (mixed).
    */
-   template <>
    void mulEqV(Array<fftw_complex>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -544,7 +514,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place multiplication, a[i] *= b[i] (complex).
    */
-   template <>
    void mulEqV(Array<fftw_complex>& a, fftw_complex const & b)
    {
       const int n = a.capacity();
@@ -561,7 +530,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place multiplication, a[i][0] *= b (mixed)
    */
-   template <>
    void mulEqS(Array<fftw_complex>& a, double b)
    {
       const int n = a.capacity();
@@ -577,7 +545,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place division, a[i] /= b[i] (complex).
    */
-   template <>
    void divEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -598,7 +565,6 @@ namespace VecOp {
    /*
    * Vector-vector in-place division, a[i] /= b[i] (mixed).
    */
-   template <>
    void divEqV(Array<fftw_complex>& a, Array<double> const & b)
    {
       const int n = a.capacity();
@@ -613,7 +579,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place division, a[i] /= b (complex).
    */
-   template <>
    void divEqS(Array<fftw_complex>& a, fftw_complex b)
    {
       const int n = a.capacity();
@@ -633,7 +598,6 @@ namespace VecOp {
    /*
    * Vector-scalar in-place division, a[i] /= b (mixed).
    */
-   template <>
    void divEqS(Array<fftw_complex>& a, double b)
    {
       const int n = a.capacity();

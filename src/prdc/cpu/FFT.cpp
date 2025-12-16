@@ -21,7 +21,7 @@ namespace Cpu {
 
    // Planning functions, explicit specializations.
 
-   template<>
+   template <>
    void FFT<1>::makePlans(RField<1>& rField, RFieldDft<1>& kField, 
                           CField<1>& cFieldIn, CField<1>& cFieldOut)
    {

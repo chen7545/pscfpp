@@ -63,10 +63,10 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
+      VecOp::eqV(outReal, inReal);
       checkEqualReal(outReal, inReal);
 
-      VecOp::eqS<Array, double>(outReal, scalarReal);
+      VecOp::eqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = scalarReal;
       }
@@ -79,13 +79,13 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::addVV<Array, double>(outReal, inReal, inReal2);
+      VecOp::addVV(outReal, inReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] + inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::addVS<Array, double>(outReal, inReal, scalarReal);
+      VecOp::addVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] + scalarReal;
       }
@@ -96,13 +96,13 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::subVV<Array, double>(outReal, inReal, inReal2);
+      VecOp::subVV(outReal, inReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] - inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::subVS<Array, double>(outReal, inReal, scalarReal);
+      VecOp::subVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] - scalarReal;
       }
@@ -114,13 +114,13 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::mulVV<Array, double>(outReal, inReal, inReal2);
+      VecOp::mulVV(outReal, inReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] * inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::mulVS<Array, double>(outReal, inReal, scalarReal);
+      VecOp::mulVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] * scalarReal;
       }
@@ -131,13 +131,13 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::divVV<Array, double>(outReal, inReal, inReal2);
+      VecOp::divVV(outReal, inReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] / inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::divVS<Array, double>(outReal, inReal, scalarReal);
+      VecOp::divVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i] / scalarReal;
       }
@@ -149,7 +149,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::expV<Array, double>(outReal, inReal);
+      VecOp::expV(outReal, inReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = exp(inReal[i]);
       }
@@ -161,16 +161,16 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::addEqV<Array, double>(outReal, inReal2);
+      VecOp::eqV(outReal, inReal);
+      VecOp::addEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] += inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::addEqS<Array, double>(outReal, scalarReal);
+      VecOp::eqV(outReal, inReal);
+      VecOp::addEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] += scalarReal;
@@ -184,16 +184,16 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::subEqV<Array, double>(outReal, inReal2);
+      VecOp::eqV(outReal, inReal);
+      VecOp::subEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] -= inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::subEqS<Array, double>(outReal, scalarReal);
+      VecOp::eqV(outReal, inReal);
+      VecOp::subEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] -= scalarReal;
@@ -206,16 +206,16 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::mulEqV<Array, double>(outReal, inReal2);
+      VecOp::eqV(outReal, inReal);
+      VecOp::mulEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] *= inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::mulEqS<Array, double>(outReal, scalarReal);
+      VecOp::eqV(outReal, inReal);
+      VecOp::mulEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] *= scalarReal;
@@ -228,16 +228,16 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::divEqV<Array, double>(outReal, inReal2);
+      VecOp::eqV(outReal, inReal);
+      VecOp::divEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] /= inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      VecOp::eqV<Array, double>(outReal, inReal);
-      VecOp::divEqS<Array, double>(outReal, scalarReal);
+      VecOp::eqV(outReal, inReal);
+      VecOp::divEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) { 
          refOutReal[i] = inReal[i];
          refOutReal[i] /= scalarReal;
