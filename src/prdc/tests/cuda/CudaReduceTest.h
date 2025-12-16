@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <prdc/cuda/types.h>
+#include <pscf/cuda/cudaTypes.h>
 #include <prdc/cuda/Reduce.h>
 #include <pscf/cuda/CudaRandom.h>
 #include <pscf/cuda/DeviceArray.h>

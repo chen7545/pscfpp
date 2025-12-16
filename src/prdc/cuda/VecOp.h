@@ -8,13 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "types.h"
+#include <pscf/math/VecOp.h>        // general template declarations
+#include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/DeviceArray.h>
-#include <pscf/math/VecOp.h>
 
 namespace Pscf {
-// namespace Prdc {
-// namespace Cuda {
 
 /**
 * Functions that perform element-wise vector operations on the GPU.
@@ -1556,10 +1554,6 @@ void divEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
 /** @} */
 
 } // namespace VecOp
-
-// } // namespace Cuda
-// } // namespace Prdc
-
 } // namespace Pscf
 
 #include "VecOpMisc.h" // Ensure that if VecOp is included, so is VecOpMisc

@@ -8,13 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "types.h"
+#include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/DeviceArray.h>
 #include <util/containers/DArray.h>
 
 namespace Pscf {
-// namespace Prdc {
-// namespace Cuda {
 namespace VecOp {
 
 /*
@@ -253,9 +251,5 @@ void sqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
 void sqSqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
 
 } // namespace VecOp
-
-// } // namespace Cuda
-// } // namespace Prdc
-
 } // namespace Pscf
 #endif

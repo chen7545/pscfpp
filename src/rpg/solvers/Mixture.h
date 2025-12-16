@@ -10,7 +10,7 @@
 
 #include <rp/Mixture.h>           // base class template
 #include <rpg/system/Types.h>     // base class template argument
-#include <prdc/cuda/types.h>      // real and complex cuda data types
+#include <pscf/cuda/cudaTypes.h>      // real and complex cuda data types
 
 namespace Pscf {
 namespace Rpg {

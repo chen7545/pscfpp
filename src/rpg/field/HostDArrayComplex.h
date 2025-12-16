@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cuda/types.h>          // template parameter
+#include <pscf/cuda/cudaTypes.h>          // template parameter
 #include <pscf/cuda/HostDArray.h>     // base class
 
 namespace Pscf {

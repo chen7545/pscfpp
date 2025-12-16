@@ -9,7 +9,7 @@
 */
 
 #include <util/param/ParamComposite.h>    // base class
-#include <prdc/cuda/types.h>              // member
+#include <pscf/cuda/cudaTypes.h>              // member
 #include <pscf/math/IntVec.h>             // member
 #include <pscf/cuda/HostDArray.h>         // member
 #include <util/containers/DArray.h>       // member

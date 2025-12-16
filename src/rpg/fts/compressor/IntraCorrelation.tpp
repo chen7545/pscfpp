@@ -17,7 +17,7 @@
 
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/RField.h>
-#include <prdc/cuda/types.h>
+#include <pscf/cuda/cudaTypes.h>
 #include <prdc/crystal/shiftToMinimum.h>
 #include <prdc/crystal/UnitCell.h>
 

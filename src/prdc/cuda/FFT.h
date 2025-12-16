@@ -11,7 +11,6 @@
 #include "RField.h"
 #include "CField.h"
 #include "RFieldDft.h"
-#include "types.h"
 
 #include <pscf/math/IntVec.h>
 #include <util/global.h>

@@ -8,10 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cpu/FftwDArray.h>
-#include <prdc/cpu/complex.h>
-#include <pscf/math/IntVec.h>
-#include <util/global.h>
+#include <prdc/cpu/FftwDArray.h>    // base class
+#include <prdc/cpu/complex.h>       // alias
+#include <pscf/math/IntVec.h>       // member
 
 namespace Pscf {
 namespace Prdc {

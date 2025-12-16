@@ -5,7 +5,7 @@
 #include <test/UnitTestRunner.h>
 
 #include <rpg/solvers/Block.h>
-#include <prdc/cuda/types.h>
+#include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/DeviceArray.h>
 #include <util/math/Constants.h>
 

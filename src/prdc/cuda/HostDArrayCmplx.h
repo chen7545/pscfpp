@@ -9,7 +9,7 @@
 */
 
 #include <pscf/cuda/HostDArray.h>
-#include <prdc/cuda/types.h>
+#include <pscf/cuda/cudaTypes.h>
 
 namespace Pscf {
 namespace Prdc {

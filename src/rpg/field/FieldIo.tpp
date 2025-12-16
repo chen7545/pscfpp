@@ -18,7 +18,7 @@
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cuda/RFieldComparison.h>
-#include <prdc/cuda/types.h>
+#include <pscf/cuda/cudaTypes.h>
 #include <prdc/cuda/complex.h>
 #include <prdc/cuda/resources.h>
 

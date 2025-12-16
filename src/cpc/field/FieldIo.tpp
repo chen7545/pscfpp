@@ -17,7 +17,6 @@
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/CFieldComparison.h>
 #include <prdc/cpu/complex.h>
-#include <prdc/cpu/types.h>
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>

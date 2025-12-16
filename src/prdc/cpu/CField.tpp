@@ -9,6 +9,7 @@
 */
 
 #include "CField.h"
+#include <util/global.h>
 
 namespace Pscf {
 namespace Prdc {

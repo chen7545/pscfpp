@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cuda/types.h>
+#include <pscf/cuda/cudaTypes.h>
 #include <pscf/math/arithmetic.h>
 #include <complex>
 
@@ -24,7 +24,7 @@ namespace Pscf {
    */
 
    /*
-   * Types cudaComplex and cudaReal are defined in prdc/cuda/types.h
+   * Types cudaComplex and cudaReal are defined in pscf/cuda/cudaTypes.h
    * (in the Prdc::Cuda namespace) as aliases for cufft complex and 
    * real types. They may be either single or double precision.
    */

@@ -9,7 +9,7 @@
 */
 
 #include <pscf/solvers/PolymerTmpl.h>     // base class template
-#include <prdc/cuda/types.h>              // data types
+#include <pscf/cuda/cudaTypes.h>              // data types
 #include <util/containers/FSArray.h>      // member template
 
 // Forward declarations

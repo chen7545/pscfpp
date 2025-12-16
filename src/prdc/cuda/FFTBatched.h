@@ -8,9 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "RField.h"
-#include "RFieldDft.h"
-#include "types.h"
+//#include "RField.h"
+//#include "RFieldDft.h"
+#include <pscf/cuda/cudaTypes.h>
+#include <pscf/cuda/DeviceArray.h>
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 

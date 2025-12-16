@@ -10,7 +10,7 @@
 
 #include "Compressor.h"                          // base class argument
 #include <pscf/cuda/DeviceArray.h>               // base class argument
-#include <prdc/cuda/types.h>                     // base class argument
+#include <pscf/cuda/cudaTypes.h>                     // base class argument
 #include <pscf/iterator/AmIteratorTmpl.h>        // base class template
 
 #include <rpg/fts/compressor/IntraCorrelation.h> // member

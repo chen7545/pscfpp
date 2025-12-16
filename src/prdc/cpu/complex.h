@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/math/arithmetic.h>
+#include <pscf/math/arithmetic.h>  // General template declarations
 
 #include <fftw3.h>
 #include <complex>

@@ -8,10 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "types.h"
-#include <pscf/cuda/DeviceArray.h>
-#include <pscf/cuda/HostDArray.h>
-#include <pscf/math/IntVec.h>
+#include <pscf/cuda/DeviceArray.h>    // base class template
+#include <pscf/cuda/cudaTypes.h>      // base class argument
+#include <pscf/math/IntVec.h>         // member
+
+#include <pscf/cuda/HostDArray.h>     
 #include <util/global.h>
 
 namespace Pscf {
