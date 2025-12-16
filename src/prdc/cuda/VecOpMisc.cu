@@ -13,8 +13,8 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cuda {
+// namespace Prdc {
+// namespace Cuda {
 namespace VecOp {
 
 // CUDA kernels:
@@ -612,6 +612,6 @@ void sqSqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b)
 }
 
 } // namespace VecOp
-} // namespace Cuda
-} // namespace Prdc
+// } // namespace Cuda
+// } // namespace Prdc
 } // namespace Pscf

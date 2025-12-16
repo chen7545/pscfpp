@@ -23,8 +23,6 @@ namespace Rpg {
    template <int D> class System;
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Rpg implementation of the Anderson Mixing iterator.

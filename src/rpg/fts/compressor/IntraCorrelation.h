@@ -107,7 +107,7 @@ namespace Rpg {
 #include <pscf/correlation/Mixture.h>   
 namespace Pscf {
    namespace Correlation {
-      extern template class Mixture<Prdc::Cuda::cudaReal>;
+      extern template class Mixture<cudaReal>;
    }
    namespace Rpg {
       extern template class IntraCorrelation<1>;

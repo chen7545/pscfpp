@@ -27,10 +27,10 @@ private:
 
    // Error tolerance for equality
    #ifdef SINGLE_PRECISION
-   constexpr static Cuda::cudaReal tolerance_ = 1E-5;
+   constexpr static cudaReal tolerance_ = 1E-5;
    #else
    #ifdef DOUBLE_PRECISION
-   constexpr static Cuda::cudaReal tolerance_ = 1E-10;
+   constexpr static cudaReal tolerance_ = 1E-10;
    #endif
    #endif
 
@@ -66,11 +66,11 @@ public:
          }
 
          // Generate test data, normally distributed about 0.5 with stdev = 2
-         DeviceArray<Cuda::cudaReal> num(n);
-         rand_.normal(num, (Cuda::cudaReal)2.0, (Cuda::cudaReal)0.5);
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)2.0, (cudaReal)0.5);
 
          // Copy test data to host
-         HostDArray<Cuda::cudaReal> num_h(n);
+         HostDArray<cudaReal> num_h(n);
          num_h = num;
 
          // Determine highest power of 2 less than n
@@ -95,7 +95,7 @@ public:
                num_h[i] += num_h[nReduced+i];
             }
          }
-         Cuda::cudaReal sumCPU = num_h[0];
+         cudaReal sumCPU = num_h[0];
          if (verbose() > 0) {
             timerCPU.stop();
             Log::file() << "CPU wall time: " << Dbl(timerCPU.time()) 
@@ -107,7 +107,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         Cuda::cudaReal sumGPU = Cuda::Reduce::sum(num);
+         cudaReal sumGPU = Cuda::Reduce::sum(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -143,11 +143,11 @@ public:
          }
 
          // Generate test data, normally distributed about 7.0 with stdev = 3
-         DeviceArray<Cuda::cudaReal> num(n);
-         rand_.normal(num, (Cuda::cudaReal)3.0, (Cuda::cudaReal)7.0);
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)3.0, (cudaReal)7.0);
 
          // Copy test data to host
-         HostDArray<Cuda::cudaReal> num_h(n);
+         HostDArray<cudaReal> num_h(n);
          num_h = num;
 
          // Find max on host
@@ -155,7 +155,7 @@ public:
          if (verbose() > 0) {
             timerCPU.start();
          }
-         Cuda::cudaReal maxCPU = num_h[0];
+         cudaReal maxCPU = num_h[0];
          for (int i = 1; i < n; i++) {
             if (num_h[i] > maxCPU) maxCPU = num_h[i];
          }
@@ -170,7 +170,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         Cuda::cudaReal maxGPU = Cuda::Reduce::max(num);
+         cudaReal maxGPU = Cuda::Reduce::max(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -203,11 +203,11 @@ public:
          }
 
          // Generate test data, normally distributed about -1.0 with stdev = 3
-         DeviceArray<Cuda::cudaReal> num(n);
-         rand_.normal(num, (Cuda::cudaReal)3.0, (Cuda::cudaReal)-1.0);
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)3.0, (cudaReal)-1.0);
 
          // Copy test data to host
-         HostDArray<Cuda::cudaReal> num_h(n);
+         HostDArray<cudaReal> num_h(n);
          num_h = num;
 
          // Find max on host
@@ -215,8 +215,8 @@ public:
          if (verbose() > 0) {
             timerCPU.start();
          }
-         Cuda::cudaReal maxCPU = fabs(num_h[0]);
-         Cuda::cudaReal val;
+         cudaReal maxCPU = fabs(num_h[0]);
+         cudaReal val;
          for (int i = 1; i < n; i++) {
             val = fabs(num_h[i]);
             if (val > maxCPU) maxCPU = val;
@@ -232,7 +232,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         Cuda::cudaReal maxGPU = Cuda::Reduce::maxAbs(num);
+         cudaReal maxGPU = Cuda::Reduce::maxAbs(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -265,11 +265,11 @@ public:
          }
 
          // Generate test data, normally distributed about 7.0 with stdev = 3
-         DeviceArray<Cuda::cudaReal> num(n);
-         rand_.normal(num, (Cuda::cudaReal)3.0, (Cuda::cudaReal)7.0);
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)3.0, (cudaReal)7.0);
 
          // Copy test data to host
-         HostDArray<Cuda::cudaReal> num_h(n);
+         HostDArray<cudaReal> num_h(n);
          num_h = num;
 
          // Find min on host
@@ -277,7 +277,7 @@ public:
          if (verbose() > 0) {
             timerCPU.start();
          }
-         Cuda::cudaReal minCPU = num_h[0];
+         cudaReal minCPU = num_h[0];
          for (int i = 1; i < n; i++) {
             if (num_h[i] < minCPU) minCPU = num_h[i];
          }
@@ -292,7 +292,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         Cuda::cudaReal minGPU = Cuda::Reduce::min(num);
+         cudaReal minGPU = Cuda::Reduce::min(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -325,11 +325,11 @@ public:
          }
 
          // Generate test data, normally distributed about -1.0 with stdev = 3
-         DeviceArray<Cuda::cudaReal> num(n);
-         rand_.normal(num, (Cuda::cudaReal)3.0, (Cuda::cudaReal)-1.0);
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)3.0, (cudaReal)-1.0);
 
          // Copy test data to host
-         HostDArray<Cuda::cudaReal> num_h(n);
+         HostDArray<cudaReal> num_h(n);
          num_h = num;
 
          // Find min on host
@@ -337,8 +337,8 @@ public:
          if (verbose() > 0) {
             timerCPU.start();
          }
-         Cuda::cudaReal minCPU = fabs(num_h[0]);
-         Cuda::cudaReal val;
+         cudaReal minCPU = fabs(num_h[0]);
+         cudaReal val;
          for (int i = 1; i < n; i++) {
             val = fabs(num_h[i]);
             if (val < minCPU) minCPU = val;
@@ -354,7 +354,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         Cuda::cudaReal minGPU = Cuda::Reduce::minAbs(num);
+         cudaReal minGPU = Cuda::Reduce::minAbs(num);
          
          // Check answer
          if (verbose() > 0) {
@@ -387,12 +387,12 @@ public:
          }
 
          // Generate test data, normally distributed
-         DeviceArray<Cuda::cudaReal> a(n), b(n);
-         rand_.normal(a, (Cuda::cudaReal)2.0, (Cuda::cudaReal)0.5);
-         rand_.normal(b, (Cuda::cudaReal)1.0, (Cuda::cudaReal)2.0);
+         DeviceArray<cudaReal> a(n), b(n);
+         rand_.normal(a, (cudaReal)2.0, (cudaReal)0.5);
+         rand_.normal(b, (cudaReal)1.0, (cudaReal)2.0);
 
          // Copy test data to host
-         HostDArray<Cuda::cudaReal> a_h(n), b_h(n);
+         HostDArray<cudaReal> a_h(n), b_h(n);
          a_h = a;
          b_h = b;
 
@@ -419,7 +419,7 @@ public:
                a_h[i] += a_h[nReduced+i];
             }
          }
-         Cuda::cudaReal ipCPU = a_h[0];
+         cudaReal ipCPU = a_h[0];
          if (verbose() > 0) {
             timerCPU.stop();
             Log::file() << "CPU wall time:     " << Dbl(timerCPU.time()) 
@@ -431,7 +431,7 @@ public:
          if (verbose() > 0) {
             timerGPU.start();
          }
-         Cuda::cudaReal ipGPU = Cuda::Reduce::innerProduct(a, b);
+         cudaReal ipGPU = Cuda::Reduce::innerProduct(a, b);
          
          // Check answer
          if (verbose() > 0) {

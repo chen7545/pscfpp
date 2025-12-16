@@ -35,15 +35,15 @@ private:
    const static int n = 2048; 
 
    // Input and output arrays, real and complex
-   HostDArray<Cuda::cudaReal> hInReal, hInReal2, hOutReal, hOutReal2;
-   DeviceArray<Cuda::cudaReal> dInReal, dInReal2, dOutReal, dOutReal2;
+   HostDArray<cudaReal> hInReal, hInReal2, hOutReal, hOutReal2;
+   DeviceArray<cudaReal> dInReal, dInReal2, dOutReal, dOutReal2;
 
-   HostDArray<Cuda::cudaComplex> hInComplex, hInComplex2, hOutComplex;
-   DeviceArray<Cuda::cudaComplex> dInComplex, dInComplex2, dOutComplex;
+   HostDArray<cudaComplex> hInComplex, hInComplex2, hOutComplex;
+   DeviceArray<cudaComplex> dInComplex, dInComplex2, dOutComplex;
 
    // Input scalars, real and complex
-   Cuda::cudaReal scalarReal;
-   Cuda::cudaComplex scalarComplex;
+   cudaReal scalarReal;
+   cudaComplex scalarComplex;
 
    // Input and outputs using standard types, for comparison
    DArray<numType> refInReal, refInReal2, refOutReal, refOutReal2;
@@ -118,20 +118,20 @@ public:
    void tearDown()
    {}
 
-   // Test Cuda::VecOp::eqV and Cuda::VecOp::eqS
+   // Test VecOp::eqV and VecOp::eqS
    void testEq()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test eqV ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
+      VecOp::eqV(dOutReal, dInReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::eqV(dOutComplex, dInComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -139,14 +139,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test eqS ~~~
-      Cuda::VecOp::eqS(dOutReal, scalarReal);
+      VecOp::eqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqS(dOutComplex, scalarComplex);
+      VecOp::eqS(dOutComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refScalarComplex;
@@ -154,14 +154,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test eqV using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal2, n/4, n/4, n/2);
+      VecOp::eqV(dOutReal, dInReal2, n/4, n/4, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n/2; i++) { // edit reference array
          refOutReal[i+(n/4)] = refInReal2[i+(n/4)];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex2, n/4, n/4, n/2);
+      VecOp::eqV(dOutComplex, dInComplex2, n/4, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // edit reference array
          refOutComplex[i+(n/4)] = refInComplex2[i+(n/4)];
@@ -169,17 +169,17 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test eqS using partial arrays ~~~
-      Cuda::VecOp::eqS(dOutReal, scalarReal*2.0, n/4, n/2);
+      VecOp::eqS(dOutReal, scalarReal*2.0, n/4, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n/2; i++) { // edit reference array
          refOutReal[i+(n/4)] = refScalarReal*2.0;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::cudaComplex scalarComplex2;
+      cudaComplex scalarComplex2;
       scalarComplex2.x = scalarComplex.x * 2.0;
       scalarComplex2.y = scalarComplex.y * 2.0;
-      Cuda::VecOp::eqS(dOutComplex, scalarComplex2, n/4, n/2);
+      VecOp::eqS(dOutComplex, scalarComplex2, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // edit reference array
          refOutComplex[i+(n/4)] = refScalarComplex * 2.0;
@@ -187,60 +187,60 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::addVV and Cuda::VecOp::addVS
+   // Test VecOp::addVV and VecOp::addVS
    void testAdd()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test addVV ~~~
-      Cuda::VecOp::addVV(dOutReal, dInReal, dInReal2);
+      VecOp::addVV(dOutReal, dInReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] + refInReal2[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::addVV(dOutComplex, dInComplex, dInComplex2);
+      VecOp::addVV(dOutComplex, dInComplex, dInComplex2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] + refInComplex2[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::addVV(dOutComplex, dInReal, dInComplex);
+      VecOp::addVV(dOutComplex, dInReal, dInComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInReal[i] + refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex); 
 
-      Cuda::VecOp::addVV(dOutComplex, dInComplex, dInReal);
+      VecOp::addVV(dOutComplex, dInComplex, dInReal);
       hOutComplex = dOutComplex; 
       checkEqualComplex(hOutComplex, refOutComplex); 
 
       // ~~~ Test addVS ~~~
-      Cuda::VecOp::addVS(dOutReal, dInReal, scalarReal);
+      VecOp::addVS(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] + refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::addVS(dOutComplex, dInComplex, scalarComplex);
+      VecOp::addVS(dOutComplex, dInComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] + refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::addVS(dOutComplex, dInReal, scalarComplex);
+      VecOp::addVS(dOutComplex, dInReal, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInReal[i] + refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::addVS(dOutComplex, dInComplex, scalarReal);
+      VecOp::addVS(dOutComplex, dInComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] + refScalarReal;
@@ -248,54 +248,54 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test addVV using partial arrays ~~~
-      Cuda::VecOp::addVV(dOutReal, dInReal, dInReal, n/2, 0, n/4, n/2);
+      VecOp::addVV(dOutReal, dInReal, dInReal, n/2, 0, n/4, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutReal[i+(n/2)] = refInReal[i] + refInReal[i+(n/4)];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::addVV(dOutComplex, dInComplex, dInComplex, n/2, 0, n/4, n/2);
+      VecOp::addVV(dOutComplex, dInComplex, dInComplex, n/2, 0, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i+(n/2)] = refInComplex[i] + refInComplex[i+(n/4)];
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::addVV(dOutComplex, dInReal2, dInComplex, n/2, 0, n/4, n/2);
+      VecOp::addVV(dOutComplex, dInReal2, dInComplex, n/2, 0, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i+(n/2)] = refInReal2[i] + refInComplex[i+(n/4)];
       }
       checkEqualComplex(hOutComplex, refOutComplex); 
 
-      Cuda::VecOp::addVV(dOutComplex, dInComplex, dInReal2, n/2, n/4, 0, n/2);
+      VecOp::addVV(dOutComplex, dInComplex, dInReal2, n/2, n/4, 0, n/2);
       hOutComplex = dOutComplex; 
       checkEqualComplex(hOutComplex, refOutComplex); 
 
       // ~~~ Test addVS using partial arrays ~~~
-      Cuda::VecOp::addVS(dOutReal, dInReal2, scalarReal, n/4, 0, n/4);
+      VecOp::addVS(dOutReal, dInReal2, scalarReal, n/4, 0, n/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n/4; i++) { // get reference array
          refOutReal[i+(n/4)] = refInReal2[i] + refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::addVS(dOutComplex, dInComplex2, scalarComplex, n/4, 0, n/4);
+      VecOp::addVS(dOutComplex, dInComplex2, scalarComplex, n/4, 0, n/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInComplex2[i] + refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::addVS(dOutComplex, dInReal2, scalarComplex, n/4, 0, n/4);
+      VecOp::addVS(dOutComplex, dInReal2, scalarComplex, n/4, 0, n/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInReal2[i] + refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::addVS(dOutComplex, dInComplex2, scalarReal, n/4, 0, n/4);
+      VecOp::addVS(dOutComplex, dInComplex2, scalarReal, n/4, 0, n/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInComplex2[i] + refScalarReal;
@@ -303,34 +303,34 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::subVV and Cuda::VecOp::subVS
+   // Test VecOp::subVV and VecOp::subVS
    void testSub()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test subVV ~~~
-      Cuda::VecOp::subVV(dOutReal, dInReal, dInReal2);
+      VecOp::subVV(dOutReal, dInReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] - refInReal2[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::subVV(dOutComplex, dInComplex, dInComplex2);
+      VecOp::subVV(dOutComplex, dInComplex, dInComplex2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] - refInComplex2[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::subVV(dOutComplex, dInReal, dInComplex);
+      VecOp::subVV(dOutComplex, dInReal, dInComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInReal[i] - refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex); 
 
-      Cuda::VecOp::subVV(dOutComplex, dInComplex, dInReal);
+      VecOp::subVV(dOutComplex, dInComplex, dInReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] - refInReal[i];
@@ -338,28 +338,28 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test subVS ~~~
-      Cuda::VecOp::subVS(dOutReal, dInReal, scalarReal);
+      VecOp::subVS(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] - refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::subVS(dOutComplex, dInComplex, scalarComplex);
+      VecOp::subVS(dOutComplex, dInComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] - refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::subVS(dOutComplex, dInReal, scalarComplex);
+      VecOp::subVS(dOutComplex, dInReal, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInReal[i] - refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::subVS(dOutComplex, dInComplex, scalarReal);
+      VecOp::subVS(dOutComplex, dInComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] - refScalarReal;
@@ -367,28 +367,28 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test subVV using partial arrays ~~~
-      Cuda::VecOp::subVV(dOutReal, dInReal2, dInReal, n/4, n/4, 0, n*3/4);
+      VecOp::subVV(dOutReal, dInReal2, dInReal, n/4, n/4, 0, n*3/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutReal[i+(n/4)] = refInReal2[i+(n/4)] - refInReal[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::subVV(dOutComplex, dInComplex2, dInComplex, n/4, n/4, 0, n*3/4);
+      VecOp::subVV(dOutComplex, dInComplex2, dInComplex, n/4, n/4, 0, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInComplex2[i+(n/4)] - refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::subVV(dOutComplex, dInReal2, dInComplex, n/4, n/4, 0, n*3/4);
+      VecOp::subVV(dOutComplex, dInReal2, dInComplex, n/4, n/4, 0, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInReal2[i+(n/4)] - refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex); 
 
-      Cuda::VecOp::subVV(dOutComplex, dInComplex, dInReal2, n/4, n/4, 0, n*3/4);
+      VecOp::subVV(dOutComplex, dInComplex, dInReal2, n/4, n/4, 0, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInComplex[i+(n/4)] - refInReal2[i];
@@ -396,28 +396,28 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test subVS using partial arrays ~~~
-      Cuda::VecOp::subVS(dOutReal, dInReal2, scalarReal, 0, n/2, n/2);
+      VecOp::subVS(dOutReal, dInReal2, scalarReal, 0, n/2, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutReal[i] = refInReal2[i+(n/2)] - refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::subVS(dOutComplex, dInComplex2, scalarComplex, 0, n/2, n/2);
+      VecOp::subVS(dOutComplex, dInComplex2, scalarComplex, 0, n/2, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i] = refInComplex2[i+(n/2)] - refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::subVS(dOutComplex, dInReal2, scalarComplex, 0, n/2, n/2);
+      VecOp::subVS(dOutComplex, dInReal2, scalarComplex, 0, n/2, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i] = refInReal2[i+(n/2)] - refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::subVS(dOutComplex, dInComplex2, scalarReal, 0, n/2, n/2);
+      VecOp::subVS(dOutComplex, dInComplex2, scalarReal, 0, n/2, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i] = refInComplex2[i+(n/2)] - refScalarReal;
@@ -425,60 +425,60 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::mulVV and Cuda::VecOp::mulVS
+   // Test VecOp::mulVV and VecOp::mulVS
    void testMul()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test mulVV ~~~
-      Cuda::VecOp::mulVV(dOutReal, dInReal, dInReal2);
+      VecOp::mulVV(dOutReal, dInReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] * refInReal2[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::mulVV(dOutComplex, dInComplex, dInComplex2);
+      VecOp::mulVV(dOutComplex, dInComplex, dInComplex2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] * refInComplex2[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::mulVV(dOutComplex, dInReal, dInComplex);
+      VecOp::mulVV(dOutComplex, dInReal, dInComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInReal[i] * refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex); 
 
-      Cuda::VecOp::mulVV(dOutComplex, dInComplex, dInReal);
+      VecOp::mulVV(dOutComplex, dInComplex, dInReal);
       hOutComplex = dOutComplex;
       checkEqualComplex(hOutComplex, refOutComplex); 
 
       // ~~~ Test mulVS ~~~
-      Cuda::VecOp::mulVS(dOutReal, dInReal, scalarReal);
+      VecOp::mulVS(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] * refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::mulVS(dOutComplex, dInComplex, scalarComplex);
+      VecOp::mulVS(dOutComplex, dInComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] * refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::mulVS(dOutComplex, dInReal, scalarComplex);
+      VecOp::mulVS(dOutComplex, dInReal, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInReal[i] * refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::mulVS(dOutComplex, dInComplex, scalarReal);
+      VecOp::mulVS(dOutComplex, dInComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] * refScalarReal;
@@ -486,54 +486,54 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test mulVV using partial arrays ~~~
-      Cuda::VecOp::mulVV(dOutReal, dInReal, dInReal, n/2, n/4, 0, n/2);
+      VecOp::mulVV(dOutReal, dInReal, dInReal, n/2, n/4, 0, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutReal[i+(n/2)] = refInReal[i+(n/4)] * refInReal[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::mulVV(dOutComplex, dInComplex, dInComplex, n/2, n/4, 0, n/2);
+      VecOp::mulVV(dOutComplex, dInComplex, dInComplex, n/2, n/4, 0, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i+(n/2)] = refInComplex[i+(n/4)] * refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::mulVV(dOutComplex, dInReal2, dInComplex, n/2, n/4, 0, n/2);
+      VecOp::mulVV(dOutComplex, dInReal2, dInComplex, n/2, n/4, 0, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i+(n/2)] = refInReal2[i+(n/4)] * refInComplex[i];
       }
       checkEqualComplex(hOutComplex, refOutComplex); 
 
-      Cuda::VecOp::mulVV(dOutComplex, dInComplex, dInReal2, n/2, 0, n/4, n/2);
+      VecOp::mulVV(dOutComplex, dInComplex, dInReal2, n/2, 0, n/4, n/2);
       hOutComplex = dOutComplex;
       checkEqualComplex(hOutComplex, refOutComplex); 
 
       // ~~~ Test mulVS using partial arrays ~~~
-      Cuda::VecOp::mulVS(dOutReal, dInReal2, scalarReal, 0, n/4, n*3/4);
+      VecOp::mulVS(dOutReal, dInReal2, scalarReal, 0, n/4, n*3/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutReal[i] = refInReal2[i+(n/4)] * refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::mulVS(dOutComplex, dInComplex2, scalarComplex, 0, n/4, n*3/4);
+      VecOp::mulVS(dOutComplex, dInComplex2, scalarComplex, 0, n/4, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i] = refInComplex2[i+(n/4)] * refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::mulVS(dOutComplex, dInReal2, scalarComplex, 0, n/4, n*3/4);
+      VecOp::mulVS(dOutComplex, dInReal2, scalarComplex, 0, n/4, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i] = refInReal2[i+(n/4)] * refScalarComplex;
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::mulVS(dOutComplex, dInComplex2, scalarReal, 0, n/4, n*3/4);
+      VecOp::mulVS(dOutComplex, dInComplex2, scalarReal, 0, n/4, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i] = refInComplex2[i+(n/4)] * refScalarReal;
@@ -541,20 +541,20 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::divVV and Cuda::VecOp::divVS
+   // Test VecOp::divVV and VecOp::divVS
    void testDiv()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test divVV ~~~
-      Cuda::VecOp::divVV(dOutReal, dInReal, dInReal2);
+      VecOp::divVV(dOutReal, dInReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] / refInReal2[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::divVV(dOutComplex, dInComplex, dInReal2);
+      VecOp::divVV(dOutComplex, dInComplex, dInReal2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] / refInReal2[i];
@@ -562,14 +562,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex); 
 
       // ~~~ Test divVS ~~~
-      Cuda::VecOp::divVS(dOutReal, dInReal, scalarReal);
+      VecOp::divVS(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] / refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::divVS(dOutComplex, dInComplex, scalarReal);
+      VecOp::divVS(dOutComplex, dInComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i] / refScalarReal;
@@ -577,14 +577,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test divVV using partial arrays ~~~
-      Cuda::VecOp::divVV(dOutReal, dInReal2, dInReal2, 0, n/4, 0, n*3/4);
+      VecOp::divVV(dOutReal, dInReal2, dInReal2, 0, n/4, 0, n*3/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutReal[i] = refInReal2[i+(n/4)] / refInReal2[i];
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::divVV(dOutComplex, dInComplex2, dInReal2, 0, n/4, 0, n*3/4);
+      VecOp::divVV(dOutComplex, dInComplex2, dInReal2, 0, n/4, 0, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n*3/4; i++) { // get reference array
          refOutComplex[i] = refInComplex2[i+(n/4)] / refInReal2[i];
@@ -592,14 +592,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex); 
 
       // ~~~ Test divVS using partial arrays ~~~
-      Cuda::VecOp::divVS(dOutReal, dInReal2, scalarReal, n/4, n/2, n/2);
+      VecOp::divVS(dOutReal, dInReal2, scalarReal, n/4, n/2, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutReal[i+(n/4)] = refInReal2[i+(n/2)] / refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::divVS(dOutComplex, dInComplex2, scalarReal, n/4, n/2, n/2);
+      VecOp::divVS(dOutComplex, dInComplex2, scalarReal, n/4, n/2, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/2; i++) { // get reference array
          refOutComplex[i+(n/4)] = refInComplex2[i+(n/2)] / refScalarReal;
@@ -607,20 +607,20 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::expV
+   // Test VecOp::expV
    void testExp()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test using full arrays ~~~
-      Cuda::VecOp::expV(dOutReal, dInReal);
+      VecOp::expV(dOutReal, dInReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = exp(refInReal[i]);
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::expV(dOutComplex, dInComplex);
+      VecOp::expV(dOutComplex, dInComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = exp(refInComplex[i]);
@@ -628,14 +628,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test using partial arrays ~~~
-      Cuda::VecOp::expV(dOutReal, dInReal2, n/4, n/2, n/4);
+      VecOp::expV(dOutReal, dInReal2, n/4, n/2, n/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n/4; i++) { // get reference array
          refOutReal[i+(n/4)] = exp(refInReal2[i+(n/2)]);
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::expV(dOutComplex, dInComplex2, n/4, n/2, n/4);
+      VecOp::expV(dOutComplex, dInComplex2, n/4, n/2, n/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n/4; i++) { // get reference array
          refOutComplex[i+(n/4)] = exp(refInComplex2[i+(n/2)]);
@@ -643,14 +643,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::addEqV and Cuda::VecOp::addEqS
+   // Test VecOp::addEqV and VecOp::addEqS
    void testAddEq()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test addEqV ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::addEqV(dOutReal, dInReal2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::addEqV(dOutReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -658,8 +658,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqV(dOutComplex, dInComplex2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqV(dOutComplex, dInComplex2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -667,8 +667,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqV(dOutComplex, dInReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqV(dOutComplex, dInReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -677,8 +677,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test addEqS ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::addEqS(dOutReal, scalarReal);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::addEqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -686,8 +686,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqS(dOutComplex, scalarComplex);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqS(dOutComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -695,8 +695,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqS(dOutComplex, scalarReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqS(dOutComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -705,8 +705,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test addEqV using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::addEqV(dOutReal, dInReal2, 0, n/4, n/2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::addEqV(dOutReal, dInReal2, 0, n/4, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -716,8 +716,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqV(dOutComplex, dInComplex2, 0, n/4, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqV(dOutComplex, dInComplex2, 0, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -727,8 +727,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqV(dOutComplex, dInReal, 0, n/4, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqV(dOutComplex, dInReal, 0, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -739,8 +739,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test addEqS using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::addEqS(dOutReal, scalarReal, n/4, n*3/4);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::addEqS(dOutReal, scalarReal, n/4, n*3/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -750,8 +750,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqS(dOutComplex, scalarComplex, n/4, n*3/4);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqS(dOutComplex, scalarComplex, n/4, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -761,8 +761,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::addEqS(dOutComplex, scalarReal, n/4, n*3/4);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::addEqS(dOutComplex, scalarReal, n/4, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -773,14 +773,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::subEqV and Cuda::VecOp::subEqS
+   // Test VecOp::subEqV and VecOp::subEqS
    void testSubEq()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test subEqV ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::subEqV(dOutReal, dInReal2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::subEqV(dOutReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -788,8 +788,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqV(dOutComplex, dInComplex2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqV(dOutComplex, dInComplex2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -797,8 +797,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqV(dOutComplex, dInReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqV(dOutComplex, dInReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -807,8 +807,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test subEqS ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::subEqS(dOutReal, scalarReal);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::subEqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -816,8 +816,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqS(dOutComplex, scalarComplex);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqS(dOutComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -825,8 +825,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqS(dOutComplex, scalarReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqS(dOutComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -835,8 +835,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test subEqV using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::subEqV(dOutReal, dInReal2, n/2, 0, n/2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::subEqV(dOutReal, dInReal2, n/2, 0, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -846,8 +846,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqV(dOutComplex, dInComplex2, n/2, 0, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqV(dOutComplex, dInComplex2, n/2, 0, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -857,8 +857,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqV(dOutComplex, dInReal, n/2, 0, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqV(dOutComplex, dInReal, n/2, 0, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -869,8 +869,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test subEqS using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::subEqS(dOutReal, scalarReal, 0, n/2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::subEqS(dOutReal, scalarReal, 0, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -880,8 +880,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqS(dOutComplex, scalarComplex, 0, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqS(dOutComplex, scalarComplex, 0, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -891,8 +891,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::subEqS(dOutComplex, scalarReal, 0, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::subEqS(dOutComplex, scalarReal, 0, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -903,14 +903,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::mulEqV and Cuda::VecOp::mulEqS
+   // Test VecOp::mulEqV and VecOp::mulEqS
    void testMulEq()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test mulEqV ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::mulEqV(dOutReal, dInReal2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::mulEqV(dOutReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -918,8 +918,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqV(dOutComplex, dInComplex2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqV(dOutComplex, dInComplex2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -927,8 +927,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqV(dOutComplex, dInReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqV(dOutComplex, dInReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -937,8 +937,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test mulEqS ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::mulEqS(dOutReal, scalarReal);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::mulEqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -946,8 +946,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqS(dOutComplex, scalarComplex);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqS(dOutComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -955,8 +955,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqS(dOutComplex, scalarReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqS(dOutComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -965,8 +965,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test mulEqV using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::mulEqV(dOutReal, dInReal2, 0, n/2, n/2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::mulEqV(dOutReal, dInReal2, 0, n/2, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -976,8 +976,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqV(dOutComplex, dInComplex2, 0, n/2, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqV(dOutComplex, dInComplex2, 0, n/2, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -987,8 +987,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqV(dOutComplex, dInReal, 0, n/2, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqV(dOutComplex, dInReal, 0, n/2, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -999,8 +999,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test mulEqS using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::mulEqS(dOutReal, scalarReal, n/4, n/2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::mulEqS(dOutReal, scalarReal, n/4, n/2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -1010,8 +1010,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqS(dOutComplex, scalarComplex, n/4, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqS(dOutComplex, scalarComplex, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1021,8 +1021,8 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::mulEqS(dOutComplex, scalarReal, n/4, n/2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::mulEqS(dOutComplex, scalarReal, n/4, n/2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1033,14 +1033,14 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test Cuda::VecOp::divEqV and Cuda::VecOp::divEqS
+   // Test VecOp::divEqV and VecOp::divEqS
    void testDivEq()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test divEqV ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::divEqV(dOutReal, dInReal2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::divEqV(dOutReal, dInReal2);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -1048,8 +1048,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::divEqV(dOutComplex, dInReal2);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::divEqV(dOutComplex, dInReal2);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1058,8 +1058,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test divEqS ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::divEqS(dOutReal, scalarReal);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::divEqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -1067,8 +1067,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::divEqS(dOutComplex, scalarReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::divEqS(dOutComplex, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1077,8 +1077,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test divEqV using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::divEqV(dOutReal, dInReal2, n*3/4, 0, n/4);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::divEqV(dOutReal, dInReal2, n*3/4, 0, n/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -1088,8 +1088,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::divEqV(dOutComplex, dInReal2, n*3/4, 0, n/4);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::divEqV(dOutComplex, dInReal2, n*3/4, 0, n/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1100,8 +1100,8 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test divEqS using partial arrays ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::divEqS(dOutReal, scalarReal, 0, n*3/4);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::divEqS(dOutReal, scalarReal, 0, n*3/4);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -1111,8 +1111,8 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::divEqS(dOutComplex, scalarReal, 0, n*3/4);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::divEqS(dOutComplex, scalarReal, 0, n*3/4);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1129,7 +1129,7 @@ public:
       printMethod(TEST_FUNC);
 
       // ~~~ Test addVcVc ~~~
-      Cuda::VecOp::addVcVc(dOutReal, dInReal, scalarReal, dInReal2, -1.0);
+      VecOp::addVcVc(dOutReal, dInReal, scalarReal, dInReal2, -1.0);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] * refScalarReal - refInReal2[i];
@@ -1137,7 +1137,7 @@ public:
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test addVcVcVc ~~~
-      Cuda::VecOp::addVcVcVc(dOutReal, dInReal, scalarReal, dInReal2, -1.0, dInReal, 1.0);
+      VecOp::addVcVcVc(dOutReal, dInReal, scalarReal, dInReal2, -1.0, dInReal, 1.0);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] * (refScalarReal + 1) - refInReal2[i];
@@ -1145,8 +1145,8 @@ public:
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test addEqVc ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::addEqVc(dOutReal, dInReal2, scalarReal);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::addEqVc(dOutReal, dInReal2, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i];
@@ -1155,7 +1155,7 @@ public:
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test subVVS ~~~
-      Cuda::VecOp::subVVS(dOutReal, dInReal, dInReal2, scalarReal);
+      VecOp::subVVS(dOutReal, dInReal, dInReal2, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] - refInReal2[i] - refScalarReal;
@@ -1163,8 +1163,8 @@ public:
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test divEqVc ~~~
-      Cuda::VecOp::eqV(dOutComplex, dInComplex);
-      Cuda::VecOp::divEqVc(dOutComplex, dInReal2, scalarReal);
+      VecOp::eqV(dOutComplex, dInComplex);
+      VecOp::divEqVc(dOutComplex, dInReal2, scalarReal);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) { // get reference array
          refOutComplex[i] = refInComplex[i];
@@ -1173,7 +1173,7 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
 
       // ~~~ Test expVc ~~~
-      Cuda::VecOp::expVc(dOutReal, dInReal, scalarReal);
+      VecOp::expVc(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = exp(refInReal[i] * refScalarReal);
@@ -1181,7 +1181,7 @@ public:
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test eqVPair ~~~
-      Cuda::VecOp::eqVPair(dOutReal, dOutReal2, dInReal);
+      VecOp::eqVPair(dOutReal, dOutReal2, dInReal);
       hOutReal = dOutReal;
       hOutReal2 = dOutReal2;
       for (int i = 0; i < n; i++) { // get reference array
@@ -1192,7 +1192,7 @@ public:
       checkEqualReal(hOutReal2, refOutReal2);
 
       // ~~~ Test mulVVPair ~~~
-      Cuda::VecOp::mulVVPair(dOutReal, dOutReal2, dInReal, dInReal2, dInReal2);
+      VecOp::mulVVPair(dOutReal, dOutReal2, dInReal, dInReal2, dInReal2);
       hOutReal = dOutReal;
       hOutReal2 = dOutReal2;
       for (int i = 0; i < n; i++) { // get reference array
@@ -1203,40 +1203,40 @@ public:
       checkEqualReal(hOutReal2, refOutReal2);
 
       // ~~~ Test mulEqVPair ~~~
-      Cuda::VecOp::eqV(dOutReal, dInReal);
-      Cuda::VecOp::eqV(dOutReal2, dInReal2);
-      Cuda::VecOp::mulEqVPair(dOutReal, dOutReal2, dInReal2);
+      VecOp::eqV(dOutReal, dInReal);
+      VecOp::eqV(dOutReal2, dInReal2);
+      VecOp::mulEqVPair(dOutReal, dOutReal2, dInReal2);
       hOutReal = dOutReal;
       hOutReal2 = dOutReal2;
       checkEqualReal(hOutReal, refOutReal);   // same ref. array as above
       checkEqualReal(hOutReal2, refOutReal2); // same ref. array as above
 
       // ~~~ Test addVMany ~~~
-      DArray<DeviceArray<Cuda::cudaReal> const *> inVecs;
+      DArray<DeviceArray<cudaReal> const *> inVecs;
       inVecs.allocate(4);
       inVecs[0] = &dInReal;
       inVecs[1] = &dInReal2;
       inVecs[2] = &dInReal;
       inVecs[3] = &dInReal2;
-      Cuda::VecOp::addVMany(dOutReal, inVecs);
+      VecOp::addVMany(dOutReal, inVecs);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = 2 * (refInReal[i] + refInReal2[i]);
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      DArray<DeviceArray<Cuda::cudaReal> > inVecs2;
+      DArray<DeviceArray<cudaReal> > inVecs2;
       inVecs2.allocate(4);
       inVecs2[0].associate(dInReal, 0, dInReal.capacity());
       inVecs2[1].associate(dInReal2, 0, dInReal2.capacity());
       inVecs2[2].associate(dInReal, 0, dInReal.capacity());
       inVecs2[3].associate(dInReal2, 0, dInReal2.capacity());
-      Cuda::VecOp::addVMany(dOutReal, inVecs2);
+      VecOp::addVMany(dOutReal, inVecs2);
       hOutReal = dOutReal;
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test mulVMany ~~~
-      Cuda::VecOp::mulVMany(dOutReal, inVecs);
+      VecOp::mulVMany(dOutReal, inVecs);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = refInReal[i] * refInReal[i] * 
@@ -1244,12 +1244,12 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      Cuda::VecOp::mulVMany(dOutReal, inVecs2);
+      VecOp::mulVMany(dOutReal, inVecs2);
       hOutReal = dOutReal;
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test sqNormV ~~~
-      Cuda::VecOp::sqNormV(dOutReal, dInComplex);
+      VecOp::sqNormV(dOutReal, dInComplex);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = norm(refInComplex[i]);
@@ -1257,7 +1257,7 @@ public:
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test sqSqNormV ~~~
-      Cuda::VecOp::sqSqNormV(dOutReal, dInComplex);
+      VecOp::sqSqNormV(dOutReal, dInComplex);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) { // get reference array
          refOutReal[i] = std::pow(std::norm(refInComplex[i]), 2.0);
@@ -1265,7 +1265,7 @@ public:
       checkEqualReal(hOutReal, refOutReal);
    }
 
-   void checkEqualReal(HostDArray<Cuda::cudaReal>& a, DArray<numType>& b)
+   void checkEqualReal(HostDArray<cudaReal>& a, DArray<numType>& b)
    {
       int n = a.capacity();
       TEST_ASSERT(b.capacity() == n);
@@ -1276,7 +1276,7 @@ public:
       }
    }
 
-   void checkEqualComplex(HostDArray<Cuda::cudaComplex>& a, 
+   void checkEqualComplex(HostDArray<cudaComplex>& a, 
                           DArray<std::complex<numType> >& b)
    {
       int n = a.capacity();

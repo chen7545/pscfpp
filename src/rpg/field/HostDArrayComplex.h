@@ -21,7 +21,7 @@ namespace Rpg {
    *
    * Defined to add typedefs.
    */
-   class HostDArrayComplex : public HostDArray<Prdc::Cuda::cudaComplex>
+   class HostDArrayComplex : public HostDArray<cudaComplex>
    {
 
    public:
@@ -31,22 +31,22 @@ namespace Rpg {
       /**
       * Type of each element.
       */
-      typedef Prdc::Cuda::cudaComplex ValueType;
+      typedef cudaComplex ValueType;
 
       /**
       * Complex number type.
       */
-      using ComplexType = Prdc::Cuda::cudaComplex;
+      using ComplexType = cudaComplex;
 
       /**
       * Type of real or imaginary part of a Complex number.
       */
-      using RealType = Prdc::Cuda::cudaReal;
+      using RealType = cudaReal;
 
       /**
       * Base class type.
       */
-      typedef HostDArray<Prdc::Cuda::cudaComplex> Base;
+      typedef HostDArray<cudaComplex> Base;
 
       // Member functions
 

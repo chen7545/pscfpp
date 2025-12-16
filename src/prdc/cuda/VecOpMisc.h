@@ -13,8 +13,8 @@
 #include <util/containers/DArray.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cuda {
+// namespace Prdc {
+// namespace Cuda {
 namespace VecOp {
 
 /*
@@ -253,7 +253,9 @@ void sqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
 void sqSqNormV(DeviceArray<cudaReal>& a, DeviceArray<cudaComplex> const & b);
 
 } // namespace VecOp
-} // namespace Cuda
-} // namespace Prdc
+
+// } // namespace Cuda
+// } // namespace Prdc
+
 } // namespace Pscf
 #endif

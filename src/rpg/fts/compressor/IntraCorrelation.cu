@@ -10,7 +10,7 @@
 
 namespace Pscf {
    namespace Correlation {
-      template class Mixture<Prdc::Cuda::cudaReal>;
+      template class Mixture<cudaReal>;
    }
    namespace Rpg {
       template class IntraCorrelation<1>;

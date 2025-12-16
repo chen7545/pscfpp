@@ -11,8 +11,8 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cuda {
+// namespace Prdc {
+// namespace Cuda {
 namespace VecOp {
 
 // CUDA kernels:
@@ -2025,6 +2025,6 @@ void divEqS(DeviceArray<cudaComplex>& a, const cudaReal b,
 }
 
 } // namespace VecOp
-} // namespace Cuda
-} // namespace Prdc
+// } // namespace Cuda
+// } // namespace Prdc
 } // namespace Pscf

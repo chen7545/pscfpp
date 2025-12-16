@@ -140,6 +140,16 @@ namespace Pscf {
       void subVV(AT<VT> & a, AT<VT> const & b, AT<RT> const & c);
 
       /**
+      * Vector-vector subtraction, a[i] = b[i] - c[i] (mixed).
+      *
+      * \param a  array (LHS)
+      * \param b  real array (RHS)
+      * \param c  array (RHS)
+      */
+      template <template <typename> class AT, typename VT, typename RT>
+      void subVV(AT<VT> & a, AT<RT> const & b, AT<VT> const & c);
+
+      /**
       * Vector-scalar subtraction, a[i] = b[i] - c .
       *
       * \param a  array (LHS)
@@ -158,6 +168,16 @@ namespace Pscf {
       */
       template <template <typename> class AT, typename VT, typename RT>
       void subVS(AT<VT> & a, AT<VT> const & b, RT c);
+
+      /**
+      * Vector-scalar subtraction, a[i] = b[i] - c (mixed).
+      *
+      * \param a  array (LHS)
+      * \param b  real array (RHS)
+      * \param c  scalar (RHS)
+      */
+      template <template <typename> class AT, typename VT, typename RT>
+      void subVS(AT<VT> & a, AT<RT> const & b, VT c);
 
       // Multiplication
 
@@ -182,6 +202,16 @@ namespace Pscf {
       void mulVV(AT<VT> & a, AT<VT> const & b, AT<RT> const & c);
 
       /**
+      * Vector-vector multiplication, a[i] = b[i] * c[i] (mixed).
+      *
+      * \param a  array (LHS)
+      * \param b  real array (RHS)
+      * \param c  array (RHS)
+      */
+      template <template <typename> class AT, typename VT, typename RT>
+      void mulVV(AT<VT> & a, AT<RT> const & b, AT<VT> const & c);
+
+      /**
       * Vector-scalar multiplication, a[i] = b[i] * c .
       *
       * \param a  array (LHS)
@@ -200,6 +230,16 @@ namespace Pscf {
       */
       template <template <typename> class AT, typename VT, typename RT>
       void mulVS(AT<VT> & a, AT<VT> const & b, RT c);
+
+      /**
+      * Vector-scalar multiplication, a[i] = b[i] * c (mixed).
+      *
+      * \param a  array (LHS)
+      * \param b  real array (RHS)
+      * \param c  scalar (RHS)
+      */
+      template <template <typename> class AT, typename VT, typename RT>
+      void mulVS(AT<VT> & a, AT<RT> const & b, VT c);
 
       // Division
 

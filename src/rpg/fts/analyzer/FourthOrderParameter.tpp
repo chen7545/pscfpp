@@ -69,7 +69,7 @@ namespace Rpg {
          wc0_.allocate(dimensions);
          wK_.allocate(dimensions);
          prefactor_.allocate(kMeshDimensions_);
-         VecOp::eqS(prefactor_, 0);
+         VecOp::eqS(prefactor_, 0.0);
       }
 
       isInitialized_ = true;
