@@ -13,8 +13,10 @@
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
 #include <prdc/crystal/UnitCell.h>
-#include <prdc/cpu/Reduce.h>
+#include <prdc/cpu/FftwDArray.h>
+#include <prdc/cpu/RField.h>
 #include <prdc/cpu/VecOp.h>
+#include <prdc/cpu/Reduce.h>
 #include <pscf/interaction/Interaction.h>
 #include <pscf/iterator/NanException.h>
 #include <util/containers/RingBuffer.h>
@@ -338,7 +340,7 @@ namespace Rpc {
          for (int i = 0; i < nMonomer; ++i) {
             wAve = Reduce::sum(wFields[i]);
             wAve /= double(nMesh);
-            VecOp::subEqS(wFields[i], wAve);
+            VecOp::subEqS<Array, double>(wFields[i], wAve);
          }
 
          // Compute spatial averages of all concentration fields
@@ -357,7 +359,7 @@ namespace Rpc {
                chi = interaction_.chi(i,j);
                wAve += chi * cAve[j];
             }
-            VecOp::addEqS(wFields[i], wAve);
+            VecOp::addEqS<Array,double>(wFields[i], wAve);
          }
 
          // If external fields exist, add their spatial averages
@@ -366,7 +368,7 @@ namespace Rpc {
             for (int i = 0; i < nMonomer; ++i) {
                hAve = Reduce::sum(system().h().rgrid(i));
                hAve /= double(nMesh);
-               VecOp::addEqS(wFields[i], hAve);
+               VecOp::addEqS<Array,double>(wFields[i], hAve);
             }
          }
       }
