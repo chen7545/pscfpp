@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/containers/Array.h>
+#include <pscf/math/VecOp.h>
 #include <fftw3.h>
 
 // Forward declaration
@@ -17,8 +17,6 @@ namespace Util {
 }
 
 namespace Pscf {
-namespace Prdc {
-namespace Cpu {
 
    using namespace Util;
 
@@ -57,6 +55,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
+      template <>
       void eqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
@@ -65,6 +64,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
       */
+      template <>
       void eqV(Array<fftw_complex>& a, Array<double> const & b);
 
       /**
@@ -73,6 +73,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
+      template <>
       void eqS(Array<fftw_complex>& a, fftw_complex b);
 
       /**
@@ -81,6 +82,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
+      template <>
       void eqS(Array<fftw_complex>& a, double b);
 
       // Addition
@@ -92,6 +94,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
       */
+      template <>
       void addVV(Array<fftw_complex>& a,
                  Array<fftw_complex> const & b,
                  Array<fftw_complex> const & c);
@@ -103,6 +106,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real array (RHS)
       */
+      template <>
       void addVV(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  Array<double> const & c);
@@ -114,6 +118,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
       */
+      template <>
       void addVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  fftw_complex c);
@@ -125,6 +130,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real scalar (RHS)
       */
+      template <>
       void addVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  double c);
@@ -138,6 +144,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
       */
+      template <>
       void subVV(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  Array<fftw_complex> const & c);
@@ -149,6 +156,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
       */
+      template <>
       void subVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  fftw_complex c);
@@ -160,6 +168,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real scalar (RHS)
       */
+      template <>
       void subVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  double c);
@@ -173,6 +182,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
       */
+      template <>
       void mulVV(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  Array<fftw_complex> const & c);
@@ -184,6 +194,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real array (RHS)
       */
+      template <>
       void mulVV(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  Array<double> const & c);
@@ -195,6 +206,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
       */
+      template <>
       void mulVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  fftw_complex c);
@@ -206,6 +218,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real scalar (RHS)
       */
+      template <>
       void mulVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  double c);
@@ -219,6 +232,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
       */
+      template <>
       void divVV(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  Array<fftw_complex> const & c);
@@ -230,6 +244,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real array (RHS)
       */
+      template <>
       void divVV(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  Array<double> const & c);
@@ -241,6 +256,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
       */
+      template <>
       void divVS(Array<fftw_complex> & a,
                  Array<fftw_complex> const & b,
                  fftw_complex c);
@@ -252,6 +268,7 @@ namespace Cpu {
       * \param b  complex array (RHS)
       * \param c  real scalar (RHS)
       */
+      template <>
       void divVS(Array<fftw_complex> & a,
                        Array<fftw_complex> const & b,
                        double c);
@@ -264,6 +281,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
+      template <>
       void expV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
 
       // In-place addition
@@ -274,6 +292,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
+      template <>
       void addEqV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
 
       /*
@@ -282,6 +301,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
       */
+      template <>
       void addEqV(Array<fftw_complex> & a, Array<double> const & b);
 
       /*
@@ -290,6 +310,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
+      template <>
       void addEqS(Array<fftw_complex> & a, fftw_complex b);
 
       /**
@@ -298,6 +319,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
+      template <>
       void addEqS(Array<fftw_complex> & a, double b);
 
       // In-place subtraction
@@ -308,6 +330,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
+      template <>
       void subEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
@@ -316,6 +339,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
       */
+      template <>
       void subEqV(Array<fftw_complex>& a, Array<double> const & b);
 
       /**
@@ -324,6 +348,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
+      template <>
       void subEqS(Array<fftw_complex>& a, fftw_complex b);
 
       /**
@@ -332,6 +357,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
+      template <>
       void subEqS(Array<fftw_complex>& a, double b);
 
       // In-place multiplication
@@ -342,6 +368,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
+      template <>
       void mulEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
@@ -350,6 +377,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
       */
+      template <>
       void mulEqV(Array<fftw_complex>& a, Array<double> const & b);
 
       /**
@@ -358,6 +386,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
+      template <>
       void mulEqV(Array<fftw_complex>& a, fftw_complex const & b);
 
       /**
@@ -366,6 +395,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
+      template <>
       void mulEqS(Array<fftw_complex>& a, double b);
 
       // In-place division
@@ -376,6 +406,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
+      template <>
       void divEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
@@ -384,6 +415,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
       */
+      template <>
       void divEqV(Array<fftw_complex>& a, Array<double> const & b);
 
       /**
@@ -392,6 +424,7 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
+      template <>
       void divEqS(Array<fftw_complex>& a, fftw_complex b);
 
       /**
@@ -400,14 +433,13 @@ namespace Cpu {
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
+      template <>
       void divEqS(Array<fftw_complex>& a, double b);
 
    /** @} */
 
    } // namespace VecOp
 
-} // namespace Cpu
-} // namespace Prdc
 } // namespace Pscf
 
 #endif
