@@ -1,5 +1,5 @@
-#ifndef PRDC_CPU_REDUCE_H
-#define PRDC_CPU_REDUCE_H
+#ifndef PSCF_CPU_REDUCE_H
+#define PSCF_CPU_REDUCE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,13 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/containers/Array.h>
-
-using namespace Util;
+// Forward declaration
+namespace Util {
+   template <typename T> class Array;
+}
 
 namespace Pscf {
-namespace Prdc {
-namespace Cpu {
+
+   using namespace Util;
 
    /**
    * Functions that perform array reductions on the Cpu.
@@ -75,8 +76,6 @@ namespace Cpu {
 
    /** @} */
 
-} // Reduce
-} // Cpu
-} // Prdc
-} // Pscf
+   } // namespace Reduce
+} // namespace Pscf
 #endif

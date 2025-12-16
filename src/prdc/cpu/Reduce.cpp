@@ -10,8 +10,6 @@
 #include <cmath>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cpu {
 namespace Reduce {
 
    /*
@@ -105,6 +103,4 @@ namespace Reduce {
    }
 
 } // Reduce
-} // Cpu
-} // Prdc
 } // Pscf

@@ -1,5 +1,5 @@
-#ifndef PRDC_CUDA_REDUCE_H
-#define PRDC_CUDA_REDUCE_H
+#ifndef PSCF_CUDA_REDUCE_H
+#define PSCF_CUDA_REDUCE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -12,8 +12,6 @@
 #include <pscf/cuda/DeviceArray.h>
 
 namespace Pscf {
-namespace Prdc {
-namespace Cuda {
 
 /**
 * Functions that perform parallel reductions on the GPU.
@@ -103,8 +101,6 @@ namespace Reduce {
 
 /** @} */
 
-} // Reduce
-} // Cuda
-} // Prdc
-} // Pscf
+} // namespace Reduce
+} // namespace Pscf
 #endif
