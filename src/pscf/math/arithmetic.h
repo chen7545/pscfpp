@@ -321,7 +321,7 @@ namespace Pscf {
    template <typename RT>
    void add(std::complex<RT> & z, 
             std::complex<RT> const & a, RT const & b)
-   {  z += a; }
+   {  z = a + b; }
 
    /**
    * In place addition, a += b.
@@ -335,7 +335,7 @@ namespace Pscf {
    void addEq(T & a, T const & b);
 
    /**
-   * In place addition of double precision real numbers, a += b.
+   * In place addition a += b (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -347,7 +347,7 @@ namespace Pscf {
    {  a += b; }
 
    /**
-   * In place addition of double precision real numbers, a += b.
+   * In place addition a += b (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -359,7 +359,7 @@ namespace Pscf {
    {  a += b; }
 
    /**
-   * In place addition of std::complex numbers, a += b.
+   * In place addition a += b (std::complex<RT>)
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -371,7 +371,7 @@ namespace Pscf {
    {  a += b; }
 
    /**
-   * In place addition of a complex and real number, a += b.
+   * In place addition a += b (mixed).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -421,7 +421,7 @@ namespace Pscf {
    {  z = a - b; }
 
    /**
-   * Subtraction of real float numbers, z = a - b.
+   * Subtraction z = a - b (real float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -434,7 +434,7 @@ namespace Pscf {
    {  z = a - b; }
 
    /**
-   * Subtraction of std::complex numbers, z = a - b.
+   * Subtraction z = a - b (std::complex<RT>)
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -448,7 +448,7 @@ namespace Pscf {
    {  z = a - b; }
 
    /**
-   * Subtraction of a real number from a complex number, z = a - b.
+   * Subtraction of real from complex, z = a - b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -460,7 +460,7 @@ namespace Pscf {
    void sub(CT & z, CT const & a, RT const & b);
 
    /**
-   * Subtraction of a real number from a complex number, z = a - b.
+   * Subtraction of real from complex, z = a - b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -474,7 +474,7 @@ namespace Pscf {
    {  z = a - b; }
 
    /**
-   * In place subtraction of two numbers, a -= b.
+   * In place subtraction, a -= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -485,7 +485,7 @@ namespace Pscf {
    void subEq(T & a, T const & b);
 
    /**
-   * In place subtraction of double real numbers, a -= b.
+   * In place subtraction a -= b (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -497,7 +497,7 @@ namespace Pscf {
    {  a -= b; }
 
    /**
-   * In place subtraction of float real numbers, a -= b.
+   * In place subtraction, a -= b (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -509,7 +509,7 @@ namespace Pscf {
    {  a -= b; }
 
    /**
-   * In place subtraction of std::complex numbers, a -= b.
+   * In place subtraction a -= b (std::complex<RT>).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -521,7 +521,7 @@ namespace Pscf {
    {  a -= b; }
 
    /**
-   * In place subtraction of real number from a complex number, a -= b.
+   * In place subtraction of real from complex a -= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -532,7 +532,7 @@ namespace Pscf {
    void subEq(CT & a, RT const & b);
 
    /**
-   * In place subtraction of real from std::complex number, a -= b.
+   * In place subtraction of real from std::complex, a -= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -544,7 +544,7 @@ namespace Pscf {
    {  a -= b; }
 
    /**
-   * Return square of the absolute magnitude of a complex difference.
+   * Return square of absolute magnitude of a complex difference.
    *
    * This function returns |a-b|^2 for complex a and b.
    *
@@ -584,7 +584,7 @@ namespace Pscf {
    {  z = a * b; }
 
    /**
-   * Multiplication of float real numbers, z = a * b.
+   * Multiplication z = a * b (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -597,7 +597,7 @@ namespace Pscf {
    {  z = a * b; }
 
    /**
-   * Multiplication of std::complex numbers, z = a * b.
+   * Multiplication z = a * b (std::complex).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -611,7 +611,7 @@ namespace Pscf {
    {  z = a * b; }
 
    /**
-   * Multiplication of complex and real numbers, z = a * b.
+   * Multiplication of complex and real, z = a * b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -623,7 +623,7 @@ namespace Pscf {
    void mul(CT & z, CT const & a, RT const & b);
 
    /**
-   * Multiplication of std::complex and real numbers, z = a * b.
+   * Multiplication of std::complex and real, z = a * b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -633,7 +633,8 @@ namespace Pscf {
    */
    template <typename RT>
    void mul(std::complex<RT> & z, 
-            std::complex<RT> const & a, RT const & b)
+            std::complex<RT> const & a, 
+            RT const & b)
    {  z = a * b; }
 
    /**
@@ -648,7 +649,7 @@ namespace Pscf {
    void mulEq(T & a, T const & b);
 
    /**
-   * In place multiplication of double real numbers, a *= b.
+   * In place multiplication a *= b (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -660,7 +661,7 @@ namespace Pscf {
    {  a *= b; }
 
    /**
-   * In place multiplication of float real numbers, a *= b.
+   * In place multiplication a *= b (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -672,7 +673,7 @@ namespace Pscf {
    {  a *= b; }
 
    /**
-   * In place multiplication of a complex and real number, a *= b.
+   * In place multiplication of complex and real, a *= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -683,7 +684,7 @@ namespace Pscf {
    void mulEq(CT & a, RT const & b);
 
    /**
-   * Compute complex square of a complex number, z = a * a.
+   * Complex square of complex number, z = a * a.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -694,7 +695,7 @@ namespace Pscf {
    void square(CT & z, CT const & a);
 
    /**
-   * Compute complex square of a std::complex number, z = a * a.
+   * Compute complex square of a std::complex, z = a * a.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -720,7 +721,7 @@ namespace Pscf {
    void div(T & z, T const & a, T const & b);
 
    /**
-   * Division of two double precision real numbers, z = a / b .
+   * Division z = a / b (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -733,7 +734,7 @@ namespace Pscf {
    {  z = a/b; }
 
    /**
-   * Division of two float real numbers, z = a / b .
+   * Division z = a / b (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -746,7 +747,7 @@ namespace Pscf {
    {  z = a / b; }
 
    /**
-   * Division of two std::complex numbers, z = a / b .
+   * Division z = a / b (std::complex)
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -760,7 +761,7 @@ namespace Pscf {
    {  z = a / b; }
 
    /**
-   * Division of a complex number by a real number, z = a / b .
+   * Division of complex number by real, z = a / b .
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -772,7 +773,7 @@ namespace Pscf {
    void div(CT & z, CT const & a, RT const & b);
 
    /**
-   * Division of a std::complex number by a real number, z = a / b .
+   * Division of a std::complex number by real, z = a / b .
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -786,7 +787,7 @@ namespace Pscf {
    {  z = a / b; }
 
    /**
-   * In place division of two numbers, a /= b.
+   * In place division, a /= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -797,7 +798,7 @@ namespace Pscf {
    void divEq(T & a, T const & b);
 
    /**
-   * In place division of double real numbers, a /= b.
+   * In place division a /= b (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -809,7 +810,7 @@ namespace Pscf {
    {  a /= b; }
 
    /**
-   * In place division of float real numbers, a /= b.
+   * In place division a /= b (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -821,7 +822,7 @@ namespace Pscf {
    {  a /= b; }
 
    /**
-   * In place division of std::complex numbers, a /= b.
+   * In place division a /= b (std::complex).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -833,7 +834,7 @@ namespace Pscf {
    {  a /= b; }
 
    /**
-   * In place division of a complex number by a real number, a /= b.
+   * In place division of complex by real, a /= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -844,7 +845,7 @@ namespace Pscf {
    void divEq(CT & a, RT const & b);
 
    /**
-   * In place division of std::complex number by a real number, a /= b.
+   * In place division of std::complex number by real, a /= b.
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -854,8 +855,6 @@ namespace Pscf {
    template <typename RT>
    void divEq(std::complex<RT> & a, RT const & b)
    {  a /= b; }
-
-   // Inversion
 
    // Inversion
 
@@ -871,7 +870,7 @@ namespace Pscf {
    void inverse(T & z, T const & a);
 
    /**
-   * Inverse of a double precision real number, z = 1/a.
+   * Inverse, z = 1/a (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -883,7 +882,7 @@ namespace Pscf {
    {  z = 1.0/a; }
 
    /**
-   * Inverse of a  float real number, z = 1 / a .
+   * Inverse, z = 1 / a (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -897,7 +896,7 @@ namespace Pscf {
    // Exponential function
 
    /**
-   * Exponentiation of a number, z = exp(a).
+   * Exponentiation, z = exp(a).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -908,7 +907,7 @@ namespace Pscf {
    void assignExp(T & z, T const & a);
 
    /**
-   * Exponentiation of a real double number, z = exp(a).
+   * Exponentiation, z = exp(a) (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -920,7 +919,7 @@ namespace Pscf {
    {  z = std::exp(a); }
 
    /**
-   * Exponent of a real float number, z = exp(a).
+   * Exponent, z = exp(a) (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -934,7 +933,7 @@ namespace Pscf {
    // Natural logarithm function
 
    /**
-   * Logarithm of a number, z = exp(a) (base template).
+   * Logarithm, z = log(a) (base template).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -945,7 +944,7 @@ namespace Pscf {
    void assignLog(T & z, T const & a);
 
    /**
-   * Logarithm of a real double number, z = exp(a).
+   * Logarithm, z = exp(a) (double).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
@@ -957,7 +956,7 @@ namespace Pscf {
    {  z = std::log(a); }
 
    /**
-   * Logarithm of a real float number, z = exp(a).
+   * Logarithm, z = exp(a) (float).
    *
    * \ingroup Pscf_Math_Arithmetic_Module
    *
