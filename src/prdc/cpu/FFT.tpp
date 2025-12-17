@@ -9,6 +9,8 @@
 */
 
 #include "FFT.h"
+#include "RField.h"
+#include "CField.h"
 
 /*
 * A note about const_casts:

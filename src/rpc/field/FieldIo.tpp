@@ -9,16 +9,17 @@
 */
 
 #include "FieldIo.h"          // class header
-#include <rp/FieldIo.tpp>     // base class template implementation
 
-#include <prdc/field/rFieldIo.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/RFieldComparison.h>
-
+#include <pscf/cpu/complex.h>
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/cpu/complex.h>
+
+// Templates that require declarations from cpu/complex.h
+#include <rp/FieldIo.tpp>     // base class template implementation
+#include <prdc/field/rFieldIo.h>
 
 namespace Pscf {
 namespace Rpc {

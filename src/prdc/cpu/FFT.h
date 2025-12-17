@@ -8,17 +8,18 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cpu/RField.h>
-#include <prdc/cpu/RFieldDft.h>
-#include <prdc/cpu/CField.h>
-#include <pscf/math/IntVec.h>
-#include <util/global.h>
+#include <prdc/cpu/RFieldDft.h>   // member
+#include <pscf/math/IntVec.h>     // member
 
 #include <fftw3.h>
 
 namespace Pscf {
 namespace Prdc {
 namespace Cpu {
+
+   // Forward declarations
+   template <int D> class RField;
+   template <int D> class CField;
 
    using namespace Util;
    using namespace Pscf;

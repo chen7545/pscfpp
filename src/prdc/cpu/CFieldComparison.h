@@ -8,8 +8,17 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cpu/CField.h>
-#include <util/containers/DArray.h>
+// Forward declarations
+namespace Util {
+   template <typename T> class DArray;
+}
+namespace Pscf {
+   namespace Prdc {
+      namespace Cpu {
+         template <int D> class CField;
+      }
+   }
+}
 
 namespace Pscf {
 namespace Prdc {

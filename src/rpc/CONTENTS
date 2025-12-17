@@ -1,8 +1,7 @@
 This directory contains code used in program pscf_pc for self-consistent
-field theory (SCFT) and field theoretic simulations (FTS) with real fields 
-and periodic boundary conditions, using conventional CPU hardware.  All 
-stochastic FTS algorithms implemented in this directory rely on a partial 
-saddle point approximation (PS-FTS), which allows the use of real fields. 
+field theory (SCFT) and partial saddle-point field theoretic simulations 
+(PS-FTS) with real fields and periodic boundary conditions, using 
+conventional CPU hardware.  
 
 All classes and functions defined in this directory (src/rpc) are in 
 namespace Pscf::Rpc. The name Rpc stands for 'real periodic CPU'. Code 

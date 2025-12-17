@@ -8,13 +8,17 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cpu/RField.h>
-#include <prdc/crystal/UnitCell.h>
+#include <prdc/cpu/RField.h>           // member
+#include <pscf/math/IntVec.h>          // member
+#include <util/containers/DArray.h>    // member
 
-#include <pscf/mesh/Mesh.h>
-#include <pscf/math/IntVec.h>
-
-#include <util/containers/DArray.h>
+// Forward declarations
+namespace Pscf {
+   template <int D> class Mesh;
+   namespace Prdc {
+      template <int D> class UnitCell;
+   }
+}
 
 namespace Pscf {
 namespace Prdc {

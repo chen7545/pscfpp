@@ -8,11 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cpu/FftwDArray.h>
-#include <pscf/cpu/complex.h>
-#include <pscf/math/IntVec.h>
-#include <util/global.h>
-
+#include <prdc/cpu/FftwDArray.h>    // base class
+#include <pscf/math/IntVec.h>       // member
 #include <fftw3.h>
 
 namespace Pscf {
@@ -125,29 +122,6 @@ namespace Cpu {
       using FftwDArray<fftw_complex>::allocate;
 
    };
-
-   #if 0
-   /*
-   * Allocate the underlying C array for an FFT grid.
-   */
-   template <int D>
-   void RFieldDft<D>::allocate(IntVec<D> const & meshDimensions)
-   {
-      int size = 1;
-      for (int i = 0; i < D; ++i) {
-         UTIL_CHECK(meshDimensions[i] > 0);
-         meshDimensions_[i] = meshDimensions[i];
-         if (i < D - 1) {
-            dftDimensions_[i] = meshDimensions[i];
-            size *= meshDimensions[i];
-         } else {
-            dftDimensions_[i] = (meshDimensions[i]/2 + 1);
-            size *= dftDimensions_[i];
-         }
-      }
-      FftwDArray<fftw_complex>::allocate(size);
-   }
-   #endif
 
    /*
    * Return mesh dimensions by constant reference.

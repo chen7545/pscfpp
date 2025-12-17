@@ -1,5 +1,5 @@
-#ifndef PRDC_K_FIELD_COMPARISON_H
-#define PRDC_K_FIELD_COMPARISON_H
+#ifndef PRDC_CPU_R_FIELD_DFT_COMPARISON_H
+#define PRDC_CPU_R_FIELD_DFT_COMPARISON_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,8 +8,17 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <prdc/cpu/RFieldDft.h>
-#include <util/containers/DArray.h>
+// Forward declarations
+namespace Util {
+   template <typename T> class DArray;
+}
+namespace Pscf {
+   namespace Prdc {
+      namespace Cpu {
+         template <int D> class RFieldDft;
+      }   
+   }   
+}
 
 namespace Pscf {
 namespace Prdc {

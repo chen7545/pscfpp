@@ -9,8 +9,8 @@
 */
 
 #include <prdc/cpu/FftwDArray.h>    // base class
-#include <pscf/cpu/complex.h>       // alias
 #include <pscf/math/IntVec.h>       // member
+#include <fftw3.h>
 
 namespace Pscf {
 namespace Prdc {

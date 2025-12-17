@@ -1,5 +1,5 @@
-#ifndef PRDC_GPU_R_FIELD_COMPARISON_H
-#define PRDC_GPU_R_FIELD_COMPARISON_H
+#ifndef PRDC_CPU_R_FIELD_COMPARISON_H
+#define PRDC_CPU_R_FIELD_COMPARISON_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,15 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/math/FieldComparison.h>
-#include "RField.h"
+#include <pscf/math/FieldComparison.h>  // base class template
+#include "RField.h"                     // base class template argument
 
 namespace Pscf {
 namespace Prdc {
 namespace Cpu {
 
    using namespace Util;
-   using namespace Pscf;
 
    /**
    * Comparator for fields in real-space (r-grid) format.
@@ -32,7 +31,7 @@ namespace Cpu {
    extern template class RFieldComparison<2>;
    extern template class RFieldComparison<3>;
 
-} // namespace Pscf::Prdc::Gpu
-} // namespace Pscf::Prdc
+} // namespace Cpu
+} // namespace Prdc
 } // namespace Pscf
 #endif

@@ -16,7 +16,6 @@ namespace Prdc {
 namespace Cpu {
 
    using namespace Util;
-   using namespace Pscf;
 
    /**
    * Field of real double precision values on an FFT mesh.
@@ -128,7 +127,7 @@ namespace Cpu {
    extern template class RField<2>;
    extern template class RField<3>;
 
-}
-}
-}
+} // namespace Cpu
+} // namespace Prdc
+} // namespace Pscf
 #endif

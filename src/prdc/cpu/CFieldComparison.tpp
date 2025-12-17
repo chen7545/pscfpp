@@ -9,22 +9,28 @@
 */
 
 #include "CFieldComparison.h"
+#include <prdc/cpu/CField.h>
+#include <util/containers/DArray.h>
 #include <cmath>
 
 namespace Pscf {
 namespace Prdc {
 namespace Cpu {
 
-   // Default Constructor
+   /*
+   * Default constructor.
+   */
    template <int D>
    CFieldComparison<D>::CFieldComparison()
     : maxDiff_(0.0),
       rmsDiff_(0.0)
    {};
 
-   // Comparator for individual fields.
+   /*
+   * Comparator for individual fields.
+   */
    template <int D>
-   double 
+   double
    CFieldComparison<D>::compare(CField<D> const& a, CField<D> const& b)
    {
       UTIL_CHECK(a.capacity() > 0);
@@ -58,7 +64,9 @@ namespace Cpu {
       return maxDiff_;
    }
 
-   // Comparator for arrays of fields
+   /*
+   * Comparator for arrays of fields.
+   */
    template <int D>
    double CFieldComparison<D>::compare(DArray< CField<D> > const & a,
                                        DArray< CField<D> > const & b)
