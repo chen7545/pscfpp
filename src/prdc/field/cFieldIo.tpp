@@ -73,8 +73,8 @@ namespace Prdc {
       for (j = 0; j < nMonomer; ++j) {
          for (iter.begin(); !iter.atEnd(); ++iter) {
             rank = iter.rank();
-            x = real<CT, RT>( fields[j][rank] );
-            y = imag<CT, RT>( fields[j][rank] );
+            x = real( fields[j][rank] );
+            y = imag( fields[j][rank] );
             out << " " << Dbl(x, 21, 13)
                 << " " << Dbl(y, 21, 13);
          }
@@ -92,8 +92,8 @@ namespace Prdc {
       int rank;
       for (iter.begin(); !iter.atEnd(); ++iter) {
          rank = iter.rank();
-         x = real<CT,RT>( field[rank] );
-         y = imag<CT,RT>( field[rank] );
+         x = real( field[rank] );
+         y = imag( field[rank] );
          out << " " << Dbl(x, 21, 13)
              << " " << Dbl(y, 21, 13)
              << std::endl;

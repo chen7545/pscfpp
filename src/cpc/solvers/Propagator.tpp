@@ -212,7 +212,7 @@ namespace Cpc {
       // Initialize initial (head) field
       FieldT& qh = qFields_[0];
       for (int i = 0; i < nx; ++i) {
-         assign<fftw_complex>(qh[i], head[i]);
+         assign(qh[i], head[i]);
       }
       // VecOp::eqV(qh, head);
 
