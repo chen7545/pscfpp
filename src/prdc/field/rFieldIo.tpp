@@ -69,7 +69,7 @@ namespace Prdc {
          rank = iter.rank();
          in >> value;
          UTIL_ASSERT(in.good());
-         assign( field[rank], value);
+         assign(field[rank], value);
       }
       UTIL_CHECK(in.good());
    }
@@ -117,9 +117,9 @@ namespace Prdc {
                       int nMonomer,
                       IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::RealType  RT;
+      //using RT = typename ACT::RealType;
 
-      RT x, y;
+      typename ACT::RealType x, y;
       MeshIterator<D> iter(dftDimensions);
       int rank, i, j, idum;
       i = 0;
@@ -144,9 +144,10 @@ namespace Prdc {
                       ACT& field,
                       IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::RealType  RT;
+      //using RT = typename ACT::RealType;
 
-      RT x, y;
+      //RT x, y;
+      typename ACT::RealType x, y;
       MeshIterator<D> iter(dftDimensions);
       int rank, idum;
       int i = 0;
@@ -173,9 +174,10 @@ namespace Prdc {
       UTIL_CHECK(nMonomer > 0);
       UTIL_CHECK(nMonomer == fields.capacity());
 
-      typedef typename ACT::RealType  RT;
+      //using RT = typename ACT::RealType;
 
-      RT x, y;
+      //RT x, y;
+      typename ACT::RealType x, y;
       MeshIterator<D> iter(dftDimensions);
       int rank;
       int i = 0;
@@ -201,9 +203,10 @@ namespace Prdc {
                        ACT const& field,
                        IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::RealType  RT;
+      //using RT = typename ACT::RealType;
 
-      RT x, y;
+      //RT x, y;
+      typename ACT::RealType x, y;
       MeshIterator<D> iter(dftDimensions);
       int rank, i;
       i = 0;

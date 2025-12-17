@@ -47,7 +47,7 @@ namespace Pscf {
       /**
       * Data type of each element.
       */
-      typedef Data ValueType;
+      using ValueType = Data;
 
       /**
       * Default constructor.

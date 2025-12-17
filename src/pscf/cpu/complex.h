@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/math/arithmetic.h>  // Standard types
+#include <pscf/math/arithmetic.h>  // built-in and standard lib types
 
 #include <fftw3.h>
 #include <complex>

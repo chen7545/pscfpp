@@ -1,5 +1,4 @@
 rpg_field_= \
-  rpg/field/HostDArrayComplex.cu \
   rpg/field/FieldIo.cu \
   rpg/field/Domain.cu \
   rpg/field/WFields.cu \

@@ -142,7 +142,7 @@ namespace Rpg {
          HostDArray<cudaComplex> wkCpu(kSize_);
          wkCpu = wk_; // copy from device to host
          for (int k = 0; k < wk_.capacity(); k++) {
-            accumulators_[k].sample(absSq<cudaComplex, cudaReal>(wkCpu[k]));
+            accumulators_[k].sample(absSq(wkCpu[k]));
          }
       }
       

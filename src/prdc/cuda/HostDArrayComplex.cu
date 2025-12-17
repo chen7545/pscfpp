@@ -8,7 +8,8 @@
 #include "HostDArrayComplex.h"
 
 namespace Pscf {
-namespace Rpg {
+namespace Prdc {
+namespace Cuda {
 
    using namespace Util;
 
@@ -16,21 +17,21 @@ namespace Rpg {
    * Default constructor.
    */
    HostDArrayComplex::HostDArrayComplex() 
-    : HostDArray<ValueType>()
+    : HostDArray<cudaComplex>()
    {}
 
    /*
    * Allocating constructor.
    */
    HostDArrayComplex::HostDArrayComplex(int capacity)
-    : HostDArray<ValueType>(capacity)
+    : HostDArray<cudaComplex>(capacity)
    {}
 
    /*
    * Copy constructor.
    */
    HostDArrayComplex::HostDArrayComplex(HostDArrayComplex const& other)
-    : HostDArray<ValueType>(other)
+    : HostDArray<cudaComplex>(other)
    {}
 
    /*
@@ -39,5 +40,6 @@ namespace Rpg {
    HostDArrayComplex::~HostDArrayComplex()
    {}
 
-} // namespace Rpg
+} // namespace Cuda
+} // namespace Prdc
 } // namespace Pscf

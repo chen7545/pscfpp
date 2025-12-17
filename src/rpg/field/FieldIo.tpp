@@ -8,25 +8,24 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <pscf/cuda/cudaTypes.h>
+#include <pscf/cuda/complex.h>
+
 #include "FieldIo.h"               // class header
 #include <rp/FieldIo.tpp>          // base class template implementation
 
-#include <rpg/field/HostDArrayComplex.h>
-
+#include <prdc/cuda/HostDArrayComplex.h>
+#include <prdc/cuda/RFieldComparison.h>
 #include <prdc/field/rFieldIo.h>
 #include <prdc/field/fieldCheck.h>
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
-#include <prdc/cuda/RFieldComparison.h>
-#include <pscf/cuda/cudaTypes.h>
-#include <pscf/cuda/complex.h>
-#include <prdc/cuda/resources.h>
 
-#include <pscf/mesh/Mesh.h>
-#include <pscf/math/arithmetic.h>
-#include <pscf/math/IntVec.h>
 #include <pscf/cuda/HostDArray.h>
-
+#include <pscf/cuda/VecOp.h>
+#include <pscf/mesh/Mesh.h>
+#include <pscf/math/IntVec.h>
+#include <pscf/math/arithmetic.h>
 
 namespace Pscf {
 namespace Rpg {

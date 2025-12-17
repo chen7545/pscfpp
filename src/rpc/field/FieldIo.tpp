@@ -15,10 +15,10 @@
 #include <prdc/crystal/Basis.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/RFieldComparison.h>
-#include <pscf/cpu/complex.h>
 
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>
+#include <pscf/cpu/complex.h>
 
 namespace Pscf {
 namespace Rpc {
@@ -33,7 +33,7 @@ namespace Rpc {
    template <int D>
    bool FieldIo<D>::readFieldsRGrid(
                               std::istream &in,
-                              DArray<RField<D> >& fields,
+                              DArray< RField<D> >& fields,
                               UnitCell<D>& unitCell) const
    {
       // Read header
@@ -97,7 +97,7 @@ namespace Rpc {
    template <int D>
    void FieldIo<D>::writeFieldsRGrid(
                               std::ostream &out,
-                              DArray<RField<D> > const & fields,
+                              DArray< RField<D> > const & fields,
                               UnitCell<D> const & unitCell,
                               bool writeHeader,
                               bool isSymmetric,
@@ -153,7 +153,7 @@ namespace Rpc {
    template <int D>
    void FieldIo<D>::readFieldsKGrid(
                               std::istream &in,
-                              DArray<RFieldDft<D> >& fields,
+                              DArray< RFieldDft<D> >& fields,
                               UnitCell<D>& unitCell) const
    {
       // Read header
@@ -177,7 +177,7 @@ namespace Rpc {
    template <int D>
    void FieldIo<D>::writeFieldsKGrid(
                               std::ostream &out,
-                              DArray<RFieldDft<D> > const & fields,
+                              DArray< RFieldDft<D> > const & fields,
                               UnitCell<D> const & unitCell,
                               bool isSymmetric) const
    {

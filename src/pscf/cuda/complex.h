@@ -120,8 +120,7 @@ namespace Pscf {
    * \param b imaginary part (in)
    */
    inline
-   void assign(cudaComplex& z, cudaReal const& a, 
-               cudaReal const& b)
+   void assign(cudaComplex& z, cudaReal const& a, cudaReal const& b)
    {
       z.x = a;
       z.y = b;
@@ -332,7 +331,7 @@ namespace Pscf {
    {
       cudaComplex z;
       sub(z, a, b);
-      return absSq<cudaComplex, cudaReal>(z);
+      return absSq(z);
    }
 
    // Multiplication

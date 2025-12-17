@@ -8,11 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/cuda/cudaTypes.h>          // template parameter
-#include <pscf/cuda/HostDArray.h>     // base class
+#include <pscf/cuda/cudaTypes.h>     // template parameter
+#include <pscf/cuda/HostDArray.h>    // base class
 
 namespace Pscf {
-namespace Rpg {
+namespace Prdc {
+namespace Cuda {
 
    using namespace Util;
 
@@ -26,27 +27,22 @@ namespace Rpg {
 
    public:
 
-      // Public typdefs
+      // Public type name aliases
 
       /**
       * Type of each element.
       */
-      typedef cudaComplex ValueType;
+      using ValueType = cudaComplex;
 
       /**
-      * Complex number type.
-      */
-      using ComplexType = cudaComplex;
-
-      /**
-      * Type of real or imaginary part of a Complex number.
+      * Type of real or imaginary part of a complex number.
       */
       using RealType = cudaReal;
 
       /**
       * Base class type.
       */
-      typedef HostDArray<cudaComplex> Base;
+      using Base = HostDArray<cudaComplex>;
 
       // Member functions
 
@@ -89,6 +85,7 @@ namespace Rpg {
 
    };
 
-} // namespace Rpg
+} // namespace Cuda
+} // namespace Prdc
 } // namespace Pscf
 #endif
