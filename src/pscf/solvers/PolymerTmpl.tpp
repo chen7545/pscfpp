@@ -172,7 +172,7 @@ namespace Pscf {
 
       // The PT::computeQ function returns a spatial average.
       // Correct for partial occupation of the unit cell.
-      divEq<WT>(Q, phiTot);
+      divEq(Q, phiTot);
       // Q = Q/phiTot;
 
       // Set q and compute phi or mu, depending on the ensemble

@@ -38,7 +38,7 @@ namespace Pscf {
    *
    * \param a complex argument (input)
    */
-   template <> inline 
+   inline 
    cudaReal real(cudaComplex const& a)
    {  return a.x; }
 
@@ -49,7 +49,7 @@ namespace Pscf {
    *
    * \param a complex argument (input)
    */
-   template <> inline 
+   inline 
    cudaReal imag(cudaComplex const& a)
    {  return a.y; }
 
@@ -62,7 +62,7 @@ namespace Pscf {
    *
    * \param a complex argument (in)
    */
-   template <> inline 
+   inline 
    cudaReal abs(cudaComplex const& a)
    {  return sqrt(a.x * a.x + a.y * a.y); }
 
@@ -73,7 +73,7 @@ namespace Pscf {
    *
    * \param a complex argument (in)
    */
-   template <> inline 
+   inline 
    cudaReal absSq(cudaComplex const& a)
    {  return (a.x * a.x + a.y * a.y); }
 
@@ -87,7 +87,7 @@ namespace Pscf {
    * \param z complex conjugate of argument (out)
    * \param a complex argument (in)
    */
-   template <> inline
+   inline
    void conj(cudaComplex& z, cudaComplex const& a)
    {
       z.x = a.x;
@@ -101,7 +101,7 @@ namespace Pscf {
    *
    * \param a argument (in) and complex conjugate (out)
    */
-   template <> inline
+   inline
    void conj(cudaComplex& a)
    {
       a.x = a.x;
@@ -119,7 +119,7 @@ namespace Pscf {
    * \param a real part (in)
    * \param b imaginary part (in)
    */
-   template <> inline
+   inline
    void assign(cudaComplex& z, cudaReal const& a, 
                cudaReal const& b)
    {
@@ -135,7 +135,7 @@ namespace Pscf {
    * \param z complex (out)
    * \param a real (in)
    */
-   template <> inline
+   inline
    void assign(cudaComplex& z, cudaReal const& a)
    {
       z.x = a;
@@ -150,7 +150,7 @@ namespace Pscf {
    * \param z complex (out)
    * \param a complex (in)
    */
-   template <> inline
+   inline
    void assign(cudaComplex& z, cudaComplex const& a)
    {
       z.x = a.x;
@@ -165,7 +165,7 @@ namespace Pscf {
    * \param z complex (out)
    * \param a std::complex (in)
    */
-   template <> inline
+   inline
    void assign(cudaComplex & z, 
                std::complex<cudaReal> const& a)
    {
@@ -181,7 +181,7 @@ namespace Pscf {
    * \param z std::complex (out)
    * \param a complex (in)
    */
-   template <> inline
+   inline
    void assign(std::complex<cudaReal> & z, 
                cudaComplex const& a)
    {  z = std::complex<cudaReal>(a.x, a.y); }
@@ -197,7 +197,7 @@ namespace Pscf {
    * \param a complex summand (in)
    * \param b complex summand (in)
    */
-   template <> inline
+   inline
    void add(cudaComplex& z, cudaComplex const& a, 
             cudaComplex const& b)
    {
@@ -214,7 +214,7 @@ namespace Pscf {
    * \param a complex summand (in)
    * \param b real summand (in)
    */
-   template <> inline
+   inline
    void add(cudaComplex& z, cudaComplex const& a, 
             cudaReal const& b)
    {
@@ -230,7 +230,7 @@ namespace Pscf {
    * \param a complex summand (in) and sum (out)
    * \param b complex summand (in)
    */
-   template <> inline
+   inline
    void addEq(cudaComplex& a, cudaComplex const& b)
    {
       a.x += b.x;
@@ -245,7 +245,7 @@ namespace Pscf {
    * \param a complex summand (in) and sum (out)
    * \param b real summand (in)
    */
-   template <> inline
+   inline
    void addEq(cudaComplex& a, cudaReal const& b)
    {
       a.x += b;
@@ -262,7 +262,7 @@ namespace Pscf {
    * \param a complex 1st argument (in)
    * \param b complex 2nd argument (in)
    */
-   template <> inline
+   inline
    void sub(cudaComplex& z, cudaComplex const& a, 
             cudaComplex const& b)
    {
@@ -279,7 +279,7 @@ namespace Pscf {
    * \param a complex 1st argument (in)
    * \param b real 2nd argument (in)
    */
-   template <> inline
+   inline
    void sub(cudaComplex& z, cudaComplex const& a, 
             cudaReal const& b)
    {
@@ -295,7 +295,7 @@ namespace Pscf {
    * \param a complex argument (in) and difference (out)
    * \param b complex argument (in)
    */
-   template <> inline
+   inline
    void subEq(cudaComplex & a, cudaComplex const& b)
    {
       a.x -= b.x;
@@ -310,7 +310,7 @@ namespace Pscf {
    * \param a complex argument (in) and difference (out)
    * \param b real argument (in)
    */
-   template <> inline
+   inline
    void subEq(cudaComplex & a, cudaReal const& b)
    {
       a.x -= b;
@@ -326,9 +326,9 @@ namespace Pscf {
    * \param a complex 1st argument (in)
    * \param b complex 2nd argument (in)
    */
-   template <> inline 
+   inline 
    cudaReal absSqDiff(cudaComplex const& a, 
-                                  cudaComplex const& b)
+                      cudaComplex const& b)
    {
       cudaComplex z;
       sub(z, a, b);
@@ -346,7 +346,7 @@ namespace Pscf {
    * \param a complex factor (in)
    * \param b complex factor (in)
    */
-   template <> inline
+   inline
    void mul(cudaComplex& z, cudaComplex const& a, 
             cudaComplex const& b)
    {
@@ -363,7 +363,7 @@ namespace Pscf {
    * \param a complex factor (in)
    * \param b real factor (in)
    */
-   template <> inline
+   inline
    void mul(cudaComplex& z, cudaComplex const& a, 
             cudaReal const& b)
    {
@@ -379,7 +379,7 @@ namespace Pscf {
    * \param a complex factor (in) and product (out)
    * \param b complex factor (in)
    */
-   template <> inline
+   inline
    void mulEq(cudaComplex & a, cudaComplex const& b)
    {
       cudaReal a0;
@@ -396,7 +396,7 @@ namespace Pscf {
    * \param a complex factor (in) and product (out)
    * \param b real factor (in)
    */
-   template <> inline
+   inline
    void mulEq(cudaComplex & a, cudaReal const& b)
    {
       a.x *= b;
@@ -411,7 +411,7 @@ namespace Pscf {
    * \param z complex product (out)
    * \param a complex factor (in)
    */
-   template <> inline
+   inline
    void square(cudaComplex& z, cudaComplex const& a)
    {
       z.x = a.x * a.x - a.y * a.y;
@@ -429,7 +429,7 @@ namespace Pscf {
    * \param a complex numerator (in)
    * \param b complex denominator (in)
    */
-   template <> inline
+   inline
    void div(cudaComplex& z, cudaComplex const& a, 
             cudaComplex const& b)
    {
@@ -447,7 +447,7 @@ namespace Pscf {
    * \param a complex numerator (in)
    * \param b real denominator (in)
    */
-   template <> inline
+   inline
    void div(cudaComplex& z, cudaComplex const& a, 
             cudaReal const& b)
    {
@@ -463,7 +463,7 @@ namespace Pscf {
    * \param a complex numerator (in) and ratio (out)
    * \param b complex denominator (in)
    */
-   template <> inline
+   inline
    void divEq(cudaComplex & a, cudaComplex const & b)
    {
       cudaReal bSq = b.x * b.x + b.y * b.y;
@@ -480,7 +480,7 @@ namespace Pscf {
    * \param a complex numerator (in) and ratio (out)
    * \param b real denominator (in)
    */
-   template <> inline
+   inline
    void divEq(cudaComplex & a, cudaReal const& b)
    {
       a.x /= b;
@@ -497,7 +497,7 @@ namespace Pscf {
    * \param z inverse (out)
    * \param a argument (in)
    */
-   template <> inline
+   inline
    void inverse(cudaComplex& z, 
                 cudaComplex const & a)
    {
@@ -516,7 +516,7 @@ namespace Pscf {
    * \param z exponent (out)
    * \param a argument (in)
    */
-   template <> inline
+   inline
    void assignExp(cudaComplex & z, 
                   cudaComplex const & a)
    {  
@@ -535,7 +535,7 @@ namespace Pscf {
    * \param z logarithm (out)
    * \param a argument (in)
    */
-   template <> inline
+   inline
    void assignLog(cudaComplex & z, 
                   cudaComplex const & a)
    {  

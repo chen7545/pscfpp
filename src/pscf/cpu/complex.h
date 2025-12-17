@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/math/arithmetic.h>  // General template declarations
+#include <pscf/math/arithmetic.h>  // Standard types
 
 #include <fftw3.h>
 #include <complex>
@@ -34,8 +34,8 @@ namespace Pscf{
    *
    * \param a complex argument (input)
    */
-   template <> inline 
-   double real<fftw_complex, double>(fftw_complex const & a)
+   inline 
+   double real(fftw_complex const & a)
    {  return a[0]; }
 
    /**
@@ -45,8 +45,8 @@ namespace Pscf{
    *
    * \param a complex argument (input)
    */
-   template <> inline 
-   double imag<fftw_complex, double>(fftw_complex const & a)
+   inline 
+   double imag(fftw_complex const & a)
    {  return a[1]; }
 
    // Absolute magnitude
@@ -58,8 +58,8 @@ namespace Pscf{
    *
    * \param a complex argument (in)
    */
-   template <> inline 
-   double abs<fftw_complex, double>(fftw_complex const & a)
+   inline 
+   double abs(fftw_complex const & a)
    {  return sqrt(a[0] * a[0] + a[1] * a[1]); }
 
    /**
@@ -69,8 +69,8 @@ namespace Pscf{
    *
    * \param a complex argument (in)
    */
-   template <> inline 
-   double absSq<fftw_complex, double>(fftw_complex const & a)
+   inline 
+   double absSq(fftw_complex const & a)
    {  return (a[0] * a[0] + a[1] * a[1]); }
 
    // Complex Conjugation
@@ -83,7 +83,7 @@ namespace Pscf{
    * \param z complex conjugate of argument (out)
    * \param a complex argument (in)
    */
-   template <> inline
+   inline
    void conj(fftw_complex& z, fftw_complex const & a)
    {
       z[0] = a[0];
@@ -97,7 +97,7 @@ namespace Pscf{
    *
    * \param a argument (in) and complex conjugate (out)
    */
-   template <> inline
+   inline
    void conj(fftw_complex& a)
    {
       a[0] = a[0];
@@ -115,7 +115,7 @@ namespace Pscf{
    * \param a real part (in)
    * \param b imaginary part (in)
    */
-   template <> inline
+   inline
    void assign(fftw_complex& z, double const & a, double const & b)
    {
       z[0] = a;
@@ -130,7 +130,7 @@ namespace Pscf{
    * \param z complex (out)
    * \param a real (in)
    */
-   template <> inline
+   inline
    void assign(fftw_complex& z, double const & a)
    {
       z[0] = a;
@@ -145,7 +145,7 @@ namespace Pscf{
    * \param z complex (out)
    * \param a complex (in)
    */
-   template <> inline
+   inline
    void assign(fftw_complex& z, fftw_complex const & a)
    {
       z[0] = a[0];
@@ -160,7 +160,7 @@ namespace Pscf{
    * \param z complex (out)
    * \param a std::complex (in)
    */
-   template <> inline
+   inline
    void assign(fftw_complex & z, std::complex<double> const& a)
    {
       z[0] = a.real();
@@ -175,7 +175,7 @@ namespace Pscf{
    * \param z std::complex (out)
    * \param a complex (in)
    */
-   template <> inline
+   inline
    void assign(std::complex<double> & z, fftw_complex const& a)
    {  z = std::complex<double>(a[0], a[1]); }
 
@@ -190,7 +190,7 @@ namespace Pscf{
    * \param a complex summand (in)
    * \param b complex summand (in)
    */
-   template <> inline
+   inline
    void add(fftw_complex& z, fftw_complex const& a, fftw_complex const& b)
    {
       z[0] = a[0] + b[0];
@@ -206,7 +206,7 @@ namespace Pscf{
    * \param a complex summand (in)
    * \param b real summand (in)
    */
-   template <> inline
+   inline
    void add(fftw_complex& z, fftw_complex const& a, double const& b)
    {
       z[0] = a[0] + b;
@@ -221,7 +221,7 @@ namespace Pscf{
    * \param a complex summand (in) and sum (out)
    * \param b complex summand (in)
    */
-   template <> inline
+   inline
    void addEq(fftw_complex& a, fftw_complex const& b)
    {
       a[0] += b[0];
@@ -236,7 +236,7 @@ namespace Pscf{
    * \param a complex summand (in) and sum (out)
    * \param b real summand (in)
    */
-   template <> inline
+   inline
    void addEq(fftw_complex& a, double const& b)
    {
       a[0] += b;
@@ -253,7 +253,7 @@ namespace Pscf{
    * \param a complex 1st argument (in)
    * \param b complex 2nd argument (in)
    */
-   template <> inline
+   inline
    void sub(fftw_complex& z, fftw_complex const& a, fftw_complex const& b)
    {
       z[0] = a[0] - b[0];
@@ -269,7 +269,7 @@ namespace Pscf{
    * \param a complex 1st argument (in)
    * \param b real 2nd argument (in)
    */
-   template <> inline
+   inline
    void sub(fftw_complex& z, fftw_complex const& a, double const& b)
    {
       z[0] = a[0] - b;
@@ -284,7 +284,7 @@ namespace Pscf{
    * \param a complex argument (in) and difference (out)
    * \param b complex argument (in)
    */
-   template <> inline
+   inline
    void subEq(fftw_complex & a, fftw_complex const& b)
    {
       a[0] -= b[0];
@@ -299,7 +299,7 @@ namespace Pscf{
    * \param a complex argument (in) and difference (out)
    * \param b real argument (in)
    */
-   template <> inline
+   inline
    void subEq(fftw_complex & a, double const& b)
    {
       a[0] -= b;
@@ -315,12 +315,12 @@ namespace Pscf{
    * \param a complex 1st argument (in)
    * \param b complex 2nd argument (in)
    */
-   template <> inline 
+   inline 
    double absSqDiff(fftw_complex const& a, fftw_complex const& b)
    {
       fftw_complex z;
       sub(z, a, b);
-      return absSq<fftw_complex, double>(z);
+      return absSq(z);
    }
 
    // Multiplication
@@ -334,7 +334,7 @@ namespace Pscf{
    * \param a complex factor (in)
    * \param b complex factor (in)
    */
-   template <> inline
+   inline
    void mul(fftw_complex& z, fftw_complex const& a, fftw_complex const& b)
    {
       z[0] = a[0] * b[0] - a[1] * b[1];
@@ -350,7 +350,7 @@ namespace Pscf{
    * \param a complex factor (in)
    * \param b real factor (in)
    */
-   template <> inline
+   inline
    void mul(fftw_complex& z, fftw_complex const& a, double const& b)
    {
       z[0] = a[0]*b;
@@ -365,7 +365,7 @@ namespace Pscf{
    * \param a complex factor (in) and product (out)
    * \param b complex factor (in)
    */
-   template <> inline
+   inline
    void mulEq(fftw_complex & a, fftw_complex const& b)
    {
       double a0;
@@ -382,7 +382,7 @@ namespace Pscf{
    * \param a complex factor (in) and product (out)
    * \param b real factor (in)
    */
-   template <> inline
+   inline
    void mulEq(fftw_complex & a, double const& b)
    {
       a[0] *= b;
@@ -397,7 +397,7 @@ namespace Pscf{
    * \param z complex product (out)
    * \param a complex factor (in)
    */
-   template <> inline
+   inline
    void square(fftw_complex& z, fftw_complex const& a)
    {
       z[0] = a[0] * a[0] - a[1] * a[1];
@@ -415,7 +415,7 @@ namespace Pscf{
    * \param a complex numerator (in)
    * \param b complex denominator (in)
    */
-   template <> inline
+   inline
    void div(fftw_complex& z, fftw_complex const& a, fftw_complex const& b)
    {
       double bSq = b[0] * b[0] + b[1] * b[1];
@@ -432,7 +432,7 @@ namespace Pscf{
    * \param a complex numerator (in)
    * \param b real denominator (in)
    */
-   template <> inline
+   inline
    void div(fftw_complex& z, fftw_complex const& a, double const& b)
    {
       z[0] = a[0]/b;
@@ -447,7 +447,7 @@ namespace Pscf{
    * \param a complex numerator (in) and ratio (out)
    * \param b complex denominator (in)
    */
-   template <> inline
+   inline
    void divEq(fftw_complex & a, fftw_complex const & b)
    {
       double bSq = b[0] * b[0] + b[1] * b[1];
@@ -464,7 +464,7 @@ namespace Pscf{
    * \param a complex numerator (in) and ratio (out)
    * \param b real denominator (in)
    */
-   template <> inline
+   inline
    void divEq(fftw_complex & a, double const & b)
    {
       a[0] /= b;
@@ -481,7 +481,7 @@ namespace Pscf{
    * \param z inverse (out)
    * \param a argument (in)
    */
-   template <> inline
+   inline
    void inverse(fftw_complex& z, fftw_complex const & a)
    {
       double aSq = a[0] * a[0] + a[1] * a[1];
@@ -499,7 +499,7 @@ namespace Pscf{
    * \param z exponent (out)
    * \param a argument (in)
    */
-   template <> inline
+   inline
    void assignExp(fftw_complex & z, fftw_complex const & a)
    {
       std::complex<double> arg = std::complex<double>(a[0], a[1]); 
@@ -516,7 +516,7 @@ namespace Pscf{
    * \param z logarithm (out)
    * \param a argument (in)
    */
-   template <> inline
+   inline
    void assignLog(fftw_complex & z, fftw_complex const & a)
    {  
       std::complex<double> arg = std::complex<double>(a[0], a[1]); 

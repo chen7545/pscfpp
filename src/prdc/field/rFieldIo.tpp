@@ -117,7 +117,6 @@ namespace Prdc {
                       int nMonomer,
                       IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::ValueType CT;
       typedef typename ACT::RealType  RT;
 
       RT x, y;
@@ -132,7 +131,7 @@ namespace Prdc {
          for (j = 0; j < nMonomer; ++j) {
             in >> x;
             in >> y;
-            assign<CT, RT>(fields[j][rank], x, y);
+            assign(fields[j][rank], x, y);
          }
          UTIL_ASSERT(in.good());
          ++i;
@@ -145,7 +144,6 @@ namespace Prdc {
                       ACT& field,
                       IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::ValueType CT;
       typedef typename ACT::RealType  RT;
 
       RT x, y;
@@ -160,7 +158,7 @@ namespace Prdc {
          in >> x;
          in >> y;
          UTIL_ASSERT(in.good());
-         assign<CT, RT>(field[rank], x, y);
+         assign(field[rank], x, y);
          ++i;
       }
       UTIL_CHECK(in.good());
@@ -175,7 +173,6 @@ namespace Prdc {
       UTIL_CHECK(nMonomer > 0);
       UTIL_CHECK(nMonomer == fields.capacity());
 
-      typedef typename ACT::ValueType CT;
       typedef typename ACT::RealType  RT;
 
       RT x, y;
@@ -187,8 +184,8 @@ namespace Prdc {
          UTIL_CHECK(i == rank);
          out << Int(rank, 5);
          for (int j = 0; j < nMonomer; ++j) {
-            x = real<CT, RT>(fields[j][rank]);
-            y = imag<CT, RT>(fields[j][rank]);
+            x = real(fields[j][rank]);
+            y = imag(fields[j][rank]);
             out << "  "
                 << Dbl(x, 21, 13)
                 << Dbl(y, 21, 13);
@@ -204,7 +201,6 @@ namespace Prdc {
                        ACT const& field,
                        IntVec<D> const& dftDimensions)
    {
-      typedef typename ACT::ValueType CT;
       typedef typename ACT::RealType  RT;
 
       RT x, y;
@@ -214,8 +210,8 @@ namespace Prdc {
       for (iter.begin(); !iter.atEnd(); ++iter) {
          rank = iter.rank();
          UTIL_CHECK(i == rank);
-         x = real<CT, RT>(field[rank]);
-         y = imag<CT, RT>(field[rank]);
+         x = real(field[rank]);
+         y = imag(field[rank]);
          out << Int(rank, 5);
          out << "  "
              << Dbl(x, 21, 13)
@@ -575,9 +571,6 @@ namespace Prdc {
    {
       UTIL_CHECK(basis.isInitialized());
 
-      typedef typename ACT::ValueType CT;
-      typedef typename ACT::RealType  RT;
-
       // Create Mesh<D> with dimensions of DFT Fourier grid.
       Mesh<D> dftMesh(dftDimensions);
 
@@ -593,7 +586,7 @@ namespace Prdc {
 
       // Initialize all dft coponents to zero
       for (rank = 0; rank < dftMesh.size(); ++rank) {
-         assign<CT, RT>(out[rank], 0.0, 0.0);
+         assign(out[rank], 0.0, 0.0);
       }
 
       // Loop over stars, skipping cancelled stars
@@ -623,7 +616,7 @@ namespace Prdc {
                   rank = dftMesh.rank(indices);
                   //out[rank][0] = coeff.real();
                   //out[rank][1] = coeff.imag();
-                  assign<CT, RT>(out[rank], coeff);
+                  assign(out[rank], coeff);
                }
             }
             ++is;
@@ -643,7 +636,7 @@ namespace Prdc {
                   rank = dftMesh.rank(indices);
                   //out[rank][0] = coeff.real();
                   //out[rank][1] = coeff.imag();
-                  assign<CT, RT>(out[rank], coeff);
+                  assign(out[rank], coeff);
                }
             }
 
@@ -660,7 +653,7 @@ namespace Prdc {
                   rank = dftMesh.rank(indices);
                   //out[rank][0] = coeff.real();
                   //out[rank][1] = coeff.imag();
-                  assign<CT, RT>(out[rank], coeff);
+                  assign(out[rank], coeff);
                }
             }
 
@@ -686,9 +679,6 @@ namespace Prdc {
                             double epsilon) 
    {
       UTIL_CHECK(basis.isInitialized());
-
-      typedef typename ACT::ValueType CT;
-      typedef typename ACT::RealType  RT;
 
       // Check if input field in k-grid format has specified symmetry
       if (checkSymmetry) {
@@ -756,7 +746,7 @@ namespace Prdc {
             // Compute component value
             rank = dftMesh.rank(wavePtr->indicesDft);
             //component = std::complex<double>(in[rank][0], in[rank][1]);
-            assign<CT,RT>(component, in[rank]);
+            assign(component, in[rank]);
             component /= wavePtr->coeff;
             out[ib] = component.real();
             ++is;
@@ -779,7 +769,7 @@ namespace Prdc {
             }
             rank = dftMesh.rank(wavePtr->indicesDft);
             //component = std::complex<double>(in[rank][0], in[rank][1]);
-            assign<CT, RT>(component, in[rank]); 
+            assign(component, in[rank]); 
             UTIL_CHECK(std::abs(wavePtr->coeff) > 1.0E-8);
             component /= wavePtr->coeff;
             component *= sqrt(2.0);
@@ -815,9 +805,6 @@ namespace Prdc {
    {
       UTIL_CHECK(basis.isInitialized());
 
-      typedef typename ACT::ValueType CT;
-      typedef typename ACT::RealType  RT;
-
       typename Basis<D>::Star const* starPtr; // pointer to current star
       typename Basis<D>::Wave const* wavePtr; // pointer to current wave
       std::complex<double> waveCoeff;         // coefficient from wave
@@ -849,7 +836,7 @@ namespace Prdc {
                   rank = dftMesh.rank(wavePtr->indicesDft);
                   //waveCoeff 
                   //   = std::complex<double>(in[rank][0], in[rank][1]);
-                  assign<CT, RT>(waveCoeff, in[rank]);
+                  assign(waveCoeff, in[rank]);
                   if (std::abs(waveCoeff) > cancelledError) {
                      cancelledError = std::abs(waveCoeff);
                      if ((!verbose) && (cancelledError > epsilon)) {
@@ -871,7 +858,7 @@ namespace Prdc {
                   rank = dftMesh.rank(wavePtr->indicesDft);
                   //waveCoeff 
                   //   = std::complex<double>(in[rank][0], in[rank][1]);
-                  assign<CT, RT>(waveCoeff, in[rank]);
+                  assign(waveCoeff, in[rank]);
                   waveCoeff /= wavePtr->coeff;
                   if (hasRoot) {
                      diff = waveCoeff - rootCoeff;
