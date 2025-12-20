@@ -1,5 +1,5 @@
-pscf_tests_inter_=pscf/tests/inter/Test.cpp
+pscf_tests_interaction_=pscf/tests/interaction/Test.cpp
 
-pscf_tests_inter_OBJS=\
-     $(addprefix $(BLD_DIR)/, $(pscf_tests_inter_:.cpp=.o))
+pscf_tests_interaction_OBJS=\
+     $(addprefix $(BLD_DIR)/, $(pscf_tests_interaction_:.cpp=.o))
 

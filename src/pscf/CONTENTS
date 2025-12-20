@@ -6,10 +6,11 @@ Subdirectories:
 ---------------
 
    chem/         - molecular structure descriptors
-   correlation/  - correlation functions for homogeneous ideal gas
-   cuda/         - utilities for graphics processing units (GPUs)
+   correlation/  - correlation functions for homogeneous gas
+   cuda/         - utilities and cufft complex type for GPUs
+   cpu/          - utilities that use FFTW complex type for CPUs
    environment/  - generation of imposed mask and external fields
-   floryHuggins/ - Flory-Huggins theory of homogeneous mixtures
+   floryHuggins/ - Flory-Huggins theory for homogeneous mixtures
    inter/        - interaction (excess) free energy 
    iterator/     - utilities for iterator algorithms
    math/         - mathematical utilities

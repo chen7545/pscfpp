@@ -8,8 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Simulator.h"
+// Contains declarations needed in some other templates
+#include <pscf/cpu/complex.h>
 
+#include "Simulator.h"
 #include <cpc/system/System.h>
 #include <cpc/solvers/Mixture.h>
 #include <cpc/solvers/Polymer.h>
@@ -22,7 +24,6 @@
 #include <cpc/fts/trajectory/TrajectoryReader.h>
 #include <cpc/fts/trajectory/TrajectoryReaderFactory.h>
 #endif
-
 #include <pscf/interaction/Interaction.h>
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>

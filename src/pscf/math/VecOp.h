@@ -18,7 +18,7 @@ namespace Pscf {
    using namespace Util;
 
    /**
-   * Functions to perform element-wise vector operations on Cpu arrays.
+   * Element-wise vector operations on real-valued Cpu arrays.
    *
    * Operations that are performed by these functions include addition,
    * subtraction, multiplication, division, exponentiation, and assignment.
@@ -48,7 +48,7 @@ namespace Pscf {
       // Assignment
 
       /**
-      * Vector assignment, a[i] = b[i].
+      * Vector assignment, a[i] = b[i] (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -56,7 +56,7 @@ namespace Pscf {
       void eqV(Array<double>& a, Array<double> const & b);
 
       /**
-      * Vector assignment, a[i] = b.
+      * Vector assignment, a[i] = b (real).
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -66,7 +66,7 @@ namespace Pscf {
       // Addition
 
       /**
-      * Vector addition, a[i] = b[i] + c[i].
+      * Vector-vector addition, a[i] = b[i] + c[i] (real)
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -77,7 +77,7 @@ namespace Pscf {
                  Array<double> const & c);
 
       /**
-      * Vector addition, a[i] = b[i] + c.
+      * Vector-scalar addition, a[i] = b[i] + c (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -88,7 +88,7 @@ namespace Pscf {
       // Subtraction
 
       /**
-      * Vector subtraction, a[i] = b[i] - c[i].
+      * Vector-vector subtraction, a[i] = b[i] - c[i] (real)
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -98,7 +98,7 @@ namespace Pscf {
                  Array<double> const & b, Array<double> const & c);
 
       /**
-      * Vector subtraction, a[i] = b[i] - c.
+      * Vector-scalar subtraction, a[i] = b[i] - c (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -109,7 +109,7 @@ namespace Pscf {
       // Multiplication
 
       /**
-      * Vector multiplication, a[i] = b[i] * c[i].
+      * Vector-vector multiplication, a[i] = b[i] * c[i] (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -119,7 +119,7 @@ namespace Pscf {
                  Array<double> const & b, Array<double> const & c);
 
       /**
-      * Vector multiplication, a[i] = b[i] * c.
+      * Vector-scalar multiplication, a[i] = b[i] * c (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -130,7 +130,7 @@ namespace Pscf {
       // Division
 
       /**
-      * Vector division, a[i] = b[i] / c[i].
+      * Vector-vector division, a[i] = b[i] / c[i] (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -140,7 +140,7 @@ namespace Pscf {
                  Array<double> const & b, Array<double> const & c);
 
       /**
-      * Vector division, a[i] = b[i] / c.
+      * Vector-scalar division, a[i] = b[i] / c (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -157,10 +157,10 @@ namespace Pscf {
       */
       void divSV(Array<double>& a, double b, Array<double> const & c);
 
-      // Compound addition
+      // In-place addition
 
       /**
-      * Vector addition in-place, a[i] += b[i].
+      * Vector-vector in-place addition, a[i] += b[i] (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -168,7 +168,7 @@ namespace Pscf {
       void addEqV(Array<double>& a, Array<double> const & b);
 
       /**
-      * Vector addition in-place, a[i] += b.
+      * Vector-scalar in-place addition, a[i] += b (real).
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -178,7 +178,7 @@ namespace Pscf {
       // Compound subtraction
 
       /**
-      * Vector subtraction in-place, a[i] -= b[i].
+      * Vector-vector in-place subtraction, a[i] -= b[i] (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -186,17 +186,17 @@ namespace Pscf {
       void subEqV(Array<double>& a, Array<double> const & b);
 
       /**
-      * Vector subtraction in-place, a[i] -= b.
+      * Vector-scalar subtraction in-place, a[i] -= b (real).
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
       */
       void subEqS(Array<double>& a, double b);
 
-      // Compound multiplication
+      // In-place multiplication
 
       /**
-      * Vector multiplication in-place, a[i] *= b[i].
+      * Vector-vector in-place multiplication, a[i] *= b[i] (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -204,7 +204,7 @@ namespace Pscf {
       void mulEqV(Array<double>& a, Array<double> const & b);
 
       /**
-      * Vector multiplication in-place, a[i] *= b.
+      * Vector-scalar in-place multiplication, a[i] *= b (real).
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -214,7 +214,7 @@ namespace Pscf {
       // Compound division
 
       /**
-      * Vector division in-place, a[i] /= b[i].
+      * Vector-vector in-place division, a[i] /= b[i].
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -222,7 +222,7 @@ namespace Pscf {
       void divEqV(Array<double>& a, Array<double> const & b);
 
       /**
-      * Vector division in-place, a[i] /= b.
+      * Vector-scalar in-place division, a[i] /= b.
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -232,7 +232,7 @@ namespace Pscf {
       // Exponentiation
 
       /**
-      * Vector exponentiation, a[i] = exp(b[i]).
+      * Vector exponentiation, a[i] = exp(b[i]) (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)

@@ -8,16 +8,16 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "FieldIo.h"
-#include <cp/FieldIo.tpp>        // base class implementation
-
-#include <prdc/field/fieldCheck.h>
-#include <prdc/field/cFieldIo.h>
-#include <prdc/field/rFieldIo.h>
-#include <prdc/crystal/UnitCell.h>
-#include <prdc/cpu/CFieldComparison.h>
+// Contains declarations needed to parse other templates
 #include <pscf/cpu/complex.h>
 
+#include "FieldIo.h"
+#include <cp/FieldIo.tpp>
+#include <prdc/field/fieldCheck.h>
+#include <prdc/crystal/UnitCell.h>
+#include <prdc/cpu/CFieldComparison.h>
+#include <prdc/field/cFieldIo.h>
+#include <prdc/field/rFieldIo.h>
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>
 

@@ -7,10 +7,11 @@
 #include "math/MathTestComposite.h"
 #include "chem/ChemTestComposite.h"
 #include "solvers/SolversTestComposite.h"
-#include "interaction/InterTestComposite.h"
+#include "interaction/InteractionTestComposite.h"
 #include "floryHuggins/FloryHugginsTestComposite.h"
 #include "correlation/CorrelationTestComposite.h"
 #include "mesh/MeshTestComposite.h"
+#include "cpu/CpuTestComposite.h"
 
 #include <util/param/BracketPolicy.h>
 #include <util/global.h>
@@ -19,10 +20,11 @@ TEST_COMPOSITE_BEGIN(PscfNsTestComposite)
 addChild(new MathTestComposite, "math/");
 addChild(new ChemTestComposite, "chem/");
 addChild(new SolversTestComposite, "solvers/");
-addChild(new InterTestComposite, "interaction/");
+addChild(new InteractionTestComposite, "interaction/");
 addChild(new FloryHugginsTestComposite, "floryHuggins/");
 addChild(new CorrelationTestComposite, "correlation/");
 addChild(new MeshTestComposite, "mesh/");
+addChild(new CpuTestComposite, "cpu/");
 TEST_COMPOSITE_END
 
 using namespace Pscf;

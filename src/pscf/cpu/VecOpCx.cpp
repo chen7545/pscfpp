@@ -337,7 +337,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar division, a[i][0] = b[i][0] / c (mixed).
+   * Vector-scalar division, a[i] = b[i] / c (mixed).
    */
    void divVS(Array<fftw_complex>& a, 
                     Array<fftw_complex> const & b, 
@@ -387,7 +387,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector in-place addition, a[i][0] += b[i][0] (mixed).
+   * Vector-vector in-place addition, a[i] += b[i] (mixed).
    */
    void addEqV(Array<fftw_complex> & a, Array<double> const & b)
    {
@@ -454,7 +454,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place subtraction, a[i][0] -= b (complex).
+   * Vector-scalar in-place subtraction, a[i] -= b (complex).
    */
    void subEqS(Array<fftw_complex>& a, fftw_complex b)
    {

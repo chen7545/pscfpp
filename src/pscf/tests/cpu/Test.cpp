@@ -1,10 +1,11 @@
 /*
-* This program runs all unit tests in the pscf/tests/math directory.
+* This program runs all unit tests in the pscf/tests/solvers directory.
 */ 
 
 #include <util/global.h>
-#include "InteractionTestComposite.h"
+#include "CpuTestComposite.h"
 
+#include <util/param/BracketPolicy.h>
 #include <test/CompositeTestRunner.h>
 
 using namespace Pscf;
@@ -12,7 +13,9 @@ using namespace Util;
 
 int main(int argc, char* argv[])
 {
-   InteractionTestComposite runner;
+
+   BracketPolicy::set(BracketPolicy::Optional);
+   CpuTestComposite runner;
 
    if (argc > 2) {
       UTIL_THROW("Too many arguments");

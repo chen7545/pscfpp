@@ -114,7 +114,7 @@ namespace VecOp {
       UTIL_CHECK(b.capacity() == n);
       UTIL_CHECK(c.capacity() == n);
       for (int i = 0; i < n; ++i) {
-         a[i] = b[i]*c[i];
+         a[i] = b[i] * c[i];
       }
    }
 
@@ -127,7 +127,7 @@ namespace VecOp {
       UTIL_CHECK(n > 0);
       UTIL_CHECK(b.capacity() == n);
       for (int i = 0; i < n; ++i) {
-         a[i] = b[i]*c;
+         a[i] = b[i] * c;
       }
    }
 
@@ -174,25 +174,10 @@ namespace VecOp {
       }
    }
 
-   // Exponentiation
+   // In-place addition
 
    /*
-   * Vector exponentiation, a[i] = exp(b[i]) (real).
-   */
-   void expV(Array<double>& a, Array<double> const & b)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      for (int i = 0; i < n; ++i) {
-         a[i] = exp(b[i]);
-      }
-   }
-
-   // Compound addition
-
-   /*
-   * Vector-vector in-place addition, a[i] += b[i].
+   * Vector-vector in-place addition, a[i] += b[i] (real).
    */
    void addEqV(Array<double>& a, Array<double> const & b)
    {
@@ -205,7 +190,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place addition, a[i] += b.
+   * Vector-scalar in-place addition, a[i] += b (real).
    */
    void addEqS(Array<double>& a, double b)
    {
@@ -217,10 +202,10 @@ namespace VecOp {
    }
 
 
-   // Compound subtraction
+   // In-place subtraction
 
    /*
-   * Vector-vector in-place subtraction, a[i] -= b[i].
+   * Vector-vector in-place subtraction, a[i] -= b[i] (real).
    */
    void subEqV(Array<double>& a, Array<double> const & b)
    {
@@ -233,7 +218,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place subtraction, a[i] -= b.
+   * Vector-scalar in-place subtraction, a[i] -= b (real).
    */
    void subEqS(Array<double>& a, double b)
    {
@@ -244,10 +229,10 @@ namespace VecOp {
       }
    }
 
-   // Compound multiplication
+   // In-place multiplication
 
    /*
-   * Vector-vector in-place multiplication, a[i] *= b[i].
+   * Vector-vector in-place multiplication, a[i] *= b[i] (real).
    */
    void mulEqV(Array<double>& a, Array<double> const & b)
    {
@@ -260,7 +245,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place multiplication, a[i] *= b.
+   * Vector-scalar in-place multiplication, a[i] *= b (real).
    */
    void mulEqS(Array<double>& a, double b)
    {
@@ -271,10 +256,10 @@ namespace VecOp {
       }
    }
 
-   // Compound division
+   // In-place division
 
    /*
-   * Vector-vector in-place division, a[i] /= b[i].
+   * Vector-vector in-place division, a[i] /= b[i] (real).
    */
    void divEqV(Array<double>& a, Array<double> const & b)
    {
@@ -287,7 +272,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place division, a[i] /= b.
+   * Vector-scalar in-place division, a[i] /= b (real).
    */
    void divEqS(Array<double>& a, double b)
    {
@@ -295,6 +280,21 @@ namespace VecOp {
       UTIL_CHECK(n > 0);
       for (int i = 0; i < n; ++i) {
          a[i] /= b;
+      }
+   }
+
+   // Exponentiation
+
+   /*
+   * Vector exponentiation, a[i] = exp(b[i]) (real).
+   */
+   void expV(Array<double>& a, Array<double> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = exp(b[i]);
       }
    }
 

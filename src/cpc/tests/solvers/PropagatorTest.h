@@ -16,6 +16,7 @@
 #include <pscf/mesh/Mesh.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
+#include <pscf/cpu/complex.h>
 
 #include <util/param/BracketPolicy.h>
 #include <util/math/Constants.h>

@@ -1,5 +1,5 @@
-#ifndef PRDC_CPU_VEC_OP_TEST_H
-#define PRDC_CPU_VEC_OP_TEST_H
+#ifndef PSCF_VEC_OP_TEST_H
+#define PSCF_VEC_OP_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
@@ -10,10 +10,8 @@
 
 using namespace Util;
 using namespace Pscf;
-using namespace Pscf::Prdc;
-using namespace Pscf::Prdc::Cpu;
 
-class CpuVecOpTest : public UnitTest
+class VecOpTest : public UnitTest
 {
 
 private:
@@ -261,17 +259,17 @@ public:
 
 };
 
-TEST_BEGIN(CpuVecOpTest)
-TEST_ADD(CpuVecOpTest, testEq)
-TEST_ADD(CpuVecOpTest, testAdd)
-TEST_ADD(CpuVecOpTest, testSub)
-TEST_ADD(CpuVecOpTest, testMul)
-TEST_ADD(CpuVecOpTest, testDiv)
-TEST_ADD(CpuVecOpTest, testExp)
-TEST_ADD(CpuVecOpTest, testAddEq)
-TEST_ADD(CpuVecOpTest, testSubEq)
-TEST_ADD(CpuVecOpTest, testMulEq)
-TEST_ADD(CpuVecOpTest, testDivEq)
-TEST_END(CpuVecOpTest)
+TEST_BEGIN(VecOpTest)
+TEST_ADD(VecOpTest, testEq)
+TEST_ADD(VecOpTest, testAdd)
+TEST_ADD(VecOpTest, testSub)
+TEST_ADD(VecOpTest, testMul)
+TEST_ADD(VecOpTest, testDiv)
+TEST_ADD(VecOpTest, testExp)
+TEST_ADD(VecOpTest, testAddEq)
+TEST_ADD(VecOpTest, testSubEq)
+TEST_ADD(VecOpTest, testMulEq)
+TEST_ADD(VecOpTest, testDivEq)
+TEST_END(VecOpTest)
 
 #endif

@@ -18,12 +18,12 @@ namespace Pscf {
 *
 * The functions defined in this file are wrappers for CUDA kernels that
 * perform the actual vector operations. The kernels themselves are only
-* intended to be called through their wrappers, so they are defined in
-* an anonymous namespace in VecOp.cu.
+* intended to be called through their wrappers, so the kernel are 
+* defined in an anonymous namespace in VecOp.cu.
 *
-* The wrapper functions operate on DeviceArray objects containing
-* elements of type cudaReal or cudaComplex. The operations that are
-* performed by these functions include assignmentm addition, subtraction,
+* The functions declared in this header operate on DeviceArray objects 
+* with elements of type cudaReal or cudaComplex. The operations that are
+* performed by these functions include assignment, addition, subtraction,
 * multiplication, division, and exponentiation. Function names,
 * correspondingly, begin with "eq", "add", "sub", "mul", "div", or
 * "exp" to indicate the operation being performed. Functions that
@@ -33,7 +33,7 @@ namespace Pscf {
 *
 * The functions are overloaded to perform their respective operations
 * on any combination of cudaReal and cudaComplex input arrays, except
-* those that would result in dividing by a complex number.
+* those that would result in division by a complex number.
 *
 * The output (the LHS of the vector operation) is always the first
 * parameter passed to the function. The input argument(s) (on the RHS
@@ -67,7 +67,7 @@ namespace Pscf {
 * VecOpMisc.h is included at the end of VecOp.h so that any code that
 * includes VecOp.h will also include VecOpMisc.h.
 *
-* \ingroup Prdc_Cuda_Module
+* \ingroup Pscf_Cuda_Module
 * @{
 */
 namespace VecOp {
@@ -101,13 +101,14 @@ void eqV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b)
 /**
 * Vector assignment, a[i] = b[i], (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void eqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
+void eqV(DeviceArray<cudaComplex>& a, 
+         DeviceArray<cudaComplex> const & b,
          const int beginIdA, const int beginIdB, const int n);
 
 /**
@@ -122,7 +123,7 @@ void eqV(DeviceArray<cudaComplex>& a,
 {  eqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector assignment, a[i] = b, (real).
+* Vector-scalar assignment, a[i] = b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -133,7 +134,7 @@ void eqS(DeviceArray<cudaReal>& a, const cudaReal b,
          const int beginIdA, const int n);
 
 /**
-* Vector assignment, a[i] = b, (real).
+* Vector-scalar assignment, a[i] = b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -143,32 +144,32 @@ void eqS(DeviceArray<cudaReal>& a, const cudaReal b)
 {  eqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector assignment, a[i] = b, (complex).
+* Vector-scalar assignment, a[i] = b, (complex).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void eqS(DeviceArray<cudaComplex>& a, const cudaComplex b,
+void eqS(DeviceArray<cudaComplex>& a, 
+         const cudaComplex b,
          const int beginIdA, const int n);
 
 /**
 * Vector assignment, a[i] = b, (complex).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex scalar (RHS)
 */
 inline
 void eqS(DeviceArray<cudaComplex>& a, const cudaComplex b)
 {  eqS(a, b, 0, a.capacity()); }
 
-
 // Addition operations
 // ~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector addition, a[i] = b[i] + c[i], (real).
+* Vector-vector addition, a[i] = b[i] + c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -185,7 +186,7 @@ void addVV(DeviceArray<cudaReal>& a,
            const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c[i], (real).
+* Vector-vector addition, a[i] = b[i] + c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -198,11 +199,11 @@ void addVV(DeviceArray<cudaReal>& a,
 {  addVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c[i], (complex).
+* Vector-vector addition, a[i] = b[i] + c[i], (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  complex array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param beginIdC  index of the first entry to evaluate in array c
@@ -215,7 +216,7 @@ void addVV(DeviceArray<cudaComplex>& a,
            const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c[i], (complex).
+* Vector-vector addition, a[i] = b[i] + c[i], (complex).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -228,7 +229,7 @@ void addVV(DeviceArray<cudaComplex>& a,
 {  addVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c[i], wrapper (mixed, b = real).
+* Vector-vector addition, a[i] = b[i] + c[i] (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -245,7 +246,7 @@ void addVV(DeviceArray<cudaComplex> & a,
            const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c[i], wrapper (mixed, b = real).
+* Vector addition, a[i] = b[i] + c[i] (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -258,11 +259,11 @@ void addVV(DeviceArray<cudaComplex>& a,
 {  addVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c[i], wrapper (mixed, c = real).
+* Vector addition, a[i] = b[i] + c[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param beginIdC  index of the first entry to evaluate in array c
@@ -275,7 +276,7 @@ void addVV(DeviceArray<cudaComplex>& a,
            const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c[i], wrapper (mixed, c = real).
+* Vector-vector addition, a[i] = b[i] + c[i] (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -288,7 +289,7 @@ void addVV(DeviceArray<cudaComplex>& a,
 {  addVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c, kernel wrapper (real).
+* Vector-scalar addition, a[i] = b[i] + c (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -304,7 +305,7 @@ void addVS(DeviceArray<cudaReal>& a,
            const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c, (real).
+* Vector-scalar addition, a[i] = b[i] + c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -317,7 +318,7 @@ void addVS(DeviceArray<cudaReal>& a,
 {  addVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c, (complex).
+* Vector-scalar addition, a[i] = b[i] + c, (complex).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -344,7 +345,7 @@ void addVS(DeviceArray<cudaComplex>& a,
 {  addVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c, wrapper (mixed, b = real).
+* Vector addition, a[i] = b[i] + c (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -359,7 +360,7 @@ void addVS(DeviceArray<cudaComplex>& a,
            const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c, wrapper (mixed, b = real).
+* Vector addition, a[i] = b[i] + c (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -372,7 +373,7 @@ void addVS(DeviceArray<cudaComplex>& a,
 {  addVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector addition, a[i] = b[i] + c, wrapper (mixed, c = real).
+* Vector-scalar addition, a[i] = b[i] + c (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -387,7 +388,7 @@ void addVS(DeviceArray<cudaComplex>& a,
            const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector addition, a[i] = b[i] + c, wrapper (mixed, c = real).
+* Vector-scalar addition, a[i] = b[i] + c (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -404,7 +405,7 @@ void addVS(DeviceArray<cudaComplex>& a,
 // ~~~~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], (real).
+* Vector-vector subtraction, a[i] = b[i] - c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -421,7 +422,7 @@ void subVV(DeviceArray<cudaReal>& a,
 	   const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], (real).
+* Vector-vector subtraction, a[i] = b[i] - c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -433,7 +434,7 @@ void subVV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
 {  subVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], (complex).
+* Vector-vector subtraction, a[i] = b[i] - c[i], (complex).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -448,7 +449,7 @@ void subVV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
            const int beginIdB, const int beginIdC, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], (complex).
+* Vector-vector subtraction, a[i] = b[i] - c[i], (complex).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -461,7 +462,7 @@ void subVV(DeviceArray<cudaComplex>& a,
 {  subVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], wrapper (mixed, b = real).
+* Vector-vector subtraction, a[i] = b[i] - c[i] (mixed).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -477,7 +478,7 @@ void subVV(DeviceArray<cudaComplex>& a,
            const int beginIdB, const int beginIdC, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], wrapper (mixed, b = real).
+* Vector-vector subtraction, a[i] = b[i] - c[i] (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -490,11 +491,11 @@ void subVV(DeviceArray<cudaComplex>& a,
 {  subVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], wrapper (mixed, c = real).
+* Vector-vector subtraction, a[i] = b[i] - c[i] (mixed, c = real).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param beginIdC  index of the first entry to evaluate in array c
@@ -506,11 +507,11 @@ void subVV(DeviceArray<cudaComplex>& a,
            const int beginIdB, const int beginIdC, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c[i], wrapper (mixed, c = real).
+* Vector-vector subtraction, a[i] = b[i] - c[i] (mixed, c = real).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real  array (RHS)
 */
 inline
 void subVV(DeviceArray<cudaComplex>& a,
@@ -519,7 +520,7 @@ void subVV(DeviceArray<cudaComplex>& a,
 {  subVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c, (real).
+* Vector-scalar subtraction, a[i] = b[i] - c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -533,7 +534,7 @@ void subVS(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
            const int beginIdB, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c, (real).
+* Vector-scalar subtraction, a[i] = b[i] - c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -546,37 +547,39 @@ void subVS(DeviceArray<cudaReal>& a,
 {  subVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c, (complex).
+* Vector-scalar subtraction, a[i] = b[i] - c, (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  complex scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void subVS(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
-           const cudaComplex c, const int beginIdA,
-           const int beginIdB, const int n);
+void subVS(DeviceArray<cudaComplex>& a, 
+           DeviceArray<cudaComplex> const & b,
+           const cudaComplex c, 
+           const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c, (complex).
+* Vector-scalar subtraction, a[i] = b[i] - c, (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  complex scalar (RHS)
 */
 inline
 void subVS(DeviceArray<cudaComplex>& a,
-                  DeviceArray<cudaComplex> const & b, const cudaComplex c)
+           DeviceArray<cudaComplex> const & b, 
+           const cudaComplex c)
 {  subVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c, wrapper (mixed, b = real).
+* Vector subtraction, a[i] = b[i] - c (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
+* \param c  complex scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
@@ -587,11 +590,11 @@ void subVS(DeviceArray<cudaComplex>& a,
 	   const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c, wrapper (mixed, b = real).
+* Vector subtraction, a[i] = b[i] - c (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
+* \param c  complex scalar (RHS)
 */
 inline
 void subVS(DeviceArray<cudaComplex>& a,
@@ -600,25 +603,26 @@ void subVS(DeviceArray<cudaComplex>& a,
 {  subVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction, a[i] = b[i] - c, wrapper (mixed, c = real).
+* Vector subtraction, a[i] = b[i] - c (mixed, c = real).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void subVS(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
-           const cudaReal c, const int beginIdA,
-           const int beginIdB, const int n);
+void subVS(DeviceArray<cudaComplex>& a, 
+           DeviceArray<cudaComplex> const & b,
+           const cudaReal c, 
+           const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector subtraction, a[i] = b[i] - c, wrapper (mixed, c = real).
+* Vector subtraction, a[i] = b[i] - c (mixed, c = real).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real scalar (RHS)
 */
 inline
 void subVS(DeviceArray<cudaComplex>& a,
@@ -631,7 +635,7 @@ void subVS(DeviceArray<cudaComplex>& a,
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector multiplication, a[i] = b[i] * c[i], (real).
+* Vector-vector multiplication, a[i] = b[i] * c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -648,7 +652,7 @@ void mulVV(DeviceArray<cudaReal>& a,
            const int n);
 
 /**
-* Vector multiplication, a[i] = b[i] * c[i], (real).
+* Vector-vector multiplication, a[i] = b[i] * c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -661,7 +665,7 @@ void mulVV(DeviceArray<cudaReal>& a,
 {  mulVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i] = b[i] * c[i], (complex).
+* Vector-vector multiplication, a[i] = b[i] * c[i], (complex).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -678,7 +682,7 @@ void mulVV(DeviceArray<cudaComplex>& a,
            const int n);
 
 /**
-* Vector multiplication, a[i] = b[i] * c[i], (complex).
+* Vector-vector multiplication, a[i] = b[i] * c[i], (complex).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -691,7 +695,7 @@ void mulVV(DeviceArray<cudaComplex>& a,
 {  mulVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i] = b[i] * c[i], wrapper (mixed, b = real).
+* Vector-vector multiplication, a[i] = b[i] * c[i] (mixed).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -706,7 +710,7 @@ void mulVV(DeviceArray<cudaComplex>& a, DeviceArray<cudaReal> const & b,
            const int beginIdB, const int beginIdC, const int n);
 
 /**
-* Vector multiplication, a[i]=b[i]*c[i], wrapper (mixed, b = real).
+* Vector-vector multiplication, a[i]=b[i]*c[i] (mixed).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -719,26 +723,28 @@ void mulVV(DeviceArray<cudaComplex>& a,
 {  mulVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i]=b[i]*c[i], wrapper (mixed, c = real).
+* Vector-vector multiplication, a[i]=b[i]*c[i] (mixed, c = real).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param beginIdC  index of the first entry to evaluate in array c
 * \param n  the number of entries to evaluate
 */
-void mulVV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
-           DeviceArray<cudaReal> const & c, const int beginIdA,
-           const int beginIdB, const int beginIdC, const int n);
+void mulVV(DeviceArray<cudaComplex>& a, 
+           DeviceArray<cudaComplex> const & b,
+           DeviceArray<cudaReal> const & c, 
+           const int beginIdA, const int beginIdB, const int beginIdC, 
+           const int n);
 
 /**
-* Vector multiplication, a[i]=b[i]*c[i], wrapper (mixed, c = real).
+* Vector-vector multiplication, a[i]=b[i]*c[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real array (RHS)
 */
 inline
 void mulVV(DeviceArray<cudaComplex>& a,
@@ -747,7 +753,7 @@ void mulVV(DeviceArray<cudaComplex>& a,
 {  mulVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i] = b[i] * c, (real).
+* Vector-scalar multiplication, a[i] = b[i] * c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -763,7 +769,7 @@ void mulVS(DeviceArray<cudaReal>& a,
            const int n);
 
 /**
-* Vector multiplication, a[i] = b[i] * c, (real).
+* Vector-scalar multiplication, a[i] = b[i] * c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -776,7 +782,7 @@ void mulVS(DeviceArray<cudaReal>& a,
 {  mulVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i] = b[i] * c, (complex).
+* Vector-scalar multiplication, a[i] = b[i] * c, (complex).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -791,7 +797,7 @@ void mulVS(DeviceArray<cudaComplex>& a,
            const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector multiplication, a[i] = b[i] * c, (complex).
+* Vector-scalar multiplication, a[i] = b[i] * c, (complex).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -804,11 +810,11 @@ void mulVS(DeviceArray<cudaComplex>& a,
 {  mulVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i] = b[i] * c, wrapper (mixed, b = real).
+* Vector-scalar multiplication, a[i] = b[i] * c (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
+* \param c  complex scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
@@ -819,11 +825,11 @@ void mulVS(DeviceArray<cudaComplex>& a,
            const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector multiplication, a[i] = b[i] * c, wrapper (mixed, b = real).
+* Vector-scalar multiplication, a[i] = b[i] * c (mixed).
 *
 * \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param b  real array (RHS)
+* \param c  complex scalar (RHS)
 */
 inline
 void mulVS(DeviceArray<cudaComplex>& a,
@@ -832,11 +838,11 @@ void mulVS(DeviceArray<cudaComplex>& a,
 {  mulVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication, a[i] = b[i] * c, wrapper (mixed, c = real).
+* Vector-scalar multiplication, a[i] = b[i] * c (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
@@ -847,11 +853,11 @@ void mulVS(DeviceArray<cudaComplex>& a,
            const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector multiplication, a[i] = b[i] * c, wrapper (mixed, c = real).
+* Vector-scalar multiplication, a[i] = b[i] * c (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real scalar (RHS)
 */
 inline
 void mulVS(DeviceArray<cudaComplex>& a,
@@ -864,7 +870,7 @@ void mulVS(DeviceArray<cudaComplex>& a,
 // ~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector division, a[i] = b[i] / c[i], (real).
+* Vector-vector division, a[i] = b[i] / c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -881,7 +887,7 @@ void divVV(DeviceArray<cudaReal>& a,
            const int n);
 
 /**
-* Vector division, a[i] = b[i] / c[i], (real).
+* Vector-vector division, a[i] = b[i] / c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -893,35 +899,37 @@ void divVV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
 {  divVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector division, a[i] = b[i] / c[i], wrapper (mixed, c = real).
+* Vector-vector division, a[i] = b[i] / c[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param beginIdC  index of the first entry to evaluate in array c
 * \param n  the number of entries to evaluate
 */
-void divVV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
-           DeviceArray<cudaReal> const & c, const int beginIdA,
-           const int beginIdB, const int beginIdC, const int n);
+void divVV(DeviceArray<cudaComplex>& a, 
+           DeviceArray<cudaComplex> const & b,
+           DeviceArray<cudaReal> const & c, 
+           const int beginIdA, const int beginIdB, const int beginIdC, 
+           const int n);
 
 /**
-* Vector division, a[i] = b[i] / c[i], wrapper (mixed, c = real).
+* Vector-vector division, a[i] = b[i] / c[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
-* \param c  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
+* \param c  real array (RHS)
 */
 inline
 void divVV(DeviceArray<cudaComplex>& a,
-                  DeviceArray<cudaComplex> const & b,
-                  DeviceArray<cudaReal> const & c)
+           DeviceArray<cudaComplex> const & b,
+           DeviceArray<cudaReal> const & c)
 {  divVV(a, b, c, 0, 0, 0, a.capacity()); }
 
 /**
-* Vector division, a[i] = b[i] / c, (real).
+* Vector-scalar division, a[i] = b[i] / c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -935,7 +943,7 @@ void divVS(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
            const int beginIdB, const int n);
 
 /**
-* Vector division, a[i] = b[i] / c, (real).
+* Vector-scalar division, a[i] = b[i] / c, (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -948,10 +956,10 @@ void divVS(DeviceArray<cudaReal>& a,
 {  divVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector division, a[i] = b[i] / c, wrapper (mixed, c = real).
+* Vector-scalar division, a[i] = b[i] / c (mixed, c real).
 *
-* \param a  real array (LHS)
-* \param b  real array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 * \param c  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
@@ -963,7 +971,7 @@ void divVS(DeviceArray<cudaComplex>& a,
            const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector division, a[i] = b[i] / c, wrapper (mixed, c = real).
+* Vector-scalar division, a[i] = b[i] / c (mixed, c = real).
 *
 * \param a  complex array (LHS)
 * \param b  complex array (RHS)
@@ -976,7 +984,7 @@ void divVS(DeviceArray<cudaComplex>& a,
 {  divVS(a, b, c, 0, 0, a.capacity()); }
 
 /**
-* Vector division, a[i] = b / c[i], (real).
+* Scalar-vector division, a[i] = b / c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -991,7 +999,7 @@ void divSV(DeviceArray<cudaReal>& a,
            const int beginIdA, const int beginIdC, const int n);
 
 /**
-* Vector division, a[i] = b / c[i], (real).
+* Scalar-vector division, a[i] = b / c[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1034,8 +1042,8 @@ void expV(DeviceArray<cudaReal>& a,
 /**
 * Vector exponentiation, a[i] = exp(b[i]), (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
@@ -1048,8 +1056,8 @@ void expV(DeviceArray<cudaComplex>& a,
 /**
 * Vector exponentiation, a[i] = exp(b[i]), (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 */
 inline
 void expV(DeviceArray<cudaComplex>& a,
@@ -1061,7 +1069,7 @@ void expV(DeviceArray<cudaComplex>& a,
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector addition in-place, a[i] += b[i], (real).
+* Vector in-place addition, a[i] += b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1073,7 +1081,7 @@ void addEqV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector addition in-place, a[i] += b[i], (real).
+* Vector-vector in-place addition, a[i] += b[i] (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1083,22 +1091,23 @@ void addEqV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b)
 {  addEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector addition in-place, a[i] += b[i], (complex).
+* Vector-vector in-place addition, a[i] += b[i] (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void addEqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
+void addEqV(DeviceArray<cudaComplex>& a, 
+            DeviceArray<cudaComplex> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector addition in-place, a[i] += b[i], (complex).
+* Vector-vector in-place addition, a[i] += b[i] (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 */
 inline
 void addEqV(DeviceArray<cudaComplex>& a,
@@ -1106,22 +1115,23 @@ void addEqV(DeviceArray<cudaComplex>& a,
 {  addEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector addition in-place, a[i] += b[i], wrapper (mixed, b = real).
+* Vector-vector in-place addition, a[i] += b[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void addEqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaReal> const & b,
+void addEqV(DeviceArray<cudaComplex>& a, 
+            DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector addition in-place, a[i] += b[i], wrapper (mixed, b = real).
+* Vector-vector in-place addition, a[i] += b[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
 */
 inline
 void addEqV(DeviceArray<cudaComplex>& a,
@@ -1129,7 +1139,7 @@ void addEqV(DeviceArray<cudaComplex>& a,
 {  addEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector addition in-place, a[i] += b, (real).
+* Vector-scalar in-place addition, a[i] += b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1141,7 +1151,7 @@ void addEqS(DeviceArray<cudaReal>& a,
             const int beginIdA, const int n);
 
 /**
-* Vector addition in-place, a[i] += b, (real).
+* Vector-scalar in-place addition, a[i] += b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1151,18 +1161,19 @@ void addEqS(DeviceArray<cudaReal>& a, const cudaReal b)
 {  addEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector addition in-place, a[i] += b, (complex).
+* Vector-scalar in-place addition, a[i] += b, (complex).
 *
 * \param a  output array (LHS)
 * \param b  input scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void addEqS(DeviceArray<cudaComplex>& a, const cudaComplex b,
+void addEqS(DeviceArray<cudaComplex>& a, 
+            const cudaComplex b,
             const int beginIdA, const int n);
 
 /**
-* Vector addition in-place, a[i] += b, (complex).
+* Vector-scalar in-place addition, a[i] += b, (complex).
 *
 * \param a  output array (LHS)
 * \param b  input scalar (RHS)
@@ -1172,21 +1183,22 @@ void addEqS(DeviceArray<cudaComplex>& a, const cudaComplex b)
 {  addEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector addition in-place, a[i] += b, wrapper (mixed, b = real).
+* Vector-scalar in-place addition, a[i] += b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void addEqS(DeviceArray<cudaComplex>& a, const cudaReal b,
+void addEqS(DeviceArray<cudaComplex>& a, 
+            const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector addition in-place, a[i] += b, wrapper (mixed, b = real).
+* Vector-scalar in-place addition, a[i] += b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 */
 inline
 void addEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
@@ -1197,7 +1209,7 @@ void addEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector subtraction in-place, a[i] -= b[i], (real).
+* Vector in-place subtraction, a[i] -= b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1210,7 +1222,7 @@ void subEqV(DeviceArray<cudaReal>& a,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector subtraction in-place, a[i] -= b[i], (real).
+* Vector in-place subtraction, a[i] -= b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1220,19 +1232,20 @@ void subEqV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b)
 {  subEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction in-place, a[i] -= b[i], (complex).
+* Vector-vector in-place subtraction, a[i] -= b[i], (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void subEqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
+void subEqV(DeviceArray<cudaComplex>& a, 
+            DeviceArray<cudaComplex> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector subtraction in-place, a[i] -= b[i], (complex).
+* Vector in-place subtraction, a[i] -= b[i], (complex).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -1243,7 +1256,7 @@ void subEqV(DeviceArray<cudaComplex>& a,
 {  subEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction in-place, a[i]-=b[i], wrapper (mixed, b = real).
+* Vector in-place subtraction, a[i]-=b[i] (mixed).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -1255,7 +1268,7 @@ void subEqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector subtraction in-place, a[i]-=b[i], wrapper (mixed, b = real).
+* Vector in-place subtraction, a[i]-=b[i] (mixed).
 *
 * \param a  output array (LHS)
 * \param b  input array (RHS)
@@ -1266,7 +1279,7 @@ void subEqV(DeviceArray<cudaComplex>& a,
 {  subEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector subtraction in-place, a[i] -= b, (real).
+* Vector in-place subtraction, a[i] -= b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1277,7 +1290,7 @@ void subEqS(DeviceArray<cudaReal>& a, const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector subtraction in-place, a[i] -= b, (real).
+* Vector in-place subtraction, a[i] -= b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1287,10 +1300,10 @@ void subEqS(DeviceArray<cudaReal>& a, const cudaReal b)
 {  subEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector subtraction in-place, a[i] -= b, (complex).
+* Vector in-place subtraction, a[i] -= b, (complex).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
@@ -1298,31 +1311,32 @@ void subEqS(DeviceArray<cudaComplex>& a, const cudaComplex b,
             const int beginIdA, const int n);
 
 /**
-* Vector subtraction in-place, a[i] -= b, (complex).
+* Vector in-place subtraction, a[i] -= b, (complex).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  complex scalar (RHS)
 */
 inline
 void subEqS(DeviceArray<cudaComplex>& a, const cudaComplex b)
 {  subEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector subtraction in-place, a[i] -= b, wrapper (mixed, b = real).
+* Vector-scalar in-place subtraction, a[i] -= b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void subEqS(DeviceArray<cudaComplex>& a, const cudaReal b,
+void subEqS(DeviceArray<cudaComplex>& a, 
+            const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector subtraction in-place, a[i] -= b, wrapper (mixed, b = real).
+* Vector-scalar in-place subtraction, a[i] -= b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 */
 inline
 void subEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
@@ -1333,7 +1347,7 @@ void subEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector multiplication in-place, a[i] *= b[i], (real).
+* Vector-vector in-place multiplication, a[i] *= b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1345,7 +1359,7 @@ void mulEqV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector multiplication in-place, a[i] *= b[i], (real).
+* Vector-vector in-place multiplication, a[i] *= b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1356,22 +1370,23 @@ void mulEqV(DeviceArray<cudaReal>& a,
 {  mulEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication in-place, a[i]*=b[i], (complex).
+* Vector-vector in-place multiplication, a[i] *= b[i], (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void mulEqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaComplex> const & b,
+void mulEqV(DeviceArray<cudaComplex>& a, 
+            DeviceArray<cudaComplex> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector multiplication in-place, a[i]*=b[i], (complex).
+* Vector-vector in-place multiplication, a[i] *= b[i], (complex).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  complex array (RHS)
 */
 inline
 void mulEqV(DeviceArray<cudaComplex>& a,
@@ -1379,22 +1394,23 @@ void mulEqV(DeviceArray<cudaComplex>& a,
 {  mulEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication in-place, a[i]*=b[i], wrapper (mixed, b=real).
+* Vector-vector in-place multiplication, a[i]*=b[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param beginIdB  index of the first entry to evaluate in array b
 * \param n  the number of entries to evaluate
 */
-void mulEqV(DeviceArray<cudaComplex>& a, DeviceArray<cudaReal> const & b,
+void mulEqV(DeviceArray<cudaComplex>& a, 
+            DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector multiplication in-place, a[i]*=b[i], wrapper (mixed, b=real).
+* Vector-vector in-place multiplication, a[i] *= b[i] (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input array (RHS)
+* \param a  complex array (LHS)
+* \param b  real array (RHS)
 */
 inline
 void mulEqV(DeviceArray<cudaComplex>& a,
@@ -1402,7 +1418,7 @@ void mulEqV(DeviceArray<cudaComplex>& a,
 {  mulEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector multiplication in-place, a[i] *= b, (real).
+* Vector-scalar in-place multiplication, a[i] *= b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1413,7 +1429,7 @@ void mulEqS(DeviceArray<cudaReal>& a, const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector multiplication in-place, a[i] *= b, (real).
+* Vector-scalar in-place multiplication, a[i] *= b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1423,7 +1439,7 @@ void mulEqS(DeviceArray<cudaReal>& a, const cudaReal b)
 {  mulEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector multiplication in-place, a[i] *= b, (complex).
+* Vector-scalar in-place multiplication, a[i] *= b, (complex).
 *
 * \param a  complex array (LHS)
 * \param b  complex scalar (RHS)
@@ -1434,7 +1450,7 @@ void mulEqS(DeviceArray<cudaComplex>& a, const cudaComplex b,
             const int beginIdA, const int n);
 
 /**
-* Vector multiplication in-place, a[i] *= b, (complex).
+* Vector-scalar in-place multiplication, a[i] *= b, (complex).
 *
 * \param a  complex array (LHS)
 * \param b  complex scalar (RHS)
@@ -1444,21 +1460,22 @@ void mulEqS(DeviceArray<cudaComplex>& a, const cudaComplex b)
 {  mulEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector multiplication in-place, a[i]*=b, wrapper (mixed, b = real).
+* Vector-scalar in-place multiplication, a[i]*=b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void mulEqS(DeviceArray<cudaComplex>& a, const cudaReal b,
+void mulEqS(DeviceArray<cudaComplex>& a, 
+            const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector multiplication in-place, a[i]*=b, wrapper (mixed, b = real).
+* Vector-scalar in-place multiplication, a[i]*=b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 */
 inline
 void mulEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
@@ -1469,7 +1486,7 @@ void mulEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
-* Vector division in-place, a[i] /= b[i], (real).
+* Vector-vector in-place division, a[i] /= b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1482,7 +1499,7 @@ void divEqV(DeviceArray<cudaReal>& a,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector division in-place, a[i] /= b[i], (real).
+* Vector-vector in-place division, a[i] /= b[i], (real).
 *
 * \param a  real array (LHS)
 * \param b  real array (RHS)
@@ -1492,7 +1509,7 @@ void divEqV(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b)
 {  divEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector division in-place, a[i] /= b[i], wrapper (mixed, b = real).
+* Vector-vector in-place division, a[i] /= b[i] (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -1505,7 +1522,7 @@ void divEqV(DeviceArray<cudaComplex>& a,
             const int beginIdA, const int beginIdB, const int n);
 
 /**
-* Vector division in-place, a[i] /= b[i], wrapper (mixed).
+* Vector-vector in-place division, a[i] /= b[i] (mixed).
 *
 * \param a  complex array (LHS)
 * \param b  real array (RHS)
@@ -1516,18 +1533,19 @@ void divEqV(DeviceArray<cudaComplex>& a,
 {  divEqV(a, b, 0, 0, a.capacity()); }
 
 /**
-* Vector division in-place, a[i] /= b, (real).
+* Vector-scalar in-place division, a[i] /= b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void divEqS(DeviceArray<cudaReal>& a, const cudaReal b,
+void divEqS(DeviceArray<cudaReal>& a, 
+            const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector division in-place, a[i] /= b, (real).
+* Vector-scalar in-place division, a[i] /= b, (real).
 *
 * \param a  real array (LHS)
 * \param b  real scalar (RHS)
@@ -1537,21 +1555,22 @@ void divEqS(DeviceArray<cudaReal>& a, const cudaReal b)
 {  divEqS(a, b, 0, a.capacity()); }
 
 /**
-* Vector division in-place, a[i] /= b, wrapper (mixed, b = real).
+* Vector-scalar in-place division, a[i] /= b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 * \param beginIdA  index of the first entry to evaluate in array a
 * \param n  the number of entries to evaluate
 */
-void divEqS(DeviceArray<cudaComplex>& a, const cudaReal b,
+void divEqS(DeviceArray<cudaComplex>& a, 
+            const cudaReal b,
             const int beginIdA, const int n);
 
 /**
-* Vector division in-place, a[i] /= b, wrapper (mixed, b = real).
+* Vector-scalar in-place division, a[i] /= b (mixed).
 *
-* \param a  output array (LHS)
-* \param b  input scalar (RHS)
+* \param a  complex array (LHS)
+* \param b  real scalar (RHS)
 */
 inline
 void divEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
@@ -1562,5 +1581,6 @@ void divEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
 } // namespace VecOp
 } // namespace Pscf
 
-#include "VecOpMisc.h" // Ensure that if VecOp is included, so is VecOpMisc
+// Ensure that if VecOp.h is included, so is VecOpMisc.h
+#include "VecOpMisc.h" 
 #endif

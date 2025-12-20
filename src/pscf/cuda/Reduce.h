@@ -50,7 +50,7 @@ namespace Pscf {
 * nearest multiple of the thread block size). The kernel wrapper
 * properly determines the GPU configuration before calling the kernel.
 *
-* \ingroup Prdc_Cuda_Module
+* \ingroup Pscf_Cuda_Module
 * @{
 */
 namespace Reduce {
