@@ -2,6 +2,7 @@
 #define PSCF_CUDA_TYPES_H
 
 #include <cufft.h>
+//#include <cuComplex.h>
 
 // Toggle single / double precision:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,10 +15,12 @@ namespace Pscf {
    * Complex number type used in CPU code that uses FFTW.
    */
    #ifdef SINGLE_PRECISION
-   typedef cufftComplex cudaComplex;
+   using cudaComplex = cufftComplex;
+   //using cudaComplex = cuComplex;
    #else
    #ifdef DOUBLE_PRECISION
-   typedef cufftDoubleComplex cudaComplex;
+   using cudaComplex = cufftDoubleComplex;
+   //using cudaComplex = cuDoubleComplex;
    #endif
    #endif
 
@@ -25,10 +28,12 @@ namespace Pscf {
    * Real number type used in CPU code that uses FFTW.
    */
    #ifdef SINGLE_PRECISION
-   typedef cufftReal cudaReal;
+   using cudaReal = cufftReal;
+   //using cudaReal = float;
    #else
    #ifdef DOUBLE_PRECISION
-   typedef cufftDoubleReal cudaReal;
+   using cudaReal = cufftDoubleReal;
+   //using cudaReal = double;
    #endif
    #endif
 
