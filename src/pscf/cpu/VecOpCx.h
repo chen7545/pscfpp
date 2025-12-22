@@ -24,13 +24,13 @@ namespace Pscf {
    *
    * Operations that are performed by these functions include assignment,
    * addition, subtraction, multiplication, division, and exponentiation.
-   * The function names will, correspondingly, begin with "add", "sub",
-   * "mul", "div", "exp", or "eq" to indicate the relevant operation.
+   * The function names will, correspondingly, begin with "eq", "add",
+   * "sub", "mul", "div", or "exp" to indicate the relevant operation.
    * Functions that perform arithmetic "in-place" assignment operations,
-   * analogous to those performed using +=, -=, *=, and /= in C/C++, 
+   * analogous to those performed using +=, -=, *=, and /= operators, 
    * have names that begin with "addEq", "subEq", "mulEq", and "divEq".
    *
-   * The output (the LHS of a vector operation) is always the first
+   * The output array (the LHS of a vector operation) is always the first
    * parameter passed to the function. The input argument(s) (on the RHS
    * of the vector operation) may be vectors or scalars. If an argument is
    * a vector (or scalar), the function name will contain a V (or S). For
