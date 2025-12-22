@@ -72,6 +72,34 @@ namespace VecOp {
       }
    }
 
+   // Real and imaginary parts
+
+   /*
+   * Copy real part of a complex array to a real array.
+   */
+   void real(Array<double> & a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b[i][0];
+      }
+   }
+
+   /*
+   * Copy imaginary part of a complex array to a real array.
+   */
+   void imag(Array<double> & a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b[i][1];
+      }
+   }
+
    // Addition
 
    /*

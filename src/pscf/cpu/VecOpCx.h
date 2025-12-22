@@ -22,8 +22,8 @@ namespace Pscf {
    /**
    * Functions that perform element-wise vector operations on the Cpu.
    *
-   * Operations that are performed by these functions include addition,
-   * subtraction, multiplication, division, exponentiation, and assignment.
+   * Operations that are performed by these functions include assignment,
+   * addition, subtraction, multiplication, division, and exponentiation.
    * The function names will, correspondingly, begin with "add", "sub",
    * "mul", "div", "exp", or "eq" to indicate the relevant operation.
    * Functions that perform arithmetic "in-place" assignment operations,
@@ -79,6 +79,24 @@ namespace Pscf {
       * \param b  real scalar (RHS)
       */
       void eqS(Array<fftw_complex>& a, double b);
+
+      // Real and imaginary parts
+
+      /**
+      * Copy real part of a complex array to a real array.
+      *
+      * \param a  real array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void real(Array<double>& a, Array<fftw_complex> const & b);
+
+      /**
+      * Copy imaginary part of a complex array to a real array.
+      *
+      * \param a  real array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void imag(Array<double>& a, Array<fftw_complex> const & b);
 
       // Addition
 

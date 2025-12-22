@@ -33,7 +33,8 @@ namespace Rpg {
       /*
       * Element-wise calculation of a = real(b * conj(c) * d), CUDA kernel
       */
-      __global__ void _realMulVConjVV(cudaReal* a, cudaComplex const * b,
+      __global__ void _realMulVConjVV(cudaReal* a, 
+                                      cudaComplex const * b,
                                       cudaComplex const * c,
                                       cudaReal const * d, const int n)
       {
@@ -157,7 +158,8 @@ namespace Rpg {
 
       // Launch kernel
       _richardsonEx<<<nBlocks, nThreads>>>(qNew.cArray(), qr.cArray(),
-                                           qr2.cArray(), expW2.cArray(), n);
+                                           qr2.cArray(), expW2.cArray(), 
+                                           n);
    }
 
    /*
@@ -168,8 +170,10 @@ namespace Rpg {
    * \param c  input array 2
    * \param d  input scalar
    */
-   void addEqMulVVc(DeviceArray<cudaReal>& a, DeviceArray<cudaReal> const & b,
-                    DeviceArray<cudaReal> const & c, cudaReal const d)
+   void addEqMulVVc(DeviceArray<cudaReal>& a, 
+                    DeviceArray<cudaReal> const & b,
+                    DeviceArray<cudaReal> const & c, 
+                    cudaReal const d)
    {
       int n = a.capacity();
       UTIL_CHECK(b.capacity() >= n);
@@ -239,8 +243,10 @@ namespace Rpg {
    {}
 
    template <int D>
-   void Block<D>::associate(Mesh<D> const & mesh, FFT<D> const & fft,
-                            UnitCell<D> const & cell, WaveList<D>& wavelist)
+   void Block<D>::associate(Mesh<D> const & mesh, 
+                            FFT<D> const & fft,
+                            UnitCell<D> const & cell, 
+                            WaveList<D>& wavelist)
    {
       UTIL_CHECK(!isAllocated_);
       UTIL_CHECK(mesh.size() > 1);
@@ -482,15 +488,16 @@ namespace Rpg {
       qk2.associate(qkPair_, kSize_, mesh().dimensions());
 
       // Apply pseudo-spectral algorithm
-      VecOp::mulVVPair(qr, qr2, expW_, expW2_, qin); // qr = expW*q, qr2 = expW2*q
+      // qr = expW*q, qr2 = expW2*q
+      VecOp::mulVVPair(qr, qr2, expW_, expW2_, qin); 
       fftBatchedPair_.forwardTransform(qrPair_, qkPair_); 
-      VecOp::mulEqV(qk, expKsq_); // qk *= expKsq
-      VecOp::mulEqV(qk2, expKsq2_); // qk2 *= expKsq2
+      VecOp::mulEqV(qk, expKsq_);
+      VecOp::mulEqV(qk2, expKsq2_);
       fftBatchedPair_.inverseTransformUnsafe(qkPair_, qrPair_); 
       VecOp::mulEqVPair(qr, qr2, expW_); // qr *= expW, qr2 *= expW
-      fft().forwardTransform(qr2, qk2); // to Fourier space, only qr2
+      fft().forwardTransform(qr2, qk2);
       VecOp::mulEqV(qk2, expKsq2_); // qk2 *= expKsq2
-      fft().inverseTransformUnsafe(qk2, qr2); // to real space, only qr2
+      fft().inverseTransformUnsafe(qk2, qr2); 
       richardsonEx(qout, qr, qr2, expW2_); // qout=(4*(qr2*expW2)-qr)/3
    }
 
@@ -540,8 +547,8 @@ namespace Rpg {
 
       // Apply full bond operator
       fft().forwardTransform(qin, qk_);
-      VecOp::mulEqV(qk_, expKsq_);                   // qk *= expKsq
-      fft().inverseTransformUnsafe(qk_, qout);       // overwrites qk_
+      VecOp::mulEqV(qk_, expKsq_);              // qk *= expKsq
+      fft().inverseTransformUnsafe(qk_, qout);  // overwrites qk_
    }
 
    /*
@@ -562,9 +569,9 @@ namespace Rpg {
       UTIL_CHECK(expKsq_.capacity() == kSize_);
 
       // Apply half-bond operator
-      fft().forwardTransform(qin, qk_);        
-      VecOp::mulEqV(qk_, expKsq2_);                  // qk *= expKsq2
-      fft().inverseTransformUnsafe(qk_, qout);       // overwrites qk_
+      fft().forwardTransform(qin, qk_);
+      VecOp::mulEqV(qk_, expKsq2_);              // qk *= expKsq2
+      fft().inverseTransformUnsafe(qk_, qout);   // overwrites qk_
    }
 
    /*

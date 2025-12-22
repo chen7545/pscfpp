@@ -30,6 +30,28 @@ namespace Pscf {
    */
    namespace Reduce {
 
+      // Summation
+
+      /**
+      * Compute sum of array elements .
+      *
+      * \param in  input array
+      */
+      double sum(Array<double> const & in);
+
+      // Summation of products
+
+      /**
+      * Compute inner product of two real arrays .
+      *
+      * \param a  first input array
+      * \param b  second input array
+      */
+      double innerProduct(Array<double> const & a,
+                          Array<double> const & b);
+
+      // Maxima and minima
+
       /**
       * Get maximum of array elements .
       *
@@ -57,22 +79,6 @@ namespace Pscf {
       * \param in  input array
       */
       double minAbs(Array<double> const & in);
-
-      /**
-      * Compute sum of array elements .
-      *
-      * \param in  input array
-      */
-      double sum(Array<double> const & in);
-
-      /**
-      * Compute inner product of two real arrays .
-      *
-      * \param a  first input array
-      * \param b  second input array
-      */
-      double innerProduct(Array<double> const & a,
-                          Array<double> const & b);
 
    /** @} */
 

@@ -12,6 +12,42 @@
 namespace Pscf {
 namespace Reduce {
 
+   // Summation
+
+   /*
+   * Compute sum of array elements.
+   */
+   double sum(Array<double> const & in)
+   {
+      int n = in.capacity();
+      UTIL_CHECK(n > 0);
+      double sum = 0.0;
+      for (int i = 0; i < n; i++) {
+         sum += in[i];
+      }
+      return sum;
+   }
+
+   // Summation of products
+
+   /*
+   * Compute inner product of two real arrays.
+   */
+   double innerProduct(Array<double> const & a,
+                       Array<double> const & b)
+   {
+      int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      double sum = 0.0;
+      for (int i = 0; i < n; i++) {
+         sum += a[i]*b[i];
+      }
+      return sum;
+   }
+
+   // Maxima and minima
+
    /*
    * Get maximum of array elements.
    */
@@ -70,36 +106,6 @@ namespace Reduce {
          if (val < min) min = val;
       }
       return min;
-   }
-
-   /*
-   * Compute sum of array elements (GPU kernel wrapper).
-   */
-   double sum(Array<double> const & in)
-   {
-      int n = in.capacity();
-      UTIL_CHECK(n > 0);
-      double sum = 0.0;
-      for (int i = 0; i < n; i++) {
-         sum += in[i];
-      }
-      return sum;
-   }
-
-   /*
-   * Compute inner product of two real arrays.
-   */
-   double innerProduct(Array<double> const & a,
-                       Array<double> const & b)
-   {
-      int n = a.capacity();
-      UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      double sum = 0.0;
-      for (int i = 0; i < n; i++) {
-         sum += a[i]*b[i];
-      }
-      return sum;
    }
 
 } // Reduce
