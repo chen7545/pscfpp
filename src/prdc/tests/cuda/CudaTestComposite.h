@@ -3,22 +3,15 @@
 
 #include <test/CompositeTestRunner.h>
 
-#include "CudaReduceTest.h"
-#include "CudaVecOpTest.h"
 #include "CudaFieldTest.h"
 #include "CudaFieldComparisonTest.h"
-#include "CudaFieldTest.h"
 #include "CudaFftTest.h"
-#include "CudaComplexTest.h"
 #include "CudaWaveListTest.h"
 
 TEST_COMPOSITE_BEGIN(CudaTestComposite)
-TEST_COMPOSITE_ADD_UNIT(CudaReduceTest);
-TEST_COMPOSITE_ADD_UNIT(CudaVecOpTest);
 TEST_COMPOSITE_ADD_UNIT(CudaFieldTest);
 TEST_COMPOSITE_ADD_UNIT(CudaFieldComparisonTest);
 TEST_COMPOSITE_ADD_UNIT(CudaFftTest);
-TEST_COMPOSITE_ADD_UNIT(CudaComplexTest);
 TEST_COMPOSITE_ADD_UNIT(CudaWaveListTest);
 TEST_COMPOSITE_END
 

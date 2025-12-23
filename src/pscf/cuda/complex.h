@@ -20,7 +20,7 @@ namespace Pscf {
    * Complex arithmetic functions using the complex type cudaComplex
    * used in GPU code that interfaces with cufft.
    *
-   * \ingroup Pscf_Math_Arithmetic_Module
+   * \ingroup Pscf_Math_Arithmetic_Module Pscf_Cuda_Module
    */
 
    /*
@@ -544,6 +544,48 @@ namespace Pscf {
       z.x = result.real();
       z.y = result.imag();
    }
+
+   // Pseudo-constructor
+
+   /*
+   * Pseudo-constructor function for cudaComplex.
+   *
+   *
+   * \ingroup Pscf_Math_Complex_Cuda_Module
+   *
+   * \param x  real part (in)
+   * \param y  imaginary part (in)
+   */
+   __host__ __device__ static inline   
+   cudaComplex makeComplex(cudaReal x, cudaReal y)
+   {
+      cudaComplex result;
+      result.x = x;
+      result.y = y;
+      return result;
+   }
+
+   // Addition functor
+
+   /**
+   * Complex addition functor, suitable for use in thrust library.
+   *
+   * \ingroup Pscf_Math_Complex_Cuda_Module
+   */
+   struct addComplexFunctor {
+
+      /**
+      * Binary addition operator.
+      *
+      * \param a  1st summand (in)
+      * \param b  2nd summand (in)
+      */
+      __host__ __device__ inline
+      cudaComplex operator()(cudaComplex const & a, cudaComplex const & b) 
+      const 
+      {  return makeComplex(a.x + b.x, a.y + b.y); }
+ 
+   };
 
 } // namespace Pscf
 #endif

@@ -1,13 +1,17 @@
-#ifndef PRDC_CUDA_VEC_OP_TEST_H
-#define PRDC_CUDA_VEC_OP_TEST_H
+#ifndef PSCF_CUDA_VEC_OP_TEST_H
+#define PSCF_CUDA_VEC_OP_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <prdc/cuda/resources.h>
-
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/DeviceArray.h>
+#include <pscf/cuda/complex.h>
+#include <pscf/cuda/cudaTypes.h>
 #include <pscf/math/FieldComparison.h>
+
 #include <util/math/Constants.h>
+
 #include <complex>
 #include <cmath>
 
