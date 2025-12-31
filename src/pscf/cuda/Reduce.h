@@ -54,14 +54,25 @@ namespace Pscf {
    * @{
    */
    namespace Reduce {
-   
+  
+      // Summation
+      
       /**
-      * Compute sum of array elements (real).
+      * Compute sum of real array elements.
       *
       * \param in  input array
       */
       cudaReal sum(DeviceArray<cudaReal> const & in);
    
+      /**
+      * Compute sum of array of complex elements.
+      *
+      * \param in  input array
+      */
+      cudaComplex sum(DeviceArray<cudaComplex> const & in);
+   
+      // Vector inner products 
+     
       /**
       * Compute inner product of two real arrays.
       *
@@ -71,6 +82,8 @@ namespace Pscf {
       cudaReal innerProduct(DeviceArray<cudaReal> const & a,
                             DeviceArray<cudaReal> const & b);
    
+      // Extrema - real elements
+     
       /**
       * Get maximum of array elements.
       *
@@ -98,6 +111,20 @@ namespace Pscf {
       * \param in  input array
       */
       cudaReal minAbs(DeviceArray<cudaReal> const & in);
+   
+      // Memory management
+   
+      /**
+      * Allocate workspace for use by reduction functions.
+      *
+      * \param size  size of required work space in bytes
+      */
+      void allocateWorkSpace(size_t size);
+
+      /**
+      * Free any work space currently allocated for reductions.
+      */
+      void freeWorkSpace(); 
    
       /** @} */
    

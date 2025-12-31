@@ -572,7 +572,12 @@ namespace Pscf {
    *
    * \ingroup Pscf_Math_Complex_Cuda_Module
    */
-   struct addComplexFunctor {
+   struct addComplexFunctor 
+   {
+
+      // addComplexFunctor() = default;
+
+      //addComplexFunctor& operator = (addComplexFunctor const &) = default;
 
       /**
       * Binary addition operator.
@@ -583,7 +588,12 @@ namespace Pscf {
       __host__ __device__ inline
       cudaComplex operator()(cudaComplex const & a, cudaComplex const & b) 
       const 
-      {  return makeComplex(a.x + b.x, a.y + b.y); }
+      {  
+         cudaComplex result;
+         result.x = a.x + b.x;
+         result.y = a.y + b.y;
+         return result;
+      }
  
    };
 
