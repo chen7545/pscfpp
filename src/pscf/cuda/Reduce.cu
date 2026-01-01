@@ -596,7 +596,7 @@ namespace Reduce {
    */
    cudaReal sum(DeviceArray<cudaReal> const & a)
    {
-      std::cout << "\n Using CUB implementation of sum";
+      //std::cout << "\n Using CUB implementation of sum";
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
@@ -636,7 +636,7 @@ namespace Reduce {
    */
    cudaReal sum(DeviceArray<cudaReal> const & in)
    {
-      std::cout << "\n Using custom implementation of sum";
+      //std::cout << "\n Using custom implementation of sum";
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
@@ -868,7 +868,7 @@ namespace Reduce {
    */
    cudaReal max(DeviceArray<cudaReal> const & a)
    {
-      std::cout << "\n Using CUB implementation of max";
+      //std::cout << "\n Using CUB implementation of max";
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
@@ -907,7 +907,7 @@ namespace Reduce {
    */
    cudaReal max(DeviceArray<cudaReal> const & in)
    {
-      std::cout << "\n Using custom implementation of max";
+      //std::cout << "\n Using custom implementation of max";
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
@@ -991,7 +991,7 @@ namespace Reduce {
    */
    cudaReal maxAbs(DeviceArray<cudaReal> const & a)
    {
-      std::cout << "\n Using CUB implementation of maxAbs";
+      //std::cout << "\n Using CUB implementation of maxAbs";
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
@@ -1120,7 +1120,7 @@ namespace Reduce {
    */
    cudaReal min(DeviceArray<cudaReal> const & a)
    {
-      std::cout << "\n Using CUB implementation of min";
+      //std::cout << "\n Using CUB implementation of min";
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
@@ -1159,7 +1159,7 @@ namespace Reduce {
    */
    cudaReal min(DeviceArray<cudaReal> const & in)
    {
-      std::cout << "\n Using custom implementation of min";
+      //std::cout << "\n Using custom implementation of min";
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
