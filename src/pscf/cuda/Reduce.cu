@@ -8,8 +8,10 @@
 #include "Reduce.h"
 #include <pscf/cuda/ThreadArray.h>
 #include <pscf/cuda/HostDArray.h>
+#include <pscf/cuda/DeviceMemory.h>
 #include <pscf/cuda/cudaErrorCheck.h>
 #include <pscf/cuda/complex.h>
+#include <util/misc/Log.h>
 
 //#include <thrust/reduce.h>
 //#include <thrust/device_vector.h>
@@ -21,22 +23,17 @@
 
 // If defined, use reduction functions from the NVIDIA CUB library
 // in preference to hand-coded kernels.
-// #define USE_NVIDIA_CUB
+#define USE_NVIDIA_CUB
 
 namespace Pscf {
 namespace Reduce {
 
+   // Object contains workspace memory used by CUB reduction functions
+   static DeviceMemory reduceSpace_{};
 
    // CUDA kernels:
    // (defined in anonymous namespace, used within this file only)
    namespace {
-
-      // Pointer to workspace used by Nvidia CUB reduction functions
-      static void* tmpReducePtr_ = nullptr;
-
-      // Current size in bytes of array pointed to by tmpReducePtr_
-      static size_t tmpReduceSize_ = 0;
-
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Parallel reduction: single-warp functions
@@ -544,46 +541,14 @@ namespace Reduce {
 
       };
 
-      // Memory management
-
-      /*
-      * Free work space allocated for reduction functions, if any.
-      */
-      void freeTmpReduce()
-      {
-         if (tmpReducePtr_) {
-            UTIL_CHECK(tmpReduceSize_ > 0);
-            auto error = cudaFree(tmpReducePtr_);
-            UTIL_CHECK(error == cudaSuccess);
-            tmpReducePtr_ = nullptr;
-            tmpReduceSize_ = 0;
-         }
-      }
-
-      /**
-      * Allocate workspace for use by reduction functions.
-      *
-      * size - size of required workspace in bytes
-      */
-      void allocateTmpReduce(size_t size)
-      {
-         if (size > tmpReduceSize_) {
-            freeTmpReduce();
-            auto error = cudaMalloc(&tmpReducePtr_, size);
-            UTIL_CHECK(error == cudaSuccess);
-            UTIL_CHECK(tmpReducePtr_);
-            tmpReduceSize_ = size;
-         }
-      }
-
-   } //anonmyous namespace
+   } // anonmyous namespace Pscf::Reduce::(unnamed)
 
 
    // Memory management
 
    void freeWorkSpace()
-   {
-      freeTmpReduce();
+   { 
+      reduceSpace_.deallocate();
    }
 
    // Public reduction functions
@@ -613,10 +578,11 @@ namespace Reduce {
       error = cub::DeviceReduce::Sum(nullptr, workSize,
                                      inPtr, outPtr, n);
       UTIL_CHECK(error == cudaSuccess);
-      allocateTmpReduce(workSize);
+      reduceSpace_.resize(workSize);
+      UTIL_CHECK(reduceSpace_.capacity() >= workSize);
 
       // Perform reduction
-      error = cub::DeviceReduce::Sum(tmpReducePtr_, workSize,
+      error = cub::DeviceReduce::Sum(reduceSpace_.cArray(), workSize,
                                      inPtr, outPtr, n);
       UTIL_CHECK(error == cudaSuccess);
 
@@ -662,9 +628,10 @@ namespace Reduce {
             ThreadArray::setThreadsLogical(halvedSize,nBlocks,nThreads);
 
             // If the above was successful, print warning
-            Log::file() << "Warning: "
-                        << "nThreads too small for parallel reduction.\n"
-                        << "Setting nThreads equal to 64." << std::endl;
+            Log::file() << "\n Warning: "
+                        << "nThreads too small for parallel reduction."
+                        << "\n Setting nThreads equal to 64." 
+                        << std::endl;
          }
 
          // Warp size must be 32
@@ -733,25 +700,24 @@ namespace Reduce {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
 
+      // Define pointers to input and output arrays
       cudaComplex* inPtr = const_cast<cudaComplex*>( a.cArray() );
       DeviceArray<cudaComplex> out;
       out.allocate(1);
       cudaComplex* outPtr = out.cArray();
-      auto op = addComplexFunctor{};
-      cudaComplex init = makeComplex(0.0, 0.0);
 
-      // Determine size of required workspace
+      // Determine size of required workspace and allocate if necessary
       size_t workSize = 0;
       cudaError_t error;
+      auto op = addComplexFunctor{};
+      cudaComplex init = makeComplex(0.0, 0.0);
       error = cub::DeviceReduce::Reduce(nullptr, workSize,
                                         inPtr, outPtr, n, op, init);
       UTIL_CHECK(error == cudaSuccess);
-
-      // If necessary, allocate workspace
-      allocateTmpReduce(workSize);
+      reduceSpace_.resize(workSize);
 
       // Perform reduction
-      error = cub::DeviceReduce::Reduce(tmpReducePtr_, workSize,
+      error = cub::DeviceReduce::Reduce(reduceSpace_.cArray(), workSize,
                                         inPtr, outPtr, n, op, init);
       UTIL_CHECK(error == cudaSuccess);
 
@@ -798,9 +764,10 @@ namespace Reduce {
             ThreadArray::setThreadsLogical(halvedSize,nBlocks,nThreads);
 
             // If the above was successful, print warning
-            Log::file() << "Warning: "
-                        << "nThreads too small for parallel reduction.\n"
-                        << "Setting nThreads equal to 64." << std::endl;
+            Log::file() << "\n Warning: "
+                        << "nThreads too small for parallel reduction."
+                        << "\n Setting nThreads equal to 64."
+			<< std::endl;
          }
 
          // Warp size must be 32
@@ -884,10 +851,10 @@ namespace Reduce {
       error = cub::DeviceReduce::Max(nullptr, workSize,
                                      inPtr, outPtr, n);
       UTIL_CHECK(error == cudaSuccess);
-      allocateTmpReduce(workSize);
+      reduceSpace_.resize(workSize);
 
       // Perform reduction
-      error = cub::DeviceReduce::Max(tmpReducePtr_, workSize,
+      error = cub::DeviceReduce::Max(reduceSpace_.cArray(), workSize,
                                      inPtr, outPtr, n);
       UTIL_CHECK(error == cudaSuccess);
 
@@ -933,9 +900,10 @@ namespace Reduce {
             ThreadArray::setThreadsLogical(halvedSize,nBlocks,nThreads);
 
             // If the above was successful, print warning
-            Log::file() << "Warning: "
-                        << "nThreads too small for parallel reduction.\n"
-                        << "Setting nThreads equal to 64." << std::endl;
+            Log::file() << "\n Warning: "
+                        << "nThreads too small for parallel reduction."
+                        << "\n Setting nThreads equal to 64." 
+                        << std::endl;
          }
 
          // Warp size must be 32
@@ -1012,11 +980,12 @@ namespace Reduce {
                       nullptr, workSize, inPtr, outPtr, n,
                       reduceOp, transformOp, init);
       UTIL_CHECK(error == cudaSuccess);
-      allocateTmpReduce(workSize);
+      reduceSpace_.resize(workSize);
 
       // Perform reduction
       error = cub::DeviceReduce::TransformReduce(
-                      tmpReducePtr_, workSize, inPtr, outPtr, n,
+                      reduceSpace_.cArray(), workSize, 
+                      inPtr, outPtr, n,
                       reduceOp, transformOp, init);
       UTIL_CHECK(error == cudaSuccess);
 
@@ -1062,9 +1031,10 @@ namespace Reduce {
             ThreadArray::setThreadsLogical(halvedSize,nBlocks,nThreads);
 
             // If the above was successful, print warning
-            Log::file() << "Warning: "
-                        << "nThreads too small for parallel reduction.\n"
-                        << "Setting nThreads equal to 64." << std::endl;
+            Log::file() << "\n Warning: "
+                        << "nThreads too small for parallel reduction."
+                        << "\n Setting nThreads equal to 64." 
+                        << std::endl;
          }
 
          // Warp size must be 32
@@ -1136,10 +1106,10 @@ namespace Reduce {
       error = cub::DeviceReduce::Min(nullptr, workSize,
                                      inPtr, outPtr, n);
       UTIL_CHECK(error == cudaSuccess);
-      allocateTmpReduce(workSize);
+      reduceSpace_.resize(workSize);
 
       // Perform reduction
-      error = cub::DeviceReduce::Min(tmpReducePtr_, workSize,
+      error = cub::DeviceReduce::Min(reduceSpace_.cArray(), workSize,
                                      inPtr, outPtr, n);
       UTIL_CHECK(error == cudaSuccess);
 
@@ -1185,9 +1155,10 @@ namespace Reduce {
             ThreadArray::setThreadsLogical(halvedSize,nBlocks,nThreads);
 
             // If the above was successful, print warning
-            Log::file() << "Warning: "
-                        << "nThreads too small for parallel reduction.\n"
-                        << "Setting nThreads equal to 64." << std::endl;
+            Log::file() << "\n Warning: "
+                        << "nThreads too small for parallel reduction."
+                        << "\n Setting nThreads equal to 64." 
+                        << std::endl;
          }
 
          // Warp size must be 32
@@ -1268,9 +1239,10 @@ namespace Reduce {
             ThreadArray::setThreadsLogical(halvedSize,nBlocks,nThreads);
 
             // If the above was successful, print warning
-            Log::file() << "Warning: "
-                        << "nThreads too small for parallel reduction.\n"
-                        << "Setting nThreads equal to 64." << std::endl;
+            Log::file() << "\n Warning: "
+                        << "nThreads too small for parallel reduction."
+                        << "\n Setting nThreads equal to 64." 
+                        << std::endl;
          }
 
          // Warp size must be 32

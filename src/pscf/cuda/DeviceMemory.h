@@ -47,7 +47,7 @@ namespace Pscf {
       /**
       * Allocate the underlying C array on the device.
       *
-      * \throw Exception if capacity is not positve
+      * \throw Exception if capacity parameter not positve
       * \throw Exception if the array is already allocated.
       *
       * \param capacity  number of byes to allocate.
@@ -55,9 +55,9 @@ namespace Pscf {
       void allocate(int capacity);
 
       /**
-      * Dellocate the underlying C array.
+      * Dellocate the underlying C array, if any.
       *
-      * \throw Exception if the array is not allocated.
+      * If no memory is allocated, do nothing. 
       */
       void deallocate();
 

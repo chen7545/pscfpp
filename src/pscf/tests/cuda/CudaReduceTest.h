@@ -49,7 +49,9 @@ public:
 
    /// Clean up after each test function.
    void tearDown()
-   {  Reduce::freeWorkSpace(); }
+   {  
+   // Reduce::freeWorkSpace(); 
+   }
 
    /// Test sum for an array of real elements.
    void testSum()

@@ -58,15 +58,12 @@ namespace Pscf {
 
    /*
    * Deallocate the underlying C array.
-   *
-   * Throw an Exception if this array is not allocated.
    */
    void DeviceMemory::deallocate()
    {
-      if (!isAllocated()) {
-         UTIL_THROW("Attempt to deallocate unallocated DeviceMemory");
+      if (isAllocated()) {
+         cudaErrorCheck( cudaFree(dataPtr_) );
       }
-      cudaErrorCheck( cudaFree(dataPtr_) );
       dataPtr_ = nullptr;
       capacity_ = 0;
    }
@@ -80,9 +77,7 @@ namespace Pscf {
          UTIL_THROW("Attempt to resize DeviceMemory with capacity <= 0");
       }
       if (capacity > capacity_) {
-         if (isAllocated()) {
-            deallocate();
-         }
+         deallocate();
          allocate(capacity);
       }
    }
