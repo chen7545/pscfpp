@@ -115,13 +115,6 @@ namespace Pscf {
       // Memory management
    
       /**
-      * Allocate workspace for use by reduction functions.
-      *
-      * \param size  size of required work space in bytes
-      */
-      void allocateWorkSpace(size_t size);
-
-      /**
       * Free any work space currently allocated for reductions.
       */
       void freeWorkSpace(); 

@@ -19,6 +19,10 @@
 #include <complex>
 #include <cmath>
 
+// If defined, use reduction functions from the NVIDIA CUB library
+// in preference to hand-coded kernels.
+// #define USE_NVIDIA_CUB
+
 namespace Pscf {
 namespace Reduce {
 
@@ -28,10 +32,10 @@ namespace Reduce {
    namespace {
 
       // Pointer to workspace used by Nvidia CUB reduction functions
-      static void* workPtr_ = nullptr;
+      static void* tmpReducePtr_ = nullptr;
 
-      // Current size in bytes of array pointed to by workPtr_
-      static size_t workSize_ = 0;
+      // Current size in bytes of array pointed to by tmpReducePtr_
+      static size_t tmpReduceSize_ = 0;
 
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -482,47 +486,157 @@ namespace Reduce {
          }
       }
 
-   }
+      // Functors for use in CUB library functions
+
+      #if 0
+      // Absolute value functor for a real number.
+      struct absRealFunctor {
+
+         __host__ __device__ inline
+         cudaReal operator()(cudaReal const & a) const
+         {  return std::abs(a); }
+
+      };
+
+      // Binary maximum functor for real numbers.
+      struct maxFunctor {
+
+         __host__ __device__ inline
+         cudaReal operator() (cudaReal const & a,
+                              cudaReal const & b) const
+         {  return ((a > b) ? a : b); }
+
+      };
+
+      // Binary minimum functor for real numbers.
+      struct minFunctor {
+
+         __host__ __device__ inline
+         cudaReal operator() (cudaReal const & a,
+                              cudaReal const & b) const
+         {  return ((a < b) ? a : b); }
+
+      };
+
+      // Binary addition functor for real numbers.
+      struct addRealFunctor {
+
+         __host__ __device__ inline
+         cudaReal operator() (cudaReal const & a,
+                              cudaReal const & b) const
+         {  return a + b; }
+
+      };
+      #endif
+
+      // Complex addition functor.
+      struct addComplexFunctor {
+
+         __host__ __device__ inline
+         cudaComplex operator() (cudaComplex const & a,
+                                 cudaComplex const & b) const
+         {
+            cudaComplex result;
+            result.x = a.x + b.x;
+            result.y = a.y + b.y;
+            return result;
+         }
+
+      };
+
+      // Memory management
+
+      /*
+      * Free work space allocated for reduction functions, if any.
+      */
+      void freeTmpReduce()
+      {
+         if (tmpReducePtr_) {
+            UTIL_CHECK(tmpReduceSize_ > 0);
+            auto error = cudaFree(tmpReducePtr_);
+            UTIL_CHECK(error == cudaSuccess);
+            tmpReducePtr_ = nullptr;
+            tmpReduceSize_ = 0;
+         }
+      }
+
+      /**
+      * Allocate workspace for use by reduction functions.
+      *
+      * size - size of required workspace in bytes
+      */
+      void allocateTmpReduce(size_t size)
+      {
+         if (size > tmpReduceSize_) {
+            freeTmpReduce();
+            auto error = cudaMalloc(&tmpReducePtr_, size);
+            UTIL_CHECK(error == cudaSuccess);
+            UTIL_CHECK(tmpReducePtr_);
+            tmpReduceSize_ = size;
+         }
+      }
+
+   } //anonmyous namespace
+
 
    // Memory management
 
-   /**
-   * Allocate workspace for use by reduction functions.
-   *
-   * size - size of required workspace in bytes
-   */
-   void allocateWorkSpace(size_t size)
-   {
-      if (size > workSize_) {
-         freeWorkSpace();
-         auto error = cudaMalloc(&workPtr_, size);
-	 UTIL_CHECK(error == cudaSuccess);
-	 UTIL_CHECK(workPtr_);
-	 workSize_ = size;
-      }
-   }
-
-   /**
-   * Free currently allocated work space for reduction functions, if any.
-   */
    void freeWorkSpace()
    {
-      if (workPtr_) {
-         UTIL_CHECK(workSize_ > 0);
-         auto error = cudaFree(workPtr_);
-	 UTIL_CHECK(error == cudaSuccess);
-         workPtr_ = nullptr;
-	 workSize_ = 0;
-      }
+      freeTmpReduce();
    }
 
-   // CUDA kernel wrappers:
+   // Public reduction functions
 
+   #ifdef USE_NVIDIA_CUB
    /*
-   * Compute sum of array elements (GPU kernel wrapper).
+   * Compute sum of elements of a real array.
+   *
+   * This implementation uses Nvidia CUB Library functions.
+   */
+   cudaReal sum(DeviceArray<cudaReal> const & a)
+   {
+      std::cout << "\n Using CUB implementation of sum";
+      UTIL_CHECK(a.isAllocated());
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+
+      // Create input and output pointers
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      DeviceArray<cudaReal> out;
+      out.allocate(1);
+      cudaReal* outPtr = out.cArray();
+
+      // Determine size of required workspace, allocate if needed
+      size_t workSize = 0;
+      cudaError_t error;
+      error = cub::DeviceReduce::Sum(nullptr, workSize,
+                                     inPtr, outPtr, n);
+      UTIL_CHECK(error == cudaSuccess);
+      allocateTmpReduce(workSize);
+
+      // Perform reduction
+      error = cub::DeviceReduce::Sum(tmpReducePtr_, workSize,
+                                     inPtr, outPtr, n);
+      UTIL_CHECK(error == cudaSuccess);
+
+      // Copy to host and return value
+      HostDArray<cudaReal> out_h;
+      out_h.allocate(1);
+      out_h = out;
+      return out_h[0];
+   }
+   #endif
+
+   #ifndef USE_NVIDIA_CUB
+   /*
+   * Compute sum of array elements.
+   *
+   * This implementation uses hand-coded _max kernel.
    */
    cudaReal sum(DeviceArray<cudaReal> const & in)
    {
+      std::cout << "\n Using custom implementation of sum";
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
@@ -561,18 +675,18 @@ namespace Reduce {
             temp1.allocate(nBlocks);
             _sum<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), in.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
          } else if (i % 2 == 1) { // i is odd: reduce temp1, store in temp2
             temp2.allocate(nBlocks);
             _sum<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp2.cArray(), temp1.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp1.deallocate();
-         } else {                 // i is even: reduce temp2, store in temp1
+         } else {                // i is even: reduce temp2, store in temp1
             temp1.allocate(nBlocks);
             _sum<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), temp2.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp2.deallocate();
          }
 
@@ -606,9 +720,10 @@ namespace Reduce {
          return sum;
       }
    }
+   #endif
 
    /*
-   * Compute sum of elements of a complex array (GPU kernel wrapper).
+   * Compute sum of elements of a complex array.
    *
    * Implementation uses Nvidia CUB Library functions.
    */
@@ -617,7 +732,6 @@ namespace Reduce {
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      int nItems = n;
 
       cudaComplex* inPtr = const_cast<cudaComplex*>( a.cArray() );
       DeviceArray<cudaComplex> out;
@@ -628,20 +742,17 @@ namespace Reduce {
 
       // Determine size of required workspace
       size_t workSize = 0;
-      //void* tempPtr = nullptr;
       cudaError_t error;
       error = cub::DeviceReduce::Reduce(nullptr, workSize,
-                                        inPtr, outPtr, nItems, op, init);
+                                        inPtr, outPtr, n, op, init);
       UTIL_CHECK(error == cudaSuccess);
 
       // If necessary, allocate workspace
-      allocateWorkSpace(workSize);
-      UTIL_CHECK(workSize == workSize_);
-      UTIL_CHECK(workPtr_);
+      allocateTmpReduce(workSize);
 
       // Perform reduction
-      error = cub::DeviceReduce::Reduce(workPtr_, workSize,
-                                        inPtr, outPtr, nItems, op, init);
+      error = cub::DeviceReduce::Reduce(tmpReducePtr_, workSize,
+                                        inPtr, outPtr, n, op, init);
       UTIL_CHECK(error == cudaSuccess);
 
       // Copy to host and return value
@@ -652,7 +763,7 @@ namespace Reduce {
    }
 
    /*
-   * Compute inner product of two real arrays (GPU kernel wrapper).
+   * Compute inner product of two real arrays.
    */
    cudaReal innerProduct(DeviceArray<cudaReal> const & a,
                          DeviceArray<cudaReal> const & b)
@@ -698,25 +809,25 @@ namespace Reduce {
          // Perform parallel reduction
 
          // Note: Only the first kernel call uses kernel _innerProduct.
-         // After that, we use the _sum kernel to reduce the array 
-	 // produced by the _innerProduct kernel.
+         // After that, we use the _sum kernel to reduce the array
+         // produced by the _innerProduct kernel.
 
          if (i == 0) { // first reduction, use input arrays
             temp1.allocate(nBlocks);
             _innerProduct<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                (temp1.cArray(), a.cArray(), b.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
          } else if (i % 2 == 1) { // i is odd: reduce temp1, store in temp2
             temp2.allocate(nBlocks);
             _sum<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp2.cArray(), temp1.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp1.deallocate();
          } else {                // i is even: reduce temp2, store in temp1
             temp1.allocate(nBlocks);
             _sum<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), temp2.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp2.deallocate();
          }
 
@@ -749,11 +860,54 @@ namespace Reduce {
       }
    }
 
+   #ifdef USE_NVIDIA_CUB
    /*
-   * Get maximum of array elements (GPU kernel wrapper).
+   * Compute max of elements of a real array.
+   *
+   * This implementation uses an Nvidia CUB library function.
+   */
+   cudaReal max(DeviceArray<cudaReal> const & a)
+   {
+      std::cout << "\n Using CUB implementation of max";
+      UTIL_CHECK(a.isAllocated());
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      DeviceArray<cudaReal> out;
+      out.allocate(1);
+      cudaReal* outPtr = out.cArray();
+
+      // Determine size of required workspace, allocated if needed
+      size_t workSize = 0;
+      cudaError_t error;
+      error = cub::DeviceReduce::Max(nullptr, workSize,
+                                     inPtr, outPtr, n);
+      UTIL_CHECK(error == cudaSuccess);
+      allocateTmpReduce(workSize);
+
+      // Perform reduction
+      error = cub::DeviceReduce::Max(tmpReducePtr_, workSize,
+                                     inPtr, outPtr, n);
+      UTIL_CHECK(error == cudaSuccess);
+
+      // Copy to host and return value
+      HostDArray<cudaReal> out_h;
+      out_h.allocate(1);
+      out_h = out;
+      return out_h[0];
+   }
+   #endif
+
+   #ifndef USE_NVIDIA_CUB
+   /*
+   * Get maximum of array elements.
+   *
+   * These implementation uses a hand-coded _max kernel.
    */
    cudaReal max(DeviceArray<cudaReal> const & in)
    {
+      std::cout << "\n Using custom implementation of max";
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
@@ -792,18 +946,18 @@ namespace Reduce {
             temp1.allocate(nBlocks);
             _max<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), in.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
          } else if (i % 2 == 1) { // i is odd: reduce temp1, store in temp2
             temp2.allocate(nBlocks);
             _max<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp2.cArray(), temp1.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp1.deallocate();
          } else {                 // i is even: reduce temp2, store in temp1
             temp1.allocate(nBlocks);
             _max<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), temp2.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp2.deallocate();
          }
 
@@ -827,9 +981,56 @@ namespace Reduce {
       }
       return max;
    }
+   #endif
 
+   #if 0
    /*
-   * Get maximum absolute magnitude of array elements (GPU kernel wrapper).
+   * Compute max absolute value in a real array.
+   *
+   * This implementation uses an Nvidia CUB library function.
+   */
+   cudaReal maxAbs(DeviceArray<cudaReal> const & a)
+   {
+      std::cout << "\n Using CUB implementation of maxAbs";
+      UTIL_CHECK(a.isAllocated());
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+
+      // Create pointers to input and output data
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      DeviceArray<cudaReal> out;
+      out.allocate(1);
+      cudaReal* outPtr = out.cArray();
+
+      // Determine size of required workspace, allocate if needed
+      size_t workSize = 0;
+      cudaError_t error;
+      auto reduceOp = maxFunctor{};
+      auto tranformOp = absRealFunctor{};
+      const cudaReal init = 0.0;
+      error = cub::DeviceReduce::TransformReduce(
+                      nullptr, workSize, inPtr, outPtr, n,
+                      reduceOp, transformOp, init);
+      UTIL_CHECK(error == cudaSuccess);
+      allocateTmpReduce(workSize);
+
+      // Perform reduction
+      error = cub::DeviceReduce::TransformReduce(
+                      tmpReducePtr_, workSize, inPtr, outPtr, n,
+                      reduceOp, transformOp, init);
+      UTIL_CHECK(error == cudaSuccess);
+
+      // Copy to host and return value
+      HostDArray<cudaReal> out_h;
+      out_h.allocate(1);
+      out_h = out;
+      return out_h[0];
+   }
+   #endif
+
+   #if 1
+   /*
+   * Get maximum absolute magnitude of array elements.
    */
    cudaReal maxAbs(DeviceArray<cudaReal> const & in)
    {
@@ -874,18 +1075,18 @@ namespace Reduce {
             temp1.allocate(nBlocks);
             _maxAbs<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), in.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
          } else if (i % 2 == 1) { // i is odd: reduce temp1, store in temp2
             temp2.allocate(nBlocks);
             _max<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp2.cArray(), temp1.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp1.deallocate();
          } else {                 // i is even: reduce temp2, store in temp1
             temp1.allocate(nBlocks);
             _max<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), temp2.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp2.deallocate();
          }
 
@@ -909,12 +1110,56 @@ namespace Reduce {
       }
       return max;
    }
+   #endif
 
+   #ifdef USE_NVIDIA_CUB
    /*
-   * Get minimum of array elements (GPU kernel wrapper).
+   * Compute min of elements of a real array.
+   *
+   * This implementation uses an Nvidia CUB library function.
+   */
+   cudaReal min(DeviceArray<cudaReal> const & a)
+   {
+      std::cout << "\n Using CUB implementation of min";
+      UTIL_CHECK(a.isAllocated());
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      DeviceArray<cudaReal> out;
+      out.allocate(1);
+      cudaReal* outPtr = out.cArray();
+
+      // Determine size of required workspace, allocated if needed
+      size_t workSize = 0;
+      cudaError_t error;
+      error = cub::DeviceReduce::Min(nullptr, workSize,
+                                     inPtr, outPtr, n);
+      UTIL_CHECK(error == cudaSuccess);
+      allocateTmpReduce(workSize);
+
+      // Perform reduction
+      error = cub::DeviceReduce::Min(tmpReducePtr_, workSize,
+                                     inPtr, outPtr, n);
+      UTIL_CHECK(error == cudaSuccess);
+
+      // Copy to host and return value
+      HostDArray<cudaReal> out_h;
+      out_h.allocate(1);
+      out_h = out;
+      return out_h[0];
+   }
+   #endif
+
+   #ifndef USE_NVIDIA_CUB
+   /*
+   * Get minimum of array elements.
+   *
+   * This implementation uses custom kernels.
    */
    cudaReal min(DeviceArray<cudaReal> const & in)
    {
+      std::cout << "\n Using custom implementation of min";
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
@@ -925,8 +1170,8 @@ namespace Reduce {
 
       // Perform parallel reduction on GPU repeatedly until n < 1e5
       while (n >= 1e5) {
-         // Establish GPU resources for this parallel reduction. Divided by
-         // two because of the global memory load in the kernel performing
+         // Establish GPU resources for this reduction. Divided by two
+         // because of the global memory load in the kernel performing
          // the first level of reduction!
          int nBlocks, nThreads;
          int halvedSize = ceil((float)n/2);
@@ -953,18 +1198,18 @@ namespace Reduce {
             temp1.allocate(nBlocks);
             _min<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), in.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
          } else if (i % 2 == 1) { // i is odd: reduce temp1, store in temp2
             temp2.allocate(nBlocks);
             _min<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp2.cArray(), temp1.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp1.deallocate();
          } else {                 // i is even: reduce temp2, store in temp1
             temp1.allocate(nBlocks);
             _min<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), temp2.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp2.deallocate();
          }
 
@@ -988,9 +1233,10 @@ namespace Reduce {
       }
       return min;
    }
+   #endif
 
    /*
-   * Get minimum absolute magnitude of array elements (GPU kernel wrapper).
+   * Get minimum absolute magnitude of array elements.
    */
    cudaReal minAbs(DeviceArray<cudaReal> const & in)
    {
@@ -1035,18 +1281,18 @@ namespace Reduce {
             temp1.allocate(nBlocks);
             _minAbs<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), in.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
          } else if (i % 2 == 1) { // i is odd: reduce temp1, store in temp2
             temp2.allocate(nBlocks);
             _min<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp2.cArray(), temp1.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp1.deallocate();
          } else {                 // i is even: reduce temp2, store in temp1
             temp1.allocate(nBlocks);
             _min<<<nBlocks, nThreads, nThreads*sizeof(cudaReal)>>>
                                        (temp1.cArray(), temp2.cArray(), n);
-            cudaErrorCheck( cudaGetLastError() ); 
+            cudaErrorCheck( cudaGetLastError() );
             temp2.deallocate();
          }
 

@@ -550,7 +550,6 @@ namespace Pscf {
    /*
    * Pseudo-constructor function for cudaComplex.
    *
-   *
    * \ingroup Pscf_Math_Complex_Cuda_Module
    *
    * \param x  real part (in)
@@ -564,38 +563,6 @@ namespace Pscf {
       result.y = y;
       return result;
    }
-
-   // Addition functor
-
-   /**
-   * Complex addition functor, suitable for use in thrust library.
-   *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
-   */
-   struct addComplexFunctor 
-   {
-
-      // addComplexFunctor() = default;
-
-      //addComplexFunctor& operator = (addComplexFunctor const &) = default;
-
-      /**
-      * Binary addition operator.
-      *
-      * \param a  1st summand (in)
-      * \param b  2nd summand (in)
-      */
-      __host__ __device__ inline
-      cudaComplex operator()(cudaComplex const & a, cudaComplex const & b) 
-      const 
-      {  
-         cudaComplex result;
-         result.x = a.x + b.x;
-         result.y = a.y + b.y;
-         return result;
-      }
- 
-   };
 
 } // namespace Pscf
 #endif
