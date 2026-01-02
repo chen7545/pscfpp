@@ -8,7 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <util/misc/ReferenceCounter.h>
+
+// Forward declaration
+namespace Util { class CountedReference; }
+
 namespace Pscf {
+
+   using namespace Util;
 
    /**
    * Block of bare memory allocated on the GPU device.
@@ -78,6 +85,17 @@ namespace Pscf {
       void resize(int capacity);
 
       /**
+      * Associate a reference with the reference counter.
+      *
+      * This should only be called within the associate function of a
+      * container that is referring to data owned by this object, to
+      * establish an association between the two containers.
+      *
+      * \param reference  reference to be included by reference counter
+      */
+      void addReference(CountedReference& reference);
+
+      /**
       * Return pointer to underlying C array.
       */
       void* cArray() const;
@@ -94,13 +112,16 @@ namespace Pscf {
       */
       bool isAllocated() const;
 
-   protected:
+   private:
 
       /// Pointer to a memory block on the GPU device.
       void* dataPtr_;
 
       /// Allocated size (capacity) of the array in bytes.
       int capacity_;
+
+      /// Counter for references to data owned by this container.
+      ReferenceCounter refCounter_;
 
    };
 

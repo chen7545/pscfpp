@@ -259,6 +259,11 @@ namespace Rpg {
       */
       void computeHead();
 
+      /**
+      * Dissociate all qFields_ from associated slices of qFieldsAll.
+      */
+      void dissociateQFields();
+
    };
 
    // Inline member functions

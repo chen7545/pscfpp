@@ -23,7 +23,7 @@
 
 // If defined, use reduction functions from the NVIDIA CUB library
 // in preference to hand-coded kernels.
-#define USE_NVIDIA_CUB
+// #define USE_NVIDIA_CUB
 
 namespace Pscf {
 namespace Reduce {

@@ -7,6 +7,7 @@
 #include <rpg/environment/FilmEnvironment.h>
 #include <rpg/system/System.h>
 #include <rpg/scft/ScftThermo.h>
+#include <rpg/field/Domain.h>
 
 #include <prdc/cuda/RField.h>
 #include <prdc/cuda/RFieldComparison.h>

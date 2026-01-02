@@ -179,6 +179,8 @@ namespace Rpg {
          VectorT tempD;
          tempD.associate(curr, nMonomer*nMesh, tempH.capacity());
          tempD = tempH; // copy from host to device
+         UTIL_CHECK(tempD.isAssociated());
+         tempD.dissociate();
       }
    }
 
@@ -273,7 +275,16 @@ namespace Rpg {
          VectorT stressD;
          stressD.associate(resid, nMonomer*nMesh, stressH.capacity());
          stressD = stressH; // copy from host to device
+         UTIL_CHECK(stressD.isAssociated());
+         stressD.dissociate();
       }
+
+      // Dissociate elements of residSlices from resid array
+      for (int i = 0; i < nMonomer; i++) {
+         UTIL_CHECK(residSlices[i].isAssociated());
+         residSlices[i].dissociate();
+      }
+
    }
 
    /*
@@ -314,6 +325,7 @@ namespace Rpg {
 
             // Add new average omega value to the field
             VecOp::addEqS(ngSlice, wAverage);
+            ngSlice.dissociate();
          }
       }
 

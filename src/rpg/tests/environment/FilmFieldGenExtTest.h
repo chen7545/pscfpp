@@ -6,12 +6,14 @@
 
 #include <rpg/environment/FilmFieldGenExt.h>
 #include <rpg/system/System.h>
+#include <rpg/field/Domain.h>
 
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/BFieldComparison.h>
 #include <prdc/environment/FieldGenerator.h>
 
 #include <util/misc/Exception.h>
+#include <util/misc/FileMaster.h>
 
 #include <fstream>
 

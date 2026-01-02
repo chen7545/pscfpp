@@ -35,7 +35,25 @@ namespace Rpg {
    */
    template <int D>
    Propagator<D>::~Propagator()
-   {}
+   {  
+      dissociateQFields(); 
+   }
+
+   /*
+   * Dissociate qFields from associated memory blocks in qFieldsAll.
+   */
+   template <int D>
+   void Propagator<D>::dissociateQFields()
+   {
+      if (qFields_.isAllocated()) {
+         int ns = qFields_.capacity();
+         for (int i = 0; i < ns; ++i) {
+            if (qFields_[i].isAssociated()) {
+               qFields_[i].dissociate();
+            }
+         }
+      }
+   }
 
    /*
    * Allocate memory used by this propagator.
@@ -71,6 +89,7 @@ namespace Rpg {
       ns_ = ns;
 
       // Deallocate memory previously used by this propagator.
+      dissociateQFields();
       qFields_.deallocate(); // Destroys associated RField<D> objects 
                              // but not the underlying data
       qFieldsAll_.deallocate(); // Destroy actual propagator data

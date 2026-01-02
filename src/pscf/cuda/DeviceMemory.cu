@@ -7,6 +7,7 @@
 
 #include "DeviceMemory.h"
 #include "cudaErrorCheck.h"
+#include <util/misc/CountedReference.h>
 #include <util/global.h>
 #include <cuda_runtime.h>
 
@@ -19,7 +20,8 @@ namespace Pscf {
    */
    DeviceMemory::DeviceMemory()
     : dataPtr_(nullptr),
-      capacity_(0)
+      capacity_(0),
+      refCounter_()
    {}
 
    /*
@@ -27,7 +29,8 @@ namespace Pscf {
    */
    DeviceMemory::DeviceMemory(int capacity)
     : dataPtr_(nullptr),
-      capacity_(0)
+      capacity_(0),
+      refCounter_()
    {  allocate(capacity); }
 
    /*
@@ -36,6 +39,10 @@ namespace Pscf {
    DeviceMemory::~DeviceMemory()
    {
       if (isAllocated()) {
+         if (refCounter_.hasRefs()) {
+	    std::cout << "Error - destruction of DeviceMemory with"
+                      << "external references" << std::endl;
+         }
          cudaFree(dataPtr_);
          capacity_ = 0;
       }
@@ -61,6 +68,7 @@ namespace Pscf {
    */
    void DeviceMemory::deallocate()
    {
+      UTIL_CHECK(!refCounter_.hasRefs());
       if (isAllocated()) {
          cudaErrorCheck( cudaFree(dataPtr_) );
       }
@@ -81,6 +89,12 @@ namespace Pscf {
          allocate(capacity);
       }
    }
+
+   /*
+   * Associate a CountedReference with the reference counter member.
+   */
+   void DeviceMemory::addReference(CountedReference& ref)
+   {  ref.associate(refCounter_); } 
 
    /*
    * Get a pointer to the underlying C array.
