@@ -499,6 +499,12 @@ namespace Rpg {
       VecOp::mulEqV(qk2, expKsq2_); // qk2 *= expKsq2
       fft().inverseTransformUnsafe(qk2, qr2); 
       richardsonEx(qout, qr, qr2, expW2_); // qout=(4*(qr2*expW2)-qr)/3
+
+      // Explcitly dissociate workspace field slices
+      qr.dissociate();
+      qr2.dissociate();
+      qk.dissociate();
+      qk2.dissociate();
    }
 
    /*

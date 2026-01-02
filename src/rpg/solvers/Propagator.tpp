@@ -37,10 +37,37 @@ namespace Rpg {
    Propagator<D>::~Propagator()
    {  
       dissociateQFields(); 
+
+      /*
+      * The above function dissociates elements of qFields_ from memory
+      * owned by qFieldsAll_. Because this destructor body is called before
+      * destructors for members, this operation will occur before either
+      * container is destroyed.  Strictly speaking, this is a redundant
+      * safety measure as long as qFields_ before qFieldsAll_ in the 
+      * declaration of data members, because this order causes qFields_
+      * to to be destroyed before qFieldsAll_, and the destructor for 
+      * each element of qFields_ would also destroy the association if
+      * it still existed at that point.
+      */
+
    }
 
    /*
-   * Dissociate qFields from associated memory blocks in qFieldsAll.
+   * Dissociate qFields_ from associated memory blocks in qFieldsAll_.
+   *
+   * These associations must be destroyed before qFieldsAll_ is
+   * de-allocated or destroyed, because it is an error to deallocate
+   * a DeviceArray<T> container that is still referred to by one or
+   * more other such containers. Associations are kept track of via
+   * a private ReferenceCounter owned by qFieldsAll_ (which stores
+   * the number of remaining references), and via a data pointer and 
+   * CountedReference object owned by each element of qFields_ that
+   * has a pointer to the associated ReferenceCounter. For each 
+   * element of qFields_, invoking the dissociate() member function
+   * nullifies the array data pointer, sets the array capacity to 
+   * zero, decrements the number of references in the associated 
+   * ReferenceCounter owned by qFieldsAll_, and nullifies the pointer 
+   * to this ReferenceCounter.
    */
    template <int D>
    void Propagator<D>::dissociateQFields()
@@ -71,7 +98,8 @@ namespace Rpg {
       // Set up array of associated RField<D> arrays
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
-         qFields_[i].associate(qFieldsAll_, i*meshSize, meshPtr_->dimensions());
+         qFields_[i].associate(qFieldsAll_, 
+                               i*meshSize, meshPtr_->dimensions());
       }
       isAllocated_ = true;
    }
@@ -89,16 +117,15 @@ namespace Rpg {
       ns_ = ns;
 
       // Deallocate memory previously used by this propagator.
-      dissociateQFields();
-      qFields_.deallocate(); // Destroys associated RField<D> objects 
-                             // but not the underlying data
-      qFieldsAll_.deallocate(); // Destroy actual propagator data
+      dissociateQFields();      // dissociate, nulliify data pointers
+      qFields_.deallocate();    // destroy RField<D> objects for slices
+      qFieldsAll_.deallocate(); // destroy actual propagator data block
 
       // Allocate memory in qFieldsAll_ using new value of ns
       int meshSize = meshPtr_->size();
       qFieldsAll_.allocate(ns * meshSize);
 
-      // Set up array of associated RField<D> arrays
+      // Recreate associations between qFields_ and qFieldsAll_
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
          qFields_[i].associate(qFieldsAll_, i*meshSize, 

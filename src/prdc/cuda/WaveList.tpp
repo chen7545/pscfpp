@@ -12,8 +12,10 @@
 
 #include <prdc/cuda/resources.h>
 #include <prdc/cuda/FFT.h>
+#include <prdc/crystal/UnitCell.h>
 #include <prdc/crystal/hasVariableAngle.h>
 #include <pscf/cuda/HostDArray.h>
+#include <pscf/mesh/Mesh.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
 
@@ -21,32 +23,34 @@ namespace Pscf {
 namespace Prdc {
 namespace Cuda {
 
-   // CUDA kernels: 
+   // CUDA kernels:
    // (defined in an anonymous namespace, used only in this file)
    namespace {
 
       /*
       * Compute minimum images of each wavevector, template declaration.
       */
-      template <int D>
-      __global__ void _computeMinimumImages(int* minImages, cudaReal* kSq,
-                                            cudaReal const * kBasis, 
-                                            int const * meshDims, 
-                                            int const kSize);
-      
+      template <int D> __global__
+      void _computeMinimumImages(int* minImages,
+                                 cudaReal* kSq,
+                                 cudaReal const * kBasis,
+                                 int const * meshDims,
+                                 int const kSize);
+
       /*
-      * Compute minimum images of each wavevector, 1D explicit specialization.
+      * Compute minimum images of each wavevector, 1D specialization.
       *
-      * Kernel must be launched with kSize threads. (One thread calculates 
+      * Kernel must be launched with kSize threads. (One thread calculates
       * one minimum image.)
-      * 
+      *
       * When launched, this kernel requires no dynamic memory allocation.
       */
-      template <>
-      __global__ void _computeMinimumImages<1>(int* minImages, cudaReal* kSq,
-                                               cudaReal const * kBasis, 
-                                               int const * meshDims, 
-                                               int const kSize)
+      template <> __global__
+      void _computeMinimumImages<1>(int* minImages,
+                                    cudaReal* kSq,
+                                    cudaReal const * kBasis,
+                                    int const * meshDims,
+                                    int const kSize)
       {
          unsigned int nThreads = blockDim.x * gridDim.x;
          unsigned int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -61,7 +65,7 @@ namespace Cuda {
             while (img > (meshDims_>>1)) { // note: x>>1 is same as x/2
                img -= meshDims_;
             }
-            while (img < -1*(meshDims_>>1)) { 
+            while (img < -1*(meshDims_>>1)) {
                img += meshDims_;
             }
 
@@ -71,30 +75,31 @@ namespace Cuda {
       }
 
       /*
-      * Compute minimum images of each wavevector, 2D explicit specialization.
+      * Compute minimum images of each wavevector, 2D specialization.
       *
       * This kernel should be launched with >=32*kSize threads.
       *
       * 32 threads are used to calculate one minimum image. In the CPU code,
-      * we compare 25 different images of a wave to determine the minimum 
-      * image, and here we choose 32 instead because it is a power of 2, 
+      * we compare 25 different images of a wave to determine the minimum
+      * image, and here we choose 32 instead because it is a power of 2,
       * allowing us to use a reduction algorithm to compare the images.
-      * 
+      *
       * When launched, this kernel requires dynamic memory allocation of
       * (2*sizeof(int) + sizeof(cudaReal)) * nThreadsPerBlock.
       */
-      template <>
-      __global__ void _computeMinimumImages<2>(int* minImages, cudaReal* kSq,
-                                               cudaReal const * kBasis, 
-                                               int const * meshDims, 
-                                               int const kSize)
+      template <> __global__
+      void _computeMinimumImages<2>(int* minImages,
+                                    cudaReal* kSq,
+                                    cudaReal const * kBasis,
+                                    int const * meshDims,
+                                    int const kSize)
       {
          unsigned int startID = blockIdx.x * blockDim.x + threadIdx.x;
 
          // Determine which lattice parameter and which image to evaluate
          unsigned int paramID = (startID >> 5); // equivalent to startID / 32
          unsigned int imageID = startID - (paramID * 32); // value in [0, 31]
-         
+
          // Determine the image that will be evaluated by this thread
          // (uses integer division, not ideal for speed)
          int s0, s1;
@@ -118,14 +123,14 @@ namespace Cuda {
          if (paramID < kSize) { // only evaluate if on the k-grid
 
             // Load image from global memory and shift based on s0 and s1
-            images_[2*threadIdx.x] = minImages[paramID] + (s0 * meshDims[0]);
-            images_[2*threadIdx.x+1] = minImages[kSize + paramID] + 
-                                       (s1 * meshDims[1]);
+            images_[2*threadIdx.x] = minImages[paramID] + (s0*meshDims[0]);
+            images_[2*threadIdx.x+1] = minImages[kSize + paramID]
+                                     + (s1 * meshDims[1]);
 
             // Calculate kSq for this wave
-            cudaReal kVec0 = (kBasis[0] * images_[2*threadIdx.x]) + 
+            cudaReal kVec0 = (kBasis[0] * images_[2*threadIdx.x]) +
                              (kBasis[2] * images_[2*threadIdx.x+1]);
-            cudaReal kVec1 = (kBasis[1] * images_[2*threadIdx.x]) + 
+            cudaReal kVec1 = (kBasis[1] * images_[2*threadIdx.x]) +
                              (kBasis[3] * images_[2*threadIdx.x+1]);
 
             kSqVals_[threadIdx.x] = (kVec0*kVec0) + (kVec1*kVec1);
@@ -138,19 +143,19 @@ namespace Cuda {
             if (paramID < kSize) { // only evaluate if on the k-grid
                if (imageID < stride) {
                   bool swap = false;
-                  if (kSqVals_[threadIdx.x+stride] < 
+                  if (kSqVals_[threadIdx.x+stride] <
                                        (kSqVals_[threadIdx.x] - epsilon)) {
                      swap = true;
-                  } else if (kSqVals_[threadIdx.x+stride] < 
+                  } else if (kSqVals_[threadIdx.x+stride] <
                                        (kSqVals_[threadIdx.x] + epsilon)) {
-                     // kSq values effectively equal. 
+                     // kSq values effectively equal.
                      // Determine whether to swap based on hkl indices
                      for (int i = 0; i < 2; ++i) {
-                        if (images_[2*threadIdx.x+i] > 
+                        if (images_[2*threadIdx.x+i] >
                                        images_[2*(threadIdx.x+stride)+i]) {
                            break;
                         } else
-                        if (images_[2*threadIdx.x+i] < 
+                        if (images_[2*threadIdx.x+i] <
                                        images_[2*(threadIdx.x+stride)+i]) {
                            swap = true;
                            break;
@@ -158,21 +163,22 @@ namespace Cuda {
                      }
                   }
                   if (swap) {
-                     images_[2*threadIdx.x] = 
+                     images_[2*threadIdx.x] =
                                        images_[2*(threadIdx.x+stride)];
-                     images_[2*threadIdx.x+1] = 
+                     images_[2*threadIdx.x+1] =
                                        images_[2*(threadIdx.x+stride)+1];
                      kSqVals_[threadIdx.x] = kSqVals_[threadIdx.x+stride];
                   }
                }
             }
-            // note: no __syncthreads() needed here because this reduction 
+            // Note: no __syncthreads() needed here because this reduction
             // occurswithin 1 warp, so all threads are already synced)
          }
 
-         // At this point, for any thread with imageID == 0, the corresponding
-         // entries in kSqVals_ and images_ should contain the kSq value and 
-         // the minimum image, respectively. Store values and exit
+         // At this point, for any thread with imageID == 0, the
+         // corresponding entries in kSqVals_ and images_ should contain
+         // the kSq value and the minimum image, respectively. Store
+         // values and exit
          if ((imageID == 0) && (paramID < kSize)) {
             kSq[paramID] = kSqVals_[threadIdx.x];
             minImages[paramID] = images_[2*threadIdx.x];
@@ -181,23 +187,25 @@ namespace Cuda {
       }
 
       /*
-      * Compute minimum images of each wavevector, 3D explicit specialization.
+      * Compute minimum images of each wavevector, 3D specialization.
       *
       * This kernel should be launched with >=128*kSize threads.
-      * 
-      * 128 threads are used to calculate one minimum image. In the CPU code,
-      * we compare 125 different images of a wave to determine the minimum 
-      * image, and here we choose 128 instead because it is a power of 2, 
-      * allowing us to use a reduction algorithm to compare the images.
-      * 
+      *
+      * 128 threads are used to calculate one minimum image. In the CPU
+      * code, we compare 125 different images of a wave to determine the
+      * minimum image, and here we choose 128 instead because it is a
+      * power of 2, allowing us to use a reduction algorithm to compare
+      * the images.
+      *
       * When launched, this kernel requires dynamic memory allocation of
       * (3*sizeof(int) + sizeof(cudaReal)) * nThreadsPerBlock.
       */
-      template <>
-      __global__ void _computeMinimumImages<3>(int* minImages, cudaReal* kSq,
-                                               cudaReal const * kBasis, 
-                                               int const * meshDims, 
-                                               int const kSize)
+      template <> __global__
+      void _computeMinimumImages<3>(int* minImages,
+                                    cudaReal* kSq,
+                                    cudaReal const * kBasis,
+                                    int const * meshDims,
+                                    int const kSize)
       {
          unsigned int startID = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -231,9 +239,9 @@ namespace Cuda {
 
             // Load image data from global memory
             images_[3*threadIdx.x] = minImages[paramID] + (s0 * meshDims[0]);
-            images_[3*threadIdx.x+1] = minImages[kSize + paramID] + 
+            images_[3*threadIdx.x+1] = minImages[kSize + paramID] +
                                        (s1 * meshDims[1]);
-            images_[3*threadIdx.x+2] = minImages[kSize + kSize + paramID] + 
+            images_[3*threadIdx.x+2] = minImages[kSize + kSize + paramID] +
                                        (s2 * meshDims[2]);
 
             // Calculate kSq for this wave
@@ -244,7 +252,7 @@ namespace Cuda {
                kVec2 += kBasis[3*k+2] * images_[3*threadIdx.x + k];
             }
 
-            kSqVals_[threadIdx.x] = (kVec0*kVec0) + (kVec1*kVec1) + 
+            kSqVals_[threadIdx.x] = (kVec0*kVec0) + (kVec1*kVec1) +
                                     (kVec2*kVec2);
          }
          __syncthreads(); // wait for all threads to finish
@@ -255,32 +263,32 @@ namespace Cuda {
             if (paramID < kSize) { // only evaluate if on the k-grid
                if (imageID < stride) {
                   bool swap = false;
-                  if (kSqVals_[threadIdx.x+stride] < 
-                                          (kSqVals_[threadIdx.x] - epsilon)) {
+                  if (kSqVals_[threadIdx.x+stride] <
+                                     (kSqVals_[threadIdx.x] - epsilon)) {
                      swap = true;
-                  } else if (kSqVals_[threadIdx.x+stride] < 
-                                          (kSqVals_[threadIdx.x] + epsilon)) {
-                     // kSq values effectively equal. 
+                  } else if (kSqVals_[threadIdx.x+stride] <
+                                     (kSqVals_[threadIdx.x] + epsilon)) {
+                     // kSq values effectively equal.
                      // Determine whether to swap based on hkl indices
                      for (int i = 0; i < 3; ++i) {
-                        if (images_[3*threadIdx.x+i] > 
-                                       images_[3*(threadIdx.x+stride)+i]) {
+                        if (images_[3*threadIdx.x+i] >
+                                     images_[3*(threadIdx.x+stride)+i]) {
                            break;
                         } else
-                        if (images_[3*threadIdx.x+i] < 
-                                       images_[3*(threadIdx.x+stride)+i]) {
+                        if (images_[3*threadIdx.x+i] <
+                                     images_[3*(threadIdx.x+stride)+i]) {
                            swap = true;
                            break;
                         }
                      }
                   }
                   if (swap) {
-                     images_[3*threadIdx.x] = 
-                                          images_[3*(threadIdx.x+stride)];
-                     images_[3*threadIdx.x+1] = 
-                                          images_[3*(threadIdx.x+stride)+1];
-                     images_[3*threadIdx.x+2] = 
-                                          images_[3*(threadIdx.x+stride)+2];
+                     images_[3*threadIdx.x] =
+                                         images_[3*(threadIdx.x+stride)];
+                     images_[3*threadIdx.x+1] =
+                                         images_[3*(threadIdx.x+stride)+1];
+                     images_[3*threadIdx.x+2] =
+                                         images_[3*(threadIdx.x+stride)+2];
                      kSqVals_[threadIdx.x] = kSqVals_[threadIdx.x+stride];
                   }
                }
@@ -288,9 +296,10 @@ namespace Cuda {
             __syncthreads(); // wait for all threads to finish
          }
 
-         // At this point, for any thread with imageID == 0, the corresponding
-         // entries in kSqVals_ and images_ should contain the kSq value and 
-         // the minimum image, respectively. Store values and exit
+         // At this point, for any thread with imageID == 0, the 
+         // corresponding entries in kSqVals_ and images_ should 
+         // contain the kSq value and the minimum image, respectively. 
+         // Store values and exit
          if ((imageID == 0) && (paramID < kSize)) {
             kSq[paramID] = kSqVals_[threadIdx.x];
             minImages[paramID] = images_[3*threadIdx.x];
@@ -302,10 +311,12 @@ namespace Cuda {
       /*
       * Compute the kSq array on the GPU.
       */
-      template <int D>
-      __global__ void _computeKSq(cudaReal* kSq, int const * waveBz,
-                                  cudaReal const * kBasis,
-                                  int const nParams, int const kSize) 
+      template <int D> __global__ 
+      void _computeKSq(cudaReal* kSq, 
+                       int const * waveBz,
+                       cudaReal const * kBasis,
+                       int const nParams, 
+                       int const kSize)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -320,11 +331,11 @@ namespace Cuda {
          // Variables to be used in the loop
          int i, j, k, waveBz_;
          cudaReal kVec[D], kSqVal;
-         // Note: usually local arrays are very slow in a CUDA kernel, but 
-         // the compiler should ideally be able to unroll the loops below 
+         // Note: usually local arrays are very slow in a CUDA kernel, but
+         // the compiler should ideally be able to unroll the loops below
          // and store the kVec array in the register, because the full
          // structure of the loops below is known at compile time.
-         
+
          // Loop through array
          for (i = startID; i < kSize; i += nThreads) {
 
@@ -354,14 +365,19 @@ namespace Cuda {
       }
 
       /*
-      * Compute the dKSq array on the GPU
+      * Compute the dKSq array on the GPU.
+      *
+      * The implicitInverse array is only used if isRealField is true.
+      * If isRealField is false, implicitInverse may be a null pointer.
       */
-      template <int D>
-      __global__ void _computedKSq(cudaReal* dKSq, int const * waveBz,
-                                   cudaReal const * dkkBasis,
-                                   bool const * implicitInverse, 
-                                   int const nParams, int const kSize, 
-                                   bool isRealField) 
+      template <int D> __global__ 
+      void _computedKSq(cudaReal* dKSq, 
+                        int const * waveBz,
+                        cudaReal const * dkkBasis,
+                        bool const * implicitInverse,
+                        int const nParams, 
+                        int const kSize,
+                        bool isRealField)
       {
          // Size of dKSq is kSize * nParams
          // Each thread does nParams calculations
@@ -379,7 +395,7 @@ namespace Cuda {
          // Variables to be used in the loop
          int param, i, j, k, waveBz_[D];
          cudaReal dKSqVal;
-         
+
          // Loop through array
          for (param = 0; param < nParams; ++param) {
             for (i = startID; i < kSize; i += nThreads) {
@@ -401,7 +417,7 @@ namespace Cuda {
                } // D
 
                if (isRealField) {
-                  if (implicitInverse[i]) { 
+                  if (implicitInverse[i]) {
                      // if element i's inverse is implicit
                      dKSqVal *= 2;
                   }
@@ -413,7 +429,9 @@ namespace Cuda {
          } // nParams
       }
 
-   } // anonymous namespace
+   } // anonymous namespace Pscf::Prdc::(unnamed)
+
+   // Member function definitions
 
    /*
    * Constructor.
@@ -434,8 +452,9 @@ namespace Cuda {
    * Destructor.
    */
    template <int D>
-   WaveList<D>::~WaveList() 
+   WaveList<D>::~WaveList()
    {
+
       if (dKSqSlices_.isAllocated()) {
          int nParams = dKSqSlices_.capacity();
          for (int i = 0; i < nParams; i++) {
@@ -444,13 +463,29 @@ namespace Cuda {
             }
          }
       }
+
+      /*
+      * The above loop dissociates elements of dKSqSlices_ from memory
+      * owned by dKSq_. Because the destructor body is called before
+      * destructors for members, this operation will occur before either
+      * container is destroyed.  Strictly speaking, this is a redundant
+      * safety measure as long as dKSqSlices_ appears in the declaration
+      * of members after dKSq_, because this order causes dKSqSlices_
+      * to to be destroyed before dKSq_, and the destructor for each
+      * element of dKSqSlices_ would also call dissociate() if the
+      * association still existed at that point.
+      */
+
    }
 
    /*
-   * Allocate memory, construct implicitInverse_.
+   * Allocate memory.
+   *
+   * This function allocates and construct implicitInverse_ if and
+   * only if isRealField.
    */
    template <int D>
-   void WaveList<D>::allocate(Mesh<D> const & m, UnitCell<D> const & c) 
+   void WaveList<D>::allocate(Mesh<D> const & m, UnitCell<D> const & c)
    {
       UTIL_CHECK(m.size() > 0);
       UTIL_CHECK(c.nParameter() > 0);
@@ -524,10 +559,10 @@ namespace Cuda {
    * Compute minimum image vectors and kSq.
    */
    template <int D>
-   void WaveList<D>::computeMinimumImages() 
+   void WaveList<D>::computeMinimumImages()
    {
       // If min images are valid, return immediately
-      if (hasMinImages_) return; 
+      if (hasMinImages_) return;
 
       // Precondition
       UTIL_CHECK(isAllocated_);
@@ -581,7 +616,7 @@ namespace Cuda {
          ThreadArray::setThreadsLogical(kSize_*threadsPerGP, nBlocks, nThreads);
 
          // If the above was successful, print warning
-         Log::file() << "Warning: " 
+         Log::file() << "Warning: "
                      << "nThreads too small for computeMinimumImages.\n"
                      << "Setting nThreads equal to 128." << std::endl;
       }
@@ -592,9 +627,9 @@ namespace Cuda {
       // Launch kernel
       size_t sz = (D * sizeof(int) + sizeof(cudaReal)) * nThreads;
       _computeMinimumImages<D><<<nBlocks, nThreads, sz>>>
-         (minImages_.cArray(), kSq_.cArray(), kBasis.cArray(), 
+         (minImages_.cArray(), kSq_.cArray(), kBasis.cArray(),
           meshDims.cArray(), kSize_);
-      
+
       hasMinImages_ = true;
       hasKSq_ = true;
    }
@@ -603,10 +638,10 @@ namespace Cuda {
    * Compute values of k^2, using existing minImages if possible.
    */
    template <int D>
-   void WaveList<D>::computeKSq() 
+   void WaveList<D>::computeKSq()
    {
       // If kSq values are valid, return immediately without recomputing
-      if (hasKSq_) return; 
+      if (hasKSq_) return;
 
       // If necessary, compute minimum images
       if (!hasMinImages_) {
@@ -616,7 +651,7 @@ namespace Cuda {
 
       // If this point is reached, calculate kSq using _computeKSq kernel
 
-      // Precondition
+      // Preconditions
       UTIL_CHECK(unitCell().nParameter() > 0);
       UTIL_CHECK(unitCell().lattice() != UnitCell<D>::Null);
       UTIL_CHECK(unitCell().isInitialized());
@@ -637,14 +672,14 @@ namespace Cuda {
       // GPU resources
       int nBlocks, nThreads;
       ThreadArray::setThreadsLogical(kSize_, nBlocks, nThreads);
-      
+
       // Launch kernel to calculate kSq on device
       UTIL_CHECK(kSq_.isAllocated());
       UTIL_CHECK(minImages_.isAllocated());
       _computeKSq<D><<<nBlocks, nThreads>>>
-            (kSq_.cArray(), minImages_.cArray(), kBasis.cArray(), 
+            (kSq_.cArray(), minImages_.cArray(), kBasis.cArray(),
              unitCell().nParameter(), kSize_);
-      
+
       hasKSq_ = true;
    }
 
@@ -658,7 +693,7 @@ namespace Cuda {
 
       // Compute minimum images if needed
       if (!hasMinImages_) {
-         computeMinimumImages(); 
+         computeMinimumImages();
       }
 
       // Preconditions
@@ -687,7 +722,7 @@ namespace Cuda {
 
       // Kernel requires block size to be >= the size of dkkBasis.
       // Max size of dkkBasis is 54, so this should always be satisfied
-      UTIL_CHECK(nThreads > dkkBasis.capacity()); 
+      UTIL_CHECK(nThreads > dkkBasis.capacity());
 
       // Preconditions for kernel
       UTIL_CHECK(dKSq_.isAllocated());
@@ -701,10 +736,10 @@ namespace Cuda {
       // Launch kernel to calculate dKSq on device
       size_t sz = sizeof(cudaReal)*dkkBasis.capacity();
       _computedKSq<D><<<nBlocks, nThreads, sz>>>
-         (dKSq_.cArray(), minImages_.cArray(), dkkBasis.cArray(), 
+         (dKSq_.cArray(), minImages_.cArray(), dkkBasis.cArray(),
           implicitInversePtr, unitCell().nParameter(), kSize_,
           isRealField_);
-      
+
       hasdKSq_ = true;
    }
 

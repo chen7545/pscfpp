@@ -87,9 +87,13 @@ namespace Pscf {
       /**
       * Associate a reference with the reference counter.
       *
-      * This should only be called within the associate function of a
-      * container that is referring to data owned by this object, to
-      * establish an association between the two containers.
+      * This should only be called within an associate function of a
+      * container that creates an association with this object in 
+      * which this object acts as the data owner. The CountedReference
+      * should that is passed as a parameter should be owned by the
+      * data user. On return, the ReferenceCounter that is owned by 
+      * this DeviceMemory is incremented by one, and the CountedReference
+      * contains a pointer to that ReferenceCounter.
       *
       * \param reference  reference to be included by reference counter
       */

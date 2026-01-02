@@ -40,7 +40,7 @@ namespace Pscf {
    {
       if (isAllocated()) {
          if (refCounter_.hasRefs()) {
-	    std::cout << "Error - destruction of DeviceMemory with"
+            std::cout << "Error - destruction of DeviceMemory with"
                       << "external references" << std::endl;
          }
          cudaFree(dataPtr_);
@@ -57,7 +57,7 @@ namespace Pscf {
          UTIL_THROW("Attempt to allocate with capacity <= 0");
       }
       if (isAllocated()) {
-         UTIL_THROW("Attempt to re-allocate DeviceMemory");
+         UTIL_THROW("Attempt to re-allocate a DeviceMemory");
       }
       cudaErrorCheck( cudaMalloc( &dataPtr_, capacity ) );
       capacity_ = capacity;

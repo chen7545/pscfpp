@@ -11,13 +11,13 @@
 #include <pscf/solvers/PropagatorTmpl.h> // base class template
 
 #include <prdc/cuda/RField.h>            // member
-#include <pscf/cuda/DeviceArray.h>       // member 
+#include <pscf/cuda/DeviceArray.h>       // member
 #include <util/containers/DArray.h>      // member array
 
 
 // Forward declarations
-namespace Pscf { 
-   template <int D> class Mesh; 
+namespace Pscf {
+   template <int D> class Mesh;
    namespace Rpg {
       template <int D> class Block;
    }
@@ -36,7 +36,7 @@ namespace Rpg {
    * A fully initialized Propagator<D> has an association with a Block<D>
    * object that owns this propagator and its partner, and with a partner
    * Propagator<D> that solves the MDE within the same block in the
-   * opposite direction. It also has an association with a Mesh<D> that 
+   * opposite direction. It also has an association with a Mesh<D> that
    * describes a spatial grid, and associations with zero or more source
    * Propagator<D> objects that are used to compute an initial condition
    * for this propagator at the head vertex.
@@ -45,11 +45,11 @@ namespace Rpg {
    * solve the modified diffusion equation (MDE), including quantities
    * that depend on the w-field associated with this block, the unit
    * cell parameters and (in the thread model) the contour step size.
-   * These quantities are set and stored by the block because their values 
+   * These quantities are set and stored by the block because their values
    * are the same for the two propagators owned by each block, but may be
    * different for different blocks. The algorithm used by a Propagator
-   * to solve the the MDE repeatedly calls the step functions provided 
-   * by the parent Block. 
+   * to solve the the MDE repeatedly calls the step functions provided
+   * by the parent Block.
    *
    * \ingroup Rpg_Solver_Module
    */
@@ -59,13 +59,13 @@ namespace Rpg {
 
    public:
 
-      // Public typename aliases 
+      // Public typename aliases
 
       /**
       * Base class type (partial template specialization).
       */
       using Base = PropagatorTmpl< Propagator<D> >;
-      
+
 
       /**
       * Field type (function of position, defined on real space grid).
@@ -93,9 +93,9 @@ namespace Rpg {
 
       /**
       * Allocate propagator arrays.
-      * 
+      *
       * The parameter ns is the number of values of s at which q(r,s) is
-      * calculated, including end values at the terminating vertices. 
+      * calculated, including end values at the terminating vertices.
       * See docs for the function ns(), which returns this value.
       *
       * The address of the associated Mesh<D> object is retained.
@@ -126,7 +126,7 @@ namespace Rpg {
       * This function computes an initial q-field at the head of this
       * propagator, and then solves the modified diffusion equation for
       * the block to propagate from the head to the tail. Algorithms for
-      * the thread or bead model may be used, depending the value of 
+      * the thread or bead model may be used, depending the value of
       * PolymerModel::model().
       */
       void solve();
@@ -136,7 +136,7 @@ namespace Rpg {
       *
       * This function solves the modified diffusion equation for this
       * block with a specified initial condition, which is given by the
-      * function parameter "head". 
+      * function parameter "head".
       *
       * \param head initial condition of q-field at head of block
       */
@@ -146,7 +146,7 @@ namespace Rpg {
       * Compute and return partition function for the molecule.
       *
       * This function computes the partition function Q for the molecule
-      * as a spatial average of the pointwise product of the initial/head 
+      * as a spatial average of the pointwise product of the initial/head
       * slice for this propagator and final/tail slice of its partner.
       *
       * \param Q output value, spatial average of q*q^{+} at head
@@ -168,7 +168,7 @@ namespace Rpg {
       /**
       * Return q-field at terminal (tail) vertex.
       *
-      * This function throws an Exception if invoked while the bead model 
+      * This function throws an Exception if invoked while the bead model
       * is in use (i.e., if PolymerModel::isThread(() == false) and the tail
       * for this propagator is a chain end (i.e., if isTailEnd() == true)
       * In this case, tail slice is not needed, and so is not computed.
@@ -233,8 +233,14 @@ namespace Rpg {
       *
       * Each RField<D> acts as a reference array that point to a slice
       * of qFieldsAll_. Each slice will have Mesh.size() elements and
-      * corresponds to a single contour value. There are ns_ of such 
+      * corresponds to a single contour value. There are ns_ of such
       * slices, which is the capacity of the outer DArray.
+      *
+      * The qFields_ container should appear after qFieldsAll_ in the
+      * declaration of member variables to guarantee that all elements of
+      * qFields_ are destroyed before the qFieldsAll_ container that owns
+      * the data. The destructor for each RField<D> element will delete
+      * the association with external data if this is not done earlier.
       */
       DArray< RField<D> > qFields_;
 
@@ -250,17 +256,19 @@ namespace Rpg {
       /// Is this propagator allocated?
       bool isAllocated_;
 
+      // Private member functions
+
       /**
       * Compute initial q-field at head.
       *
-      * In either model, the head slice of each propagator is the product
-      * of tail slices for incoming propagators from other bonds that
-      * terminate at the head vertex.
+      * In either the thread or bead model, the head slice of each 
+      * propagator is the product of tail slices for incoming propagators 
+      * from other bonds that terminate at the head vertex.
       */
       void computeHead();
 
       /**
-      * Dissociate all qFields_ from associated slices of qFieldsAll.
+      * Dissociate all qFields_ from associated slices of qFieldsAll_.
       */
       void dissociateQFields();
 
@@ -271,8 +279,7 @@ namespace Rpg {
    /*
    * Return q-field at initial (head) vertex of block.
    */
-   template <int D>
-   inline
+   template <int D> inline
    RField<D> const & Propagator<D>::head()
    {
       UTIL_CHECK(isSolved());
@@ -282,8 +289,7 @@ namespace Rpg {
    /*
    * Return q-field at final (tail) vertex of block.
    */
-   template <int D>
-   inline
+   template <int D> inline
    RField<D> const & Propagator<D>::tail() const
    {
       UTIL_CHECK(isSolved());
@@ -294,8 +300,7 @@ namespace Rpg {
    /*
    * Return const q-field at specified step by reference.
    */
-   template <int D>
-   inline
+   template <int D> inline
    RField<D> const & Propagator<D>::q(int i) const
    {
       UTIL_CHECK(isSolved());
@@ -305,8 +310,7 @@ namespace Rpg {
    /*
    * Return the full array of q-fields.
    */
-   template <int D>
-   inline
+   template <int D> inline
    DeviceArray<cudaReal> const & Propagator<D>::qAll()
    {
       UTIL_CHECK(isSolved());
@@ -316,8 +320,7 @@ namespace Rpg {
    /*
    * Get the associated Block object (non-const reference)
    */
-   template <int D>
-   inline
+   template <int D> inline
    Block<D>& Propagator<D>::block()
    {
       assert(blockPtr_);
@@ -327,8 +330,7 @@ namespace Rpg {
    /*
    * Get the associated Block object (const reference)
    */
-   template <int D>
-   inline
+   template <int D> inline
    Block<D> const & Propagator<D>::block() const
    {
       assert(blockPtr_);
@@ -338,21 +340,18 @@ namespace Rpg {
    /*
    * Get the number ns of chain contour points.
    */
-   template <int D>
-   inline
+   template <int D> inline
    int Propagator<D>::ns() const
    {  return ns_; }
 
-   template <int D>
-   inline
+   template <int D> inline
    bool Propagator<D>::isAllocated() const
    {  return isAllocated_; }
 
    /*
    * Associate this propagator with a block and direction
    */
-   template <int D>
-   inline
+   template <int D> inline
    void Propagator<D>::setBlock(Block<D>& block)
    {  blockPtr_ = &block; }
 
