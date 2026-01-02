@@ -435,7 +435,16 @@ namespace Cuda {
    */
    template <int D>
    WaveList<D>::~WaveList() 
-   {}
+   {
+      if (dKSqSlices_.isAllocated()) {
+         int nParams = dKSqSlices_.capacity();
+         for (int i = 0; i < nParams; i++) {
+            if (dKSqSlices_[i].isAssociated()) {
+               dKSqSlices_[i].dissociate();
+            }
+         }
+      }
+   }
 
    /*
    * Allocate memory, construct implicitInverse_.
@@ -461,6 +470,7 @@ namespace Cuda {
          kMeshDimensions_ = meshDimensions;
          kSize_ = mesh().size();
       }
+      UTIL_CHECK(kSize_ > 0);
 
       minImages_.allocate(kSize_ * D);
       kSq_.allocate(kMeshDimensions_);
@@ -576,6 +586,9 @@ namespace Cuda {
                      << "Setting nThreads equal to 128." << std::endl;
       }
 
+      UTIL_CHECK(kSq_.isAllocated());
+      UTIL_CHECK(minImages_.isAllocated());
+
       // Launch kernel
       size_t sz = (D * sizeof(int) + sizeof(cudaReal)) * nThreads;
       _computeMinimumImages<D><<<nBlocks, nThreads, sz>>>
@@ -607,6 +620,7 @@ namespace Cuda {
       UTIL_CHECK(unitCell().nParameter() > 0);
       UTIL_CHECK(unitCell().lattice() != UnitCell<D>::Null);
       UTIL_CHECK(unitCell().isInitialized());
+      UTIL_CHECK(isAllocated_);
 
       // Get kBasis and store on device
       HostDArray<cudaReal> kBasis_h(D*D);
@@ -625,6 +639,8 @@ namespace Cuda {
       ThreadArray::setThreadsLogical(kSize_, nBlocks, nThreads);
       
       // Launch kernel to calculate kSq on device
+      UTIL_CHECK(kSq_.isAllocated());
+      UTIL_CHECK(minImages_.isAllocated());
       _computeKSq<D><<<nBlocks, nThreads>>>
             (kSq_.cArray(), minImages_.cArray(), kBasis.cArray(), 
              unitCell().nParameter(), kSize_);
@@ -645,10 +661,11 @@ namespace Cuda {
          computeMinimumImages(); 
       }
 
-      // Precondition
+      // Preconditions
       UTIL_CHECK(unitCell().nParameter() > 0);
       UTIL_CHECK(unitCell().lattice() != UnitCell<D>::Null);
       UTIL_CHECK(unitCell().isInitialized());
+      UTIL_CHECK(isAllocated_);
 
       // Calculate dkkBasis and store on device
       int idx;
@@ -672,11 +689,20 @@ namespace Cuda {
       // Max size of dkkBasis is 54, so this should always be satisfied
       UTIL_CHECK(nThreads > dkkBasis.capacity()); 
 
+      // Preconditions for kernel
+      UTIL_CHECK(dKSq_.isAllocated());
+      UTIL_CHECK(minImages_.isAllocated());
+      bool const * implicitInversePtr = nullptr;
+      if (isRealField_) {
+         UTIL_CHECK(implicitInverse_.isAllocated());
+         implicitInversePtr = implicitInverse_.cArray();
+      }
+
       // Launch kernel to calculate dKSq on device
       size_t sz = sizeof(cudaReal)*dkkBasis.capacity();
       _computedKSq<D><<<nBlocks, nThreads, sz>>>
          (dKSq_.cArray(), minImages_.cArray(), dkkBasis.cArray(), 
-          implicitInverse_.cArray(), unitCell().nParameter(), kSize_,
+          implicitInversePtr, unitCell().nParameter(), kSize_,
           isRealField_);
       
       hasdKSq_ = true;

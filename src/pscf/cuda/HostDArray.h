@@ -8,13 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "DeviceArray.h"
-#include "cudaErrorCheck.h"
 #include <util/containers/DArray.h>
-#include <util/global.h>
-#include <cuda_runtime.h>
 
 namespace Pscf {
+
+   // Forward declaration
+   template <typename T> class DeviceArray;
 
    using namespace Util;
 
@@ -115,6 +114,15 @@ namespace Pscf {
       void copySlice(DeviceArray<Data> const & other, int beginId);
 
    };
+
+} // namespace Pscf
+
+#include "DeviceArray.h"
+#include "cudaErrorCheck.h"
+#include <util/global.h>
+#include <cuda_runtime.h>
+
+namespace Pscf {
 
    /*
    * Default constructor.

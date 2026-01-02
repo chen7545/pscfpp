@@ -2,41 +2,39 @@
 #define PSCF_DEVICE_ARRAY_H
 
 /*
-* PSCF - Polymer Self-Consistent Field 
+* PSCF - Polymer Self-Consistent Field
 *
 * Copyright 2015 - 2025, The Regents of the University of Minnesota
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "cudaErrorCheck.h"
 #include <util/misc/ReferenceCounter.h>
 #include <util/misc/CountedReference.h>
-#include <util/global.h>
-#include <cuda_runtime.h>
 
 namespace Pscf {
 
-   using namespace Util;
-
-   // Forward declaration of analogous container for data on host.
+   // Forward declarations
    template <typename Data> class HostDArray;
+   class DeviceMemory;
+
+   using namespace Util;
 
    /**
    * Dynamic array on the GPU device with aligned data.
    *
-   * This class wraps an aligned C array with elements of type Data that 
-   * is allocated in GPU device global memory.  All member functions may 
-   * be called from the CPU host, but this class does not offer access 
+   * This class wraps an aligned C array with elements of type Data that
+   * is allocated in GPU device global memory.  All member functions may
+   * be called from the CPU host, but this class does not offer access
    * to individual elements via the subscript operator, operator[].
-   * 
+   *
    * A DeviceArray can have one of two different relationships with its
    * underlying data. In case 1, the data are owned by this object, so
    * the allocation and destruction of the C array are performed by this
    * object. In case 2, this object is instead "associated" with a slice
-   * of an array owned by a different DeviceArray. If this is the case, 
-   * this object is not responsible for allocation or destruction of the 
+   * of an array owned by a different DeviceArray. If this is the case,
+   * this object is not responsible for allocation or destruction of the
    * underlying C array, and merely acts as a reference to the slice of
-   * the other array to which it is associated. 
+   * the other array to which it is associated.
    *
    * \ingroup Pscf_Cuda_Module
    */
@@ -60,14 +58,14 @@ namespace Pscf {
       * Allocating constructor.
       *
       * This function calls allocate(capacity) internally.
-      * 
-      * \param capacity number of elements to allocate 
+      *
+      * \param capacity number of elements to allocate
       */
       DeviceArray(int capacity);
 
       /**
       * Copy constructor.
-      * 
+      *
       * \param other DeviceArray<Data> to be copied (input)
       */
       DeviceArray(DeviceArray<Data> const & other);
@@ -101,25 +99,36 @@ namespace Pscf {
       *
       * \throw Exception if the array is already allocated.
       *
-      * \param arr parent array that owns the data
-      * \param beginId index in the parent array at which this array starts
-      * \param capacity number of elements to allocate 
+      * \param arr  parent array that owns the data
+      * \param beginId  index in the parent array at which this array starts
+      * \param capacity  number of elements associated with this container
       */
       void associate(DeviceArray<Data>& arr, int beginId, int capacity);
 
       /**
-      * Dissociate this object from the associated array.
+      * Associate this object with a DeviceMemory container.
       *
-      * \throw Exception if this object is not associated with an array.
+      * \throw Exception if the array is already allocated.
+      *
+      * \param arr  DeviceMemory container that owns the data
+      * \param capacity  number of elements of type Data
+      */
+      void associate(DeviceMemory& arr, int capacity);
+
+      /**
+      * Dissociate this object from an associated external memory block.
+      *
+      * \throw Exception if this object is not associated external memory.
       */
       void dissociate();
 
       /**
-      * Associate a reference with the reference counter.
+      * Associate a reference with reference counter for this container.
       *
-      * This should only be called within the associate function of a
-      * container that is referring to data owned by this array, but 
-      * must be public for that purpose.
+      * This function should normally be not called by users of a
+      * DeviceArray container. It is usually called within the associate
+      * member function of a container that is referring to data owned
+      * by this array.
       *
       * \param reference  reference to be included by reference counter
       */
@@ -127,33 +136,33 @@ namespace Pscf {
 
       /**
       * Assignment operator, assign from another DeviceArray<Data> array.
-      *  
-      * Performs a deep copy, by copying values of all elements from 
+      *
+      * Performs a deep copy, by copying values of all elements from
       * device memory to device memory.
       *
-      * This function will allocate memory if this (LHS) array is not 
-      * allocated.  If this array is arleady allocated, it must have the 
+      * This function will allocate memory if this (LHS) array is not
+      * allocated.  If this array is arleady allocated, it must have the
       * same capacity as the other (RHS) DeviceArray<Data>.
       *
       * \param other DeviceArray<Data> on rhs of assignent (input)
       */
-      virtual 
+      virtual
       DeviceArray<Data>& operator = (const DeviceArray<Data>& other);
 
       /**
       * Assignment operator, assignment from HostDArray<Data> host array.
       *
-      * Performs a deep copy from a RHS HostDArray<Data> host array to 
-      * this LHS DeviceArray<Data> device array, by copying underlying 
+      * Performs a deep copy from a RHS HostDArray<Data> host array to
+      * this LHS DeviceArray<Data> device array, by copying underlying
       * C array from host memory to device memory.
       *
-      * This function will allocate memory if this (LHS) 
-      * DeviceArray<Data> is not allocated.  If this is allocated, it 
+      * This function will allocate memory if this (LHS)
+      * DeviceArray<Data> is not allocated.  If this is allocated, it
       * must have the same dimensions as the RHS HostDArray<Data>.
       *
       * \param other HostDArray<Data> on RHS of assignent (input)
       */
-      virtual 
+      virtual
       DeviceArray<Data>& operator = (const HostDArray<Data>& other);
 
       /**
@@ -204,6 +213,46 @@ namespace Pscf {
 
    };
 
+   // Inline functions
+
+   /*
+   * Return array capacity.
+   */
+   template <typename Data>
+   inline int DeviceArray<Data>::capacity() const
+   {  return capacity_; }
+
+   /*
+   * Return true if the array has been allocated, false otherwise.
+   */
+   template <typename Data>
+   inline bool DeviceArray<Data>::isAllocated() const
+   {  return (bool) dataPtr_; }
+
+   /*
+   * Does this object own data?
+   */
+   template <typename Data>
+   inline bool DeviceArray<Data>::isOwner() const
+   {  return ((bool) dataPtr_ && !ref_.isAssociated()); }
+
+   /*
+   * Is this object associated with data it does not own?
+   */
+   template <typename Data>
+   inline bool DeviceArray<Data>::isAssociated() const
+   {  return (bool) dataPtr_ && ref_.isAssociated(); }
+
+}
+
+#include "DeviceMemory.h"
+#include "HostDArray.h"
+#include "cudaErrorCheck.h"
+#include <util/global.h>
+#include <cuda_runtime.h>
+
+namespace Pscf {
+
    /*
    * Default constructor.
    */
@@ -237,8 +286,8 @@ namespace Pscf {
       }
 
       allocate(other.capacity_);
-      cudaErrorCheck( cudaMemcpy(dataPtr_, other.cArray(), 
-                                 capacity_ * sizeof(Data), 
+      cudaErrorCheck( cudaMemcpy(dataPtr_, other.cArray(),
+                                 capacity_ * sizeof(Data),
                                  cudaMemcpyDeviceToDevice) );
    }
 
@@ -248,9 +297,9 @@ namespace Pscf {
    template <typename Data>
    DeviceArray<Data>::~DeviceArray()
    {
-      if (isOwner()) { 
+      if (isOwner()) {
          if (refCounter_.hasRefs()) {
-            std::cout 
+            std::cout
                 << "Error: Destroying DeviceArray that is referred"
                 << "to by at least one CountedReference"
                 << std::endl;
@@ -278,8 +327,7 @@ namespace Pscf {
          UTIL_THROW("Attempt to allocate array that references other data");
       }
 
-      // size_t bytes = capacity * sizeof(Data);
-      cudaErrorCheck(cudaMalloc((void**) &dataPtr_, capacity * sizeof(Data)) );
+      cudaErrorCheck(cudaMalloc((void**) &dataPtr_, capacity * sizeof(Data)));
       capacity_ = capacity;
 
    }
@@ -302,7 +350,7 @@ namespace Pscf {
    * Associate this object with a slice of a different DeviceArray.
    */
    template <typename Data>
-   void DeviceArray<Data>::associate(DeviceArray<Data>& arr, int beginId, 
+   void DeviceArray<Data>::associate(DeviceArray<Data>& arr, int beginId,
                                      int capacity)
    {
       UTIL_CHECK(arr.isAllocated());
@@ -313,8 +361,28 @@ namespace Pscf {
       UTIL_CHECK(!dataPtr_);
       UTIL_CHECK(!ref_.isAssociated());
 
-      // Copy data pointer and capacity 
+      // Copy data pointer and capacity
       dataPtr_ = arr.cArray() + beginId;
+      capacity_ = capacity;
+
+      // Associate ref_ member with reference counter of data owner array
+      arr.addReference(ref_);
+   }
+
+   /*
+   * Associate this object with a slice of a different DeviceArray.
+   */
+   template <typename Data>
+   void DeviceArray<Data>::associate(DeviceMemory& arr, int capacity)
+   {
+      UTIL_CHECK(arr.isAllocated());
+      UTIL_CHECK(capacity > 0);
+      UTIL_CHECK(capacity * sizeof(Data) <= arr.capacity());
+      UTIL_CHECK(!dataPtr_);
+      UTIL_CHECK(!ref_.isAssociated());
+
+      // Copy data pointer and capacity
+      dataPtr_ = arr.cArray();
       capacity_ = capacity;
 
       // Associate ref_ member with reference counter of data owner array
@@ -342,13 +410,13 @@ namespace Pscf {
    */
    template <typename Data>
    void DeviceArray<Data>::addReference(CountedReference& ref)
-   {  ref.associate(refCounter_); } 
+   {  ref.associate(refCounter_); }
 
    /*
    * Assignment from another DeviceArray<Data>.
    */
    template <typename Data>
-   DeviceArray<Data>& 
+   DeviceArray<Data>&
    DeviceArray<Data>::operator = (const DeviceArray<Data>& other)
    {
       // Check for self assignment
@@ -362,16 +430,16 @@ namespace Pscf {
       // If this is not allocated, then allocate
       if (!isAllocated()) {
          allocate(other.capacity());
-      } 
+      }
 
-      // Require equal capacity values 
+      // Require equal capacity values
       if (capacity_ != other.capacity_) {
          UTIL_THROW("Cannot assign arrays of unequal capacity");
       }
 
       // Copy elements
-      cudaErrorCheck( cudaMemcpy(dataPtr_, other.cArray(), 
-                                 capacity_ * sizeof(Data), 
+      cudaErrorCheck( cudaMemcpy(dataPtr_, other.cArray(),
+                                 capacity_ * sizeof(Data),
                                  cudaMemcpyDeviceToDevice) );
 
       return *this;
@@ -381,7 +449,7 @@ namespace Pscf {
    * Assignment of LHS DeviceArray<Data> from RHS HostDArray<Data>.
    */
    template <typename Data>
-   DeviceArray<Data>& 
+   DeviceArray<Data>&
    DeviceArray<Data>::operator = (const HostDArray<Data>& other)
    {
       // Precondition
@@ -392,7 +460,7 @@ namespace Pscf {
       // Allocate this if necessary
       if (!isAllocated()) {
          allocate(other.capacity());
-      } 
+      }
 
       // Require equal capacity values
       if (capacity_ != other.capacity()) {
@@ -400,8 +468,8 @@ namespace Pscf {
       }
 
       // Copy elements
-      cudaErrorCheck( cudaMemcpy(dataPtr_, other.cArray(), 
-                                 capacity_ * sizeof(Data), 
+      cudaErrorCheck( cudaMemcpy(dataPtr_, other.cArray(),
+                                 capacity_ * sizeof(Data),
                                  cudaMemcpyHostToDevice) );
 
       return *this;
@@ -412,9 +480,9 @@ namespace Pscf {
    */
    template <typename Data>
    Data* DeviceArray<Data>::cArray()
-   {  
+   {
       UTIL_CHECK(dataPtr_);
-      return dataPtr_; 
+      return dataPtr_;
    }
 
    /*
@@ -422,38 +490,10 @@ namespace Pscf {
    */
    template <typename Data>
    const Data* DeviceArray<Data>::cArray() const
-   {  
+   {
       UTIL_CHECK(dataPtr_);
-      return dataPtr_; 
+      return dataPtr_;
    }
-
-   /*
-   * Return array capacity.
-   */
-   template <typename Data>
-   inline int DeviceArray<Data>::capacity() const
-   {  return capacity_; }
-
-   /*
-   * Return true if the array has been allocated, false otherwise.
-   */
-   template <typename Data>
-   bool DeviceArray<Data>::isAllocated() const
-   {  return (bool) dataPtr_; }
-
-   /*
-   * Does this object own data? 
-   */
-   template <typename Data>
-   inline bool DeviceArray<Data>::isOwner() const
-   {  return ((bool) dataPtr_ && !ref_.isAssociated()); }
-
-   /*
-   * Is this object associated with data it does not own?
-   */
-   template <typename Data>
-   inline bool DeviceArray<Data>::isAssociated() const
-   {  return (bool) dataPtr_ && ref_.isAssociated(); }
 
 } // namespace Pscf
 #endif

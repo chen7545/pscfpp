@@ -232,7 +232,7 @@ namespace Cuda {
       DeviceArray<cudaReal> dKSq_;
 
       /// Array of RFields, where each RField is a slice of the dKSq_ array.
-      DArray<RField<D> > dKSqSlices_;
+      DArray< RField<D> > dKSqSlices_;
 
       /// Array indicating whether a given gridpoint has an implicit partner
       DeviceArray<bool> implicitInverse_;
