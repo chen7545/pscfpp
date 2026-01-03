@@ -91,13 +91,15 @@ namespace Reduce {
       }
       #endif
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Utility to perform maximization reduction within a single warp.
       *
       * \param sData  input array to reduce
       * \param tId  thread ID
       */
-      __device__ void _warpMax(volatile cudaReal* sData, int tId)
+      __device__ 
+      void _warpMax(volatile cudaReal* sData, int tId)
       {
          if (sData[tId + 32] > sData[tId]) sData[tId] = sData[tId + 32];
          if (sData[tId + 16] > sData[tId]) sData[tId] = sData[tId + 16];
@@ -106,14 +108,17 @@ namespace Reduce {
          if (sData[tId + 2] > sData[tId]) sData[tId] = sData[tId + 2];
          if (sData[tId + 1] > sData[tId]) sData[tId] = sData[tId + 1];
       }
+      #endif
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Utility to perform minimization reduction within a single warp.
       *
       * \param sData  input array to reduce
       * \param tId  thread ID
       */
-      __device__ void _warpMin(volatile cudaReal* sData, int tId)
+      __device__ 
+      void _warpMin(volatile cudaReal* sData, int tId)
       {
          if (sData[tId + 32] < sData[tId]) sData[tId] = sData[tId + 32];
          if (sData[tId + 16] < sData[tId]) sData[tId] = sData[tId + 16];
@@ -122,6 +127,7 @@ namespace Reduce {
          if (sData[tId + 2] < sData[tId]) sData[tId] = sData[tId + 2];
          if (sData[tId + 1] < sData[tId]) sData[tId] = sData[tId + 1];
       }
+      #endif
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Parallel reduction: full kernels
@@ -187,6 +193,7 @@ namespace Reduce {
       }
       #endif
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Get maximum of array elements (GPU kernel).
       *
@@ -247,7 +254,9 @@ namespace Reduce {
             max[bId] = sData[0];
          }
       }
+      #endif
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Get maximum absolute magnitude of array elements (GPU kernel).
       *
@@ -308,7 +317,9 @@ namespace Reduce {
             max[bId] = sData[0];
          }
       }
+      #endif
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Get minimum of array elements (GPU kernel).
       *
@@ -369,7 +380,9 @@ namespace Reduce {
             min[bId] = sData[0];
          }
       }
+      #endif
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Get minimum absolute magnitude of array elements (GPU kernel).
       *
@@ -430,6 +443,7 @@ namespace Reduce {
             min[bId] = sData[0];
          }
       }
+      #endif
 
       #ifndef USE_NVIDIA_CUB
       /*
@@ -439,13 +453,15 @@ namespace Reduce {
       * Assumes that each block contains at least 64 threads.
       * Assumes that the block size is a power of 2.
       *
-      * \param ip  reduced array containing the inner prod from each thread block
+      * \param ip  reduced array with inner prod from each thread block
       * \param a  first input array
       * \param b  second input array
       * \param n  number of input array elements
       */
-      __global__ void _innerProduct(cudaReal* ip, const cudaReal* a,
-                                    const cudaReal* b, int n)
+      __global__ 
+      void _innerProduct(cudaReal* ip, 
+		         cudaReal const * a,
+                         cudaReal const * b, int n)
       {
          // number of blocks cut in two to avoid inactive initial threads
          int tId = threadIdx.x;
@@ -552,7 +568,6 @@ namespace Reduce {
       };
 
    } // anonmyous namespace Pscf::Reduce::(unnamed)
-
 
    // Memory management
 
@@ -992,55 +1007,34 @@ namespace Reduce {
    }
    #endif
 
-   #if 0
+   #ifdef USE_NVIDIA_CUB
    /*
-   * Compute max absolute value in a real array.
-   *
-   * This implementation uses an Nvidia CUB library function.
+   * Return the maximum absolute magnitude of array elements.
    */
-   cudaReal maxAbs(DeviceArray<cudaReal> const & a)
+   cudaReal maxAbs(DeviceArray<cudaReal> const & in)
    {
-      //std::cout << "\n Using CUB implementation of maxAbs";
-      UTIL_CHECK(a.isAllocated());
-      const int n = a.capacity();
-      UTIL_CHECK(n > 0);
+      UTIL_CHECK(in.isAllocated());
+      int n = in.capacity();
 
-      // Create pointers to input and output data
-      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
-      DeviceArray<cudaReal> out;
-      out.allocate(1);
-      cudaReal* outPtr = out.cArray();
+      // Set up temporary array for vector product
+      int workSize = n * sizeof(cudaReal);
+      transformSpace_.resize(workSize);
+      DeviceArray<cudaReal> temp;
+      temp.associate(transformSpace_, n);
 
-      // Determine size of required workspace, allocate if needed
-      size_t workSize = 0;
-      cudaError_t error;
-      auto reduceOp = maxFunctor{};
-      auto tranformOp = absRealFunctor{};
-      const cudaReal init = 0.0;
-      error = cub::DeviceReduce::TransformReduce(
-                      nullptr, workSize, inPtr, outPtr, n,
-                      reduceOp, transformOp, init);
-      UTIL_CHECK(error == cudaSuccess);
-      reduceSpace_.resize(workSize);
+      // Compute an array of absolute magnitudes
+      VecOp::absV(temp, in);
 
-      // Perform reduction
-      error = cub::DeviceReduce::TransformReduce(
-                      reduceSpace_.cArray(), workSize, 
-                      inPtr, outPtr, n,
-                      reduceOp, transformOp, init);
-      UTIL_CHECK(error == cudaSuccess);
+      cudaReal result = Reduce::max(temp);
+      temp.dissociate();
 
-      // Copy to host and return value
-      HostDArray<cudaReal> out_h;
-      out_h.allocate(1);
-      out_h = out;
-      return out_h[0];
+      return result;
    }
    #endif
 
-   #if 1
+   #ifndef USE_NVIDIA_CUB
    /*
-   * Get maximum absolute magnitude of array elements.
+   * Return the maximum absolute magnitude of array elements.
    */
    cudaReal maxAbs(DeviceArray<cudaReal> const & in)
    {
@@ -1247,6 +1241,32 @@ namespace Reduce {
    }
    #endif
 
+   #ifdef USE_NVIDIA_CUB
+   /*
+   * Return the minimum absolute magnitude of array elements.
+   */
+   cudaReal minAbs(DeviceArray<cudaReal> const & in)
+   {
+      UTIL_CHECK(in.isAllocated());
+      int n = in.capacity();
+
+      // Set up temporary array of length n
+      int workSize = n * sizeof(cudaReal);
+      transformSpace_.resize(workSize);
+      DeviceArray<cudaReal> temp;
+      temp.associate(transformSpace_, n);
+
+      // Compute an array of absolute magnitudes
+      VecOp::absV(temp, in);
+
+      cudaReal result = Reduce::min(temp);
+      temp.dissociate();
+
+      return result;
+   }
+   #endif
+
+   #ifndef USE_NVIDIA_CUB
    /*
    * Get minimum absolute magnitude of array elements.
    */
@@ -1329,6 +1349,7 @@ namespace Reduce {
       }
       return min;
    }
+   #endif
 
 } // namespace Reduce
 } // namespace Pscf
