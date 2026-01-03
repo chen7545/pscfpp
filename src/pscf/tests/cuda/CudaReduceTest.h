@@ -43,14 +43,14 @@ public:
    /// Setup before each test function.
    void setUp()
    {
-      setVerbose(0);
+      setVerbose(2);
       rand_.setSeed(0);
    }
 
    /// Clean up after each test function.
    void tearDown()
    {  
-   // Reduce::freeWorkSpace(); 
+      // Reduce::freeWorkSpace(); 
    }
 
    /// Test sum for an array of real elements.
@@ -59,7 +59,8 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      nVals[0] = 50022;     // small array
+      //nVals[0] = 50022;     // small array
+      nVals[0] = 109857634; // large array
       nVals[1] = 1934896;   // medium array
       nVals[2] = 109857634; // large array
 
@@ -139,7 +140,8 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      nVals[0] = 50022;     // small array
+      //nVals[0] = 50022;     // small array
+      nVals[0] = 109857634; // large array
       nVals[1] = 1934896;   // medium array
       nVals[2] = 109857634; // large array
 
@@ -240,7 +242,8 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      nVals[0] = 50022;     // small array
+      //nVals[2] = 50022;     // small array
+      nVals[0] = 109857634; // large array
       nVals[1] = 1934896;   // medium array
       nVals[2] = 109857634; // large array
 

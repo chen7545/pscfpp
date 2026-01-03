@@ -462,7 +462,7 @@ namespace Pscf {
       UTIL_CHECK(!ref_.isAssociated());
 
       // Copy data pointer and capacity
-      dataPtr_ = arr.cArray();
+      dataPtr_ = (Data *) arr.cArray();
       capacity_ = capacity;
 
       // Associate ref_ member with reference counter of data owner

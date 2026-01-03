@@ -6,6 +6,7 @@
 */
 
 #include "Reduce.h"
+#include "VecOp.h"
 #include <pscf/cuda/ThreadArray.h>
 #include <pscf/cuda/HostDArray.h>
 #include <pscf/cuda/DeviceMemory.h>
@@ -23,13 +24,16 @@
 
 // If defined, use reduction functions from the NVIDIA CUB library
 // in preference to hand-coded kernels.
-// #define USE_NVIDIA_CUB
+#define USE_NVIDIA_CUB
 
 namespace Pscf {
 namespace Reduce {
 
-   // Object contains workspace memory used by CUB reduction functions
+   // Memory used as workspace by CUB reduction functions
    static DeviceMemory reduceSpace_{};
+
+   // Memory used as workspace for vector transformations
+   static DeviceMemory transformSpace_{};
 
    // CUDA kernels:
    // (defined in anonymous namespace, used within this file only)
@@ -69,6 +73,7 @@ namespace Reduce {
       * rather than using cached values).
       */
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Utility to perform summation reduction within a single warp.
       *
@@ -84,6 +89,7 @@ namespace Reduce {
          sData[tId] += sData[tId + 2];
          sData[tId] += sData[tId + 1];
       }
+      #endif
 
       /*
       * Utility to perform maximization reduction within a single warp.
@@ -121,6 +127,7 @@ namespace Reduce {
       // Parallel reduction: full kernels
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Compute sum of array elements (GPU kernel).
       *
@@ -178,6 +185,7 @@ namespace Reduce {
             sum[bId] = sData[0];
          }
       }
+      #endif
 
       /*
       * Get maximum of array elements (GPU kernel).
@@ -423,6 +431,7 @@ namespace Reduce {
          }
       }
 
+      #ifndef USE_NVIDIA_CUB
       /*
       * Compute inner product of two real arrays (GPU kernel).
       *
@@ -482,6 +491,7 @@ namespace Reduce {
             ip[bId] = sData[0];
          }
       }
+      #endif
 
       // Functors for use in CUB library functions
 
@@ -549,6 +559,7 @@ namespace Reduce {
    void freeWorkSpace()
    { 
       reduceSpace_.deallocate();
+      transformSpace_.deallocate();
    }
 
    // Public reduction functions
@@ -728,6 +739,35 @@ namespace Reduce {
       return out_h[0];
    }
 
+   #ifdef USE_NVIDIA_CUB
+   /*
+   * Compute inner product of two real arrays.
+   */
+   cudaReal innerProduct(DeviceArray<cudaReal> const & a,
+                         DeviceArray<cudaReal> const & b)
+   {
+      UTIL_CHECK(a.isAllocated());
+      UTIL_CHECK(b.isAllocated());
+      UTIL_CHECK(a.capacity() == b.capacity());
+      int n = a.capacity();
+
+      // Set up temporary array for vector product
+      int workSize = n * sizeof(cudaReal);
+      transformSpace_.resize(workSize);
+      DeviceArray<cudaReal> temp;
+      temp.associate(transformSpace_, n);
+
+      // Perform element-wise multiplication v[i] = a[i]*b[i]
+      VecOp::mulVV(temp, a, b);
+
+      cudaReal result = Reduce::sum(temp);
+      temp.dissociate();
+
+      return result;
+   }
+   #endif
+
+   #ifndef USE_NVIDIA_CUB
    /*
    * Compute inner product of two real arrays.
    */
@@ -826,6 +866,7 @@ namespace Reduce {
          return sum;
       }
    }
+   #endif
 
    #ifdef USE_NVIDIA_CUB
    /*
