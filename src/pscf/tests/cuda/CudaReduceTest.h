@@ -43,7 +43,7 @@ public:
    /// Setup before each test function.
    void setUp()
    {
-      setVerbose(2);
+      setVerbose(0);
       rand_.setSeed(0);
    }
 

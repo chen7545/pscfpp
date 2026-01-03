@@ -208,19 +208,21 @@ namespace {
    /*
    * Add an undefined number of vectors pointwise, GPU kernel.
    *
-   * The input const pointer 'vecs' points to an array of const pointers. In
-   * other words, this is an array of arrays, where each array is represented
-   * by its pointer. The size of vecs is nVecs, and the size of vecs[i] is
-   * n (if i < nVecs). These nVecs vectors will be added and the result will
-   * be stored in vector 'a'.
+   * The input const pointer 'vecs' points to an array of const pointers. 
+   * In other words, this is an array of arrays, where each array is 
+   * represented by its pointer. The size of vecs is nVecs, and the size 
+   * of vecs[i] is n (if i < nVecs). These nVecs vectors will be added 
+   * and the result will be stored in vector 'a'.
    *
    * \param a  output array (LHS)
    * \param vecs  array of pointers to DeviceArrays to be added
    * \param nVecs  number of vectors to be added
    * \param n  size of arrays
    */
-   __global__ void _addVMany(cudaReal* a, cudaReal const ** vecs,
-                           const int nVecs, const int n)
+   __global__ 
+   void _addVMany(cudaReal* a, 
+                  cudaReal const ** vecs,
+                  const int nVecs, const int n)
    {
       int nThreads = blockDim.x * gridDim.x;
       int startID = blockIdx.x * blockDim.x + threadIdx.x;
