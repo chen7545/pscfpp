@@ -720,7 +720,7 @@ namespace Reduce {
    *
    * Implementation uses Nvidia CUB Library functions.
    */
-   cudaComplex sum(DeviceArray<cudaComplex> const & a)
+   std::complex<cudaReal> sum(DeviceArray<cudaComplex> const & a)
    {
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
@@ -728,8 +728,7 @@ namespace Reduce {
 
       // Define pointers to input and output arrays
       cudaComplex* inPtr = const_cast<cudaComplex*>( a.cArray() );
-      DeviceArray<cudaComplex> out;
-      out.allocate(1);
+      DeviceArray<cudaComplex> out(1);
       cudaComplex* outPtr = out.cArray();
 
       // Determine size of required workspace and allocate if necessary
@@ -748,10 +747,56 @@ namespace Reduce {
       UTIL_CHECK(error == cudaSuccess);
 
       // Copy to host and return value
-      HostDArray<cudaComplex> out_h;
-      out_h.allocate(1);
+      HostDArray<cudaComplex> out_h(1);
       out_h = out;
-      return out_h[0];
+      return std::complex<cudaReal>(out_h[0].x, out_h[0].y);
+   }
+
+   /*
+   * Return the sum of squares of elements of a real array.
+   */
+   cudaReal sumSq(DeviceArray<cudaReal> const & in)
+   {
+      UTIL_CHECK(in.isAllocated());
+      int n = in.capacity();
+
+      // Set up temporary array for result of vector operation
+      int workSize = n * sizeof(cudaReal);
+      transformSpace_.resize(workSize);
+      DeviceArray<cudaReal> temp;
+      temp.associate(transformSpace_, n);
+
+      // Compute an array of element-wise squares
+      VecOp::sqV(temp, in);
+
+      cudaReal result = Reduce::sum(temp);
+      temp.dissociate();
+
+      return result;
+   }
+
+   /*
+   * Return the sum of squares of elements of a complex array.
+   */
+   std::complex<cudaReal> sumSq(DeviceArray<cudaComplex> const & in)
+   {
+      UTIL_CHECK(in.isAllocated());
+      int n = in.capacity();
+
+      // Set up temporary array for result of vector operation
+      int workSize = n * sizeof(cudaComplex);
+      transformSpace_.resize(workSize);
+      DeviceArray<cudaComplex> temp;
+      temp.associate(transformSpace_, n);
+
+      // Compute an array of element-wise squares
+      VecOp::sqV(temp, in);
+
+      // Compute sum of array temp of element-wise squares
+      std::complex<cudaReal> result = Reduce::sum(temp);
+      temp.dissociate();
+
+      return result;
    }
 
    #ifdef USE_NVIDIA_CUB
@@ -766,15 +811,16 @@ namespace Reduce {
       UTIL_CHECK(a.capacity() == b.capacity());
       int n = a.capacity();
 
-      // Set up temporary array for vector product
+      // Set up temporary array for result of vector operation
       int workSize = n * sizeof(cudaReal);
       transformSpace_.resize(workSize);
       DeviceArray<cudaReal> temp;
       temp.associate(transformSpace_, n);
 
-      // Perform element-wise multiplication v[i] = a[i]*b[i]
+      // Perform element-wise multiplication v[i] = a[i] * b[i]
       VecOp::mulVV(temp, a, b);
 
+      // Compute sum of element-wise products
       cudaReal result = Reduce::sum(temp);
       temp.dissociate();
 
@@ -897,8 +943,7 @@ namespace Reduce {
       UTIL_CHECK(n > 0);
 
       cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
-      DeviceArray<cudaReal> out;
-      out.allocate(1);
+      DeviceArray<cudaReal> out(1);
       cudaReal* outPtr = out.cArray();
 
       // Determine size of required workspace, allocated if needed
@@ -915,8 +960,7 @@ namespace Reduce {
       UTIL_CHECK(error == cudaSuccess);
 
       // Copy to host and return value
-      HostDArray<cudaReal> out_h;
-      out_h.allocate(1);
+      HostDArray<cudaReal> out_h(1);
       out_h = out;
       return out_h[0];
    }
@@ -1016,7 +1060,7 @@ namespace Reduce {
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
-      // Set up temporary array for vector product
+      // Set up temporary array for result of vector operation
       int workSize = n * sizeof(cudaReal);
       transformSpace_.resize(workSize);
       DeviceArray<cudaReal> temp;
@@ -1025,6 +1069,7 @@ namespace Reduce {
       // Compute an array of absolute magnitudes
       VecOp::absV(temp, in);
 
+      // Compute maximum of array temp of absolute magnitudes
       cudaReal result = Reduce::max(temp);
       temp.dissociate();
 
@@ -1250,7 +1295,7 @@ namespace Reduce {
       UTIL_CHECK(in.isAllocated());
       int n = in.capacity();
 
-      // Set up temporary array of length n
+      // Set up temporary array for result of vector operation
       int workSize = n * sizeof(cudaReal);
       transformSpace_.resize(workSize);
       DeviceArray<cudaReal> temp;
@@ -1259,6 +1304,7 @@ namespace Reduce {
       // Compute an array of absolute magnitudes
       VecOp::absV(temp, in);
 
+      // Compute minimum of array temp of absolute magnitudes
       cudaReal result = Reduce::min(temp);
       temp.dissociate();
 

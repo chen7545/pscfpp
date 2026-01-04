@@ -1078,6 +1078,46 @@ namespace {
          }
       }
 
+      // Square
+
+      /*
+      * Square of real vector, a[i] = (b[i])^2 (real).
+      *
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param n  size of arrays
+      */
+      __global__
+      void _sqV(cudaReal* a, cudaReal const * b, const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i] = b[i]*b[i];
+         }
+      }
+
+      /*
+      * Square of complex vector, a[i] = (b[i])^2 (complex).
+      *
+      * \param a  complex array (LHS)
+      * \param b  complex array (RHS)
+      * \param n  size of arrays
+      */
+      __global__
+      void _sqV(cudaComplex* a, cudaComplex const * b, const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         cudaReal bx, by;
+         for (int i = startID; i < n; i += nThreads) {
+            bx = b[i].x;
+            by = b[i].y;
+            a[i].x = (bx*bx) - (by*by);
+            a[i].y = 2.0 * bx * by;
+         }
+      }
+
       // Absolute magnitude
 
       /*
@@ -2202,7 +2242,47 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Absolute magnitudes
+   // Elementwise square
+
+   // Vector square, a[i] = b[i]*b[i] (real).
+   void sqV(DeviceArray<cudaReal>& a,
+            DeviceArray<cudaReal> const & b,
+            const int beginIdA, const int beginIdB, 
+            const int n)
+   {
+      UTIL_CHECK(a.capacity() >= n + beginIdA);
+      UTIL_CHECK(b.capacity() >= n + beginIdB);
+
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _sqV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA,
+                                  b.cArray() + beginIdB, n);
+      cudaErrorCheck( cudaGetLastError() );
+   }
+
+   // Vector square, a[i] = b[i]*b[i] (complex).
+   void sqV(DeviceArray<cudaComplex>& a,
+            DeviceArray<cudaComplex> const & b,
+            const int beginIdA, const int beginIdB, 
+            const int n)
+   {
+      UTIL_CHECK(a.capacity() >= n + beginIdA);
+      UTIL_CHECK(b.capacity() >= n + beginIdB);
+
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _sqV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA,
+                                  b.cArray() + beginIdB, n);
+      cudaErrorCheck( cudaGetLastError() );
+   }
+
+   // Absolute magnitude
 
    // Vector absolute magnitude, a[i] = abs(b[i]) (real).
    void absV(DeviceArray<cudaReal>& a,

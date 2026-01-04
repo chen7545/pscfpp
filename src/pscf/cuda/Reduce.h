@@ -10,6 +10,7 @@
 
 #include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/DeviceArray.h>
+#include <complex>
 
 namespace Pscf {
 
@@ -17,9 +18,9 @@ namespace Pscf {
    * Functions that perform parallel reductions on the GPU.
    *
    * A reduction is any operation that involves reducing all of the
-   * elements of an array (or a set of multiple arrays) down to a single
-   * result. Examples include taking the sum or finding the maximum of
-   * all array elements. Highly efficient algorithms have been developed
+   * elements of an array (or several arrays) to a single scalar result. 
+   * Examples include taking the sum or finding the maximum of all
+   * array elements. Highly efficient algorithms have been developed
    * to perform such operations in parallel on a GPU, and those
    * algorithms are implemented here.
    *
@@ -42,7 +43,7 @@ namespace Pscf {
    * remaining reduction on the host, depending on the size of the
    * array output by the first kernel. Once the array is smaller than
    * 1e5 elements, the remaining reduction is performed on the CPU.
-   * (This value is chosen because the GPU does not significantly 
+   * (This value is chosen because the GPU does not significantly
    * speed up reductions on arrays smaller than 1e5 elements.)
    *
    * Second, the CUDA kernels are designed to use a number of threads
@@ -54,73 +55,101 @@ namespace Pscf {
    * @{
    */
    namespace Reduce {
-  
+
       // Summation
-      
+
       /**
-      * Compute sum of real array elements.
+      * Return sum of elements of a real array.
       *
-      * \param in  input array
+      * \param in  real input array
+      * \return  sum of elements
       */
       cudaReal sum(DeviceArray<cudaReal> const & in);
-   
+
       /**
-      * Compute sum of array of complex elements.
+      * Return sum of elements of a complex array.
       *
-      * \param in  input array
+      * \param in  complex input array
+      * \return  complex sum of elements
       */
-      cudaComplex sum(DeviceArray<cudaComplex> const & in);
-   
-      // Vector inner products 
-     
+      std::complex<cudaReal> sum(DeviceArray<cudaComplex> const & in);
+
+      // Vector inner products
+
       /**
-      * Compute inner product of two real arrays.
+      * Return sum of squares of elements of a real array.
       *
-      * \param a  first input array
-      * \param b  second input array
+      * This function returns the square of the Euclidean norm.
+      *
+      * \param in  real input array
+      * \return  sum of elements
+      */
+      cudaReal sumSq(DeviceArray<cudaReal> const & in);
+
+      /**
+      * Return sum of squares of elements of a complex array.
+      *
+      * This function returns the complex sum of complex squares of elements.
+      * This is not the same as the Hilbert space inner product.
+      *
+      * \param in  real input array
+      * \return  sum of elements
+      */
+      std::complex<cudaReal> sumSq(DeviceArray<cudaComplex> const & in);
+
+      /**
+      * Return inner product of two real arrays.
+      *
+      * \param a  first real input array
+      * \param b  second real input array
+      * \return  Euclidean inner product
       */
       cudaReal innerProduct(DeviceArray<cudaReal> const & a,
                             DeviceArray<cudaReal> const & b);
-   
-      // Extrema - real elements
-     
+
+      // Extrema - real array inputs
+
       /**
-      * Get maximum of array elements.
+      * Return maximum of real array elements.
       *
-      * \param in  input array
+      * \param in  real input array
+      * \return  value of maximum element
       */
       cudaReal max(DeviceArray<cudaReal> const & in);
-   
+
       /**
       * Get maximum absolute magnitude of real array elements.
       *
-      * \param in  input array
+      * \param in  real input array
+      * \return  magnitude of element of maximum magnitude
       */
       cudaReal maxAbs(DeviceArray<cudaReal> const & in);
-   
+
       /**
-      * Get minimum of array elements.
+      * Return minimum of real array elements.
       *
-      * \param in  input array
+      * \param in  real input array
+      * \return  value of minimum element
       */
       cudaReal min(DeviceArray<cudaReal> const & in);
-   
+
       /**
-      * Get minimum absolute magnitude of real array elements.
+      * Return minimum absolute magnitude of real array elements.
       *
-      * \param in  input array
+      * \param in  real input array
+      * \return  magnitude of element of minimum magnitude
       */
       cudaReal minAbs(DeviceArray<cudaReal> const & in);
-   
+
       // Memory management
-   
+
       /**
-      * Free any work space currently allocated for reductions.
+      * Free any private work space currently allocated for reductions.
       */
-      void freeWorkSpace(); 
-   
+      void freeWorkSpace();
+
       /** @} */
-   
+
    } // namespace Reduce
 } // namespace Pscf
 #endif

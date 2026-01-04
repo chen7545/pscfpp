@@ -19,13 +19,13 @@ namespace Pscf {
    * The functions declared in this header operate on DeviceArray objects
    * with elements of type cudaReal or cudaComplex. The operations that
    * are performed by these functions include assignment, addition,
-   * subtraction, multiplication, division, and exponentiation. Function
-   * names, correspondingly, begin with "eq", "add", "sub", "mul", "div",
-   * and "exp" to indicate the operation being performed. Functions that
-   * perform in-place arithmetic assignment operations, which are
-   * analogous to those performed using the +=, -=, *=, and /= C/C++
-   * operators, have names that begin with "addEq", "subEq", "mulEq", and
-   * "divEq".
+   * subtraction, multiplication, division, exponentiation, square and
+   * absolute magnitude. Function names, correspondingly, begin with 
+   * "eq", "add", "sub", "mul", "div", "exp", "sq" and "abs" to indicate
+   * the operation being performed. Functions that perform in-place 
+   * arithmetic assignment operations, which are analogous to those 
+   * performed using the +=, -=, *=, and /= C/C++ operators, have names 
+   * that begin with "addEq", "subEq", "mulEq", and "divEq".
    *
    * These functions are overloaded to perform their respective operations
    * on any combination of cudaReal and cudaComplex input arrays, except
@@ -63,10 +63,11 @@ namespace Pscf {
    * that any code that includes VecOp.h will also include VecOpMisc.h.
    *
    * The functions declared in this file are wrappers for CUDA kernels
-   * that perform the actual parallel vector operations. The actual
-   * CUDA kernels are only intended to be called through their wrappers,
-   * so the kernels are defined in an anonymous namespace in the file
-   * VecOp.cu that is only accessible within that source file.
+   * that perform the actual parallel vector operations. The underlying
+   * CUDA kernels are only intended to be called through their wrappers.
+   * To enforce this, kernels are defined in an anonymous namespace in 
+   * the file VecOp.cu, and are thus only accessible for use within that 
+   * source file.
    *
    * \ingroup Pscf_Cuda_Module
    * @{
@@ -76,7 +77,7 @@ namespace Pscf {
       // Assignment operations:
 
       /**
-      * Vector assignment, a[i] = b[i], (real).
+      * Vector-vector assignment, a[i] = b[i], (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -89,7 +90,7 @@ namespace Pscf {
                const int beginIdA, const int beginIdB, const int n);
 
       /**
-      * Vector assignment, a[i] = b[i], (real).
+      * Vector-vector assignment, a[i] = b[i], (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -100,7 +101,7 @@ namespace Pscf {
       {  eqV(a, b, 0, 0, a.capacity()); }
 
       /**
-      * Vector assignment, a[i] = b[i], (complex).
+      * Vector-vector assignment, a[i] = b[i], (complex).
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -113,7 +114,7 @@ namespace Pscf {
                const int beginIdA, const int beginIdB, const int n);
 
       /**
-      * Vector assignment, a[i] = b[i], (complex).
+      * Vector-vector assignment, a[i] = b[i], (complex).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -158,7 +159,7 @@ namespace Pscf {
                const int beginIdA, const int n);
 
       /**
-      * Vector assignment, a[i] = b, (complex).
+      * Vector-scalar assignment, a[i] = b, (complex).
       *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
@@ -1533,7 +1534,7 @@ namespace Pscf {
       void divEqS(DeviceArray<cudaComplex>& a, const cudaReal b)
       {  divEqS(a, b, 0, a.capacity()); }
 
-      // Exponentiation operations:
+      // Exponentiation operations
 
       /**
       * Vector exponentiation, a[i] = exp(b[i]), (real).
@@ -1584,6 +1585,58 @@ namespace Pscf {
       void expV(DeviceArray<cudaComplex>& a,
                 DeviceArray<cudaComplex> const & b)
       {  expV(a, b, 0, 0, a.capacity()); }
+
+      // Vector (element-wise) square
+
+      /**
+      * Vector square, a[i] = b[i]*b[i], (real).
+      *
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param beginIdA  index of first element in a slice of array a
+      * \param beginIdB  index of first element in a slice of array b
+      * \param n  number of elements in the slice
+      */
+      void sqV(DeviceArray<cudaReal>& a,
+               DeviceArray<cudaReal> const & b,
+               const int beginIdA, const int beginIdB,
+               const int n);
+
+      /**
+      * Vector square, a[i] = b[i]*b[i], (real).
+      *
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      */
+      inline
+      void sqV(DeviceArray<cudaReal>& a,
+               DeviceArray<cudaReal> const & b)
+      {  sqV(a, b, 0, 0, a.capacity()); }
+
+      /**
+      * Vector square, a[i] = b[i]*b[i], (complex).
+      *
+      * \param a  complex array (LHS)
+      * \param b  complex array (RHS)
+      * \param beginIdA  index of first element in a slice of array a
+      * \param beginIdB  index of first element in a slice of array b
+      * \param n  number of elements in the slice
+      */
+      void sqV(DeviceArray<cudaComplex>& a,
+               DeviceArray<cudaComplex> const & b,
+               const int beginIdA, const int beginIdB,
+               const int n);
+
+      /**
+      * Vector square, a[i] = b[i]*b[i], (complex).
+      *
+      * \param a  complex array (LHS)
+      * \param b  complex array (RHS)
+      */
+      inline
+      void sqV(DeviceArray<cudaComplex>& a,
+               DeviceArray<cudaComplex> const & b)
+      {  sqV(a, b, 0, 0, a.capacity()); }
 
       // Absolute magnitude
 
