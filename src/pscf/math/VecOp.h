@@ -239,6 +239,26 @@ namespace Pscf {
       */
       void expV(Array<double>& a, Array<double> const & b);
 
+      // Square
+
+      /**
+      * Element-wise square, a[i] = b[i]*b[i] (real).
+      *
+      * \param a  output array (LHS)
+      * \param b  input array (RHS)
+      */
+      void sqV(Array<double>& a, Array<double> const & b);
+
+      // Absolute magnitude
+
+      /**
+      * Element-wise absolute magnitude, a[i] = abs(b[i]) (real).
+      *
+      * \param a  output array (LHS)
+      * \param b  input array (RHS)
+      */
+      void absV(Array<double>& a, Array<double> const & b);
+
    /** @} */
 
    } // namespace VecOp

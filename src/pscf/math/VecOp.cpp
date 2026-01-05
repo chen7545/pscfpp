@@ -16,7 +16,7 @@ namespace VecOp {
    // Assignment
 
    /*
-   * Vector assignment, a[i] = b[i] (real).
+   * Vector-vector assignment, a[i] = b[i] (real).
    */
    void eqV(Array<double>& a, Array<double> const & b)
    {
@@ -29,7 +29,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector assignment to a scalar, a[i] = b (real).
+   * Vector-scalar assignment, a[i] = b (real).
    */
    void eqS(Array<double>& a, double b)
    {
@@ -298,6 +298,35 @@ namespace VecOp {
       }
    }
 
+   // Square
+
+   /*
+   * Vector elementwise square, a[i] = b[i]*b[i] (real).
+   */
+   void sqV(Array<double>& a, Array<double> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b[i]*b[i];
+      }
+   }
+
+   // Absolute magnitude
+
+   /*
+   * Vector elementwise square, a[i] = b[i]*b[i] (real).
+   */
+   void absV(Array<double>& a, Array<double> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = std::abs(b[i]);
+      }
+   }
+
 } // namespace VecOp
 } // namespace Pscf
-

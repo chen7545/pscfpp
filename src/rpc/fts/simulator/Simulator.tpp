@@ -21,15 +21,15 @@
 #include <rpc/fts/perturbation/PerturbationFactory.h>
 #include <rpc/fts/ramp/Ramp.h>
 #include <rpc/fts/ramp/RampFactory.h>
-
 #include <pscf/interaction/Interaction.h>
-
+#include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
-
-// Gnu scientifie library
 #include <gsl/gsl_eigen.h>
+
+
+
 
 namespace Pscf {
 namespace Rpc {
@@ -67,6 +67,7 @@ namespace Rpc {
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
       rampFactoryPtr_ = new RampFactory<D>(*this);
    }
+
 
    /*
    * Destructor.
@@ -127,7 +128,6 @@ namespace Rpc {
       
       // Allocate state_, if necessary.
       if (!state_.isAllocated) {
-         const IntVec<D> dimensions = system().domain().mesh().dimensions();
          state_.allocate(nMonomer, dimensions);
       }
 
@@ -146,13 +146,13 @@ namespace Rpc {
 
       bool isEnd = false;
 
-      // Read optional Compressor block
+      // Optionally read a Compressor block
       readCompressor(in, isEnd);
 
-      // Read optional Perturbation block
+      // Optionally read a Perturbation block
       readPerturbation(in, isEnd);
 
-      // Read optional Ramp block
+      // Optionally read a Ramp block
       readRamp(in, isEnd);
    }
 

@@ -16,6 +16,7 @@
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 
+
 namespace Pscf {
 namespace Rpc {
 
@@ -69,8 +70,6 @@ namespace Rpc {
    {
 
    public:
-
-      Simulator() = delete;
 
       /**
       * Constructor.

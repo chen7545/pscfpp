@@ -380,24 +380,6 @@ namespace VecOp {
       }
    }
 
-   // Exponentiation
-
-   /*
-   * Vector exponentiation, a[i] = exp(b[i]) (complex).
-   */
-   void expV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      double rex;
-      for (int i = 0; i < n; ++i) {
-         rex = std::exp(b[i][0]);
-         a[i][0] = rex * cos(b[i][1]);
-         a[i][1] = rex * sin(b[i][1]);
-      }
-   }
-
    // Compound addition
 
    /*
@@ -633,6 +615,43 @@ namespace VecOp {
       for (int i = 0; i < n; ++i) {
          a[i][0] /= b;
          a[i][1] /= b;
+      }
+   }
+
+   // Exponentiation
+
+   /*
+   * Vector exponentiation, a[i] = exp(b[i]) (complex).
+   */
+   void expV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      double rex;
+      for (int i = 0; i < n; ++i) {
+         rex = std::exp(b[i][0]);
+         a[i][0] = rex * cos(b[i][1]);
+         a[i][1] = rex * sin(b[i][1]);
+      }
+   }
+
+   // Complex square
+
+   /*
+   * Elementwise complex square, a[i] = b[i] * b[i] (complex).
+   */
+   void sqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      double br, bi;
+      for (int i = 0; i < n; ++i) {
+         br = b[i][0];
+         bi = b[i][1];
+         a[i][0] = br * br - bi * bi;
+         a[i][1] = 2.0 * br * bi;
       }
    }
 

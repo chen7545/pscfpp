@@ -68,8 +68,7 @@ namespace Reduce {
          sum[0] += a[i][0] * b[i][0] - a[i][1] * b[i][1];
          sum[1] += a[i][0] * b[i][1] + a[i][1] * b[i][0];
       }
-      std::complex<double> out(sum[0], sum[1]);
-      return out;
+      return std::complex<double>(sum[0], sum[1]);
    }
 
 } // Reduce

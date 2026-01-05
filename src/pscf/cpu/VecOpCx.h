@@ -271,16 +271,6 @@ namespace Pscf {
                        Array<fftw_complex> const & b,
                        double c);
 
-      // Exponentiation
-
-      /**
-      * Vector exponentiation, a[i] = exp(b[i]) (complex).
-      *
-      * \param a  complex array (LHS)
-      * \param b  complex array (RHS)
-      */
-      void expV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
-
       // In-place addition
 
       /*
@@ -416,6 +406,26 @@ namespace Pscf {
       * \param b  real scalar (RHS)
       */
       void divEqS(Array<fftw_complex>& a, double b);
+
+      // Exponentiation
+
+      /**
+      * Vector exponentiation, a[i] = exp(b[i]) (complex).
+      *
+      * \param a  complex array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void expV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
+
+      // Complex Square
+
+      /**
+      * Elementwise complex square, a[i] = b[i] * b[i] (complex).
+      *
+      * \param a  complex array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void sqV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
 
    /** @} */
 

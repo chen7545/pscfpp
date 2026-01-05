@@ -15,7 +15,7 @@ namespace Reduce {
    // Summation
 
    /*
-   * Compute sum of array elements.
+   * Compute the sum of array elements (real).
    */
    double sum(Array<double> const & in)
    {
@@ -28,10 +28,26 @@ namespace Reduce {
       return sum;
    }
 
-   // Summation of products
+   /*
+   * Compute the sum of squares of all array elements (real).
+   */
+   double sumSq(Array<double> const & in)
+   {
+      int n = in.capacity();
+      UTIL_CHECK(n > 0);
+      double val;
+      double sum = 0.0;
+      for (int i = 0; i < n; i++) {
+         val = in[i];
+         sum += val*val;
+      }
+      return sum;
+   }
+
+   // Inner product
 
    /*
-   * Compute inner product of two real arrays.
+   * Compute Euclidean inner product of two arrays (real).
    */
    double innerProduct(Array<double> const & a,
                        Array<double> const & b)

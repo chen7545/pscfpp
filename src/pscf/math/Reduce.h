@@ -33,11 +33,18 @@ namespace Pscf {
       // Summation
 
       /**
-      * Compute sum of array elements .
+      * Compute sum of array elements (real).
       *
       * \param in  input array
       */
       double sum(Array<double> const & in);
+
+      /**
+      * Compute sum of of squares of array elements (real).
+      *
+      * \param in  input array
+      */
+      double sumSq(Array<double> const & in);
 
       // Summation of products
 

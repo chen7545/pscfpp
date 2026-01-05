@@ -33,10 +33,10 @@ namespace Pscf {
    namespace Reduce {
 
       /**
-      * Compute sum of array elements .
+      * Compute sum of array elements (complex).
       *
       * \param a  input array
-      * \return complex sum of elements of a
+      * \return complex sum of elements of array a
       */
       std::complex<double> sum(Array<fftw_complex> const & a);
 
@@ -49,11 +49,11 @@ namespace Pscf {
       std::complex<double> sumSq(Array<fftw_complex> const & a);
 
       /**
-      * Compute sum of products of elements of two real arrays .
+      * Compute sum of complex products of elements of two arrays (complex).
       *
       * \param a  first input array
       * \param b  second input array
-      * \return complex sum of elementwise product of a and b
+      * \return sum of elementwise complex products a[i]*b[i]
       */
       std::complex<double> sumProduct(Array<fftw_complex> const & a,
                                       Array<fftw_complex> const & b);

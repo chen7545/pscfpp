@@ -22,17 +22,13 @@
 #include <rpg/fts/ramp/Ramp.h>
 #include <rpg/fts/ramp/RampFactory.h>
 #include <rpg/fts/VecOpFts.h>
-
 #include <prdc/cuda/resources.h>
-
 #include <pscf/cuda/CudaRandom.h>
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
-
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
-
 #include <gsl/gsl_eigen.h>
 
 namespace Pscf {
@@ -148,28 +144,18 @@ namespace Rpg {
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)
    {
+      // Optionally read a random number generator seed
       readRandomSeed(in);
-
-      #if 0
-      // Optionally random seed
-      seed_ = 0;
-      readOptional(in, "seed", seed_);
-
-      // Set random number generator seed.
-      // Default value seed_ = 0 uses clock time.
-      random().setSeed(seed_);
-      cudaRandom().setSeed(seed_);
-      #endif
 
       bool isEnd = false;
 
-      // Read required Compressor block
+      // Optionally read a Compressor block
       readCompressor(in, isEnd);
 
-      // Optionally read a Perturbation
+      // Optionally read a Perturbation block
       readPerturbation(in, isEnd);
 
-      // Optionally read a Ramp
+      // Optionally read a Ramp block
       readRamp(in, isEnd);
    }
 

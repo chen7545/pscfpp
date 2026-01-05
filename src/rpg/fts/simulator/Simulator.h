@@ -20,6 +20,7 @@
 namespace Pscf {
 namespace Rpg {
 
+   // Forward declarations
    template <int D> class System;
    template <int D> class Compressor;
    template <int D> class CompressorFactory;
@@ -29,31 +30,38 @@ namespace Rpg {
    template <int D> class RampFactory;
 
    using namespace Util;
+   using namespace Prdc;
    using namespace Pscf::Prdc::Cuda;
 
    /**
    * Field theoretic simulator (base class).
    *
    * The Simulator base class provides tools needed in field-theoretic
-   * simulations that are based on a partial saddle-point approximation,
-   * including field theoretic Monte Carlo and field-theoretic Langevin
-   * simulations. Subclasses of this class provide algorithms and
-   * more specialized data structures needed by specific sampling
-   * methods.
+   * simulations that are based on a partial saddle-point approximation.
+   * Subclasses designed for field theoretic Monte Carlo (MC) and Brownian
+   * dynamics (BD) simulations, named McSimulator and BdSimulator, provide
+   * more specialized algorithms and data structures needed by these two
+   * sampling methods.
    *
-   * The analyzeChi() function constructs and diagonalizes the projected
+   * The Simulator class provides functions to compute and diagonalze a
+   * projected chi matrix, functions to access components of several
+   * types of fields in a basis of eigenvectors of the projected chi
+   * matrix, and functions to compute and return contributions to the
+   * field theoretic Hamiltonian.
+   *
+   * The analyzeChi function constructs and diagonalizes the projected
    * chi matrix. This is a singular nMonomer x nMonomer matrix defined
-   * by evaluating the projection of the chi matrix into the subspace
-   * of fluctuations that preserves total monomer concentration. The
-   * eigenvalues and eigenvectors of this matrix via the chiEvals and
-   * chiEvecs functions, respectively.
+   * by evaluating the orthogonal projection of the chi matrix into the 
+   * subspace of fluctuations that preserves total monomer concentration. 
+   * The eigenvalues and eigenvectors of this matrix are accessed via 
+   * the chiEvals and chiEvecs functions, respectively.
    *
    * The functions computeWc, computeCc and computeDc compute components
-   * components of various types of multi-component fields (i.e., fields
-   * that are associated with a monomer type index) in a basis of
-   * eigenvectors of the projected chi matrix. Names such as wc, cc and
-   * dc that end with a suffix "c" refer to components of multi-component
-   * fields that are defined using this eigenvector basis.
+   * of various types of multi-component fields (i.e., fields that are
+   * associated with a monomer type index) in a basis of eigenvectors of 
+   * the projected chi matrix. Names such as wc, cc and dc that end with 
+   * a suffix "c" refer to components of multi-component fields that are 
+   * defined using this eigenvector basis.
    *
    * \ingroup Rpg_Fts_Module
    */
