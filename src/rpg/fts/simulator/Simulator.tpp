@@ -253,9 +253,9 @@ namespace Rpg {
          // Subtract of constant shift s
          VecOp::subVS(wcs_, wc_[j], s);
          // Compute quadratic field contribution to HW
-         double wSqure = 0;
-         wSqure = Reduce::innerProduct(wcs_, wcs_);
-         HW += prefactor * wSqure;
+         double wSquare = 0.0;
+         wSquare = Reduce::innerProduct(wcs_, wcs_);
+         HW += prefactor * wSquare;
       }
 
       // Normalize HW to equal a value per monomer
@@ -469,8 +469,7 @@ namespace Rpg {
 
          // Loop over monomer types (j is a monomer index)
          for (j = 0; j < nMonomer; ++j) {
-            cudaReal vec;
-            vec = (cudaReal) chiEvecs_(i, j)/nMonomer;
+            double vec = (cudaReal) chiEvecs_(i, j)/nMonomer;
 
             // Loop over grid points
             VecOp::addEqVc(Wc, system().w().rgrid(j), vec);
@@ -498,14 +497,13 @@ namespace Rpg {
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
 
-         // Set cc_[i] to zero
+         // Initialize field cc_[i] to zero
          RField<D>& Cc = cc_[i];
          VecOp::eqS(Cc, 0.0);
 
          // Loop over monomer types
          for (j = 0; j < nMonomer; ++j) {
-            cudaReal vec;
-            vec = (cudaReal)chiEvecs_(i, j);
+            double vec = chiEvecs_(i, j);
 
             // Loop over grid points
             VecOp::addEqVc(Cc, system().c().rgrid(j), vec);
@@ -556,7 +554,7 @@ namespace Rpg {
    /*
    * Save the current state prior to a next move.
    *
-   * Invoked before each move.
+   * Invoked before each attempted move.
    */
    template <int D>
    void Simulator<D>::saveState()
@@ -571,15 +569,15 @@ namespace Rpg {
 
       // Set field components
       for (int i = 0; i < nMonomer; ++i) {
-         VecOp::eqV(state_.w[i], system().w().rgrid(i));
-         VecOp::eqV(state_.wc[i], wc_[i]);
+         state_.w[i] = system().w().rgrid(i);
+         state_.wc[i] = wc_[i];
       }
 
       // Save cc based on ccSavePolicy
       if (state_.needsCc) {
          UTIL_CHECK(hasCc());
          for (int i = 0; i < nMonomer; ++i) {
-            VecOp::eqV(state_.cc[i], cc_[i]);
+            state_.cc[i] = cc_[i];
          }
       }
 
@@ -587,7 +585,7 @@ namespace Rpg {
       if (state_.needsDc) {
          UTIL_CHECK(hasDc());
          for (int i = 0; i < nMonomer - 1; ++i) {
-            VecOp::eqV(state_.dc[i], dc_[i]);
+            state_.dc[i] = dc_[i];
          }
       }
 
@@ -610,8 +608,8 @@ namespace Rpg {
    /*
    * Restore a saved fts state.
    *
-   * Invoked after an attempted Monte-Carlo move is rejected
-   * or an fts move fails to converge
+   * Invoked after the compressor fails to converge or an attempted 
+   * Monte-Carlo move is rejected.
    */
    template <int D>
    void Simulator<D>::restoreState()
@@ -634,20 +632,20 @@ namespace Rpg {
       }
 
       for (int i = 0; i < nMonomer; ++i) {
-         VecOp::eqV(wc_[i], state_.wc[i]);
+         wc_[i] = state_.wc[i];
       }
       hasWc_ = true;
 
       if (state_.needsCc) {
          for (int i = 0; i < nMonomer; ++i) {
-            VecOp::eqV(cc_[i], state_.cc[i]);
+            cc_[i] = state_.cc[i];
          }
          hasCc_ = true;
       }
 
       if (state_.needsDc) {
          for (int i = 0; i < nMonomer - 1; ++i) {
-            VecOp::eqV(dc_[i], state_.dc[i]);
+            dc_[i] = state_.dc[i];
          }
          hasDc_ = true;
       }
@@ -660,9 +658,9 @@ namespace Rpg {
    }
 
    /*
-   * Clear the saved Monte-Carlo state.
+   * Clear the saved system state.
    *
-   * Invoked when an attempted Monte-Carlo move is accepted.
+   * Invoked when an attempted move is accepted.
    */
    template <int D>
    void Simulator<D>::clearState()
@@ -686,7 +684,6 @@ namespace Rpg {
    void Simulator<D>::outputMdeCounter(std::ostream& out) const
    {
       UTIL_CHECK(compressorPtr_);
-      //out << std::endl;
       out << "MDE counter   "
           << compressorPtr_->mdeCounter() << std::endl;
       out << std::endl;
@@ -705,12 +702,12 @@ namespace Rpg {
    // Protected Functions
 
    /*
-   * Read random seed and initialize random number generators.
+   * Optionally read RNG seed, initialize random number generators.
    */
    template <int D>
    void Simulator<D>::readRandomSeed(std::istream &in)
    {
-      // Optionally random seed
+      // Optionally read a random number generator seed
       seed_ = 0;
       readOptional(in, "seed", seed_);
 
@@ -720,6 +717,8 @@ namespace Rpg {
       cudaRandom().setSeed(seed_);
    }
 
+   // Functions related to a Compressor
+
    /*
    * Optionally read a Compressor parameter file block.
    */
@@ -727,8 +726,8 @@ namespace Rpg {
    void Simulator<D>::readCompressor(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
-         UTIL_CHECK(!hasCompressor());
          UTIL_CHECK(compressorFactoryPtr_);
+         UTIL_CHECK(!hasCompressor());
          std::string className;
          compressorPtr_ =
             compressorFactory().readObjectOptional(in, *this,
@@ -739,7 +738,7 @@ namespace Rpg {
       }
    }
 
-   // Functions related to an associated Perturbation
+   // Functions related to a Perturbation
 
    /*
    * Optionally read a Perturbation parameter file block.
@@ -748,8 +747,8 @@ namespace Rpg {
    void Simulator<D>::readPerturbation(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
-         UTIL_CHECK(!hasPerturbation());
          UTIL_CHECK(perturbationFactoryPtr_);
+         UTIL_CHECK(!hasPerturbation());
          std::string className;
          perturbationPtr_ =
             perturbationFactory().readObjectOptional(in, *this,
@@ -766,9 +765,11 @@ namespace Rpg {
    template<int D>
    void Simulator<D>::setPerturbation(Perturbation<D>* ptr)
    {
-      UTIL_CHECK(ptr != 0);
+      UTIL_CHECK(ptr);
       perturbationPtr_ = ptr;
    }
+
+   // Functions related to a Ramp
 
    /*
    * Optionally read a parameter file block for an associated Ramp.
@@ -777,12 +778,11 @@ namespace Rpg {
    void Simulator<D>::readRamp(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
-         UTIL_CHECK(!hasRamp());
          UTIL_CHECK(rampFactoryPtr_);
+         UTIL_CHECK(!hasRamp());
          std::string className;
          rampPtr_ =
-            rampFactory().readObjectOptional(in, *this, 
-                                             className, isEnd);
+            rampFactory().readObjectOptional(in, *this, className, isEnd);
       }
       if (!hasRamp() && ParamComponent::echo()) {
          Log::file() << indent() << "  Ramp{ [absent] }\n";
@@ -795,7 +795,7 @@ namespace Rpg {
    template<int D>
    void Simulator<D>::setRamp(Ramp<D>* ptr)
    {
-      UTIL_CHECK(ptr != 0);
+      UTIL_CHECK(ptr);
       rampPtr_ = ptr;
    }
 

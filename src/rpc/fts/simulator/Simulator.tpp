@@ -594,7 +594,7 @@ namespace Rpc {
      
       for (int i = 0; i < nMonomer; ++i) {
          state_.w[i] = system().w().rgrid(i);
-         state_.wc[i] = wc(i);
+         state_.wc[i] = wc_[i];
       }
       
       // Save cc based on ccSavePolicy
@@ -602,7 +602,7 @@ namespace Rpc {
          UTIL_CHECK(hasCc());
          UTIL_CHECK(state_.cc.isAllocated());
          for (int i = 0; i < nMonomer; ++i) {
-            state_.cc[i] = cc(i);
+            state_.cc[i] = cc_[i];
          }
       }
       
@@ -611,7 +611,7 @@ namespace Rpc {
          UTIL_CHECK(hasDc());
          UTIL_CHECK(state_.dc.isAllocated());
          for (int i = 0; i < nMonomer - 1; ++i) {
-            state_.dc[i] = dc(i);
+            state_.dc[i] = dc_[i];
          }
       }
       
