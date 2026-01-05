@@ -62,7 +62,7 @@ namespace Rpc {
       rampPtr_(nullptr),
       isAllocated_(false)
    {
-      setClassName("Simulator");
+      ParamComposite::setClassName("Simulator");
       compressorFactoryPtr_ = new CompressorFactory<D>(system);
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
       rampFactoryPtr_ = new RampFactory<D>(*this);
@@ -135,8 +135,7 @@ namespace Rpc {
    }
 
    /*
-   * Default implementation - designed to be used by subclasses to read the
-   * initial common part of the parameter file block. 
+   * Virtual function - this version is only used for unit testing. 
    */
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)

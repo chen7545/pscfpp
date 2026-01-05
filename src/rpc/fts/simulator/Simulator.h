@@ -96,14 +96,10 @@ namespace Rpc {
       /**
       * Read parameters for a simulation.
       *
-      * The default implementation reads a Compressor block, an optional 
-      * random seed, an optional Perturbation, and an optional Ramp, in
-      * that order. This is intended to be used by subclasses designed for 
-      * MC and BD simulations to read the shared initial parts of the 
-      * parameter block format. The readParameters function in subclasses 
-      * designed for MC or BD simulation can call this function and then
-      * add additional blocks for MC moves or a BD step, and for an
-      * analyzer manager.
+      * The default implementation reads an optional random seed, and
+      * optional Compressor block, an optional Perturbation, and an 
+      * optional Ramp, in that order. This default is intended to be 
+      * used only for unit testing. 
       *
       * \param in input parameter stream
       */
@@ -119,9 +115,7 @@ namespace Rpc {
       * saddle-point approximation.
       *
       * The default implemention is a do-nothing placeholder that throws
-      * an error if called, and must be re-implemented by subclasses. A
-      * do-nothing placeholder is provided to make this a concrete class
-      * simplify unit testing.
+      * an error if called, and must be overridden by subclasses. 
       *
       * \param nStep  number of simulation steps
       */
@@ -136,7 +130,7 @@ namespace Rpc {
       * performs the analysis, and closes the file before returning.
       *
       * The default implemention is a do-nothing placeholder that throws
-      * an error if called, and must be re-implemented by subclasses.
+      * an error if called, and must be overridden by subclasses.
       *
       * \param min  first frame number
       * \param max  last frame number
@@ -148,7 +142,7 @@ namespace Rpc {
                            std::string filename);
 
       /**
-      * Clear field eigen-components and hamiltonian components.
+      * Clear field eigen-components and Hamiltonian components.
       *
       * On return from this function, hasHamiltonian(), hasWc(), hasCc(),
       * and hasDc() all return false.
@@ -171,8 +165,8 @@ namespace Rpc {
       /**
       * Output MDE counter.
       *
-      * Output the number of times the modified diffusion equation has been 
-      * solved.
+      * Output the number of times the modified diffusion equation has 
+      * been solved.
       *
       * \param out  output stream
       */
@@ -222,7 +216,7 @@ namespace Rpc {
       /**
       * Get a single eigenvalue of the projected chi matrix.
       *
-      * \param a index of eigenvalue (0, ... , nMonomer - 1)
+      * \param a  index of eigenvalue (0, ... , nMonomer - 1)
       */
       double chiEval(int a) const;
 
@@ -301,7 +295,7 @@ namespace Rpc {
       double hamiltonian() const;
 
       /**
-      * Get ideal gas contribution to the Hamiltonian.
+      * Get ideal gas contribution (-lnQ) to the Hamiltonian.
       */
       double idealHamiltonian() const;
 
@@ -315,15 +309,15 @@ namespace Rpc {
       *
       * A perturbation to the Hamiltonian, if any, is computed by an 
       * associated Perturbation object. When a perturbation exists, 
-      * as indicated by hasPerturbation(), the perturbationHamiltonian
-      * component is added to the idealHamiltonian and fieldHamiltonian
-      * components to obtain the total value that is returned by the
-      * hamiltonian() member function.
+      * as indicated by the return value of hasPerturbation(), the 
+      * perturbationHamiltonian component is added to the idealHamiltonian
+      * and fieldHamiltonian components to obtain the total value that is 
+      * returned by the hamiltonian() member function.
       */
       double perturbationHamiltonian() const;
 
       /**
-      * Has the Hamiltonian been computed for current w and c fields?
+      * Has the Hamiltonian been computed for the current w and c fields?
       */
       bool hasHamiltonian() const;
 
@@ -442,14 +436,14 @@ namespace Rpc {
       * This function returns an array of fields in which element a
       * is the functional derivative of the Hamiltonian H[W] with
       * respect to the field component \f$ W_{a} \f$ that is returned
-      * by the function wc(a).
+      * by the member function wc(a).
       */
       DArray< RField<D> > const & dc() const;
 
       /**
       * Get one eigenvector component of the current d fields.
       *
-      * \param i eigenvector / eigenvalue index
+      * \param i  eigenvector / eigenvalue index
       */
       RField<D> const & dc(int i) const;
 
@@ -459,46 +453,46 @@ namespace Rpc {
       bool hasDc() const;
       
       ///@}
-      /// \name Utilities for moves
+      /// \name Save and Restore State
       ///@{
       
       /**
-      * Save a copy of the fts move state.
+      * Save a copy of the current system state.
       *
-      * This function and restoreState() are intended for use 
-      * in the implementation of field theoretic moves. 
-      * This function stores the current w fields and the corresponding
-      * Hamiltonian value. Current cc fields and dc fields are saved 
-      * based on save policy. This is normally the first step of a fts
-      * move, prior to an attempted modification of the fields stored
-      * in the system w field container.
+      * This function and restoreState() are intended for use in the
+      * implementation of field theoretic moves.  This function stores 
+      * the current w fields and the corresponding Hamiltonian value. 
+      * Current cc fields and dc fields are saved based on save policy. 
+      * This is normally the first step of a Monte Carlo (MC) move, prior 
+      * to an attempted modification of the fields stored in the system 
+      * w field container.
       */
       void saveState();
       
       /**
-      * Restore the saved copy of the fts move state.
+      * Restore the system to the saved state.
       *
-      * This function and saveState() are intended to be used
-      * together in the implementation of fts moves. If an
-      * attempted Monte-Carle move is rejected or an fts move 
-      * fails to converge restoreState() is called to restore 
-      * the fields and Hamiltonian value that were saved
-      * by a previous call to the function saveState().
+      * This function and saveState() are intended to be used together
+      * in the implementation of FTS moves. If an attempted Monte-Carle 
+      * move is rejected or if the compressor fails to converge after
+      * an attempted FTS move, restoreState() is called to restore the
+      * fields and Hamiltonian value that were saved by a previous call 
+      * to the function saveState().
       */
       void restoreState();
       
       /**
-      * Clear the saved copy of the fts state.
+      * Clear the saved copy of the system state.
       *
-      * This function, restoreState(), and saveState() are intended
-      * to be used together in the implementation of reversible fts moves. 
+      * This function, restoreState(), and saveState() are intended to
+      * be used together in the implementation of reversible FTS moves. 
       * If an attempted move is accepted, clearState() is called to 
-      * indicate the need to recompute some quantities.
+      * clear the stored state and indicate acceptance.
       */
       void clearState();
       
       ///@}
-      /// \name Miscellaneous
+      /// \name Miscellaneous  (Accessors and Boolean Flags)
       ///@{
 
       /**
@@ -562,10 +556,8 @@ namespace Rpc {
 
       // Protected member functions
 
-      using Util::ParamComposite::setClassName;
-
       /**
-      * Optionally read a random number generator seed.
+      * Optionally read a random seed and initialize RNG.
       *
       * \param in input parameter stream
       */
@@ -579,10 +571,11 @@ namespace Rpc {
       /**
       * Optionally read a Compressor parameter file block.
       *
-      * If isEnd it true on entry, the function returns immediately. 
+      * If isEnd it true on entry, the function returns immediately,
+      * without attempting to read the Compressor block. 
       *
       * \param in  input parameter stream
-      * \param isEnd  Was the end bracket of the Simulator block read?
+      * \param isEnd  Has the end bracket of the Simulator block been read?
       */
       void readCompressor(std::istream& in, bool& isEnd);
 
@@ -594,10 +587,11 @@ namespace Rpc {
       /**
       * Optionally read a Perturbation parameter file block.
       *
-      * If isEnd it true on entry, this function returns immediately. 
+      * If isEnd it true on entry, the function returns immediately,
+      * without attempting to read the Perturbation block. 
       *
       * \param in  input parameter stream
-      * \param isEnd  Was the end bracket of the Simulator block read?
+      * \param isEnd  Has the end bracket of the Simulator block been read?
       */
       void readPerturbation(std::istream& in, bool& isEnd);
 
@@ -616,10 +610,11 @@ namespace Rpc {
       /**
       * Optionally read a Ramp parameter file block.
       *
-      * If isEnd it true on entry, this function returns immediately. 
+      * If isEnd it true on entry, the function returns immediately,
+      * without attempting to read the Ramp block. 
       *
       * \param in  input parameter stream
-      * \param isEnd  Was the end bracket of the Simulator block read?
+      * \param isEnd  Has the end bracket of the Simulator block been read?
       */
       void readRamp(std::istream& in, bool& isEnd);
 
@@ -633,7 +628,7 @@ namespace Rpc {
       // Protected data members
 
       /**
-      * Random number generator
+      * Random number generator.
       */
       Random random_;
 
@@ -670,8 +665,8 @@ namespace Rpc {
       /**
       * Previous state saved at the beginning of a step.
       * 
-      * This data structure is used to restore a previous state if 
-      * the compressor fails to converge or if a MC move is rejected.
+      * This data structure is used to restore a previous state if the
+      * compressor fails to converge or if a MC move is rejected.
       */
       mutable SimState<D> state_;
 
@@ -700,11 +695,11 @@ namespace Rpc {
       double perturbationHamiltonian_;
 
       /**
-      * Step counter - attempted steps for which compressor converges.
+      * Step counter - attempted steps for which the compressor converges.
       *
       * Steps for which the compressor fails to converge are returned to
       * the previous state so that another random displacement can be
-      * chosen. Attempted MC moves for which the compressor converged 
+      * chosen. Attempted MC moves for which the compressor converges
       * but which are then rejected based on a Metropolis criterion are
       * included in iStep_. The difference iTotalStep_ - iStep_ is the
       * number of moves that failed because the compressor failed to 
@@ -718,11 +713,11 @@ namespace Rpc {
       long iTotalStep_;
 
       /**
-      * Random number generator seed.
+      * Random number generator seed (input value).
       */
       long seed_;
 
-      // Boolean status indicators
+      // Boolean status flags
 
       /**
       * Has the Hamiltonian been computed for the current w and c fields?
@@ -776,10 +771,10 @@ namespace Rpc {
       /**
       * Components of vector s = chi*e in a basis of eigenvectors.
       *
-      * Component sc_[a] is equal to v_{a} chi e / M^2, where
-      * e = [1 1 ... 1]^{T}, v_{a} is a row vector representation of 
-      * eigenvector a of the projected chi matrix, given by row a of 
-      * chiEvecs_, and M = nMonomer.
+      * Component sc_[a] is equal to v_{a}^{T} chi e / M^2, where
+      * e = [1 1 ... 1]^{T}, v_{a}^{T} is a row vector representation 
+      * of eigenvector a of the projected chi matrix, given by element 
+      * a of chiEvecs_, and M = nMonomer.
       */
       DArray<double>  sc_;
       
@@ -794,7 +789,7 @@ namespace Rpc {
       CompressorFactory<D>* compressorFactoryPtr_;
 
       /**
-      * Pointer to a compressor.
+      * Pointer to a compressor (if any).
       */
       Compressor<D>* compressorPtr_;
 
@@ -804,7 +799,7 @@ namespace Rpc {
       PerturbationFactory<D>* perturbationFactoryPtr_;
 
       /**
-      * Pointer to a perturbation (if any)
+      * Pointer to a perturbation (if any).
       */
       Perturbation<D>* perturbationPtr_;
 
