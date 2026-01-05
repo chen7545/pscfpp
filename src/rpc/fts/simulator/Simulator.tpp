@@ -23,11 +23,11 @@
 #include <rpc/fts/ramp/RampFactory.h>
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
+#include <pscf/math/VecOp.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
 #include <gsl/gsl_eigen.h>
-
 
 
 
@@ -47,7 +47,7 @@ namespace Rpc {
       fieldHamiltonian_(0.0),
       perturbationHamiltonian_(0.0),
       iStep_(0),
-      iTotalStep_(0), 
+      iTotalStep_(0),
       seed_(0),
       hasHamiltonian_(false),
       hasWc_(false),
@@ -62,7 +62,7 @@ namespace Rpc {
       rampPtr_(nullptr),
       isAllocated_(false)
    {
-      setClassName("Simulator");
+      ParamComposite::setClassName("Simulator");
       compressorFactoryPtr_ = new CompressorFactory<D>(system);
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
       rampFactoryPtr_ = new RampFactory<D>(*this);
@@ -125,7 +125,7 @@ namespace Rpc {
       for (int i = 0; i < nMonomer - 1; ++i) {
          dc_[i].allocate(dimensions);
       }
-      
+
       // Allocate state_, if necessary.
       if (!state_.isAllocated) {
          state_.allocate(nMonomer, dimensions);
@@ -135,8 +135,7 @@ namespace Rpc {
    }
 
    /*
-   * Default implementation - designed to be used by subclasses to read the
-   * initial common part of the parameter file block. 
+   * Virtual function - this version is only used for unit testing.
    */
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)
@@ -474,15 +473,19 @@ namespace Rpc {
 
          // Loop over grid points to zero out field wc_[j]
          RField<D>& Wc = wc_[j];
+         VecOp::eqS(Wc, 0.0);
+         #if 0
          for (i = 0; i < meshSize; ++i) {
             Wc[i] = 0.0;
          }
+         #endif
 
          // Loop over monomer types (k is a monomer index)
          for (k = 0; k < nMonomer; ++k) {
             double vec = chiEvecs_(j, k)/double(nMonomer);
 
             // Loop over grid points
+            //VecOp::addEqVc(Wc, system().w().rgrid(k), vec);
             RField<D> const & Wr = system().w().rgrid(k);
             for (i = 0; i < meshSize; ++i) {
                Wc[i] += vec*Wr[i];
@@ -515,9 +518,12 @@ namespace Rpc {
 
          // Initialize field cc_[i] to zero
          RField<D>& Cc = cc_[i];
+         VecOp::eqS(Cc, 0.0);
+         #if 0
          for (k = 0; k < meshSize; ++k) {
             Cc[k] = 0.0;
          }
+         #endif
 
          // Loop over monomer types
          for (j = 0; j < nMonomer; ++j) {
@@ -525,6 +531,7 @@ namespace Rpc {
             double vec = chiEvecs_(i, j);
 
             // Loop over grid points
+            //VecOp::addEqVc(Cc, Cr, vec);
             for (k = 0; k < meshSize; ++k) {
                Cc[k] += vec*Cr[k];
             }
@@ -552,7 +559,7 @@ namespace Rpc {
       const double vMonomer = system().mixture().vMonomer();
       const double a = 1.0/vMonomer;
       double b, s;
-      int i, k;
+      int i;
 
       // Compute derivatives for standard Hamiltonian
       // Loop over composition eigenvectors (exclude the last)
@@ -562,8 +569,9 @@ namespace Rpc {
          RField<D> const & Cc = cc_[i];
          b = -1.0*double(nMonomer)/chiEvals_[i];
          s = sc_[i];
+
          // Loop over grid points
-         for (k = 0; k < meshSize; ++k) {
+         for (int k = 0; k < meshSize; ++k) {
             Dc[k] = a*( b*(Wc[k] - s) + Cc[k] );
          }
       }
@@ -575,11 +583,11 @@ namespace Rpc {
 
       hasDc_ = true;
    }
-   
+
    /*
    * Save the current state prior to a next move.
    *
-   * Invoked before each move.
+   * Invoked before each attempted move.
    */
    template <int D>
    void Simulator<D>::saveState()
@@ -590,13 +598,14 @@ namespace Rpc {
       UTIL_CHECK(!state_.hasData);
 
       // Set fields
-      int nMonomer = system().mixture().nMonomer(); 
-     
+      int nMonomer = system().mixture().nMonomer();
+
+      // Set field components
       for (int i = 0; i < nMonomer; ++i) {
          state_.w[i] = system().w().rgrid(i);
          state_.wc[i] = wc_[i];
       }
-      
+
       // Save cc based on ccSavePolicy
       if (state_.needsCc) {
          UTIL_CHECK(hasCc());
@@ -605,7 +614,7 @@ namespace Rpc {
             state_.cc[i] = cc_[i];
          }
       }
-      
+
       // Save dc based on dcSavePolicy
       if (state_.needsDc) {
          UTIL_CHECK(hasDc());
@@ -614,7 +623,7 @@ namespace Rpc {
             state_.dc[i] = dc_[i];
          }
       }
-      
+
       // Save Hamiltonian based on hamiltonianSavePolicy
       if (state_.needsHamiltonian){
          UTIL_CHECK(hasHamiltonian());
@@ -634,8 +643,8 @@ namespace Rpc {
    /*
    * Restore a saved fts state.
    *
-   * Invoked after an attempted Monte-Carlo move is rejected 
-   * or an fts move fails to converge
+   * Invoked after the compressor fails to converge or an attempted
+   * Monte-Carlo move is rejected.
    */
    template <int D>
    void Simulator<D>::restoreState()
@@ -645,7 +654,7 @@ namespace Rpc {
       const int nMonomer = system().mixture().nMonomer();
 
       // Restore fields
-      system().w().setRGrid(state_.w); 
+      system().w().setRGrid(state_.w);
 
       // Restore Hamiltonian and components
       if (state_.needsHamiltonian){
@@ -655,37 +664,37 @@ namespace Rpc {
          perturbationHamiltonian_ = state_.perturbationHamiltonian;
          hasHamiltonian_ = true;
       }
-      
+
       for (int i = 0; i < nMonomer; ++i) {
          wc_[i] = state_.wc[i];
       }
       hasWc_ = true;
-      
+
       if (state_.needsCc) {
          for (int i = 0; i < nMonomer; ++i) {
             cc_[i] = state_.cc[i];
          }
          hasCc_ = true;
       }
-      
+
       if (state_.needsDc) {
          for (int i = 0; i < nMonomer - 1; ++i) {
             dc_[i] = state_.dc[i];
          }
          hasDc_ = true;
       }
-      
+
       if (hasPerturbation()) {
          perturbation().restoreState();
       }
 
       state_.hasData = false;
    }
- 
+
    /*
-   * Clear the saved Monte-Carlo state.
+   * Clear the saved system state.
    *
-   * Invoked when an attempted Monte-Carlo move is accepted.
+   * Invoked when an attempted move is accepted.
    */
    template <int D>
    void Simulator<D>::clearState()
@@ -697,10 +706,10 @@ namespace Rpc {
    */
    template<int D>
    void Simulator<D>::outputTimers(std::ostream& out) const
-   {  
+   {
       UTIL_CHECK(compressorPtr_);
       outputMdeCounter(out);
-      compressorPtr_->outputTimers(out); 
+      compressorPtr_->outputTimers(out);
    }
 
    /*
@@ -708,7 +717,7 @@ namespace Rpc {
    */
    template<int D>
    void Simulator<D>::outputMdeCounter(std::ostream& out) const
-   { 
+   {
       UTIL_CHECK(compressorPtr_);
       out << "MDE counter   "
           << compressorPtr_->mdeCounter() << std::endl;
@@ -720,15 +729,15 @@ namespace Rpc {
    */
    template<int D>
    void Simulator<D>::clearTimers()
-   {  
-      UTIL_CHECK(compressorPtr_);
-      compressorPtr_->clearTimers(); 
+   {
+      UTIL_CHECK(hasCompressor());
+      compressor().clearTimers();
    }
 
    // Protected Functions
 
    /*
-   * Optionally read a random number generator seed.
+   * Optionally read RNG seed, initialize random number generators.
    */
    template<int D>
    void Simulator<D>::readRandomSeed(std::istream& in)
@@ -742,25 +751,28 @@ namespace Rpc {
       random().setSeed(seed_);
    }
 
+   // Functions related to a Compressor
+
    /*
    * Optionally read a Compressor parameter file block.
    */
    template<int D>
    void Simulator<D>::readCompressor(std::istream& in, bool& isEnd)
    {
-      if (isEnd) return;
-      UTIL_CHECK(compressorFactoryPtr_);
-      UTIL_CHECK(!hasCompressor());
-      std::string className; 
-      compressorPtr_ = 
-         compressorFactory().readObjectOptional(in, *this, 
-                                                className, isEnd);
+      if (!isEnd) {
+         UTIL_CHECK(compressorFactoryPtr_);
+         UTIL_CHECK(!hasCompressor());
+         std::string className;
+         compressorPtr_ =
+            compressorFactory().readObjectOptional(in, *this,
+                                                   className, isEnd);
+      }
       if (!compressorPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Compressor{ [absent] }\n";
       }
    }
 
-   // Functions related to an associated Perturbation
+   // Functions related to a Perturbation
 
    /*
    * Optionally read a Perturbation parameter file block.
@@ -768,13 +780,14 @@ namespace Rpc {
    template<int D>
    void Simulator<D>::readPerturbation(std::istream& in, bool& isEnd)
    {
-      if (isEnd) return;
-      UTIL_CHECK(perturbationFactoryPtr_);
-      UTIL_CHECK(!hasPerturbation());
-      std::string className;
-      perturbationPtr_ =
-         perturbationFactory().readObjectOptional(in, *this,
-                                                  className, isEnd);
+      if (!isEnd) {
+         UTIL_CHECK(perturbationFactoryPtr_);
+         UTIL_CHECK(!hasPerturbation());
+         std::string className;
+         perturbationPtr_ =
+            perturbationFactory().readObjectOptional(in, *this,
+                                                     className, isEnd);
+      }
       if (!perturbationPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Perturbation{ [absent] }\n";
       }
@@ -790,7 +803,7 @@ namespace Rpc {
       perturbationPtr_ = ptr;
    }
 
-   // Functions associated with associated Ramp
+   // Functions related to a Ramp
 
    /*
    * Optionally read a Ramp parameter file block.
@@ -798,12 +811,13 @@ namespace Rpc {
    template<int D>
    void Simulator<D>::readRamp(std::istream& in, bool& isEnd)
    {
-      if (isEnd) return;
-      UTIL_CHECK(!rampPtr_);
-
-      std::string className;
-      rampPtr_ =
-         rampFactory().readObjectOptional(in, *this, className, isEnd);
+      if (!isEnd) {
+         UTIL_CHECK(rampFactoryPtr_);
+         UTIL_CHECK(!hasRamp());
+         std::string className;
+         rampPtr_ =
+            rampFactory().readObjectOptional(in, *this, className, isEnd);
+      }
       if (!rampPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Ramp{ [absent] }\n";
       }
