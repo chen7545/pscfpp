@@ -51,16 +51,16 @@ namespace Rpg {
    *
    * The analyzeChi function constructs and diagonalizes the projected
    * chi matrix. This is a singular nMonomer x nMonomer matrix defined
-   * by evaluating the orthogonal projection of the chi matrix into the 
-   * subspace of fluctuations that preserves total monomer concentration. 
-   * The eigenvalues and eigenvectors of this matrix are accessed via 
+   * by evaluating the orthogonal projection of the chi matrix into the
+   * subspace of fluctuations that preserves total monomer concentration.
+   * The eigenvalues and eigenvectors of this matrix are accessed via
    * the chiEvals and chiEvecs functions, respectively.
    *
    * The functions computeWc, computeCc and computeDc compute components
    * of various types of multi-component fields (i.e., fields that are
-   * associated with a monomer type index) in a basis of eigenvectors of 
-   * the projected chi matrix. Names such as wc, cc and dc that end with 
-   * a suffix "c" refer to components of multi-component fields that are 
+   * associated with a monomer type index) in a basis of eigenvectors of
+   * the projected chi matrix. Names such as wc, cc and dc that end with
+   * a suffix "c" refer to components of multi-component fields that are
    * defined using this eigenvector basis.
    *
    * \ingroup Rpg_Fts_Module
@@ -96,8 +96,10 @@ namespace Rpg {
       /**
       * Read parameters for a simulation.
       *
-      * The default implemention is a do-nothing placeholder that throws
-      * an error if called, and must be re-implemented by subclasses.
+      * The default implementation reads an optional random seed, an
+      * optional Compressor block, an optional Perturbation and an
+      * optional Ramp in that order. This default is intended to be
+      * used only for unit testing.
       *
       * \param in input parameter stream
       */
@@ -113,7 +115,7 @@ namespace Rpg {
       * partial saddle-point approximation.
       *
       * The default implemention is a do-nothing placeholder that throws
-      * an error if called, and must be re-implemented by subclasses.
+      * an error if called, and must be overridden by subclasses.
       *
       * \param nStep  number of simulation steps
       */
@@ -128,7 +130,7 @@ namespace Rpg {
       * performs the analysis, and closes the file before returning.
       *
       * The default implemention is a do-nothing placeholder that throws
-      * an error if called, and must be re-implemented by subclasses.
+      * an error if called, and must be overridden by subclasses.
       *
       * \param min  first frame number
       * \param max  last frame number
@@ -140,12 +142,16 @@ namespace Rpg {
                            std::string filename);
 
       /**
-      * Clear field eigen-components and hamiltonian components.
+      * Clear field eigen-components and Hamiltonian components.
       *
-      * Immediately calling this function, hasHamiltonian(), hasWc(),
-      * hasCc(), and hasDc() will all return false.
+      * On return from this function, hasHamiltonian(), hasWc(), hasCc(),
+      * and hasDc() will all return false.
       */
       void clearData();
+
+      ///@}
+      /// \name Timers and Counters
+      ///@{
 
       /**
       * Output timing results
@@ -210,7 +216,7 @@ namespace Rpg {
       /**
       * Get a single eigenvalue of the projected chi matrix.
       *
-      * \param a index of eigenvalue (0, ... , nMonomer - 1)
+      * \param a  index of eigenvalue (0, ... , nMonomer - 1)
       */
       double chiEval(int a) const;
 
@@ -275,26 +281,26 @@ namespace Rpg {
       ///@{
 
       /**
-      * Compute the Hamiltonian used in field theoretic simulations.
+      * Compute the Hamiltonian used in PS-FTS.
       */
       void computeHamiltonian();
 
       /**
-      * Get the Hamiltonian used in field theoretic simulations.
+      * Get the Hamiltonian used in PS-FTS.
       *
       * This function returns the real, thermodynamically extensive
       * Hamiltonian used in simulations based on partial saddle-point
-      * approximation.
+      * approximation (PS-FTS).
       */
       double hamiltonian() const;
 
       /**
-      * Get ideal gas contribution (-lnQ) to MC Hamiltonian.
+      * Get ideal gas contribution (-lnQ) to the Hamiltonian.
       */
       double idealHamiltonian() const;
 
       /**
-      * Get the quadratic field contribution (HW) to MC Hamiltonian.
+      * Get the quadratic field contribution to the Hamiltonian.
       */
       double fieldHamiltonian() const;
 
@@ -306,12 +312,12 @@ namespace Rpg {
       * indicated by the return value of hasPerturbation(), the
       * perturbationHamiltonian component is added to the idealHamiltonian
       * and fieldHamiltonian components to obtain the total value that is
-      * returned by hamiltonian() function.
+      * returned by the hamiltonian() member function.
       */
       double perturbationHamiltonian() const;
 
       /**
-      * Has the MC Hamiltonian been computed for current w and c fields?
+      * Has the Hamiltonian been computed for the current w and c fields?
       */
       bool hasHamiltonian() const;
 
@@ -430,14 +436,14 @@ namespace Rpg {
       * This function returns an array of fields in which element a
       * is the functional derivative of the Hamiltonian H[W] with
       * respect to the field component \f$ W_{a} \f$ that is returned
-      * by the function wc(a).
+      * by the member function wc(a).
       */
       DArray< RField<D> > const & dc() const;
 
       /**
       * Get one eigenvector component of the current d fields.
       *
-      * \param i eigenvector / eigenvalue index
+      * \param i  eigenvector / eigenvalue index
       */
       RField<D> const & dc(int i) const;
 
@@ -447,46 +453,46 @@ namespace Rpg {
       bool hasDc() const;
 
       ///@}
-      /// \name Utilities for moves
+      /// \name Save and Restore State
       ///@{
 
       /**
-      * Save a copy of the fts move state.
+      * Save a copy of the current system state.
       *
-      * This function and restoreState() are intended for use
-      * in the implementation of field theoretic moves.
-      * This function stores the current w fields and the corresponding
-      * Hamiltonian value. Current cc fields and dc fields are saved
-      * based on save policy. This is normally the first step of a fts
-      * move, prior to an attempted modification of the fields stored
-      * in the system w field container.
+      * This function and restoreState() are intended for use in the
+      * implementation of field theoretic moves.  This function stores 
+      * the current w fields and the corresponding Hamiltonian value. 
+      * Current cc fields and dc fields are saved based on save policy. 
+      * This is normally the first step of a Monte-Carlo (MC) move, prior 
+      * to an attempted modification of the fields stored in the system 
+      * w field container.
       */
       void saveState();
 
       /**
-      * Restore the saved copy of the fts move state.
+      * Restore the system to the saved state.
       *
-      * This function and saveState() are intended to be used
-      * together in the implementation of fts moves. If an
-      * attempted Monte-Carle move is rejected or an fts move
-      * fails to converge restoreState() is called to restore
-      * the fields and Hamiltonian value that were saved
-      * by a previous call to the function saveState().
+      * This function and saveState() are intended to be used together
+      * in the implementation of FTS moves. If an attempted Monte-Carlo 
+      * move is rejected, or if the compressor fails to converge after
+      * an any attempted FTS move, restoreState() is called to restore
+      * the fields and Hamiltonian value that were saved by a previous 
+      * call to the function saveState().
       */
       void restoreState();
 
       /**
-      * Clear the saved copy of the fts state.
+      * Clear the saved copy of the system state.
       *
-      * This function, restoreState(), and saveState() are intended
-      * to be used together in the implementation of fts moves. If
-      * an attempted move is accepted, clearState() is called to clear
-      * clear state_.hasData
+      * This function, restoreState(), and saveState() are intended to
+      * be used together in the implementation of reversible FTS moves. 
+      * If an attempted move is accepted, clearState() is called to
+      * clear the stored state and indicate acceptance.
       */
       void clearState();
 
       ///@}
-      /// \name Miscellaneous
+      /// \name Miscellaneous (Accessors and Boolean Flags)
       ///@{
 
       /**
@@ -555,10 +561,8 @@ namespace Rpg {
 
       // Protected member functions
 
-      using Util::ParamComposite::setClassName;
-
       /**
-      * Read random seed and initialize random number generators.
+      * Optionally read a random seed and initialize RNG.
       *
       * \param in  input parameter stream
       */
@@ -572,11 +576,11 @@ namespace Rpg {
       /**
       * Optionally read a Compressor parameter file block.
       *
-      * If isEnd is true on entry, this function returns without
-      * attempting to read the Compressor block.
+      * If isEnd is true on entry, this function returns immediately,
+      * without attempting to read the Compressor block.
       *
       * \param in  input parameter stream
-      * \param isEnd  Has the end bracket of Simulator block been read?
+      * \param isEnd  Has the end bracket of the Simulator block been read?
       */
       void readCompressor(std::istream& in, bool& isEnd);
 
@@ -588,11 +592,11 @@ namespace Rpg {
       /**
       * Optionally read a Perturbation parameter file block.
       *
-      * If isEnd is true on entry, this function returns without
-      * attempting to read the Perturbation block.
+      * If isEnd is true on entry, this function returns immediately,
+      * without attempting to read the Perturbation block.
       *
       * \param in input parameter stream
-      * \param isEnd  Has the end bracket of Simulator block been read?
+      * \param isEnd  Has the end bracket of the Simulator block been read?
       */
       void readPerturbation(std::istream& in, bool& isEnd);
 
@@ -611,8 +615,8 @@ namespace Rpg {
       /**
       * Optionally read a Ramp parameter file block.
       *
-      * If isEnd is true on entry, this function returns without
-      * attempting to read the Ramp block.
+      * If isEnd is true on entry, this function returns immediately,
+      * without attempting to read the Ramp block.
       *
       * \param in input parameter stream
       * \param isEnd  Has the end bracket of Simulator block been read?
@@ -629,28 +633,34 @@ namespace Rpg {
       // Protected data members
 
       /**
-      * Random number generator
+      * Random number generator.
       */
       Random random_;
 
       /**
-      * Random number generator
+      * Random number generator.
       */
       CudaRandom cudaRandom_;
 
       /**
       * Eigenvector components of w fields on a real space grid.
       *
-      * Each field component corresponds to a point-wise projection of w
-      * onto an eigenvector of the projected chi matrix.
+      * Each field component corresponds to a point-wise projection of 
+      * the monomer w fields onto an eigenvector of the projected chi 
+      * matrix. The number of components is equal to the number of 
+      * monomer types, nMonomer. The last component is a pressure-like
+      * field.
       */
       DArray< RField<D> > wc_;
 
       /**
       * Eigenvector components of c fields on a real space grid.
       *
-      * Each field component corresponds to a point-wise projection of c
-      * onto an eigenvector of the projected chi matrix.
+      * Each field component corresponds to a point-wise projection of 
+      * the monomer c fields onto an eigenvector of the projected chi 
+      * matrix. The number of components is equal to the number of
+      * monomer types, nMonomer. The last component must satisfy an
+      * incompressibility constraint.
       */
       DArray< RField<D> > cc_;
 
@@ -663,7 +673,10 @@ namespace Rpg {
       DArray< RField<D> > dc_;
 
       /**
-      * State saved during fts simulation.
+      * Previous state saved at the beginning of a step.
+      *
+      * This data structure is used to restore a previous state if the
+      * compressor fails to converge or if a MC move is rejected.
       */
       mutable SimState<D> state_;
 
@@ -673,7 +686,7 @@ namespace Rpg {
       double hamiltonian_;
 
       /**
-      * Ideal gas contribution (lnQ) to Hamiltonian H[W]
+      * Ideal gas contribution (-lnQ) to Hamiltonian H[W]
       */
       double idealHamiltonian_;
 
@@ -692,19 +705,29 @@ namespace Rpg {
       double perturbationHamiltonian_;
 
       /**
-      * Simulation step counter.
+      * Step counter - attempted steps for which the compressor converges.
+      *
+      * Steps for which the compressor fails to converge are returned to
+      * the previous state so that another random displacement can be
+      * chosen. Attempted MC moves for which the compressor converges
+      * but which are then rejected based on a Metropolise criterion are
+      * included in iStep_. The difference iTotalStep_ - iStep_ is the
+      * number of moves that failed because the compressor failed to
+      * converge.
       */
       long iStep_;
 
       /**
-      * Simulation step counter.
+      * Simulation step counter - total number of attempted BD or MC steps.
       */
       long iTotalStep_;
 
       /**
-      * Random number generator seed.
+      * Random number generator seed (input value).
       */
       long seed_;
+
+      // Boolean status flags
 
       /**
       * Has the Hamiltonian been computed for the current w and c fields?
@@ -756,10 +779,10 @@ namespace Rpg {
       /**
       * Components of vector s = chi*e in a basis of eigenvectors.
       *
-      * Component sc_[a] is given by sc_[a] = v_{a} chi e / M^2,
-      * where e = [1 1 ... 1]^{T}, v_{a} is a row vector representation
-      * of eigenvector a of the projected chi matrix, given by row a of
-      * chiEvecs_, and M = nMonomer.
+      * Component sc_[a] is equal to v_{a}^{T} chi e / M^2, where
+      * e = [1 1 ... 1]^{T}, v_{a}^{T} is a row vector representation
+      * of eigenvector a of the projected chi matrix, given by element 
+      * a of chiEvecs_, and M = nMonomer.
       */
       DArray<double>  sc_;
 
@@ -779,7 +802,7 @@ namespace Rpg {
       CompressorFactory<D>* compressorFactoryPtr_;
 
       /**
-      * Pointer to an compressor.
+      * Pointer to a compressor (if any).
       */
       Compressor<D>* compressorPtr_;
 
@@ -789,7 +812,7 @@ namespace Rpg {
       PerturbationFactory<D>* perturbationFactoryPtr_;
 
       /**
-      * Pointer to the perturbation (if any)
+      * Pointer to the perturbation (if any).
       */
       Perturbation<D>* perturbationPtr_;
 
@@ -799,7 +822,7 @@ namespace Rpg {
       RampFactory<D>* rampFactoryPtr_;
 
       /**
-      * Pointer to the Ramp (if any)
+      * Pointer to the Ramp (if any).
       */
       Ramp<D>* rampPtr_;
 
