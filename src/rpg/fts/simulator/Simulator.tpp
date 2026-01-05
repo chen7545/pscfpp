@@ -139,7 +139,7 @@ namespace Rpg {
    }
 
    /*
-   * Virtual function - this version is only used for testing.
+   * Virtual function - this version is only used for unit testing.
    */
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)
