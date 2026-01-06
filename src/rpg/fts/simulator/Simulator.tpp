@@ -22,7 +22,8 @@
 #include <rpg/fts/ramp/Ramp.h>
 #include <rpg/fts/ramp/RampFactory.h>
 #include <rpg/fts/VecOpFts.h>
-#include <prdc/cuda/resources.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
 #include <pscf/cuda/CudaRandom.h>
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>

@@ -24,11 +24,11 @@
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
 #include <pscf/math/VecOp.h>
+#include <pscf/math/Reduce.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
 #include <gsl/gsl_eigen.h>
-
 
 
 namespace Pscf {
@@ -242,11 +242,19 @@ namespace Rpc {
          }
       }
 
+      #if 0
       // Subtract average of pressure field wc_[nMonomer-1]
       RField<D> const & Wc = wc_[nMonomer-1];
       for (int i = 0; i < meshSize; ++i) {
          lnQ += Wc[i]/double(meshSize);
       }
+      #endif
+
+      // Add average of pressure field wc_[nMonomer-1] to lnQ
+      double sum_xi = Reduce::sum(wc_[nMonomer-1]);
+      lnQ += sum_xi/double(meshSize);
+
+
       // lnQ now contains a value per monomer
 
       // Initialize field contribution HW
@@ -439,20 +447,6 @@ namespace Rpc {
          sc_[i] = sc_[i]/double(nMonomer);
       }
 
-      #if 0
-      // Debugging output
-      for (i = 0; i < nMonomer; ++i) {
-         Log::file() << "Eigenpair " << i << "\n";
-         Log::file() << "value  =  " << chiEvals_[i] << "\n";
-         Log::file() << "vector = [ ";
-         for (j = 0; j < nMonomer; ++j) {
-            Log::file() << chiEvecs_(i, j) << "   ";
-         }
-         Log::file() << "]\n";
-         Log::file() << " sc[i] = " << sc_[i] << std::endl;
-      }
-      #endif
-
    }
 
    /*
@@ -465,8 +459,8 @@ namespace Rpc {
       UTIL_CHECK(isAllocated_);
 
       const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      int i, j, k;
+      double vec;
+      int j, k;
 
       // Loop over eigenvectors (j is an eigenvector index)
       for (j = 0; j < nMonomer; ++j) {
@@ -474,22 +468,14 @@ namespace Rpc {
          // Loop over grid points to zero out field wc_[j]
          RField<D>& Wc = wc_[j];
          VecOp::eqS(Wc, 0.0);
-         #if 0
-         for (i = 0; i < meshSize; ++i) {
-            Wc[i] = 0.0;
-         }
-         #endif
 
          // Loop over monomer types (k is a monomer index)
          for (k = 0; k < nMonomer; ++k) {
-            double vec = chiEvecs_(j, k)/double(nMonomer);
+            vec = chiEvecs_(j, k)/double(nMonomer);
 
             // Loop over grid points
-            //VecOp::addEqVc(Wc, system().w().rgrid(k), vec);
             RField<D> const & Wr = system().w().rgrid(k);
-            for (i = 0; i < meshSize; ++i) {
-               Wc[i] += vec*Wr[i];
-            }
+            VecOp::addEqVc(Wc, Wr, vec);
 
          }
       }
@@ -510,8 +496,7 @@ namespace Rpc {
       UTIL_CHECK(system().c().hasData());
 
       const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      int i, j, k;
+      int i, j;
 
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
@@ -519,22 +504,14 @@ namespace Rpc {
          // Initialize field cc_[i] to zero
          RField<D>& Cc = cc_[i];
          VecOp::eqS(Cc, 0.0);
-         #if 0
-         for (k = 0; k < meshSize; ++k) {
-            Cc[k] = 0.0;
-         }
-         #endif
 
          // Loop over monomer types
          for (j = 0; j < nMonomer; ++j) {
-            RField<D> const & Cr = system().c().rgrid(j);
             double vec = chiEvecs_(i, j);
 
             // Loop over grid points
-            //VecOp::addEqVc(Cc, Cr, vec);
-            for (k = 0; k < meshSize; ++k) {
-               Cc[k] += vec*Cr[k];
-            }
+            RField<D> const & Cr = system().c().rgrid(j);
+            VecOp::addEqVc(Cc, Cr, vec);
 
          }
       }

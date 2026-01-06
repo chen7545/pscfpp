@@ -175,7 +175,7 @@ namespace Pscf {
       */
       void addEqS(Array<double>& a, double b);
 
-      // Compound subtraction
+      // In-place subtraction
 
       /**
       * Vector-vector in-place subtraction, a[i] -= b[i] (real).
@@ -211,7 +211,7 @@ namespace Pscf {
       */
       void mulEqS(Array<double>& a, double b);
 
-      // Compound division
+      // In-place division
 
       /**
       * Vector-vector in-place division, a[i] /= b[i].
@@ -254,15 +254,27 @@ namespace Pscf {
       /**
       * Element-wise absolute magnitude, a[i] = abs(b[i]) (real).
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void absV(Array<double>& a, Array<double> const & b);
+
+      // Combined operations
+
+      /**
+      * Vector in-place addition with coefficient, a[i] = b[i]*c (real).
+      *
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real scalar (RHS)
+      */
+      void addEqVc(Array<double>& a, 
+                   Array<double> const & b, 
+                   double const c);
 
    /** @} */
 
    } // namespace VecOp
 
 } // namespace Pscf
-
 #endif

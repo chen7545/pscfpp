@@ -328,5 +328,20 @@ namespace VecOp {
       }
    }
 
+   // Combined operations 
+
+   /*
+   * Vector in-place addition with coefficient, a[i] += b[i]*c (real).
+   */
+   void addEqVc(Array<double>& a, Array<double> const & b, const double c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] += b[i]*c;
+      }
+   }
+
 } // namespace VecOp
 } // namespace Pscf
