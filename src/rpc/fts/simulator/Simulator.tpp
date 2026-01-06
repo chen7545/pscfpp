@@ -31,6 +31,7 @@
 #include <gsl/gsl_eigen.h>
 
 
+
 namespace Pscf {
 namespace Rpc {
 
@@ -126,6 +127,9 @@ namespace Rpc {
          dc_[i].allocate(dimensions);
       }
 
+      // Allocate memory for r-field used as workspace
+      tmpField_.allocate(dimensions);
+
       // Allocate state_, if necessary.
       if (!state_.isAllocated) {
          state_.allocate(nMonomer, dimensions);
@@ -135,7 +139,9 @@ namespace Rpc {
    }
 
    /*
-   * Virtual function - this version is only used for unit testing.
+   * Read parameter block.
+   *
+   * Virtual function - this default version is only used for unit tests.
    */
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)
@@ -156,7 +162,7 @@ namespace Rpc {
    }
 
    /*
-   * Perform a field theoretic simulation (unimplemented by base class).
+   * Perform a field theoretic simulation (unimplemented default).
    */
    template <int D>
    void Simulator<D>::simulate(int nStep)
@@ -172,7 +178,7 @@ namespace Rpc {
    {  UTIL_THROW("Error: Unimplemented function Simulator<D>::analyze"); }
 
    /*
-   * Clear all local state data (eigen-components of w and Hamiltonian)
+   * Clear all local state data (field eigen-components and Hamiltonian)
    */
    template <int D>
    void Simulator<D>::clearData()
