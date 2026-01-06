@@ -127,9 +127,8 @@ namespace Rpg {
          dc_[i].allocate(dimensions);
       }
 
-      // Allocate memory for single eigenvector components of w
-      // after constant shift
-      wcs_.allocate(dimensions);
+      // Allocate memory for r-field used as workspace
+      tmpField_.allocate(dimensions);
 
       // Allocate state_, if necessary.
       if (!state_.isAllocated) {
@@ -140,7 +139,9 @@ namespace Rpg {
    }
 
    /*
-   * Virtual function - this version is only used for unit testing.
+   * Read parameter block.
+   *
+   * Virtual function - this default version is only used for unit tests.
    */
    template <int D>
    void Simulator<D>::readParameters(std::istream &in)
@@ -161,20 +162,32 @@ namespace Rpg {
    }
 
    /*
-   * Perform a field theoretic simulation of nStep steps.
+   * Perform a field theoretic simulation (unimplemented default).
    */
    template <int D>
    void Simulator<D>::simulate(int nStep)
    {  UTIL_THROW("Error: Unimplemented function Simulator<D>::simulate"); }
 
    /*
-   * Open, read and analyze a trajectory file
+   * Open, read and analyze a trajectory file (unimplemented default).
    */
    template <int D>
    void Simulator<D>::analyze(int min, int max,
                               std::string classname,
                               std::string filename)
    {  UTIL_THROW("Error: Unimplemented function Simulator<D>::analyze"); }
+
+   /*
+   * Clear all local state data (field eigen-components and Hamiltonian)
+   */
+   template <int D>
+   void Simulator<D>::clearData()
+   {
+      hasHamiltonian_ = false;
+      hasWc_ = false;
+      hasCc_ = false;
+      hasDc_ = false;
+   }
 
    /*
    * Compute field theoretic Hamiltonian H[W].
@@ -252,10 +265,10 @@ namespace Rpg {
          // Obtain constant shift
          s = sc_[j];
          // Subtract of constant shift s
-         VecOp::subVS(wcs_, wc_[j], s);
+         VecOp::subVS(tmpField_, wc_[j], s);
          // Compute quadratic field contribution to HW
          double wSquare = 0.0;
-         wSquare = Reduce::innerProduct(wcs_, wcs_);
+         wSquare = Reduce::innerProduct(tmpField_, tmpField_);
          HW += prefactor * wSquare;
       }
 

@@ -11,7 +11,7 @@
 #include <util/param/ParamComposite.h>     // base class
 
 #include <rpg/fts/simulator/SimState.h>    // member
-#include <prdc/cuda/RField.h>              // memmber (template arg)
+#include <prdc/cuda/RField.h>              // member (template arg)
 #include <util/random/Random.h>            // member
 #include <pscf/cuda/CudaRandom.h>          // member
 #include <util/containers/DArray.h>        // member (template)
@@ -501,21 +501,6 @@ namespace Rpg {
       System<D>& system();
 
       /**
-      * Get the compressor by non-const reference.
-      */
-      Compressor<D>& compressor();
-
-      /**
-      * Get the compressor by const reference.
-      */
-      Compressor<D> const & compressor() const;
-
-      /**
-      * Does this Simulator have a Compressor object?
-      */
-      bool hasCompressor() const;
-
-      /**
       * Get random number generator by reference.
       */
       Random& random();
@@ -526,17 +511,32 @@ namespace Rpg {
       CudaRandom& cudaRandom();
 
       /**
+      * Does this Simulator have a Compressor?
+      */
+      bool hasCompressor() const;
+
+      /**
+      * Get the Compressor by non-const reference.
+      */
+      Compressor<D>& compressor();
+
+      /**
+      * Get the Compressor by const reference.
+      */
+      Compressor<D> const & compressor() const;
+
+      /**
       * Does this Simulator have a Perturbation?
       */
       bool hasPerturbation() const;
 
       /**
-      * Get the associated Perturbation by const reference.
+      * Get the Perturbation by const reference.
       */
       Perturbation<D> const & perturbation() const;
 
       /**
-      * Get the perturbation factory by non-const reference.
+      * Get the Perturbation by non-const reference.
       */
       Perturbation<D>& perturbation();
 
@@ -546,7 +546,7 @@ namespace Rpg {
       bool hasRamp() const;
 
       /**
-      * Get the associated Ramp by const reference.
+      * Get the Ramp by const reference.
       */
       Ramp<D> const & ramp() const;
 
@@ -576,8 +576,8 @@ namespace Rpg {
       /**
       * Optionally read a Compressor parameter file block.
       *
-      * If isEnd is true on entry, this function returns immediately,
-      * without attempting to read the Compressor block.
+      * If isEnd is true on entry, this function returns without
+      * attempting to read the Compressor block.
       *
       * \param in  input parameter stream
       * \param isEnd  Has the end bracket of the Simulator block been read?
@@ -592,8 +592,8 @@ namespace Rpg {
       /**
       * Optionally read a Perturbation parameter file block.
       *
-      * If isEnd is true on entry, this function returns immediately,
-      * without attempting to read the Perturbation block.
+      * If isEnd is true on entry, this function returns without 
+      * attempting to read the Perturbation block.
       *
       * \param in input parameter stream
       * \param isEnd  Has the end bracket of the Simulator block been read?
@@ -615,8 +615,8 @@ namespace Rpg {
       /**
       * Optionally read a Ramp parameter file block.
       *
-      * If isEnd is true on entry, this function returns immediately,
-      * without attempting to read the Ramp block.
+      * If isEnd is true on entry, this function returns without
+      * attempting to read the Ramp block.
       *
       * \param in input parameter stream
       * \param isEnd  Has the end bracket of Simulator block been read?
@@ -691,7 +691,7 @@ namespace Rpg {
       double idealHamiltonian_;
 
       /**
-      * Field contribution (H_W) to Hamiltonian
+      * Quadratic field contribution to Hamiltonian
       */
       double fieldHamiltonian_;
 
@@ -787,9 +787,9 @@ namespace Rpg {
       DArray<double>  sc_;
 
       /**
-      * A single eigenvector component of w fields after constant shift.
+      * Field used as temporary work space.
       */
-      RField<D> wcs_;
+      mutable RField<D> tmpField_;
 
       /**
       * Pointer to the parent system.
@@ -1052,22 +1052,12 @@ namespace Rpg {
    inline bool Simulator<D>::hasDc() const
    {  return hasDc_; }
 
-   // Clear all data (eigen-components of w field and Hamiltonian)
-   template <int D>
-   inline void Simulator<D>::clearData()
-   {
-      hasHamiltonian_ = false;
-      hasWc_ = false;
-      hasCc_ = false;
-      hasDc_ = false;
-   }
-
    // Return the current converged simulation step index.
    template <int D>
    inline long Simulator<D>::iStep()
    {  return iStep_; }
 
-   // Return the current simulation step index.
+   // Return the current total simulation step index.
    template <int D>
    inline long Simulator<D>::iTotalStep()
    {  return iTotalStep_; }
