@@ -94,7 +94,7 @@ namespace Rpg {
       system().domain().fft().forwardTransform(wc0_, wK_);
 
       // Comput W_(k)^2
-      VecOp::sqNormV(psi, wK_);
+      VecOp::sqAbsV(psi, wK_);
 
       HostDArray<cudaReal> psiHost(kSize_);
       

@@ -94,7 +94,7 @@ namespace Rpg {
       system().domain().fft().forwardTransform(wc0_, wK_);
 
       // psi = |wK_|^4
-      VecOp::sqSqNormV(psi, wK_);
+      VecOp::sqSqAbsV(psi, wK_);
 
       // W_(k)^4 * weight factor
       VecOp::mulEqV(psi, prefactor_);

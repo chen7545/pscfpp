@@ -1912,7 +1912,7 @@ namespace Pscf {
       {  absV(a, b, 0, 0, a.capacity()); }
 
       /**
-      * Vector absolute magnitude squared, a[i] = |b[i]|^2 (complex).
+      * Vector squared absolute magnitude, a[i] = |b[i]|^2 (complex).
       *
       * \ingroup Pscf_Cuda_VecOp_Module
       *
@@ -1922,7 +1922,7 @@ namespace Pscf {
       * \param beginIdB  index of first element in a slice of array b
       * \param n  size of arrays
       */
-      void absSqV(DeviceArray<cudaReal>& a,
+      void sqAbsV(DeviceArray<cudaReal>& a,
                   DeviceArray<cudaComplex> const & b,
                   const int beginIdA, const int beginIdB,
                   const int n);
@@ -1936,9 +1936,9 @@ namespace Pscf {
       * \param b  conplex array (RHS)
       */
       inline
-      void absSqV(DeviceArray<cudaReal>& a,
+      void sqAbsV(DeviceArray<cudaReal>& a,
                   DeviceArray<cudaComplex> const & b)
-      {  absSqV(a, b, 0, 0, a.capacity()); }
+      {  sqAbsV(a, b, 0, 0, a.capacity()); }
 
    } // namespace VecOp
 } // namespace Pscf

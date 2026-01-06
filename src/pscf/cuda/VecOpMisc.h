@@ -265,27 +265,29 @@ namespace VecOp {
 
    // Other useful functions
 
+   #if 0
    /**
-   * Squared norm of complex number, a[i] = norm(b[i])^2.
+   * Squared absolute magitude, a[i] = |b[i]|^2 (complex).
    *
    * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param b  complex array (RHS)
    */
-   void sqNormV(DeviceArray<cudaReal>& a,
-                DeviceArray<cudaComplex> const & b);
+   void sqAbsV(DeviceArray<cudaReal>& a,
+               DeviceArray<cudaComplex> const & b);
+   #endif
 
    /**
-   * Norm of complex number to the 4th power, a[i] = norm(b[i])^4.
+   * Fourth power of magnitude, a[i] = |b[i]|^4 (complex).
    *
    * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param b  complex array (RHS)
    */
-   void sqSqNormV(DeviceArray<cudaReal>& a,
-                  DeviceArray<cudaComplex> const & b);
+   void sqSqAbsV(DeviceArray<cudaReal>& a,
+                 DeviceArray<cudaComplex> const & b);
 
 } // namespace VecOp
 } // namespace Pscf

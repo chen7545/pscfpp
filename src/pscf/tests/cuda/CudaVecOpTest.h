@@ -1293,16 +1293,16 @@ public:
       hOutReal = dOutReal;
       checkEqualReal(hOutReal, refOutReal);
 
-      // ~~~ Test sqNormV ~~~
-      VecOp::sqNormV(dOutReal, dInComplex);
+      // ~~~ Test sqAbsV ~~~
+      VecOp::sqAbsV(dOutReal, dInComplex);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
          refOutReal[i] = norm(refInComplex[i]);
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      // ~~~ Test sqSqNormV ~~~
-      VecOp::sqSqNormV(dOutReal, dInComplex);
+      // ~~~ Test sqSqAbsV ~~~
+      VecOp::sqSqAbsV(dOutReal, dInComplex);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
          refOutReal[i] = std::pow(std::norm(refInComplex[i]), 2.0);

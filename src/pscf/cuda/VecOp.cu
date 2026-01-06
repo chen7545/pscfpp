@@ -1145,7 +1145,7 @@ namespace {
       * \param n  size of arrays
       */
       __global__
-      void _absSqV(cudaReal* a, cudaComplex const * b, const int n)
+      void _sqAbsV(cudaReal* a, cudaComplex const * b, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -2304,7 +2304,7 @@ namespace {
    }
 
    // Vector absolute magnitude squared, a[i] = |b[i]|^2 (complex).
-   void absSqV(DeviceArray<cudaReal>& a,
+   void sqAbsV(DeviceArray<cudaReal>& a,
                DeviceArray<cudaComplex> const & b,
                const int beginIdA, const int beginIdB, 
                const int n)
@@ -2317,7 +2317,7 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _absSqV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA,
+      _sqAbsV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA,
                                      b.cArray() + beginIdB, n);
       cudaErrorCheck( cudaGetLastError() );
    }
