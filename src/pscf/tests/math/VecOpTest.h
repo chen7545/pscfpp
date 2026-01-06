@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/math/VecOp.h>
+#include <pscf/cpu/VecOp.h>
 #include <util/math/Constants.h>
 #include <cmath>
 

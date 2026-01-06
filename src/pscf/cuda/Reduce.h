@@ -15,7 +15,7 @@
 namespace Pscf {
 
    /**
-   * Functions that perform parallel reductions on the GPU.
+   * Functions that perform parallel reductions on a GPU.
    *
    * A reduction is any operation that involves reducing all of the
    * elements of an array (or several arrays) to a single scalar result. 
@@ -24,7 +24,7 @@ namespace Pscf {
    * to perform such operations in parallel on a GPU, and those
    * algorithms are implemented here.
    *
-   * A kernel wrapper is provided for each reduction operation, which
+   * A wrapper function is provided for each reduction operation, which
    * takes a DeviceArray as an input and returns a single value. The
    * wrappers are called on the host, and they call CUDA kernels
    * internally to perform the reductions in parallel.
@@ -51,8 +51,14 @@ namespace Pscf {
    * nearest multiple of the thread block size). The kernel wrapper
    * properly determines the GPU configuration before calling the kernel.
    *
+   * \defgroup Pscf_Cuda_Reduce_Module Reduce (GPU)
    * \ingroup Pscf_Cuda_Module
-   * @{
+   */
+
+   /**
+   * Reduction operations on CPU or GPU.
+   *
+   * \ingroup Pscf_Math_Module
    */
    namespace Reduce {
 
@@ -60,6 +66,8 @@ namespace Pscf {
 
       /**
       * Return sum of elements of a real array.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
       *
       * \param in  real input array
       * \return  sum of elements
@@ -69,17 +77,21 @@ namespace Pscf {
       /**
       * Return sum of elements of a complex array.
       *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
       * \param in  complex input array
       * \return  complex sum of elements
       */
       std::complex<cudaReal> sum(DeviceArray<cudaComplex> const & in);
 
-      // Vector inner products
+      // Sum of squares and products 
 
       /**
       * Return sum of squares of elements of a real array.
       *
       * This function returns the square of the Euclidean norm.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
       *
       * \param in  real input array
       * \return  sum of elements
@@ -92,6 +104,8 @@ namespace Pscf {
       * This function returns the complex sum of complex squares of elements.
       * This is not the same as the Hilbert space inner product.
       *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
       * \param in  real input array
       * \return  sum of elements
       */
@@ -99,6 +113,8 @@ namespace Pscf {
 
       /**
       * Return inner product of two real arrays.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
       *
       * \param a  first real input array
       * \param b  second real input array
@@ -112,6 +128,8 @@ namespace Pscf {
       /**
       * Return maximum of real array elements.
       *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
       * \param in  real input array
       * \return  value of maximum element
       */
@@ -119,6 +137,8 @@ namespace Pscf {
 
       /**
       * Get maximum absolute magnitude of real array elements.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
       *
       * \param in  real input array
       * \return  magnitude of element of maximum magnitude
@@ -128,6 +148,8 @@ namespace Pscf {
       /**
       * Return minimum of real array elements.
       *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
       * \param in  real input array
       * \return  value of minimum element
       */
@@ -135,6 +157,8 @@ namespace Pscf {
 
       /**
       * Return minimum absolute magnitude of real array elements.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
       *
       * \param in  real input array
       * \return  magnitude of element of minimum magnitude
@@ -145,10 +169,10 @@ namespace Pscf {
 
       /**
       * Free any private work space currently allocated for reductions.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
       */
       void freeWorkSpace();
-
-      /** @} */
 
    } // namespace Reduce
 } // namespace Pscf

@@ -1,5 +1,5 @@
-#ifndef PSCF_REDUCE_H
-#define PSCF_REDUCE_H
+#ifndef PSCF_CPU_REDUCE_H
+#define PSCF_CPU_REDUCE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -18,16 +18,17 @@ namespace Pscf {
    using namespace Util;
 
    /**
-   * Functions that perform array reductions on the Cpu.
+   * Functions that perform array reductions on a CPU.
    *
    * A reduction is any operation that involves reducing all of 
    * the elements of an array or set of arrays to a single scalar.  
    * Examples include taking the sum or finding the maximum of all 
    * array elements, or taking an inner product of two arrays.
    *
-   * \ingroup Prdc_Cpu_Module
-   * @{
+   * \defgroup Pscf_Cpu_Reduce_Module Reduce (CPU)
+   * \ingroup Pscf_Cpu_Module
    */
+
    namespace Reduce {
 
       // Summation
@@ -35,12 +36,16 @@ namespace Pscf {
       /**
       * Compute sum of array elements (real).
       *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
       * \param in  input array
       */
       double sum(Array<double> const & in);
 
       /**
       * Compute sum of of squares of array elements (real).
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param in  input array
       */
@@ -50,6 +55,8 @@ namespace Pscf {
 
       /**
       * Compute inner product of two real arrays .
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param a  first input array
       * \param b  second input array
@@ -62,12 +69,16 @@ namespace Pscf {
       /**
       * Get maximum of array elements .
       *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
       * \param in  input array
       */
       double max(Array<double> const & in);
 
       /**
       * Get maximum absolute magnitude of array elements .
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param in  input array
       */
@@ -76,6 +87,8 @@ namespace Pscf {
       /**
       * Get minimum of array elements .
       *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
       * \param in  input array
       */
       double min(Array<double> const & in);
@@ -83,11 +96,11 @@ namespace Pscf {
       /**
       * Get minimum absolute magnitude of array elements .
       *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
       * \param in  input array
       */
       double minAbs(Array<double> const & in);
-
-   /** @} */
 
    } // namespace Reduce
 } // namespace Pscf

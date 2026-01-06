@@ -18,7 +18,7 @@ namespace Pscf {
    using namespace Util;
 
    /**
-   * Element-wise vector operations on real-valued Cpu arrays.
+   * Element-wise vector operations on Cpu arrays.
    *
    * Operations that are performed by these functions include addition,
    * subtraction, multiplication, division, exponentiation, and assignment.
@@ -40,15 +40,18 @@ namespace Pscf {
    * and scalars, the vectors are listed first. So, for example, addVS 
    * exists, but addSV does not.
    *
-   * \ingroup Prdc_Cpu_Module
-   * @{
+   * \defgroup Pscf_Cpu_VecOp_Module VecOp (CPU)
+   * \ingroup Pscf_Cpu_Module
    */
+
    namespace VecOp {
 
       // Assignment
 
       /**
       * Vector assignment, a[i] = b[i] (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -57,6 +60,8 @@ namespace Pscf {
 
       /**
       * Vector assignment, a[i] = b (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -67,6 +72,8 @@ namespace Pscf {
 
       /**
       * Vector-vector addition, a[i] = b[i] + c[i] (real)
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -79,6 +86,8 @@ namespace Pscf {
       /**
       * Vector-scalar addition, a[i] = b[i] + c (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
@@ -90,6 +99,8 @@ namespace Pscf {
       /**
       * Vector-vector subtraction, a[i] = b[i] - c[i] (real)
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input array (RHS)
@@ -99,6 +110,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar subtraction, a[i] = b[i] - c (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -111,6 +124,8 @@ namespace Pscf {
       /**
       * Vector-vector multiplication, a[i] = b[i] * c[i] (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input array (RHS)
@@ -120,6 +135,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar multiplication, a[i] = b[i] * c (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -132,6 +149,8 @@ namespace Pscf {
       /**
       * Vector-vector division, a[i] = b[i] / c[i] (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input array (RHS)
@@ -142,6 +161,8 @@ namespace Pscf {
       /**
       * Vector-scalar division, a[i] = b[i] / c (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
@@ -150,6 +171,8 @@ namespace Pscf {
 
       /**
       * Vector division, a[i] = b / c[i].
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -162,6 +185,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place addition, a[i] += b[i] (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
@@ -169,6 +194,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place addition, a[i] += b (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -180,6 +207,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place subtraction, a[i] -= b[i] (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
@@ -187,6 +216,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar subtraction in-place, a[i] -= b (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -198,6 +229,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place multiplication, a[i] *= b[i] (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
@@ -205,6 +238,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place multiplication, a[i] *= b (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -216,6 +251,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place division, a[i] /= b[i].
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
@@ -223,6 +260,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place division, a[i] /= b.
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input scalar (RHS)
@@ -234,6 +273,8 @@ namespace Pscf {
       /**
       * Vector exponentiation, a[i] = exp(b[i]) (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       */
@@ -243,6 +284,8 @@ namespace Pscf {
 
       /**
       * Element-wise square, a[i] = b[i]*b[i] (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -254,6 +297,8 @@ namespace Pscf {
       /**
       * Element-wise absolute magnitude, a[i] = abs(b[i]) (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
       */
@@ -264,6 +309,8 @@ namespace Pscf {
       /**
       * Vector in-place addition with coefficient, a[i] = b[i]*c (real).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
       * \param c  real scalar (RHS)
@@ -271,8 +318,6 @@ namespace Pscf {
       void addEqVc(Array<double>& a, 
                    Array<double> const & b, 
                    double const c);
-
-   /** @} */
 
    } // namespace VecOp
 

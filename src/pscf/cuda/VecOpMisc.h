@@ -61,6 +61,8 @@ namespace VecOp {
    /**
    * Vector addition w/ coefficient, a[i] = (b[i]*c) + (d[i]*e).
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  real array (LHS)
    * \param b  real array 1 (RHS)
    * \param c  input scalar (RHS)
@@ -73,6 +75,8 @@ namespace VecOp {
 
    /**
    * 3-vec addition w coeff, a[i] = (b[i]*c) + (d[i]*e) + (f[i]*g).
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param b  real array 1 (RHS)
@@ -90,6 +94,8 @@ namespace VecOp {
    /**
    * Vector addition in-place w/ coefficient, a[i] += b[i] * c.
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  real array (LHS)
    * \param b  real array (RHS)
    * \param c  input scalar
@@ -100,6 +106,8 @@ namespace VecOp {
 
    /**
    * Vector subtraction, a[i] = b[i] - c[i] - d.
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param b  real array (RHS)
@@ -113,6 +121,8 @@ namespace VecOp {
    /**
    * Vector division in-place w/ coeff., a[i] /= (b[i] * c).
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  complex array (LHS)
    * \param b  real array (RHS)
    * \param c  input scalar (RHS)
@@ -123,6 +133,8 @@ namespace VecOp {
 
    /**
    * Vector exponentiation w/ coefficient, a[i] = exp(b[i]*c).
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param b  real array (RHS)
@@ -138,6 +150,8 @@ namespace VecOp {
    /**
    * Vector assignment in pairs, ax[i] = b[i], x = 1, 2 (real).
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a1  real array 1 (LHS)
    * \param a2  real array 2 (LHS)
    * \param s  shared real array to be assigned to both a1 and a2
@@ -148,6 +162,8 @@ namespace VecOp {
 
    /**
    * Vector multiplication in pairs, ax[i] = bx[i] * s[i], x=1,2 (real).
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a1  real array 1 (LHS)
    * \param a2  real array 2 (LHS)
@@ -162,6 +178,8 @@ namespace VecOp {
 
    /**
    * In-place vector multiplication in pairs, ax[i] *= s[i], x=1,2 (real).
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a1  real array 1 (LHS)
    * \param a2  real array 2 (LHS)
@@ -181,6 +199,8 @@ namespace VecOp {
    * The size of array vecs determines the number of vectors that
    * will be added together.
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  real array (LHS)
    * \param vecs  array of DeviceArrays to be added (RHS)
    */
@@ -199,6 +219,8 @@ namespace VecOp {
    * caller must simply assemble an array of pointers to all of the arrays
    * that should be added, and then pass it to this method.
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  real array (LHS)
    * \param vecs  array of pointers to DeviceArrays to be added
    */
@@ -211,6 +233,8 @@ namespace VecOp {
    * The input array 'vecs' contains the arrays that will be multiplied.
    * The size of vecs determines the number of vectors that will be
    * multiplied together.
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param vecs  array of DeviceArrays to be multiplied (RHS)
@@ -230,6 +254,8 @@ namespace VecOp {
    * The caller must simply assemble an array of pointers to all of the
    * arrays that should be multiplied, and then pass it to this method.
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  real array (LHS)
    * \param vecs  array of real arrays to be multiplied (RHS)
    */
@@ -242,6 +268,8 @@ namespace VecOp {
    /**
    * Squared norm of complex number, a[i] = norm(b[i])^2.
    *
+   * \ingroup Pscf_Cuda_VecOp_Module
+   *
    * \param a  real array (LHS)
    * \param b  complex array (RHS)
    */
@@ -250,6 +278,8 @@ namespace VecOp {
 
    /**
    * Norm of complex number to the 4th power, a[i] = norm(b[i])^4.
+   *
+   * \ingroup Pscf_Cuda_VecOp_Module
    *
    * \param a  real array (LHS)
    * \param b  complex array (RHS)

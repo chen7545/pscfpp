@@ -23,8 +23,8 @@
 #include <rpc/fts/ramp/RampFactory.h>
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/math/VecOp.h>
-#include <pscf/math/Reduce.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>

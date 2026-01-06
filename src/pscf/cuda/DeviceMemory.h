@@ -23,7 +23,7 @@ namespace Pscf {
    * This class wraps a void* C array that is allocated in GPU device 
    * global memory, and also contains the number of bytes allocated.
    *
-   * \ingroup Pscf_Cuda_Module
+   * \ingroup Pscf_Cuda_Containers_Module
    */
    class DeviceMemory
    {

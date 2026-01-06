@@ -19,37 +19,29 @@ namespace Pscf {
 
    using namespace Util;
 
-   /**
-   * Functions that perform element-wise vector operations on the Cpu.
+   /*
+   * Functions for element-wise complex vector operations on a CPU.
    *
-   * Operations that are performed by these functions include assignment,
-   * addition, subtraction, multiplication, division, and exponentiation.
-   * The function names will, correspondingly, begin with "eq", "add",
-   * "sub", "mul", "div", or "exp" to indicate the relevant operation.
-   * Functions that perform arithmetic "in-place" assignment operations,
-   * analogous to those performed using +=, -=, *=, and /= operators, 
-   * have names that begin with "addEq", "subEq", "mulEq", and "divEq".
+   * Naming conventions are the same as those described in the file 
+   * cpu/VecOp.h, which contains declarations of analogous functions
+   * for real-valued arrays. Many operations involving complex arrays 
+   * are implemented in both purely complex form, in which all inputs
+   * are complex numbers, and "mixed" form in which one or more of the 
+   * inputs is a real array or real scalar.
    *
-   * The output array (the LHS of a vector operation) is always the first
-   * parameter passed to the function. The input argument(s) (on the RHS
-   * of the vector operation) may be vectors or scalars. If an argument is
-   * a vector (or scalar), the function name will contain a V (or S). For
-   * example, the function addVV(A,B,C) implements vector-vector addition
-   * A[i] = B[i] + C[i], while addVS(A,B,c) implements vector-scalar
-   * addition A[i] = B[i] + c in which c is a scalar that is added to every
-   *  element of B. In commutative operations involving both vectors and
-   * scalars, the vectors are listed first. So, for example, addVS exists,
-   * but addSV does not.
-   *
-   * \ingroup Prdc_Cpu_Module
-   * @{
+   * Functions defined in this file use the complex type fftw_complex
+   * that is defined for use with the FFTW fast Fourier transform
+   * library.
    */
+
    namespace VecOp {
 
       // Assignment
 
       /**
       * Vector-vector assignment, a[i] = b[i] (complex).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -59,6 +51,8 @@ namespace Pscf {
       /**
       * Vector-vector assignment, a[i] = b[i] (mixed).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
       */
@@ -67,6 +61,8 @@ namespace Pscf {
       /**
       * Vector-scalar assignment, a[i] = b (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
       */
@@ -74,6 +70,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar assignment, a[i] = b (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -85,6 +83,8 @@ namespace Pscf {
       /**
       * Copy real part of a complex array to a real array.
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  real array (LHS)
       * \param b  complex array (RHS)
       */
@@ -92,6 +92,8 @@ namespace Pscf {
 
       /**
       * Copy imaginary part of a complex array to a real array.
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  real array (LHS)
       * \param b  complex array (RHS)
@@ -102,6 +104,8 @@ namespace Pscf {
 
       /**
       * Vector-vector addition, a[i] = b[i] + c[i] (complex).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -114,6 +118,8 @@ namespace Pscf {
       /**
       * Vector-vector addition, a[i] = b[i] + c[i] (mixed).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  real array (RHS)
@@ -125,6 +131,8 @@ namespace Pscf {
       /**
       * Vector-scalar addition, a[i] = b[i] + c (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
@@ -135,6 +143,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar addition, a[i] = b[i] + c (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -149,6 +159,8 @@ namespace Pscf {
       /**
       * Vector-vector subtraction, a[i] = b[i] - c[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
@@ -160,6 +172,8 @@ namespace Pscf {
       /**
       * Vector-scalar subtraction, a[i] = b[i] - c (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
@@ -170,6 +184,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar subtraction, a[i] = b[i] - c (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -184,6 +200,8 @@ namespace Pscf {
       /**
       * Vector-vector multiplication, a[i] = b[i] * c[i] (complex)
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
@@ -194,6 +212,8 @@ namespace Pscf {
 
       /**
       * Vector-vector multiplication, a[i] = b[i] * c[i] (mixed)
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -206,6 +226,8 @@ namespace Pscf {
       /**
       * Vector-scalar multiplication, a[i] = b[i] * c (complex)
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
@@ -216,6 +238,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar multiplication, a[i] = b[i] * c (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -230,6 +254,8 @@ namespace Pscf {
       /**
       * Vector-vector division, a[i] = b[i] / c[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex array (RHS)
@@ -240,6 +266,8 @@ namespace Pscf {
 
       /**
       * Vector-vector division, a[i] = b[i] / c[i] (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -252,6 +280,8 @@ namespace Pscf {
       /**
       * Vector-scalar division, a[i] = b[i] / c (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       * \param c  complex scalar (RHS)
@@ -262,6 +292,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar division, a[i] = b[i] / c (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -276,6 +308,8 @@ namespace Pscf {
       /*
       * Vector-vector in-place addition, a[i] += b[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
@@ -283,6 +317,8 @@ namespace Pscf {
 
       /*
       * Vector-vector in-place addition, a[i] += b[i] (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -292,6 +328,8 @@ namespace Pscf {
       /*
       * Vector-scalar in-place addition, a[i] += b (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
@@ -299,6 +337,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place addition, a[i] += b (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -310,6 +350,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place subtraction, a[i] -= b[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
@@ -317,6 +359,8 @@ namespace Pscf {
 
       /**
       * Vector-vector in-place subtraction, a[i] -= b[i] (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -326,6 +370,8 @@ namespace Pscf {
       /**
       * Vector-scalar in-place subtraction, a[i] -= b (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
@@ -333,6 +379,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place subtraction, a[i] -= b (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -344,6 +392,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place multiplication, a[i] *= b[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
@@ -351,6 +401,8 @@ namespace Pscf {
 
       /**
       * Vector-vector in-place multiplication, a[i] *= b[i] (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -360,6 +412,8 @@ namespace Pscf {
       /**
       * Vector-scalar in-place multiplication, a[i] *= b[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
@@ -367,6 +421,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place multiplication, a[i] *= b (mixed)
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -378,6 +434,8 @@ namespace Pscf {
       /**
       * Vector-vector in-place division, a[i] /= b[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
@@ -385,6 +443,8 @@ namespace Pscf {
 
       /**
       * Vector-vector in-place division, a[i] /= b[i] (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -394,6 +454,8 @@ namespace Pscf {
       /**
       * Vector-scalar in-place division, a[i] /= b (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
@@ -401,6 +463,8 @@ namespace Pscf {
 
       /**
       * Vector-scalar in-place division, a[i] /= b (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -412,6 +476,8 @@ namespace Pscf {
       /**
       * Vector exponentiation, a[i] = exp(b[i]) (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
@@ -422,12 +488,12 @@ namespace Pscf {
       /**
       * Elementwise complex square, a[i] = b[i] * b[i] (complex).
       *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
       */
       void sqV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
-
-   /** @} */
 
    } // namespace VecOp
 

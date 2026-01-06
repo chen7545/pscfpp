@@ -28,10 +28,9 @@ namespace Pscf {
 namespace ThreadMesh {
 
    /**
-   * \defgroup Pscf_Cuda_ThreadMesh_Module ThreadMesh
-   *
    * Management of multidimensional GPU thread execution configurations.
    *
+   * \defgroup Pscf_Cuda_ThreadMesh_Module ThreadMesh
    * \ingroup Pscf_Cuda_Module
    * @{
    */

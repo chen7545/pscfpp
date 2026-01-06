@@ -91,7 +91,7 @@ namespace Pscf {
    * member function) or are destroyed before the container that owns 
    * the shared memory deallocates the memory or is destroyed. 
    *
-   * \ingroup Pscf_Cuda_Module
+   * \ingroup Pscf_Cuda_Containers_Module
    */
    template <typename Data>
    class DeviceArray
