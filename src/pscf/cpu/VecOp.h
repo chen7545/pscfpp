@@ -1,5 +1,5 @@
-#ifndef PSCF_VEC_OP_H
-#define PSCF_VEC_OP_H
+#ifndef PSCF_CPU_VEC_OP_H
+#define PSCF_CPU_VEC_OP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -46,6 +46,14 @@ namespace Pscf {
 
    namespace VecOp {
 
+      /*
+      *  This file and VecOp.cpp only contain declarations and definitions
+      *  for operations that involve only real arrays and scalars. 
+      *  Corresponding declarations and definitions for vector operations
+      *  that complex-valued arrays and/or scalars are in files VecOpCx.h 
+      *  and VecOpCx.cpp, respectively. 
+      */
+
       // Assignment
 
       /**
@@ -53,8 +61,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void eqV(Array<double>& a, Array<double> const & b);
 
@@ -63,8 +71,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real scalar (RHS)
       */
       void eqS(Array<double>& a, double b);
 
@@ -75,9 +83,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real array (RHS)
       */
       void addVV(Array<double>& a, 
                  Array<double> const & b, 
@@ -88,9 +96,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real scalar (RHS)
       */
       void addVS(Array<double>& a, Array<double> const & b, double c);
 
@@ -101,9 +109,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real array (RHS)
       */
       void subVV(Array<double>& a,
                  Array<double> const & b, Array<double> const & c);
@@ -113,9 +121,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real scalar (RHS)
       */
       void subVS(Array<double>& a, Array<double> const & b, double c);
 
@@ -126,9 +134,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real array (RHS)
       */
       void mulVV(Array<double>& a,
                  Array<double> const & b, Array<double> const & c);
@@ -138,9 +146,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real scalar (RHS)
       */
       void mulVS(Array<double>& a, Array<double> const & b, double c);
 
@@ -151,9 +159,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real array (RHS)
       */
       void divVV(Array<double>& a,
                  Array<double> const & b, Array<double> const & c);
@@ -163,9 +171,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real scalar (RHS)
       */
       void divVS(Array<double>& a, Array<double> const & b, double c);
 
@@ -174,9 +182,9 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input scalar (RHS)
-      * \param c  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real scalar (RHS)
+      * \param c  real array (RHS)
       */
       void divSV(Array<double>& a, double b, Array<double> const & c);
 
@@ -187,8 +195,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void addEqV(Array<double>& a, Array<double> const & b);
 
@@ -197,8 +205,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real scalar (RHS)
       */
       void addEqS(Array<double>& a, double b);
 
@@ -209,8 +217,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void subEqV(Array<double>& a, Array<double> const & b);
 
@@ -219,8 +227,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real scalar (RHS)
       */
       void subEqS(Array<double>& a, double b);
 
@@ -231,8 +239,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void mulEqV(Array<double>& a, Array<double> const & b);
 
@@ -241,8 +249,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real scalar (RHS)
       */
       void mulEqS(Array<double>& a, double b);
 
@@ -253,8 +261,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void divEqV(Array<double>& a, Array<double> const & b);
 
@@ -263,8 +271,8 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input scalar (RHS)
+      * \param a  real array (LHS)
+      * \param b  real scalar (RHS)
       */
       void divEqS(Array<double>& a, double b);
 
@@ -275,20 +283,20 @@ namespace Pscf {
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void expV(Array<double>& a, Array<double> const & b);
 
       // Square
 
       /**
-      * Element-wise square, a[i] = b[i]*b[i] (real).
+      * Vector element-wise square, a[i] = b[i]*b[i] (real).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
       */
       void sqV(Array<double>& a, Array<double> const & b);
 

@@ -1,5 +1,5 @@
-#ifndef PSCF_VEC_OP_CX_H
-#define PSCF_VEC_OP_CX_H
+#ifndef PSCF_CPU_VEC_OP_CX_H
+#define PSCF_CPU_VEC_OP_CX_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -35,6 +35,28 @@ namespace Pscf {
    */
 
    namespace VecOp {
+
+      // Real and imaginary parts
+
+      /**
+      * Copy real part of a complex array to a real array.
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  real array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void real(Array<double>& a, Array<fftw_complex> const & b);
+
+      /**
+      * Copy imaginary part of a complex array to a real array.
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  real array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void imag(Array<double>& a, Array<fftw_complex> const & b);
 
       // Assignment
 
@@ -77,28 +99,6 @@ namespace Pscf {
       * \param b  real scalar (RHS)
       */
       void eqS(Array<fftw_complex>& a, double b);
-
-      // Real and imaginary parts
-
-      /**
-      * Copy real part of a complex array to a real array.
-      *
-      * \ingroup Pscf_Cpu_VecOp_Module
-      *
-      * \param a  real array (LHS)
-      * \param b  complex array (RHS)
-      */
-      void real(Array<double>& a, Array<fftw_complex> const & b);
-
-      /**
-      * Copy imaginary part of a complex array to a real array.
-      *
-      * \ingroup Pscf_Cpu_VecOp_Module
-      *
-      * \param a  real array (LHS)
-      * \param b  complex array (RHS)
-      */
-      void imag(Array<double>& a, Array<fftw_complex> const & b);
 
       // Addition
 
@@ -494,6 +494,28 @@ namespace Pscf {
       * \param b  complex array (RHS)
       */
       void sqV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
+
+      // Even powers of complex absolute magnitude 
+
+      /**
+      * Square of absolute magnitude, a[i] = |b[i]|^2 (complex).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  real array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void sqAbsV(Array<double> & a, Array<fftw_complex> const & b);
+
+      /**
+      * Fourth power of absolute magnitude, a[i] = |b[i]|^2 (complex).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  real array (LHS)
+      * \param b  complex array (RHS)
+      */
+      void sqSqAbsV(Array<double> & a, Array<fftw_complex> const & b);
 
    } // namespace VecOp
 

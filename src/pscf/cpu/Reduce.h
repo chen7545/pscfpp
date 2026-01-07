@@ -31,6 +31,13 @@ namespace Pscf {
 
    namespace Reduce {
 
+      /*
+      *  This file and Reduce.cpp contain declarations and definitions
+      *  for reduction functions that operate real arrays.  Corresponding 
+      *  declarations and definitions for reductions of complex-valued
+      *  arrays are in files ReduceCx.h and ReduceCx.cpp, respectively. 
+      */
+
       // Summation
 
       /**
@@ -54,7 +61,7 @@ namespace Pscf {
       // Summation of products
 
       /**
-      * Compute inner product of two real arrays .
+      * Compute Euclidean inner product of two real arrays .
       *
       * \ingroup Pscf_Cpu_Reduce_Module
       *

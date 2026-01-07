@@ -16,6 +16,34 @@ namespace VecOp {
 
    using namespace Util;
 
+   // Real and imaginary parts
+
+   /*
+   * Copy real part of a complex array to a real array.
+   */
+   void real(Array<double> & a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b[i][0];
+      }
+   }
+
+   /*
+   * Copy imaginary part of a complex array to a real array.
+   */
+   void imag(Array<double> & a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b[i][1];
+      }
+   }
+
    // Assignment
 
    /*
@@ -72,41 +100,13 @@ namespace VecOp {
       }
    }
 
-   // Real and imaginary parts
-
-   /*
-   * Copy real part of a complex array to a real array.
-   */
-   void real(Array<double> & a, Array<fftw_complex> const & b)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      for (int i = 0; i < n; ++i) {
-         a[i] = b[i][0];
-      }
-   }
-
-   /*
-   * Copy imaginary part of a complex array to a real array.
-   */
-   void imag(Array<double> & a, Array<fftw_complex> const & b)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      for (int i = 0; i < n; ++i) {
-         a[i] = b[i][1];
-      }
-   }
-
    // Addition
 
    /*
    * Vector-vector addition, a[i] = b[i] + c[i] (complex).
    */
    void addVV(Array<fftw_complex> & a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<fftw_complex> const & c)
    {
       const int n = a.capacity();
@@ -123,7 +123,7 @@ namespace VecOp {
    * Vector-vector addition, a[i] = b[i] + c[i] (mixed).
    */
    void addVV(Array<fftw_complex> & a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<double> const & c)
    {
       const int n = a.capacity();
@@ -139,8 +139,8 @@ namespace VecOp {
    /*
    * Vector-scalar addition, a[i][0] = b[i][0] + c (complex).
    */
-   void addVS(Array<fftw_complex> & a, 
-              Array<fftw_complex> const & b, 
+   void addVS(Array<fftw_complex> & a,
+              Array<fftw_complex> const & b,
               fftw_complex c)
    {
       const int n = a.capacity();
@@ -156,8 +156,8 @@ namespace VecOp {
    /*
    * Vector-scalar addition, a[i][0] = b[i][0] + c (mixed).
    */
-   void addVS(Array<fftw_complex> & a, 
-              Array<fftw_complex> const & b, 
+   void addVS(Array<fftw_complex> & a,
+              Array<fftw_complex> const & b,
               double c)
    {
       const int n = a.capacity();
@@ -175,7 +175,7 @@ namespace VecOp {
    * Vector-vector subtraction, a[i] = b[i] - c[i] (complex).
    */
    void subVV(Array<fftw_complex> & a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<fftw_complex> const & c)
    {
       const int n = a.capacity();
@@ -192,7 +192,7 @@ namespace VecOp {
    * Vector-vector subtraction, a[i] = b[i] - c[i] (mixed).
    */
    void subVV(Array<fftw_complex> & a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<double> const & c)
    {
       const int n = a.capacity();
@@ -243,7 +243,7 @@ namespace VecOp {
    * Vector-vector multiplication, a[i] = b[i] * c[i] (complex).
    */
    void mulVV(Array<fftw_complex>& a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<fftw_complex> const & c)
    {
       const int n = a.capacity();
@@ -260,7 +260,7 @@ namespace VecOp {
    * Vector-vector multiplication, a[i] = b[i] * c[i] (mixed).
    */
    void mulVV(Array<fftw_complex> & a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<double> const & c)
    {
       const int n = a.capacity();
@@ -311,7 +311,7 @@ namespace VecOp {
    * Vector-vector division, a[i] = b[i] / c[i] (complex).
    */
    void divVV(Array<fftw_complex>& a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<fftw_complex> const & c)
    {
       const int n = a.capacity();
@@ -320,8 +320,8 @@ namespace VecOp {
       UTIL_CHECK(c.capacity() == n);
       double cr, ci, cSq;
       for (int i = 0; i < n; ++i) {
-         cr = c[i][0]; 
-         ci = c[i][1]; 
+         cr = c[i][0];
+         ci = c[i][1];
          cSq = cr*cr + ci*ci;
          a[i][0] = (b[i][0]*cr + b[i][1]*ci)/cSq;
          a[i][1] = (b[i][1]*cr - b[i][0]*ci)/cSq;
@@ -332,7 +332,7 @@ namespace VecOp {
    * Vector-vector division, a[i] = b[i] / c[i] (mixed).
    */
    void divVV(Array<fftw_complex>& a,
-              Array<fftw_complex> const & b, 
+              Array<fftw_complex> const & b,
               Array<double> const & c)
    {
       const int n = a.capacity();
@@ -348,8 +348,8 @@ namespace VecOp {
    /*
    * Vector-scalar division, a[i][0] = b[i][0] / c (complex).
    */
-   void divVS(Array<fftw_complex>& a, 
-                    Array<fftw_complex> const & b, 
+   void divVS(Array<fftw_complex>& a,
+                    Array<fftw_complex> const & b,
                     fftw_complex c)
    {
       const int n = a.capacity();
@@ -367,8 +367,8 @@ namespace VecOp {
    /*
    * Vector-scalar division, a[i] = b[i] / c (mixed).
    */
-   void divVS(Array<fftw_complex>& a, 
-                    Array<fftw_complex> const & b, 
+   void divVS(Array<fftw_complex>& a,
+                    Array<fftw_complex> const & b,
                     double c)
    {
       const int n = a.capacity();
@@ -562,8 +562,8 @@ namespace VecOp {
       UTIL_CHECK(b.capacity() == n);
       double br, bi, bSq, x, y;
       for (int i = 0; i < n; ++i) {
-         br = b[i][0]; 
-         bi = b[i][1]; 
+         br = b[i][0];
+         bi = b[i][1];
          bSq = br*br + bi*bi;
          x = (a[i][0] * br + a[i][1] * bi)/bSq;
          y = (a[i][1] * br - a[i][0] * bi)/bSq;
@@ -593,8 +593,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      double br = b[0]; 
-      double bi = b[1]; 
+      double br = b[0];
+      double bi = b[1];
       double bSq = br*br + bi*bi;
       double x, y;
       for (int i = 0; i < n; ++i) {
@@ -652,6 +652,41 @@ namespace VecOp {
          bi = b[i][1];
          a[i][0] = br * br - bi * bi;
          a[i][1] = 2.0 * br * bi;
+      }
+   }
+
+   // Even powers of complex absolute magnitude
+
+   /*
+   * Square absolute magnitude, a[i] = |b[i]|^2 (complex).
+   */
+   void sqAbsV(Array<double>& a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      double br, bi;
+      for (int i = 0; i < n; ++i) {
+         br = b[i][0];
+         bi = b[i][1];
+         a[i] = br * br + bi * bi;
+      }
+   }
+
+   /*
+   * Fourth power of absolute magnitude, a[i] = |b[i]|^4 (complex).
+   */
+   void sqSqAbsV(Array<double>& a, Array<fftw_complex> const & b)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      double br, bi, sq;
+      for (int i = 0; i < n; ++i) {
+         br = b[i][0];
+         bi = b[i][1];
+         sq = br * br + bi * bi;
+         a[i] = sq*sq;
       }
    }
 

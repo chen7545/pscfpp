@@ -7,8 +7,6 @@
 
 #include "ReduceCx.h"
 #include <util/containers/Array.h>
-#include <fftw3.h>
-#include <complex.h>
 
 namespace Pscf {
 namespace Reduce {
