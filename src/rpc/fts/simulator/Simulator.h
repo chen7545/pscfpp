@@ -12,22 +12,28 @@
 
 #include <rpc/fts/simulator/SimState.h>    // member
 #include <prdc/cpu/RField.h>               // member (template arg)
-#include <util/random/Random.h>            // member
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 
+// Forward declarations
+namespace Util {
+   class Random;
+}
+namespace Pscf {
+   class CpuVecRandom;
+   namespace Rpc {
+      template <int D> class System;
+      template <int D> class Compressor;
+      template <int D> class CompressorFactory;
+      template <int D> class Perturbation;
+      template <int D> class PerturbationFactory;
+      template <int D> class Ramp;
+      template <int D> class RampFactory;
+   }
+}
 
 namespace Pscf {
 namespace Rpc {
-
-   // Forward declarations
-   template <int D> class System;
-   template <int D> class Compressor;
-   template <int D> class CompressorFactory;
-   template <int D> class Perturbation;
-   template <int D> class PerturbationFactory;
-   template <int D> class Ramp;
-   template <int D> class RampFactory;
 
    using namespace Util;
    using namespace Prdc;
@@ -501,9 +507,14 @@ namespace Rpc {
       System<D>& system();
 
       /**
-      * Get random number generator by reference.
+      * Get scalar random number generator by reference.
       */
       Random& random();
+
+      /**
+      * Get vector random number generator by reference.
+      */
+      CpuVecRandom& vecRandom();
 
       /**
       * Does this simulator have a Compressor?
@@ -557,7 +568,7 @@ namespace Rpc {
       // Protected member functions
 
       /**
-      * Optionally read a random seed and initialize RNG.
+      * Optionally read a random seed and initialize RNGs.
       *
       * \param in input parameter stream
       */
@@ -627,10 +638,12 @@ namespace Rpc {
 
       // Protected data members
 
+      #if 0
       /**
       * Random number generator.
       */
       Random random_;
+      #endif
 
       /**
       * Eigenvector components of w fields on a real space grid.
@@ -783,10 +796,22 @@ namespace Rpc {
       */
       mutable RField<D> tmpField_;
 
+      // Pointers to associated objects
+
       /**
       * Pointer to the parent system.
       */
       System<D>* systemPtr_;
+
+      /**
+      * Pointer to a scalar random number generator.
+      */
+      Random* randomPtr_;
+
+      /**
+      * Pointer to a vector random number generator.
+      */
+      CpuVecRandom* vecRandomPtr_;
 
       /**
       * Pointer to the compressor factory object.
@@ -827,7 +852,7 @@ namespace Rpc {
 
    // Inline functions
 
-   // Management of owned and associated objects
+   // Access to associated objects via pointers
 
    // Get the parent System by reference.
    template <int D>
@@ -837,10 +862,15 @@ namespace Rpc {
       return *systemPtr_;
    }
 
-   // Get the random number generator by reference.
+   // Get the scalar random number generator by reference.
    template <int D>
    inline Random& Simulator<D>::random()
-   {  return random_; }
+   {  return *randomPtr_; }
+
+   // Get the vector random number generator by reference.
+   template <int D>
+   inline CpuVecRandom& Simulator<D>::vecRandom()
+   {  return *vecRandomPtr_; }
 
    // Get the compressor factory by reference.
    template <int D>

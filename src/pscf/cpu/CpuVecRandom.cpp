@@ -1,4 +1,4 @@
-#include "CpuRandom.h"
+#include "CpuVecRandom.h"
 #include <util/random/Random.h>
 #include <util/containers/Array.h>
 #include <util/global.h>
@@ -10,33 +10,33 @@ namespace Pscf {
    /*
    * Default constructor.
    */
-   CpuRandom::CpuRandom()
+   CpuVecRandom::CpuVecRandom()
     : randomPtr_(nullptr)
    {}
 
    /*
-   * Associating constructor.
+   * Constructor - create association with a scalar RNG.
    */
-   CpuRandom::CpuRandom(Util::Random& random)
+   CpuVecRandom::CpuVecRandom(Random& random)
     : randomPtr_(&random)
    {}
 
    /*
    * Destructor.
    */
-   CpuRandom::~CpuRandom()
+   CpuVecRandom::~CpuVecRandom()
    {}
 
    /*
    * Create an association after construction
    */
-   void CpuRandom::associate(Util::Random& random)
+   void CpuVecRandom::associate(Random& random)
    {  randomPtr_ = &random; }
 
    /*
    * Populate array on device with random doubles in (0, 1], uniform dist.
    */
-   void CpuRandom::uniform(Array<double>& data)
+   void CpuVecRandom::uniform(Array<double>& data)
    {
       UTIL_CHECK(randomPtr_);
       UTIL_CHECK(data.capacity() > 0);
@@ -49,7 +49,7 @@ namespace Pscf {
    /*
    * Populate array with normal-distributed random doubles.
    */
-   void CpuRandom::normal(Array<double>& data, 
+   void CpuVecRandom::normal(Array<double>& data, 
                           double stddev, double mean)
    {
       UTIL_CHECK(randomPtr_);

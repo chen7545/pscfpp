@@ -25,6 +25,7 @@
 #include <pscf/math/IntVec.h>
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/Reduce.h>
+#include <pscf/cpu/CpuVecRandom.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
@@ -42,8 +43,7 @@ namespace Rpc {
    */
    template <int D>
    Simulator<D>::Simulator(System<D>& system)
-    : random_(),
-      hamiltonian_(0.0),
+    : hamiltonian_(0.0),
       idealHamiltonian_(0.0),
       fieldHamiltonian_(0.0),
       perturbationHamiltonian_(0.0),
@@ -55,6 +55,8 @@ namespace Rpc {
       hasCc_(false),
       hasDc_(false),
       systemPtr_(&system),
+      randomPtr_(nullptr),
+      vecRandomPtr_(nullptr),
       compressorFactoryPtr_(nullptr),
       compressorPtr_(nullptr),
       perturbationFactoryPtr_(nullptr),
@@ -64,6 +66,8 @@ namespace Rpc {
       isAllocated_(false)
    {
       ParamComposite::setClassName("Simulator");
+      randomPtr_ = new Random();
+      vecRandomPtr_ = new CpuVecRandom(*randomPtr_);
       compressorFactoryPtr_ = new CompressorFactory<D>(system);
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
       rampFactoryPtr_ = new RampFactory<D>(*this);
@@ -732,6 +736,9 @@ namespace Rpc {
       // Set random number generator seed
       // Default value seed_ = 0 uses the clock time.
       random().setSeed(seed_);
+
+      // Note: CudaVecRandom uses associated scalar random generator
+      // internally, so does not require separate initialization.
    }
 
    // Functions related to a Compressor
