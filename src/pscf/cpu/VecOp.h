@@ -288,6 +288,18 @@ namespace Pscf {
       */
       void expV(Array<double>& a, Array<double> const & b);
 
+      /**
+      * Exponentiation a scaled vector, a[i] = exp(b[i]*c) (real).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  real array (LHS)
+      * \param b  real array (RHS)
+      * \param c  real scalar coefficient of b (RHS)
+      */
+      void expVc(Array<double>& a,
+                 Array<double> const & b, const double c);
+
       // Square
 
       /**
@@ -312,20 +324,61 @@ namespace Pscf {
       */
       void absV(Array<double>& a, Array<double> const & b);
 
-      // Combined operations
+      // Addition of scaled vectors (linear combinations)
 
       /**
-      * Vector in-place addition with coefficient, a[i] = b[i]*c (real).
+      * Add two scaled vectors, a[i] = b1[i]*c1 + b2[2]*c2 (real).
+      *
+      * \param a real array (LHS)
+      * \param b1 1st real input array (RHS)
+      * \param c1 real coefficient of b1 (RHS)
+      * \param b2 2nd real input array (RHS)
+      * \param c2 real coefficient of c2 (RHS)
+      */
+      void addVcVc(Array<double>& a,
+                   Array<double> const & b1, const double c1,
+                   Array<double> const & b2, const double c2);
+   
+      /**
+      * Add a scaled vector and a scalar, a[i] = b[i]*c + s (real).
+      *
+      * \param a real array (LHS)
+      * \param b input array (RHS)
+      * \param c coefficient of b1 (RHS)
+      * \param real scalar summand (RHS)
+      */
+      void addVcS(Array<double>& a,
+                  Array<double> const & b, const double c,
+                  const double s);
+   
+      /**
+      * Add scaled vectors + scalar, a[i] = b1[i]*c1 + b2[2]*c2 + s (real).
+      *
+      * \param a real array (LHS)
+      * \param b1 1st real input array (RHS)
+      * \param c1 real coefficient of b1 (RHS)
+      * \param b2 2nd real input array (RHS)
+      * \param c2 real coefficient of c2 (RHS)
+      * \param real scalar summand (RHS)
+      */
+      void addVcVcS(Array<double>& a,
+                   Array<double> const & b1, const double c1,
+                   Array<double> const & b2, const double c2,
+                   const double s);
+
+      // In-place addition of scaled vectors.
+
+      /**
+      * Add scaled vector in-place, a[i] += b[i]*c (real).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
-      * \param c  real scalar (RHS)
+      * \param c  real coefficient of b (RHS)
       */
-      void addEqVc(Array<double>& a, 
-                   Array<double> const & b, 
-                   double const c);
+      void addEqVc(Array<double>& a,
+                   Array<double> const & b, double const c);
 
    } // namespace VecOp
 

@@ -298,6 +298,19 @@ namespace VecOp {
       }
    }
 
+   /*
+   * Exponentiate a scaled vector, a[i] = exp(b[i]*c) (real).
+   */
+   void expVc(Array<double>& a, Array<double> const & b, const double c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = exp(b[i]*c);
+      }
+   }
+
    // Square
 
    /*
@@ -328,12 +341,63 @@ namespace VecOp {
       }
    }
 
-   // Combined operations 
+   // Linear combinations (separate result)
 
    /*
-   * Vector in-place addition with coefficient, a[i] += b[i]*c (real).
+   * Add two scaled vectors, a[i] = b1[i]*c1 + b2[2]*c2 (real).
    */
-   void addEqVc(Array<double>& a, Array<double> const & b, const double c)
+   void addVcVc(Array<double>& a,
+                Array<double> const & b1, const double c1,
+                Array<double> const & b2, const double c2)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b1.capacity() >= n);
+      UTIL_CHECK(b2.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b1[i]*c1 + b2[i]*c2;
+      }
+   }
+
+   /*
+   * Add a scaled vector and a scalar, a[i] = b[i]*c + s (real).
+   */
+   void addVcS(Array<double>& a,
+               Array<double> const & b, const double c,
+               const double s)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b[i]*c + s;
+      }
+   }
+
+   /*
+   * Add 2 scaled vectors & scalar, a[i] = b1[i]*c1 + b2[2]*c2 + s (real).
+   */
+   void addVcVcS(Array<double>& a,
+                Array<double> const & b1, const double c1,
+                Array<double> const & b2, const double c2,
+                const double s)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b1.capacity() >= n);
+      UTIL_CHECK(b2.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b1[i]*c1 + b2[i]*c2 + s;
+      }
+   }
+
+   // In-place linear combinations (result is first vector)
+
+   /*
+   * In-place add one scaled vector, a[i] += b[i]*c (real).
+   */
+   void addEqVc(Array<double>& a, 
+                Array<double> const & b, const double c)
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
