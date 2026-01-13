@@ -1,4 +1,5 @@
 #include "CudaRandom.h"
+#include "ThreadArray.h"
 #include <util/global.h>
 #include <sys/time.h>
 #include <string>
