@@ -135,7 +135,7 @@ namespace Pscf {
       */
       inline
       void eqV(DeviceArray<cudaComplex>& a,
-                      DeviceArray<cudaComplex> const & b)
+               DeviceArray<cudaComplex> const & b)
       {  eqV(a, b, 0, 0, a.capacity()); }
 
       /**

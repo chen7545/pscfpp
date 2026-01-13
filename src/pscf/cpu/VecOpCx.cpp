@@ -47,7 +47,7 @@ namespace VecOp {
    // Assignment
 
    /*
-   * Vector-vector assignment, a[i] = b[i] (complex).
+   * Vector assignment, a[i] = b[i] (complex).
    */
    void eqV(Array<fftw_complex> & a, Array<fftw_complex> const & b)
    {
@@ -61,7 +61,24 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector assignment, a[i] = b[i] (mixed).
+   * Vector assignment, a[i] = (b[i], c[i]) (complex, real and imaginary).
+   */
+   void eqV(Array<fftw_complex> & a, 
+            Array<double> const & b,
+            Array<double> const & c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(c.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i][0] = b[i];
+         a[i][1] = c[i];
+      }
+   }
+
+   /*
+   * Vector assignment, a[i] = b[i] (mixed).
    */
    void eqV(Array<fftw_complex> & a, Array<double> const & b)
    {
@@ -103,7 +120,7 @@ namespace VecOp {
    // Addition
 
    /*
-   * Vector-vector addition, a[i] = b[i] + c[i] (complex).
+   * Vector addition, a[i] = b[i] + c[i] (complex).
    */
    void addVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
@@ -120,7 +137,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector addition, a[i] = b[i] + c[i] (mixed).
+   * Vector addition, a[i] = b[i] + c[i] (mixed).
    */
    void addVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
@@ -172,7 +189,7 @@ namespace VecOp {
    // Subtraction
 
    /*
-   * Vector-vector subtraction, a[i] = b[i] - c[i] (complex).
+   * Vector subtraction, a[i] = b[i] - c[i] (complex).
    */
    void subVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
@@ -189,7 +206,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector subtraction, a[i] = b[i] - c[i] (mixed).
+   * Vector subtraction, a[i] = b[i] - c[i] (mixed).
    */
    void subVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
@@ -240,7 +257,7 @@ namespace VecOp {
    // Multiplication
 
    /*
-   * Vector-vector multiplication, a[i] = b[i] * c[i] (complex).
+   * Vector multiplication, a[i] = b[i] * c[i] (complex).
    */
    void mulVV(Array<fftw_complex>& a,
               Array<fftw_complex> const & b,
@@ -257,7 +274,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector multiplication, a[i] = b[i] * c[i] (mixed).
+   * Vector multiplication, a[i] = b[i] * c[i] (mixed).
    */
    void mulVV(Array<fftw_complex> & a,
               Array<fftw_complex> const & b,
@@ -308,7 +325,7 @@ namespace VecOp {
    // Division
 
    /*
-   * Vector-vector division, a[i] = b[i] / c[i] (complex).
+   * Vector division, a[i] = b[i] / c[i] (complex).
    */
    void divVV(Array<fftw_complex>& a,
               Array<fftw_complex> const & b,
@@ -329,7 +346,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector division, a[i] = b[i] / c[i] (mixed).
+   * Vector division, a[i] = b[i] / c[i] (mixed).
    */
    void divVV(Array<fftw_complex>& a,
               Array<fftw_complex> const & b,
@@ -380,12 +397,13 @@ namespace VecOp {
       }
    }
 
-   // Compound addition
+   // In-place addition
 
    /*
-   * Vector-vector in-place addition, a[i][0] += b[i][0] (complex).
+   * Vector in-place addition, a[i] += b[i] (complex).
    */
-   void addEqV(Array<fftw_complex> & a, Array<fftw_complex> const & b)
+   void addEqV(Array<fftw_complex> & a, 
+               Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
@@ -397,7 +415,24 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector in-place addition, a[i] += b[i] (mixed).
+   * Vector in-place addition, a[i] += (b[i], c[i]) (complex, real/imag).
+   */
+   void addEqV(Array<fftw_complex> & a, 
+               Array<double> const & b,
+               Array<double> const & c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(c.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i][0] += b[i];
+         a[i][1] += c[i];
+      }
+   }
+
+   /*
+   * Vector in-place addition, a[i] += b[i] (mixed, b real).
    */
    void addEqV(Array<fftw_complex> & a, Array<double> const & b)
    {
@@ -410,7 +445,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place addition, a[i][0] += b (complex).
+   * Vector-scalar in-place addition, a[i] += b (complex).
    */
    void addEqS(Array<fftw_complex>& a, fftw_complex b)
    {
@@ -423,7 +458,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place addition, a[i][0] += b (mixed).
+   * Vector-scalar in-place addition, a[i] += b (mixed, b real).
    */
    void addEqS(Array<fftw_complex>& a, double b)
    {
@@ -434,10 +469,10 @@ namespace VecOp {
       }
    }
 
-   // Compound subtraction
+   // In-place subtraction
 
    /*
-   * Vector-vector in-place subtraction, a[i] -= b[i] (complex).
+   * Vector in-place subtraction, a[i] -= b[i] (complex).
    */
    void subEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
@@ -451,7 +486,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector in-place subtraction, a[i] -= b[i] (mixed).
+   * Vector in-place subtraction, a[i] -= b[i] (mixed).
    */
    void subEqV(Array<fftw_complex>& a, Array<double> const & b)
    {
@@ -488,10 +523,10 @@ namespace VecOp {
       }
    }
 
-   // Compound multiplication
+   // In-place multiplication
 
    /*
-   * Vector-vector in-place multiplication, a[i] *= b[i] (complex).
+   * Vector in-place multiplication, a[i] *= b[i] (complex).
    */
    void mulEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
@@ -508,7 +543,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector in-place multiplication, a[i] *= b[i] (mixed).
+   * Vector in-place multiplication, a[i] *= b[i] (mixed, b real).
    */
    void mulEqV(Array<fftw_complex>& a, Array<double> const & b)
    {
@@ -538,7 +573,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place multiplication, a[i][0] *= b (mixed)
+   * Vector-scalar in-place multiplication, a[i] *= b (mixed, b real)
    */
    void mulEqS(Array<fftw_complex>& a, double b)
    {
@@ -550,10 +585,10 @@ namespace VecOp {
       }
    }
 
-   // Compound division
+   // In-place division
 
    /*
-   * Vector-vector in-place division, a[i] /= b[i] (complex).
+   * Vector in-place division, a[i] /= b[i] (complex).
    */
    void divEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b)
    {
@@ -573,7 +608,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-vector in-place division, a[i] /= b[i] (mixed).
+   * Vector in-place division, a[i] /= b[i] (mixed, b real).
    */
    void divEqV(Array<fftw_complex>& a, Array<double> const & b)
    {
@@ -606,7 +641,7 @@ namespace VecOp {
    }
 
    /*
-   * Vector-scalar in-place division, a[i] /= b (mixed).
+   * Vector-scalar in-place division, a[i] /= b (mixed, b real).
    */
    void divEqS(Array<fftw_complex>& a, double b)
    {

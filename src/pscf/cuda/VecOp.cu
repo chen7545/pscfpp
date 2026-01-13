@@ -36,7 +36,7 @@ namespace {
       }
 
       /*
-      * Vector assignment, a[i] = b[i](complex).
+      * Vector assignment, a[i] = b[i] (complex).
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -50,6 +50,27 @@ namespace {
          for (int i = startID; i < n; i += nThreads) {
             a[i].x = b[i].x;
             a[i].y = b[i].y;
+         }
+      }
+
+      /*
+      * Vector assignment, a[j] = (b[j], c[j]) (complex, real & imaginary).
+      *
+      * \param a  complex array (LHS)
+      * \param b  real array, real part (RHS)
+      * \param c  real array, imaginary part (RHS)
+      * \param n  size of arrays
+      */
+      __global__
+      void _eqV(cudaComplex* a, 
+                cudaReal const * b, cudaReal const * c, 
+                const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i].x = b[i];
+            a[i].y = c[i];
          }
       }
 
@@ -130,7 +151,7 @@ namespace {
       }
 
       /*
-      * Vector addition, a[i] = b[i] + c[i], GPU kernel (mixed, b = real).
+      * Vector addition, a[i] = b[i] + c[i] (mixed, b real).
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -151,7 +172,7 @@ namespace {
       }
 
       /*
-      * Vector addition, a[i] = b[i] + c[i], GPU kernel (mixed, c = real).
+      * Vector addition, a[i] = b[i] + c[i] (mixed, c real).
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -213,7 +234,7 @@ namespace {
       }
 
       /*
-      * Vector addition, a[i] = b[i] + c, GPU kernel (mixed, b = real).
+      * Vector addition, a[i] = b[i] + c (mixed, b real).
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -255,7 +276,7 @@ namespace {
       }
 
       /*
-      * Vector-vector subtraction, a[i] = b[i] - c[i], GPU kernel (real).
+      * Vector subtraction, a[i] = b[i] - c[i] (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -294,7 +315,7 @@ namespace {
       }
 
       /*
-      * Vector subtraction, a[i] = b[i] - c[i], GPU kernel (mixed, b = real).
+      * Vector subtraction, a[i] = b[i] - c[i], (mixed, b real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -313,15 +334,17 @@ namespace {
       }
 
       /*
-      * Vector subtraction, a[i] = b[i] - c[i], GPU kernel (mixed, c = real).
+      * Vector subtraction, a[i] = b[i] - c[i] (mixed, c real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input array (RHS)
       * \param n  size of arrays
       */
-      __global__ void _subVV(cudaComplex* a, cudaComplex const * b,
-                             cudaReal const * c, const int n)
+      __global__ 
+      void _subVV(cudaComplex* a, 
+                  cudaComplex const * b,
+                  cudaReal const * c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -332,15 +355,17 @@ namespace {
       }
 
       /*
-      * Vector subtraction, a[i] = b[i] - c (real).
+      * Vector-scalar subtraction, a[i] = b[i] - c (real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       * \param n  size of arrays
       */
-      __global__ void _subVS(cudaReal* a, cudaReal const * b,
-                             const cudaReal c, const int n)
+      __global__ 
+      void _subVS(cudaReal* a, 
+                  cudaReal const * b,
+                  const cudaReal c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -350,15 +375,17 @@ namespace {
       }
 
       /*
-      * Vector subtraction, a[i] = b[i] - c(complex).
+      * Vector-scalar subtraction, a[i] = b[i] - c (complex).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       * \param n  size of arrays
       */
-      __global__ void _subVS(cudaComplex* a, cudaComplex const * b,
-                             const cudaComplex c, const int n)
+      __global__ 
+      void _subVS(cudaComplex* a, 
+                  cudaComplex const * b,
+                  const cudaComplex c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -369,15 +396,16 @@ namespace {
       }
 
       /*
-      * Vector subtraction, a[i] = b[i] - c, GPU kernel (mixed, b = real).
+      * Vector-scalar subtraction, a[i] = b[i] - c (mixed, b real).
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input scalar (RHS)
+      * \param a  complex output array (LHS)
+      * \param b  real input array (RHS)
+      * \param c  real input scalar (RHS)
       * \param n  size of arrays
       */
-      __global__ void _subVS(cudaComplex* a, cudaReal const * b,
-                             const cudaComplex c, const int n)
+      __global__ 
+      void _subVS(cudaComplex* a, cudaReal const * b,
+                  const cudaComplex c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -388,15 +416,17 @@ namespace {
       }
 
       /*
-      * Vector subtraction, a[i] = b[i] - c, GPU kernel (mixed, c = real).
+      * Vector subtraction, a[i] = b[i] - c (mixed, c real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       * \param n  size of arrays
       */
-      __global__ void _subVS(cudaComplex* a, cudaComplex const * b,
-                             const cudaReal c, const int n)
+      __global__ 
+      void _subVS(cudaComplex* a, 
+                  cudaComplex const * b,
+                  const cudaReal c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -414,8 +444,10 @@ namespace {
       * \param c  input array (RHS)
       * \param n  size of arrays
       */
-      __global__ void _mulVV(cudaReal* a, cudaReal const * b,
-                             cudaReal const * c, const int n)
+      __global__ 
+      void _mulVV(cudaReal* a, 
+                  cudaReal const * b,
+                  cudaReal const * c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -432,8 +464,10 @@ namespace {
       * \param c  input array (RHS)
       * \param n  size of arrays
       */
-      __global__ void _mulVV(cudaComplex* a, cudaComplex const * b,
-                             cudaComplex const * c, const int n)
+      __global__ 
+      void _mulVV(cudaComplex* a, 
+                  cudaComplex const * b,
+                  cudaComplex const * c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -444,14 +478,15 @@ namespace {
       }
 
       /*
-      * Vector multiplication, a[i] = b[i] * c[i], GPU kernel (mixed, b = real).
+      * Vector multiplication, a[i] = b[i] * c[i] (mixed, b real).
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input array (RHS)
+      * \param a  complex output array (LHS)
+      * \param b  real input array (RHS)
+      * \param c  complex input array (RHS)
       * \param n  size of arrays
       */
-      __global__ void _mulVV(cudaComplex* a, cudaReal const * b,
+      __global__ void _mulVV(cudaComplex* a, 
+                             cudaReal const * b,
                              cudaComplex const * c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
@@ -463,14 +498,15 @@ namespace {
       }
 
       /*
-      * Vector multiplication, a[i] = b[i] * c[i], GPU kernel (mixed, c = real).
+      * Vector multiplication, a[i] = b[i] * c[i] (mixed, c real).
       *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input array (RHS)
+      * \param a  complex output array (LHS)
+      * \param b  complex input array (RHS)
+      * \param c  real input array (RHS)
       * \param n  size of arrays
       */
-      __global__ void _mulVV(cudaComplex* a, cudaComplex const * b,
+      __global__ void _mulVV(cudaComplex* a, 
+                             cudaComplex const * b,
                              cudaReal const * c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
@@ -500,15 +536,17 @@ namespace {
       }
 
       /*
-      * Vector multiplication, a[i] = b[i] * c(complex).
+      * Vector-scalar multiplication, a[i] = b[i] * c(complex).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       * \param n  size of arrays
       */
-      __global__ void _mulVS(cudaComplex* a, cudaComplex const * b,
-                             const cudaComplex c, const int n)
+      __global__ 
+      void _mulVS(cudaComplex* a, 
+                  cudaComplex const * b,
+                  const cudaComplex c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -519,15 +557,17 @@ namespace {
       }
 
       /*
-      * Vector multiplication, a[i] = b[i] * c, GPU kernel (mixed, b = real).
+      * Vector multiplication, a[i] = b[i] * c (mixed, b real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
       * \param c  input scalar (RHS)
       * \param n  size of arrays
       */
-      __global__ void _mulVS(cudaComplex* a, cudaReal const * b,
-                             const cudaComplex c, const int n)
+      __global__ 
+      void _mulVS(cudaComplex* a, 
+                  cudaReal const * b,
+                  const cudaComplex c, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -538,7 +578,7 @@ namespace {
       }
 
       /*
-      * Vector multiplication, a[i] = b[i] * c, GPU kernel (mixed, c = real).
+      * Vector multiplication, a[i] = b[i] * c (mixed, c real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -575,7 +615,7 @@ namespace {
       }
 
       /*
-      * Vector division, a[i] = b[i] / c[i], GPU kernel (mixed, c = real).
+      * Vector division, a[i] = b[i] / c[i] (mixed, c real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -612,7 +652,7 @@ namespace {
       }
 
       /*
-      * Vector division, a[i] = b[i] / c, GPU kernel (mixed, c = real).
+      * Vector division, a[i] = b[i] / c (mixed, c real).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -651,7 +691,7 @@ namespace {
       // In-place addition
 
       /*
-      * Vector-vector in-place addition, a[i] += b[i] (real).
+      * Vector in-place addition, a[i] += b[i] (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -668,7 +708,7 @@ namespace {
       }
 
       /*
-      * Vector-vector in-place addition, a[i] += b[i] (complex).
+      * Vector in-place addition, a[i] += b[i] (complex).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -686,7 +726,29 @@ namespace {
       }
 
       /*
-      * Vector addition in-place, a[i] += b[i], GPU kernel (mixed).
+      * Vector in-place addition, a[i] += (b[i],c[i]) (complex, real/imag).
+      *
+      * \param a  complex input / output array (LHS)
+      * \param b  real array, increment to real part (RHS)
+      * \param c  real array, increment to imaginary part (RHS)
+      * \param n  size of arrays
+      */
+      __global__ 
+      void _addEqV(cudaComplex* a,
+                   cudaReal const * b, 
+                   cudaReal const * c, 
+		   const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i].x += b[i];
+            a[i].y += c[i];
+         }
+      }
+
+      /*
+      * Vector addition in-place, a[i] += b[i] (mixed).
       *
       * \param a  output array (LHS)
       * \param b  input array (RHS)
@@ -756,7 +818,7 @@ namespace {
       }
 
       /*
-      * Vector subtraction in-place, a[i] -= b[i] (real).
+      * Vector in-place subtraction, a[i] -= b[i] (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -791,7 +853,7 @@ namespace {
       }
 
       /*
-      * Vector subtraction in-place, a[i] -= b[i] (mixed).
+      * Vector in-place subtraction, a[i] -= b[i] (mixed).
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -808,7 +870,7 @@ namespace {
       }
 
       /*
-      * Vector subtraction in-place, a[i] -= b (real).
+      * Vector in-place subtraction, a[i] -= b (real).
       *
       * \param a  real array (LHS)
       * \param b  real scalar (RHS)
@@ -825,7 +887,7 @@ namespace {
       }
 
       /*
-      * Vector subtraction in-place, a[i] -= b, GPU kernel (complex).
+      * Vector in-place subtraction, a[i] -= b (complex).
       *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
@@ -843,7 +905,7 @@ namespace {
       }
 
       /*
-      * Vector subtraction in-place, a[i] -= b (mixed).
+      * Vector in-place subtraction, a[i] -= b (mixed).
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -860,7 +922,7 @@ namespace {
       }
 
       /*
-      * Vector multiplication in-place, a[i] *= b[i] (real).
+      * Vector in-place multiplication, a[i] *= b[i] (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -877,7 +939,7 @@ namespace {
       }
 
       /*
-      * Vector multiplication in-place, a[i] *= b[i], (complex).
+      * Vector in-place multiplication, a[i] *= b[i], (complex).
       *
       * \param a  complex array (LHS)
       * \param b  complex array (RHS)
@@ -898,7 +960,7 @@ namespace {
       }
 
       /*
-      * Vector-vector in-place multiplication, a[i]*=b[i] (mixed).
+      * Vector in-place multiplication, a[i]*=b[i] (mixed).
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -933,7 +995,7 @@ namespace {
       }
 
       /*
-      * Vector-scalar multiplication in-place, a[i] *= b (complex).
+      * Vector-scalar in-place multiplication, a[i] *= b (complex).
       *
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
@@ -954,7 +1016,7 @@ namespace {
       }
 
       /*
-      * Vector multiplication in-place, a[i] *= b (mixed).
+      * Vector in-place multiplication, a[i] *= b (mixed).
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -972,7 +1034,7 @@ namespace {
       }
 
       /*
-      * Vector division in-place, a[i] /= b[i] (real).
+      * Vector in-place division, a[i] /= b[i] (real).
       *
       * \param a  real array (LHS)
       * \param b  real array (RHS)
@@ -989,7 +1051,7 @@ namespace {
       }
 
       /*
-      * Vector division in-place, a[i] /= b[i], GPU kernel (mixed, b = real).
+      * Vector in-place division, a[i] /= b[i] (mixed, b = real).
       *
       * \param a  complex array (LHS)
       * \param b  real array (RHS)
@@ -1007,7 +1069,7 @@ namespace {
       }
 
       /*
-      * Vector division in-place, a[i] /= b (real).
+      * Vector in-place division, a[i] /= b (real).
       *
       * \param a  real array (LHS)
       * \param b  real scalar (RHS)
@@ -1024,7 +1086,7 @@ namespace {
       }
 
       /*
-      * Vector division in-place, a[i] /= b, GPU kernel (mixed, b = real).
+      * Vector in-place division, a[i] /= b (mixed, b = real).
       *
       * \param a  complex array (LHS)
       * \param b  real scalar (RHS)
@@ -1161,7 +1223,9 @@ namespace {
 
    // CUDA kernel wrappers:
 
-   // Vector assignment, a[i] = b[i] (real).
+   /*
+   * Vector assignment, a[i] = b[i] (real).
+   */
    void eqV(DeviceArray<cudaReal>& a,
             DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, const int n)
@@ -1179,7 +1243,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector assignment, a[i] = b[i] (complex).
+   /*
+   * Vector assignment, a[i] = b[i] (complex).
+   */
    void eqV(DeviceArray<cudaComplex>& a,
             DeviceArray<cudaComplex> const & b,
             const int beginIdA, const int beginIdB, const int n)
@@ -1197,7 +1263,33 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar assignment, a[i] = b (real).
+   /*
+   * Vector assignment, a[i] = (b[i], c[i]) (complex, real & imaginary).
+   */
+   void eqV(DeviceArray<cudaComplex>& a,
+            DeviceArray<cudaReal> const & b,  // real part
+            DeviceArray<cudaReal> const & c,  // imaginary part
+            const int beginIdA, const int beginIdB, const int beginIdC,
+	    const int n)
+   {
+      UTIL_CHECK(a.capacity() >= n + beginIdA);
+      UTIL_CHECK(b.capacity() >= n + beginIdB);
+      UTIL_CHECK(c.capacity() >= n + beginIdC);
+
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _eqV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA,
+                                  b.cArray()+beginIdB, 
+                                  c.cArray()+beginIdC, n);
+      cudaErrorCheck( cudaGetLastError() );
+   }
+
+   /*
+   * Vector-scalar assignment, a[i] = b (real).
+   */
    void eqS(DeviceArray<cudaReal>& a,
             const cudaReal b,
             const int beginIdA, const int n)
@@ -1213,7 +1305,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector assignment, a[i] = b (complex).
+   /*
+   * Vector-scalar assignment, a[i] = b (complex).
+   */
    void eqS(DeviceArray<cudaComplex>& a,
             const cudaComplex b,
             const int beginIdA, const int n)
@@ -1229,7 +1323,11 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition, a[i] = b[i] + c[i] (real).
+   // Binary arithmetic operations, separate array for result
+
+   /*
+   * Vector addition, a[i] = b[i] + c[i] (real).
+   */
    void addVV(DeviceArray<cudaReal>& a,
               DeviceArray<cudaReal> const & b,
               DeviceArray<cudaReal> const & c,
@@ -1245,12 +1343,15 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _addVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
+      _addVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, 
+                                    b.cArray()+beginIdB,
                                     c.cArray()+beginIdC, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector addition, a[i] = b[i] + c[i] (complex).
+   /*
+   * Vector addition, a[i] = b[i] + c[i] (complex).
+   */
    void addVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
               DeviceArray<cudaComplex> const & c,
@@ -1266,12 +1367,15 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _addVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
+      _addVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, 
+                                    b.cArray()+beginIdB,
                                     c.cArray()+beginIdC, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition, a[i] = b[i] + c[i] (mixed, b = real).
+   /*
+   * Vector addition, a[i] = b[i] + c[i] (mixed, b real).
+   */
    void addVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaReal> const & b,
               DeviceArray<cudaComplex> const & c,
@@ -1287,12 +1391,15 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _addVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
-                                    c.cArray()+beginIdC, n);
+      _addVV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA, 
+                                    b.cArray() + beginIdB,
+                                    c.cArray() + beginIdC, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector addition, a[i] = b[i] + c[i] (mixed).
+   /*
+   * Vector addition, a[i] = b[i] + c[i] (mixed, c real).
+   */
    void addVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
               DeviceArray<cudaReal> const & c,
@@ -1308,12 +1415,15 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _addVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
-                                    c.cArray()+beginIdC, n);
+      _addVV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA, 
+                                    b.cArray() + beginIdB,
+                                    c.cArray() + beginIdC, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar addition, a[i] = b[i] + c (real).
+   /*
+   * Vector-scalar addition, a[i] = b[i] + c (real).
+   */
    void addVS(DeviceArray<cudaReal>& a,
               DeviceArray<cudaReal> const & b,
               const cudaReal c,
@@ -1327,7 +1437,8 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _addVS<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
+      _addVS<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, 
+                                    b.cArray()+beginIdB,
                                     c, n);
       cudaErrorCheck( cudaGetLastError() );
    }
@@ -1352,7 +1463,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition, a[i] = b[i] + c (mixed, b = real).
+   // Vector addition, a[i] = b[i] + c (mixed, b real).
    void addVS(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaReal> const & b,
               const cudaComplex c,
@@ -1372,7 +1483,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition, a[i] = b[i] + c (mixed, c = real).
+   // Vector addition, a[i] = b[i] + c (mixed, c real).
    void addVS(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
               const cudaReal c,
@@ -1436,7 +1547,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector subtraction, a[i]=b[i]-c[i] (mixed).
+   // Vector subtraction, a[i]=b[i]-c[i] (mixed).
    void subVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaReal> const & b,
               DeviceArray<cudaComplex> const & c,
@@ -1458,7 +1569,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector subtraction, a[i]=b[i]-c[i] (mixed).
+   // Vector subtraction, a[i]=b[i]-c[i] (mixed).
    void subVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
               DeviceArray<cudaReal> const & c,
@@ -1603,7 +1714,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector multiplication, a[i]=b[i]*c[i] (mixed).
+   // Vector multiplication, a[i]=b[i]*c[i] (mixed).
    void mulVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaReal> const & b,
               DeviceArray<cudaComplex> const & c,
@@ -1625,7 +1736,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector multiplication, a[i]=b[i]*c[i] (mixed).
+   // Vector multiplication, a[i]=b[i]*c[i] (mixed).
    void mulVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
               DeviceArray<cudaReal> const & c,
@@ -1727,7 +1838,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector division, a[i] = b[i] / c[i] (real).
+   // Vector division, a[i] = b[i] / c[i] (real).
    void divVV(DeviceArray<cudaReal>& a,
               DeviceArray<cudaReal> const & b,
               DeviceArray<cudaReal> const & c, const int beginIdA,
@@ -1747,12 +1858,14 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector division, a[i] = b[i] / c[i] (mixed).
+   /*
+   * Vector division, a[i] = b[i] / c[i] (mixed).
+   */
    void divVV(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
               DeviceArray<cudaReal> const & c,
-              const int beginIdA,
-              const int beginIdB, const int beginIdC, const int n)
+              const int beginIdA, const int beginIdB, const int beginIdC, 
+              const int n)
    {
       UTIL_CHECK(a.capacity() >= n + beginIdA);
       UTIL_CHECK(b.capacity() >= n + beginIdB);
@@ -1763,12 +1876,15 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _divVV<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
-                                    c.cArray()+beginIdC, n);
+      _divVV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA, 
+                                    b.cArray() + beginIdB,
+                                    c.cArray() + beginIdC, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar division, a[i] = b[i] / c (real).
+   /*
+   * Vector-scalar division, a[i] = b[i] / c (real).
+   */
    void divVS(DeviceArray<cudaReal>& a,
               DeviceArray<cudaReal> const & b,
               const cudaReal c,
@@ -1783,15 +1899,19 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _divVS<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
+      _divVS<<<nBlocks, nThreads>>>(a.cArray() + beginIdA, 
+                                    b.cArray() + beginIdB,
                                     c, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector division, a[i] = b[i] / c (mixed, c = real).
+   /*
+   * Vector division, a[i] = b[i] / c (mixed, c real).
+   */
    void divVS(DeviceArray<cudaComplex>& a,
               DeviceArray<cudaComplex> const & b,
-              const cudaReal c, const int beginIdA, const int beginIdB,
+              const cudaReal c, 
+              const int beginIdA, const int beginIdB,
               const int n)
    {
       UTIL_CHECK(a.capacity() >= n + beginIdA);
@@ -1802,12 +1922,15 @@ namespace {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _divVS<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, b.cArray()+beginIdB,
+      _divVS<<<nBlocks, nThreads>>>(a.cArray()+beginIdA, 
+                                    b.cArray()+beginIdB,
                                     c, n);
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Division of scalar by  vector, a[i] = b / c[i] (cudaReal).
+   /*
+   * Division of scalar by  vector, a[i] = b / c[i] (real).
+   */
    void divSV(DeviceArray<cudaReal>& a,
               const cudaReal b,
               DeviceArray<cudaReal> const & c,
@@ -1826,7 +1949,11 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition in-place, a[i] += b[i] (cudaReal).
+   // In-place arithmetic operations
+
+   /*
+   * Vector addition in-place, a[i] += b[i] (real).
+   */
    void addEqV(DeviceArray<cudaReal>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -1844,7 +1971,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition in-place, a[i] += b[i] (cudaComplex).
+   /*
+   * Vector addition in-place, a[i] += b[i] (complex).
+   */
    void addEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaComplex> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -1862,10 +1991,38 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition in-place, a[i] += b[i] (mixed).
+   /*
+   * Vector addition in-place, a[i] += (b[i], c[i]) (complex, real/imag).
+   */
    void addEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaReal> const & b,
-               const int beginIdA, const int beginIdB, const int n)
+               DeviceArray<cudaReal> const & c,
+               const int beginIdA, const int beginIdB, const int beginIdC,
+	       const int n)
+   {
+      UTIL_CHECK(a.capacity() >= n + beginIdA);
+      UTIL_CHECK(b.capacity() >= n + beginIdB);
+      UTIL_CHECK(c.capacity() >= n + beginIdC);
+
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _addEqV<<<nBlocks, nThreads>>>(a.cArray() + beginIdA,
+                                     b.cArray() + beginIdB, 
+                                     c.cArray() + beginIdB, 
+				     n);
+      cudaErrorCheck( cudaGetLastError() );
+   }
+
+   /*
+   * Vector addition in-place, a[i] += b[i] (mixed).
+   */
+   void addEqV(DeviceArray<cudaComplex>& a,
+               DeviceArray<cudaReal> const & b,
+               const int beginIdA, const int beginIdB, 
+	       const int n)
    {
       UTIL_CHECK(a.capacity() >= n + beginIdA);
       UTIL_CHECK(b.capacity() >= n + beginIdB);
@@ -1880,7 +2037,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar in-place addition, a[i] += b (real).
+   /*
+   * Vector-scalar in-place addition, a[i] += b (real).
+   */
    void addEqS(DeviceArray<cudaReal>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -1896,7 +2055,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector addition in-place, a[i] += b (complex).
+   /*
+   * Vector-scalar in-place addition, a[i] += b (complex).
+   */
    void addEqS(DeviceArray<cudaComplex>& a,
                const cudaComplex b,
                const int beginIdA, const int n)
@@ -1912,7 +2073,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar in-place addition, a[i] += b (mixed).
+   /*
+   * Vector-scalar in-place addition, a[i] += b (mixed).
+   */
    void addEqS(DeviceArray<cudaComplex>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -1928,7 +2091,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector subtraction in-place, a[i] -= b[i] (cudaReal).
+   /*
+   * Vector in-place subtraction, a[i] -= b[i] (real).
+   */
    void subEqV(DeviceArray<cudaReal>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -1946,7 +2111,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector in-place subtraction, a[i] -= b[i] (complex).
+   /*
+   * Vector in-place subtraction, a[i] -= b[i] (complex).
+   */
    void subEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaComplex> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -1964,7 +2131,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector in-place subtraction, a[i] -= b[i] (mixed).
+   /*
+   * Vector in-place subtraction, a[i] -= b[i] (mixed).
+   */
    void subEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -1982,7 +2151,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar in-place subtraction, a[i] -= b (real).
+   /*
+   * Vector-scalar in-place subtraction, a[i] -= b (real).
+   */
    void subEqS(DeviceArray<cudaReal>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -1998,7 +2169,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar in-place subtraction, a[i] -= b (complex).
+   /*
+   * Vector-scalar in-place subtraction, a[i] -= b (complex).
+   */
    void subEqS(DeviceArray<cudaComplex>& a,
                const cudaComplex b,
                const int beginIdA, const int n)
@@ -2014,7 +2187,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-scalar subtraction in-place, a[i] -= b (mixed).
+   /*
+   * Vector-scalar in-place subtraction, a[i] -= b (mixed).
+   */
    void subEqS(DeviceArray<cudaComplex>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -2032,7 +2207,7 @@ namespace {
 
    // In-place multiplication
 
-   // Vector-vector in-place multiplication, a[i] *= b[i] (real).
+   // Vector in-place multiplication, a[i] *= b[i] (real).
    void mulEqV(DeviceArray<cudaReal>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -2050,7 +2225,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector multiplication in-place, a[i] *= b[i] (cudaComplex).
+   // Vector in-place multiplication, a[i] *= b[i] (cudaComplex).
    void mulEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaComplex> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -2068,7 +2243,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector multiplication in-place, a[i] *= b[i] (mixed).
+   // Vector in-place multiplication, a[i] *= b[i] (mixed).
    void mulEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -2086,7 +2261,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector multiplication in-place, a[i] *= b (cudaReal).
+   // Vector in-place multiplication, a[i] *= b (cudaReal).
    void mulEqS(DeviceArray<cudaReal>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -2102,7 +2277,7 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector multiplication in-place, a[i] *= b (cudaComplex).
+   // Vector in-place multiplication, a[i] *= b (cudaComplex).
    void mulEqS(DeviceArray<cudaComplex>& a,
                const cudaComplex b,
                const int beginIdA, const int n)
@@ -2118,7 +2293,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector multiplication in-place, a[i] *= b (mixed).
+   /*
+   * Vector in-place multiplication, a[i] *= b (mixed).
+   */
    void mulEqS(DeviceArray<cudaComplex>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -2136,7 +2313,9 @@ namespace {
 
    // In-place division
 
-   // Vector-vector division in-place, a[i] /= b[i] (real).
+   /*
+   * Vector elementwise in-place division, a[i] /= b[i] (real).
+   */
    void divEqV(DeviceArray<cudaReal>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -2154,7 +2333,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector-vector division in-place, a[i] /= b[i] (mixed).
+   /*
+   * Vector elementwise in-place division, a[i] /= b[i] (mixed).
+   */
    void divEqV(DeviceArray<cudaComplex>& a,
                DeviceArray<cudaReal> const & b,
                const int beginIdA, const int beginIdB, const int n)
@@ -2172,7 +2353,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector division in-place, a[i] /= b (real).
+   /*
+   * Vector-scalar in-place division, a[i] /= b (real).
+   */
    void divEqS(DeviceArray<cudaReal>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -2188,7 +2371,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector division in-place, a[i] /= b (mixed).
+   /*
+   * Vector-scalar in-place division, a[i] /= b (mixed).
+   */
    void divEqS(DeviceArray<cudaComplex>& a,
                const cudaReal b,
                const int beginIdA, const int n)
@@ -2206,7 +2391,9 @@ namespace {
 
    // Exponentiation
 
-   // Vector exponentiation, a[i] = exp(b[i]) (cudaReal).
+   /*
+   * Vector exponentiation, a[i] = exp(b[i]) (real).
+   */
    void expV(DeviceArray<cudaReal>& a,
              DeviceArray<cudaReal> const & b,
              const int beginIdA, const int beginIdB, const int n)
@@ -2224,7 +2411,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector exponentiation, a[i] = exp(b[i]) (cudaComplex).
+   /*
+   * Vector exponentiation, a[i] = exp(b[i]) (complex).
+   */
    void expV(DeviceArray<cudaComplex>& a,
              DeviceArray<cudaComplex> const & b,
              const int beginIdA, const int beginIdB, const int n)
@@ -2242,9 +2431,11 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Elementwise square
+   // Elementwise arithmetic square
 
-   // Vector square, a[i] = b[i]*b[i] (real).
+   /*
+   * Vector elementwise square, a[i] = b[i]*b[i] (real).
+   */
    void sqV(DeviceArray<cudaReal>& a,
             DeviceArray<cudaReal> const & b,
             const int beginIdA, const int beginIdB, 
@@ -2263,7 +2454,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector square, a[i] = b[i]*b[i] (complex).
+   /*
+   * Vector elementwise square, a[i] = b[i]*b[i] (complex).
+   */
    void sqV(DeviceArray<cudaComplex>& a,
             DeviceArray<cudaComplex> const & b,
             const int beginIdA, const int beginIdB, 
@@ -2282,9 +2475,11 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Absolute magnitude
+   // Elementwise absolute magnitudes
 
-   // Vector absolute magnitude, a[i] = abs(b[i]) (real).
+   /*
+   * Vector absolute magnitude, a[i] = abs(b[i]) (real).
+   */
    void absV(DeviceArray<cudaReal>& a,
              DeviceArray<cudaReal> const & b,
              const int beginIdA, const int beginIdB,
@@ -2303,7 +2498,9 @@ namespace {
       cudaErrorCheck( cudaGetLastError() );
    }
 
-   // Vector absolute magnitude squared, a[i] = |b[i]|^2 (complex).
+   /*
+   * Vector absolute magnitude squared, a[i] = |b[i]|^2 (complex).
+   */
    void sqAbsV(DeviceArray<cudaReal>& a,
                DeviceArray<cudaComplex> const & b,
                const int beginIdA, const int beginIdB, 

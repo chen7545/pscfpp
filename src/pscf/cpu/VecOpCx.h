@@ -61,7 +61,7 @@ namespace Pscf {
       // Assignment
 
       /**
-      * Vector-vector assignment, a[i] = b[i] (complex).
+      * Vector assignment, a[i] = b[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -71,7 +71,20 @@ namespace Pscf {
       void eqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
-      * Vector-vector assignment, a[i] = b[i] (mixed).
+      * Vector assignment, a[i] = (b[i], c[i]) (complex, real & imaginary).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  complex array (LHS)
+      * \param b  real array, real part (RHS)
+      * \param c  real array, imaginary part (RHS)
+      */
+      void eqV(Array<fftw_complex>& a,
+               Array<double> const & b,
+               Array<double> const & c);
+
+      /**
+      * Vector assignment, a[i] = b[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -103,7 +116,7 @@ namespace Pscf {
       // Addition
 
       /**
-      * Vector-vector addition, a[i] = b[i] + c[i] (complex).
+      * Vector addition, a[i] = b[i] + c[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -116,7 +129,7 @@ namespace Pscf {
                  Array<fftw_complex> const & c);
 
       /**
-      * Vector-vector addition, a[i] = b[i] + c[i] (mixed).
+      * Vector addition, a[i] = b[i] + c[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -157,7 +170,7 @@ namespace Pscf {
       // Subtraction
 
       /**
-      * Vector-vector subtraction, a[i] = b[i] - c[i] (complex).
+      * Vector subtraction, a[i] = b[i] - c[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -198,7 +211,7 @@ namespace Pscf {
       // Multiplication
 
       /**
-      * Vector-vector multiplication, a[i] = b[i] * c[i] (complex)
+      * Vector multiplication, a[i] = b[i] * c[i] (complex)
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -211,7 +224,7 @@ namespace Pscf {
                  Array<fftw_complex> const & c);
 
       /**
-      * Vector-vector multiplication, a[i] = b[i] * c[i] (mixed)
+      * Vector multiplication, a[i] = b[i] * c[i] (mixed)
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -252,7 +265,7 @@ namespace Pscf {
       // Division
 
       /**
-      * Vector-vector division, a[i] = b[i] / c[i] (complex).
+      * Vector division, a[i] = b[i] / c[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -265,7 +278,7 @@ namespace Pscf {
                  Array<fftw_complex> const & c);
 
       /**
-      * Vector-vector division, a[i] = b[i] / c[i] (mixed).
+      * Vector division, a[i] = b[i] / c[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -306,7 +319,7 @@ namespace Pscf {
       // In-place addition
 
       /*
-      * Vector-vector in-place addition, a[i] += b[i] (complex).
+      * Vector in-place addition, a[i] += b[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -316,7 +329,23 @@ namespace Pscf {
       void addEqV(Array<fftw_complex> & a, Array<fftw_complex> const & b);
 
       /*
-      * Vector-vector in-place addition, a[i] += b[i] (mixed).
+      * Vector in-place addition, a[i] += (b[i], c[i]) (complex, real & imag).
+      *
+      * This function add real array b to the real part of complex array a,
+      * and adds real array c to the imaginary part of complex array a.
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  complex array (LHS)
+      * \param b  real array, increment of real part (RHS)
+      * \param c  real array, increment of imaginary part (RHS)
+      */
+      void addEqV(Array<fftw_complex> & a, 
+                  Array<double> const & b,
+                  Array<double> const & c);
+
+      /*
+      * Vector in-place addition, a[i] += b[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -348,7 +377,7 @@ namespace Pscf {
       // In-place subtraction
 
       /**
-      * Vector-vector in-place subtraction, a[i] -= b[i] (complex).
+      * Vector in-place subtraction, a[i] -= b[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -358,7 +387,7 @@ namespace Pscf {
       void subEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
-      * Vector-vector in-place subtraction, a[i] -= b[i] (mixed).
+      * Vector in-place subtraction, a[i] -= b[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -390,7 +419,7 @@ namespace Pscf {
       // In-place multiplication
 
       /**
-      * Vector-vector in-place multiplication, a[i] *= b[i] (complex).
+      * Vector in-place multiplication, a[i] *= b[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -400,7 +429,7 @@ namespace Pscf {
       void mulEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
-      * Vector-vector in-place multiplication, a[i] *= b[i] (mixed).
+      * Vector in-place multiplication, a[i] *= b[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -432,7 +461,7 @@ namespace Pscf {
       // In-place division
 
       /**
-      * Vector-vector in-place division, a[i] /= b[i] (complex).
+      * Vector in-place division, a[i] /= b[i] (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
@@ -442,7 +471,7 @@ namespace Pscf {
       void divEqV(Array<fftw_complex>& a, Array<fftw_complex> const & b);
 
       /**
-      * Vector-vector in-place division, a[i] /= b[i] (mixed).
+      * Vector in-place division, a[i] /= b[i] (mixed).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *
