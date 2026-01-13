@@ -9,7 +9,7 @@
 */
 
 #include <pscf/environment/EnvironmentBase.h> // base class
-#include <rp/Mixture.h>                       // method parameter
+#include <rp/solvers/Mixture.h>               // method parameter
 #include <util/containers/FSArray.h>          // container
 #include <iostream>
 

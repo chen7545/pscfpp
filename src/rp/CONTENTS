@@ -1,20 +1,21 @@
-This directory contains base class templates for classes that are used
-in directories src/rpc and src/rpg to implement SCFT and PS-FTS 
-calculations for methods that use real fields and periodic boundary
-conditions. 
+This directory contains a set of class templates that are defined in 
+namespace Rp and are designed to be used in programs that implement
+SCFT and PS-FTS calculations that use real fields and periodic boundary 
+conditions. Each of these class templates is designed to be used as a 
+base class for a corresponding pair of analogous classes with the same
+name as the base class template that are defined in program-level 
+namespaces Pscf::Rpc and Pscf::Rpg, which contain code for analogous 
+programs that run on CPU or GPU hardware.  Use of templates as base 
+classes that contain algorithms that are used in such pairs of closely 
+analogous helps reduce code duplication in such classes.
 
-Classes:
+The src/rp, src/rpc and src/rpg directories have analogous subdirectory 
+structures.
 
-  Rp::System          - base for (Rpc|Rpg)::System
-  Rp::SystemConstRef  - base for (Rpc|Rpg)::System
-  Rp::Domain          - base class for (Rpc|Rpg)::Domain
-  Rp::FieldIo         - base class for (Rpc|Rpg)::FieldIo
-  Rp::WFields         - base class for (Rpc|Rpg)::WFields 
-  Rp::CFields         - base class for (Rpc|Rpg)::CFields 
-  Rp::Mask            - base class for (Rpc|Rpg)::Mask
+Subdirectories:
+  
+field/       - fields and spatial domain
+scft/        - self-consistent field theory (SCFT)
+solvers/     - modified diffusion equation (MDE) solvers
+system/      - main System class template
 
-Files that define global function templates:
-
-  fieldIoUtil.h    - functions used in FieldIoReal
-  fieldArrayUtil.h - utilities field containers
-    

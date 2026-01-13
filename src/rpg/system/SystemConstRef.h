@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/SystemConstRef.h>      // base class template
-#include <rpg/system/System.h>      // template parameter argument
+#include <rp/system/SystemConstRef.h>  // base class template
+#include <rpg/system/System.h>         // template parameter argument
 
 namespace Pscf {
 namespace Rpg {

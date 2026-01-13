@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/SystemConstRef.h>
+#include <rp/system/SystemConstRef.h>
 #include <util/global.h>
 #include <iostream>
 

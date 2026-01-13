@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mixture.h"         // class header
-#include <rp/Mixture.tpp>    // base class template implementation
+#include "Mixture.h"              // class header
+#include <rp/solvers/Mixture.tpp> // base class templ. implementation
 
 #include "Polymer.h"
 #include "Solvent.h"

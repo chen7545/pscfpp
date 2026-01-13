@@ -5,8 +5,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "ScftThermo.h"         // class header
-#include <rp/ScftThermo.tpp>    // base class template implementation
+#include "ScftThermo.h"            // class header
+#include <rp/scft/ScftThermo.tpp>  // base class template implementation
 
 #include <rpg/solvers/Mixture.h>
 #include <rpg/solvers/Polymer.h>

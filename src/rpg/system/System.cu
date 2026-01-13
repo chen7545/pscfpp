@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "System.h"                // class header
-#include <rp/System.tpp>           // base class template implementation
+#include "System.h"              // class header
+#include <rp/system/System.tpp>  // base class template implementation
 
 #include <rpg/environment/EnvironmentFactory.h>
 #include <rpg/fts/simulator/Simulator.h>

@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/SystemConstRef.h>   // base class template
-#include <rpc/system/System.h>                // template parameter
+#include <rp/system/SystemConstRef.h>   // base class template
+#include <rpc/system/System.h>          // template parameter
 
 namespace Pscf {
 namespace Rpc {

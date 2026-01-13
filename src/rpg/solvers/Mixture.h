@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/Mixture.h>           // base class template
-#include <rpg/system/Types.h>     // base class template argument
-#include <pscf/cuda/cudaTypes.h>      // real and complex cuda data types
+#include <rp/solvers/Mixture.h>    // base class template
+#include <rpg/system/Types.h>      // base class template argument
+#include <pscf/cuda/cudaTypes.h>   // real & complex cuda data types
 
 namespace Pscf {
 namespace Rpg {

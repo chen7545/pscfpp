@@ -10,7 +10,7 @@
 #include <rpc/solvers/Polymer.h>
 #include <rpc/solvers/Solvent.h>
 #include <rpc/field/Domain.h>
-#include <rp/ScftThermo.tpp>
+#include <rp/scft/ScftThermo.tpp>
 #include <pscf/interaction/Interaction.h>
 
 namespace Pscf {

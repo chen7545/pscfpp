@@ -6,7 +6,7 @@
 */
 
 #include "SystemConstRef.h"
-#include <rp/SystemConstRef.tpp>
+#include <rp/system/SystemConstRef.tpp>
 
 namespace Pscf {
    namespace Rp {

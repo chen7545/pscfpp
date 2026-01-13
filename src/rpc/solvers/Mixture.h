@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/Mixture.h>         // base class template
-#include <rpc/system/Types.h>   // base class template argument
+#include <rp/solvers/Mixture.h>   // base class template
+#include <rpc/system/Types.h>     // base class template argument
 
 namespace Pscf {
 namespace Rpc {

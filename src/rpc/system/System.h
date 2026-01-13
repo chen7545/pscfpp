@@ -9,7 +9,7 @@
 */
 
 // Header file includes
-#include <rp/System.h>        // base class template
+#include <rp/system/System.h>      // base class template
 #include <rpc/system/Types.h>      // base class template argument
 #include <rpc/field/WFields.h>     // member
 #include <rpc/field/CFields.h>     // member
