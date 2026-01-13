@@ -7,6 +7,69 @@ namespace Pscf {
 
    using namespace Util;
 
+   // Anonymous namesapce, for functions that are only used in this file
+   namespace {
+
+      /*
+      * Linear array transformation a[i] => c*a[i] + s (float).
+      */
+      __global__
+      void _linearScale(float* a, float c, float s, int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i] = a[i] * c + s;
+         }
+      }
+
+      /*
+      * Linear array transformation a[i] => c*a[i] + s (double).
+      */
+      __global__
+      void _linearScale(double* a, double c, double s, int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i] = a[i] * c + s;
+         }
+      }
+
+      /*
+      * Linear array transformation a[i] => c*a[i] + s (float).
+      */
+      void linearScale(DeviceArray<float>& a, float c, float s)
+      {
+         const int n = a.capacity();
+
+         // GPU resources
+         int nBlocks, nThreads;
+         ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+         // Launch kernel
+         _linearScale<<<nBlocks, nThreads>>>(a.cArray(), c, s, n);
+      }
+
+      /*
+      * Linear array transformation a[i] => c*a[i] + s (double).
+      */
+      void linearScale(DeviceArray<double>& a, double c, double s)
+      {
+         const int n = a.capacity();
+
+         // GPU resources
+         int nBlocks, nThreads;
+         ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+         // Launch kernel
+         _linearScale<<<nBlocks, nThreads>>>(a.cArray(), c, s, n);
+      }
+
+   } // end anonymous namespace
+
+   // Public class member functions
+
    /*
    * Constructor.
    */
@@ -28,7 +91,7 @@ namespace Pscf {
    {}
 
    /*
-   * Sets of random seed, and initializes random number generator.
+   * Set random random number generator seed.
    *
    * \param seed value for random seed (private member variable seed)
    */
@@ -49,39 +112,64 @@ namespace Pscf {
    }
 
    /*
-   * Populate array on device with random floats in (0, 1], uniform dist.
+   * Populate array with uniform random floats in (0, 1].
    */
    void CudaRandom::uniform(DeviceArray<float>& data)
    {
-      UTIL_CHECK(data.capacity() > 0);
+      const int n = data.capacity();
+      UTIL_CHECK(n > 0);
       if (!isInitialized_) {
          setSeed(0);
       }
 
-      curandStatus_t status = curandGenerateUniform(gen_, data.cArray(), 
-                                                    data.capacity());
+      curandStatus_t status;
+      status = curandGenerateUniform(gen_, data.cArray(), n);
       errorCheck(status);
    }
 
    /*
-   * Populate array on device with random doubles in (0, 1], uniform dist.
+   * Populate array with uniform random doubles in (0, 1].
    */
    void CudaRandom::uniform(DeviceArray<double>& data)
    {
-      UTIL_CHECK(data.capacity() > 0);
+      const int n = data.capacity();
+      UTIL_CHECK(n > 0);
       if (!isInitialized_) {
          setSeed(0);
       }
-      
-      curandStatus_t status = curandGenerateUniformDouble(gen_, data.cArray(), 
-                                                          data.capacity());
+
+      curandStatus_t status;
+      status = curandGenerateUniformDouble(gen_, data.cArray(), n);
       errorCheck(status);
+   }
+
+   /*
+   * Populate array with uniform random floats in (min, max].
+   */
+   void CudaRandom::uniform(DeviceArray<float>& data, 
+                            float min, float max)
+   {
+      UTIL_CHECK(max > min);
+      uniform(data);
+      linearScale(data, max - min, min);
+   }
+
+   /*
+   * Populate array with uniform random doubles in (min, max].
+   */
+   void CudaRandom::uniform(DeviceArray<double>& data,
+                            double min, double max)
+   {
+      UTIL_CHECK(max > min);
+      uniform(data);
+      linearScale(data, max - min, min);
    }
 
    /*
    * Populate array with normal-distributed random floats.
    */
-   void CudaRandom::normal(DeviceArray<float>& data, float stddev, float mean)
+   void CudaRandom::normal(DeviceArray<float>& data,
+                           float stddev, float mean)
    {
       UTIL_CHECK(data.capacity() > 0);
       if (!isInitialized_) {
@@ -92,16 +180,16 @@ namespace Pscf {
       if (n % 2 == 1) {
          UTIL_THROW("normal() requires array size to be an even number.");
       }
-      
-      curandStatus_t status = curandGenerateNormal(gen_, data.cArray(), 
-                                                   n, mean, stddev);
+
+      curandStatus_t status;
+      status = curandGenerateNormal(gen_, data.cArray(), n, mean, stddev);
       errorCheck(status);
    }
 
    /*
    * Populate array with normal-distributed random doubles.
    */
-   void CudaRandom::normal(DeviceArray<double>& data, 
+   void CudaRandom::normal(DeviceArray<double>& data,
                            double stddev, double mean)
    {
       UTIL_CHECK(data.capacity() > 0);
@@ -114,13 +202,16 @@ namespace Pscf {
          UTIL_THROW("normal() requires array size to be an even number.");
       }
 
-      curandStatus_t status = curandGenerateNormalDouble(gen_, data.cArray(), 
-                                                         n, mean, stddev);
+      curandStatus_t status;
+      status = curandGenerateNormalDouble(gen_, data.cArray(),
+                                          n, mean, stddev);
       errorCheck(status);
    }
 
    /*
-   * Check generator error status. If not success, print info and throw error.
+   * Check generator error status. 
+   *
+   * If not success, print info and throw Exception.
    */
    void CudaRandom::errorCheck(curandStatus_t const & error)
    {

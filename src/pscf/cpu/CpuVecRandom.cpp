@@ -47,10 +47,24 @@ namespace Pscf {
    }
 
    /*
+   * Populate array with random doubles uniform dist in (min, max].
+   */
+   void CpuVecRandom::uniform(Array<double>& data, double min, double max)
+   {
+      UTIL_CHECK(randomPtr_);
+      UTIL_CHECK(data.capacity() > 0);
+      UTIL_CHECK(max > min);
+      const int n = data.capacity();
+      for (int i = 0; i < n; ++i) {
+         data[i] = randomPtr_->uniform(min, max);
+      } 
+   }
+
+   /*
    * Populate array with normal-distributed random doubles.
    */
    void CpuVecRandom::normal(Array<double>& data, 
-                          double stddev, double mean)
+                             double stddev, double mean)
    {
       UTIL_CHECK(randomPtr_);
       UTIL_CHECK(data.capacity() > 0);

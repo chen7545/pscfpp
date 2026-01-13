@@ -21,11 +21,16 @@ namespace Pscf {
    /**
    * Random number generator for arrays of random numbers on CPU.
    *
-   * This class generates arrays of random numbers on a CPU,
-   * using an interface analogous to that of CudaRandom to allow
-   * creation of template code that can use either type of object.
-   * It uses an associated Util::Random object to generate random
-   * numbers.
+   * A CpuVecRandom generates arrays of random real numbers on a CPU. 
+   * It uses an associated Util::Random scalar random number generator
+   * to generate these random numbers. 
+   *
+   * CpuVecRandom has an interface that is analogous to that of the
+   * CudaRandom class, which uses a GPU to generates arrays of random 
+   * numbers in global GPU memory. This similarity is intended to allow 
+   * creation of template code that can use either type of vector 
+   * random number object interchangably for use in analogous programs 
+   * that run on CPU or GPU-accelerated hardware.
    *
    * \ingroup Pscf_Cpu_Module
    */
@@ -40,9 +45,9 @@ namespace Pscf {
       CpuVecRandom();
 
       /**
-      * Constructor - creates association
+      * Constructor - creates association with a scalar RNG.
       *
-      * \param random  associated scalar random number generator
+      * \param random  associated scalar random number generator (RNG)
       */
       CpuVecRandom(Util::Random& random);
 
@@ -52,25 +57,30 @@ namespace Pscf {
       virtual ~CpuVecRandom();
 
       /**
-      * Create an association with a Util::Random object.
+      * Create an association with a Util::Random scalar RNG.
       *
       * \param random  associated scalar random number generator
       */
       void associate(Util::Random& random);
 
       /**
-      * Populate array on device with random doubles in (0, 1], uniform dist.
+      * Generate uniform random doubles in (0, 1].
       *
       * \param data  array to populate
       */
       void uniform(Array<double>& data);
 
       /**
-      * Populate array on device with normal-distributed random doubles.
+      * Generate uniform random distribution in range (min, max].
       *
-      * Note: the input array must have an even number of elements. This is a
-      * requirement imposed by cuRAND, the random number generator software
-      * used by CpuVecRandom.
+      * \param data  array to populate with random numbers
+      * \param min  minimum of range
+      * \param max  maximum of range
+      */
+      void uniform(Array<double>& data, double min, double max);
+
+      /**
+      * Generate normal-distributed random doubles.
       *
       * \param data  array to populate
       * \param stddev  standard deviation (input)
