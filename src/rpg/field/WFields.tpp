@@ -9,7 +9,7 @@
 */
 
 #include "WFields.h"
-#include <rp/WFields.tpp>
+#include <rp/field/WFields.tpp>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/DeviceArray.h>
 

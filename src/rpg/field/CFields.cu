@@ -6,7 +6,7 @@
 */
 
 #include "CFields.h"              // class header
-#include <rp/CFields.tpp>         // base class implementation
+#include <rp/field/CFields.tpp>   // base class implementation
 
 namespace Pscf {
    namespace Rp {

@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/FieldIo.h>            // base class template
+#include <rp/field/FieldIo.h>      // base class template
 #include <prdc/cpu/RField.h>       // base class template argument
 #include <prdc/cpu/RFieldDft.h>    // base class template argument
 #include <prdc/cpu/FFT.h>          // base class template argument

@@ -25,7 +25,7 @@
 #include <pscf/math/arithmetic.h>
 
 // Templates that require declarations given above to parse
-#include <rp/FieldIo.tpp>          // base class template implementation
+#include <rp/field/FieldIo.tpp>    // base class template implementation
 #include <prdc/field/rFieldIo.h>   // function templates for IO operations
 
 namespace Pscf {

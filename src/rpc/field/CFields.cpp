@@ -6,7 +6,7 @@
 */
 
 #include "CFields.h"              // class header
-#include <rp/CFields.tpp>         // base class template implementation
+#include <rp/field/CFields.tpp>   // base class template implementation
 #include <prdc/cpu/RField.h>      // base class template argument
 #include <rpc/field/FieldIo.h>    // base class template argument
 

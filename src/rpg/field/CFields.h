@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/CFields.h>           // base class template
+#include <rp/field/CFields.h>     // base class template
 #include <rpg/field/FieldIo.h>    // base class template argument
 #include <prdc/cuda/RField.h>     // base class template argument
 

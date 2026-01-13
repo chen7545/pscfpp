@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "WFields.h"        // class header
-#include <rp/WFields.tpp>   // base class template implementation
+#include "WFields.h"             // class header
+#include <rp/field/WFields.tpp>  // base class template implementation
 
 namespace Pscf {
 namespace Rpc {

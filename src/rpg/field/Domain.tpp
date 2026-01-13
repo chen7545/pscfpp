@@ -9,7 +9,7 @@
 */
 
 #include "Domain.h"               // class header
-#include <rp/Domain.tpp>          // base class template implementation
+#include <rp/field/Domain.tpp>    // base class template implementation
 
 #include <rpg/field/FieldIo.h>
 #include <prdc/cuda/WaveList.h>

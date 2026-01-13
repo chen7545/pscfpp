@@ -18,7 +18,7 @@
 #include <pscf/math/IntVec.h>
 
 // Templates that require declarations from cpu/complex.h
-#include <rp/FieldIo.tpp>     // base class template implementation
+#include <rp/field/FieldIo.tpp>   // base class template implementation
 #include <prdc/field/rFieldIo.h>
 
 namespace Pscf {
