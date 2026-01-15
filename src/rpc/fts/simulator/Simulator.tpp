@@ -22,16 +22,14 @@
 #include <rpc/fts/ramp/Ramp.h>
 #include <rpc/fts/ramp/RampFactory.h>
 #include <pscf/interaction/Interaction.h>
-#include <pscf/math/IntVec.h>
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/Reduce.h>
 #include <pscf/cpu/CpuVecRandom.h>
+#include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>
 #include <gsl/gsl_eigen.h>
-
-
 
 namespace Pscf {
 namespace Rpc {
@@ -72,7 +70,6 @@ namespace Rpc {
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
       rampFactoryPtr_ = new RampFactory<D>(*this);
    }
-
 
    /*
    * Destructor.
@@ -252,18 +249,9 @@ namespace Rpc {
          }
       }
 
-      #if 0
-      // Subtract average of pressure field wc_[nMonomer-1]
-      RField<D> const & Wc = wc_[nMonomer-1];
-      for (int i = 0; i < meshSize; ++i) {
-         lnQ += Wc[i]/double(meshSize);
-      }
-      #endif
-
       // Add average of pressure field wc_[nMonomer-1] to lnQ
       double sum_xi = Reduce::sum(wc_[nMonomer-1]);
       lnQ += sum_xi/double(meshSize);
-
 
       // lnQ now contains a value per monomer
 
@@ -271,16 +259,14 @@ namespace Rpc {
 
       // Compute quadratic field contribution to HW
       double HW = 0.0;
-      double prefactor, w, s;
-      int i, j;
-      for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & Wc = wc_[j];
+      double prefactor, wSquare;
+      for (int j = 0; j < nMonomer - 1; ++j) {
+         UTIL_CHECK(tmpField_.capacity() == meshSize);
+         // Subtract constant shift sc_[j]
+         VecOp::subVS(tmpField_, wc_[j], sc_[j]);
+         wSquare = Reduce::sumSq(tmpField_);
          prefactor = -0.5*double(nMonomer)/chiEvals_[j];
-         s = sc_[j];
-         for (i = 0; i < meshSize; ++i) {
-            w = Wc[i] - s;
-            HW += prefactor*w*w;
-         }
+         HW += prefactor * wSquare;
       }
 
       // Normalize HW to equal a value per monomer
@@ -468,25 +454,21 @@ namespace Rpc {
    {
       UTIL_CHECK(isAllocated_);
 
-      const int nMonomer = system().mixture().nMonomer();
       double vec;
-      int j, k;
+      int i, j;
+      const int nMonomer = system().mixture().nMonomer();
 
-      // Loop over eigenvectors (j is an eigenvector index)
-      for (j = 0; j < nMonomer; ++j) {
+      // Loop over eigenvectors (i is an eigenvector index)
+      for (i = 0; i < nMonomer; ++i) {
 
-         // Loop over grid points to zero out field wc_[j]
-         RField<D>& Wc = wc_[j];
+         // Initialize field wc_[i] to zero
+         RField<D>& Wc = wc_[i];
          VecOp::eqS(Wc, 0.0);
 
-         // Loop over monomer types (k is a monomer index)
-         for (k = 0; k < nMonomer; ++k) {
-            vec = chiEvecs_(j, k)/double(nMonomer);
-
-            // Loop over grid points
-            RField<D> const & Wr = system().w().rgrid(k);
-            VecOp::addEqVc(Wc, Wr, vec);
-
+         // Loop over monomer types (j is a monomer index)
+         for (j = 0; j < nMonomer; ++j) {
+            vec = chiEvecs_(i, j)/double(nMonomer);
+            VecOp::addEqVc(Wc, system().w().rgrid(j), vec);
          }
       }
 
@@ -505,8 +487,9 @@ namespace Rpc {
       UTIL_CHECK(system().w().hasData());
       UTIL_CHECK(system().c().hasData());
 
-      const int nMonomer = system().mixture().nMonomer();
+      double vec;
       int i, j;
+      const int nMonomer = system().mixture().nMonomer();
 
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
@@ -517,12 +500,8 @@ namespace Rpc {
 
          // Loop over monomer types
          for (j = 0; j < nMonomer; ++j) {
-            double vec = chiEvecs_(i, j);
-
-            // Loop over grid points
-            RField<D> const & Cr = system().c().rgrid(j);
-            VecOp::addEqVc(Cc, Cr, vec);
-
+            vec = chiEvecs_(i, j);
+            VecOp::addEqVc(Cc, system().c().rgrid(j), vec);
          }
       }
 
@@ -541,26 +520,19 @@ namespace Rpc {
       if (!hasCc_) computeCc();
 
       // Local constants and variables
-      const int meshSize = system().domain().mesh().size();
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();
       const double a = 1.0/vMonomer;
       double b, s;
-      int i;
 
-      // Compute derivatives for standard Hamiltonian
       // Loop over composition eigenvectors (exclude the last)
-      for (i = 0; i < nMonomer - 1; ++i) {
+      for (int i = 0; i < nMonomer - 1; ++i) {
          RField<D>& Dc = dc_[i];
          RField<D> const & Wc = wc_[i];
          RField<D> const & Cc = cc_[i];
-         b = -1.0*double(nMonomer)/chiEvals_[i];
-         s = sc_[i];
-
-         // Loop over grid points
-         for (int k = 0; k < meshSize; ++k) {
-            Dc[k] = a*( b*(Wc[k] - s) + Cc[k] );
-         }
+         b = -1.0*a*double(nMonomer)/chiEvals_[i];
+         s = -1.0*b*sc_[i];
+         VecOp::addVcVcS(Dc, Cc, a, Wc, b, s);
       }
 
       // Add derivatives arising from a perturbation (if any).
@@ -584,7 +556,6 @@ namespace Rpc {
       UTIL_CHECK(state_.isAllocated);
       UTIL_CHECK(!state_.hasData);
 
-      // Set fields
       int nMonomer = system().mixture().nMonomer();
 
       // Set field components
@@ -628,7 +599,7 @@ namespace Rpc {
    }
 
    /*
-   * Restore a saved fts state.
+   * Restore a saved simulation state.
    *
    * Invoked after the compressor fails to converge or an attempted
    * Monte-Carlo move is rejected.
@@ -687,7 +658,6 @@ namespace Rpc {
    void Simulator<D>::clearState()
    {  state_.hasData = false; }
 
-
    /*
    * Output all timer results.
    */
@@ -736,9 +706,7 @@ namespace Rpc {
       // Set random number generator seed
       // Default value seed_ = 0 uses the clock time.
       random().setSeed(seed_);
-
-      // Note: CudaVecRandom uses associated scalar random generator
-      // internally, so does not require separate initialization.
+      // Note: CudaVecRandom uses the associated scalar RNG
    }
 
    // Functions related to a Compressor
