@@ -15,6 +15,7 @@
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
 #include <rpg/system/System.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
 

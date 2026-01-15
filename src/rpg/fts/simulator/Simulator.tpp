@@ -42,9 +42,7 @@ namespace Rpg {
    */
    template <int D>
    Simulator<D>::Simulator(System<D>& system)
-    : random_(),
-      vecRandom_(),
-      hamiltonian_(0.0),
+    : hamiltonian_(0.0),
       idealHamiltonian_(0.0),
       fieldHamiltonian_(0.0),
       perturbationHamiltonian_(0.0),
@@ -56,6 +54,8 @@ namespace Rpg {
       hasCc_(false),
       hasDc_(false),
       systemPtr_(&system),
+      randomPtr_(nullptr),
+      vecRandomPtr_(nullptr),
       compressorFactoryPtr_(nullptr),
       compressorPtr_(nullptr),
       perturbationFactoryPtr_(nullptr),
@@ -64,7 +64,9 @@ namespace Rpg {
       rampPtr_(nullptr),
       isAllocated_(false)
    {
-      setClassName("Simulator");
+      ParamComposite::setClassName("Simulator");
+      randomPtr_ = new Random();
+      vecRandomPtr_ = new CudaVecRandom();
       compressorFactoryPtr_ = new CompressorFactory<D>(system);
       perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
       rampFactoryPtr_ = new RampFactory<D>(*this);
