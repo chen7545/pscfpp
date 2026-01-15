@@ -9,10 +9,10 @@
 */
 
 #include <util/param/ParamComposite.h>
-//#include <pscf/cuda/CudaRandom.h>
+//#include <pscf/cuda/CudaVecRandom.h>
 
 namespace Pscf {
-   class CudaRandom;
+   class CudaVecRandom;
    namespace Rpg {
       template <int D> class System;
       template <int D> class BdSimulator;
@@ -117,7 +117,7 @@ namespace Rpg {
       /**
       * Get Random number generator of parent System.
       */
-      CudaRandom& vecRandom();
+      CudaVecRandom& vecRandom();
 
    private:
 
@@ -128,7 +128,7 @@ namespace Rpg {
       System<D>* systemPtr_;
 
       /// Pointer to random number generator
-      CudaRandom  *vecRandomPtr_;
+      CudaVecRandom  *vecRandomPtr_;
 
    };
 
@@ -152,7 +152,7 @@ namespace Rpg {
    * Get Random number generator.
    */
    template <int D>
-   inline CudaRandom& BdStep<D>::vecRandom()
+   inline CudaVecRandom& BdStep<D>::vecRandom()
    {  return *vecRandomPtr_; }
 
    // Explicit instantiation declarations

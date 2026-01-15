@@ -18,7 +18,7 @@
 #include <prdc/cuda/RFieldComparison.h>
 #include <prdc/cuda/resources.h>
 
-#include <pscf/cuda/CudaRandom.h> 
+#include <pscf/cuda/CudaVecRandom.h> 
 
 #include <util/tests/LogFileUnitTest.h>
 #include <util/random/Random.h> 
@@ -70,7 +70,7 @@ public:
       randomField.allocate(dimensions);
       
       double stepSize = 1e-1;
-      CudaRandom vecRandom;
+      CudaVecRandom vecRandom;
       vecRandom.setSeed(0);
       DArray< RField<3> > const & w = system.w().rgrid();
       
@@ -110,7 +110,7 @@ public:
       RField<D> randomField;
       randomField.allocate(dimensions);
       
-      CudaRandom vecRandom;
+      CudaVecRandom vecRandom;
       vecRandom.setSeed(0);
       vecRandom.uniform(randomField);
       double stepSize = 1e-1;

@@ -16,7 +16,7 @@ namespace Util {
    class Random; 
 }
 namespace Pscf { 
-   class CudaRandom; 
+   class CudaVecRandom; 
    namespace Rpg { 
       template <int D> class System;
       template <int D> class McSimulator;
@@ -192,7 +192,7 @@ namespace Rpg {
       /**
       * Get cuda random number generator by reference.
       */
-      CudaRandom& vecRandom();
+      CudaVecRandom& vecRandom();
       
       /**
       * Read the probability from file.
@@ -232,7 +232,7 @@ namespace Rpg {
       Random  *randomPtr_;
       
       /// Pointer to vecRandom number generator
-      CudaRandom  *vecRandomPtr_;
+      CudaVecRandom  *vecRandomPtr_;
 
       /// Probability of choosing this move
       double  probability_;
@@ -316,10 +316,10 @@ namespace Rpg {
    {  return *randomPtr_; }
 
    /*
-   * Get CudaRandom number generator.
+   * Get CudaVecRandom number generator.
    */
    template <int D>
-   inline CudaRandom& McMove<D>::vecRandom()
+   inline CudaVecRandom& McMove<D>::vecRandom()
    {  return *vecRandomPtr_; }
    
    /*

@@ -12,7 +12,7 @@
 
 #include <rpg/fts/brownian/BdSimulator.h>
 #include <rpg/system/System.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 
 namespace Pscf {
 namespace Rpg {

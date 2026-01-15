@@ -24,7 +24,7 @@
 #include <rpg/fts/VecOpFts.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>

@@ -13,7 +13,7 @@
 #include <rpg/fts/simulator/SimState.h>    // member
 #include <prdc/cuda/RField.h>              // member (template arg)
 #include <util/random/Random.h>            // member
-#include <pscf/cuda/CudaRandom.h>          // member
+#include <pscf/cuda/CudaVecRandom.h>          // member
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 
@@ -508,7 +508,7 @@ namespace Rpg {
       /**
       * Get cuda random number generator by reference.
       */
-      CudaRandom& vecRandom();
+      CudaVecRandom& vecRandom();
 
       /**
       * Does this Simulator have a Compressor?
@@ -640,7 +640,7 @@ namespace Rpg {
       /**
       * Random number generator.
       */
-      CudaRandom vecRandom_;
+      CudaVecRandom vecRandom_;
 
       /**
       * Eigenvector components of w fields on a real space grid.
@@ -850,7 +850,7 @@ namespace Rpg {
 
    // Get the GPU random number generator.
    template <int D>
-   inline CudaRandom& Simulator<D>::vecRandom()
+   inline CudaVecRandom& Simulator<D>::vecRandom()
    {  return vecRandom_; }
 
    // Does this Simulator have a Compressor?

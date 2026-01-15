@@ -17,7 +17,7 @@
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
 #include <prdc/cuda/resources.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/param/ParamComposite.h>
 #include <util/random/Random.h>
 

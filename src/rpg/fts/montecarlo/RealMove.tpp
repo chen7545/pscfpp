@@ -17,7 +17,7 @@
 #include <rpg/fts/VecOpFts.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/param/ParamComposite.h>
 
 namespace Pscf {

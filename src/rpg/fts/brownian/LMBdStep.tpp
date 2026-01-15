@@ -17,7 +17,7 @@
 #include <rpg/field/Domain.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 
 namespace Pscf {
 namespace Rpg {

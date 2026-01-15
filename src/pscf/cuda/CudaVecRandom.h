@@ -25,7 +25,7 @@ namespace Pscf {
    *
    * \ingroup Pscf_Cuda_Module
    */
-   class CudaRandom 
+   class CudaVecRandom 
    {
  
    public:
@@ -33,12 +33,12 @@ namespace Pscf {
       /**
       * Constructor.
       */   
-      CudaRandom();
+      CudaVecRandom();
 
       /**
       * Destructor.
       */   
-      virtual ~CudaRandom();
+      virtual ~CudaVecRandom();
    
       /**
       * Set value of random seed (private member variable seed_).
@@ -84,7 +84,7 @@ namespace Pscf {
       * 
       * Note: the input array must have an even number of elements. This 
       * is a requirement imposed by cuRAND, the random number generator 
-      * library used by CudaRandom.
+      * library used by CudaVecRandom.
       *
       * \param data  array to populate
       * \param stddev  standard deviation (input)
@@ -98,7 +98,7 @@ namespace Pscf {
       * 
       * Note: the input array must have an even number of elements. This 
       * is a requirement imposed by cuRAND, the random number generator 
-      * software used by CudaRandom.
+      * software used by CudaVecRandom.
       *
       * \param data  array to populate
       * \param stddev  standard deviation (input)
@@ -132,7 +132,7 @@ namespace Pscf {
    /* 
    * Returns value of random seed (private member variable idum)
    */
-   inline long CudaRandom::seed() 
+   inline long CudaVecRandom::seed() 
    {  return seed_; }
 
 } 

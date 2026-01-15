@@ -22,7 +22,7 @@
 #include <rpg/fts/ramp/Ramp.h>
 
 #include <util/random/Random.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/misc/Timer.h>
 #include <util/global.h>
 

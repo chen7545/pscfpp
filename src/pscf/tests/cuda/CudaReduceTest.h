@@ -7,7 +7,7 @@
 #include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/complex.h>
 #include <pscf/cuda/Reduce.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/cuda/DeviceArray.h>
 #include <pscf/cuda/HostDArray.h>
 #include <pscf/math/IntVec.h>
@@ -36,7 +36,7 @@ private:
    #endif
 
    // Random number generator on the GPU
-   CudaRandom rand_;
+   CudaVecRandom rand_;
 
 public:
 
