@@ -66,15 +66,35 @@ namespace VecOp {
       }
 
       /*
+      * Add scaled vector in-place, a[i] += b[i] * c.
+      *
+      * \param a  output array (LHS)
+      * \param b  input array (RHS)
+      * \param c  input scalar
+      * \param n  size of arrays
+      */
+      __global__
+      void _addEqVc(cudaReal* a,
+                    cudaReal const * b, cudaReal const c,
+                    const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i] += b[i] * c;
+         }
+      }
+
+      /*
       * Add 3 scaled vectors, a[i] = b[i]*c + d[i]*e + f[i]*g.
       *
       * \param a  output array (LHS)
-      * \param b  input array 1 (RHS)
-      * \param c  input scalar 1 (RHS)
-      * \param d  input array 2 (RHS)
-      * \param e  input scalar 2 (RHS)
-      * \param f  input array 3 (RHS)
-      * \param g  input scalar 3 (RHS)
+      * \param b1  input array 1 (RHS)
+      * \param c1  input scalar 1 (RHS)
+      * \param b2  input array 2 (RHS)
+      * \param c2  input scalar 2 (RHS)
+      * \param b3  input array 3 (RHS)
+      * \param c3  input scalar 3 (RHS)
       * \param n  size of arrays
       */
       __global__
@@ -106,37 +126,16 @@ namespace VecOp {
       void _addVcVcS(cudaReal* a,
                     cudaReal const * b1, cudaReal const c1,
                     cudaReal const * b2, cudaReal const c2,
-                    const cudaReal s,
-                    const int n)
+                    const cudaReal s, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
          for (int i = startID; i < n; i += nThreads) {
-            a[i] = b1[i] * c1 + b2[i] * c2 + s;
+            a[i] = (b1[i] * c1) + (b2[i] * c2) + s;
          }
       }
 
       // In-place addition of scaled vectors
-
-      /*
-      * Add scaled vector in-place, a[i] += b[i] * c.
-      *
-      * \param a  output array (LHS)
-      * \param b  input array (RHS)
-      * \param c  input scalar
-      * \param n  size of arrays
-      */
-      __global__
-      void _addEqVc(cudaReal* a,
-                    cudaReal const * b, cudaReal const c,
-                    const int n)
-      {
-         int nThreads = blockDim.x * gridDim.x;
-         int startID = blockIdx.x * blockDim.x + threadIdx.x;
-         for (int i = startID; i < n; i += nThreads) {
-            a[i] += b[i] * c;
-         }
-      }
 
       /*
       * Vector subtraction, a[i] = b[i] - c[i] - d.
@@ -203,6 +202,8 @@ namespace VecOp {
             a[i] = exp(b[i] * c);
          }
       }
+
+      // Pair operations
 
       /*
       * Vector assignment in pairs, a1[i] = b[i] and a2[i] = b[i].
@@ -354,7 +355,7 @@ namespace VecOp {
 
    } // End anonymous namespace
 
-   // Addition of scaled vectors
+   // Linear combinations - addition of scaled vectors
 
    /*
    * Add two scaled vectors, a[i] = b1[i]*c1 + b2[i]*c2.
@@ -425,7 +426,7 @@ namespace VecOp {
    /*
    * Add 2 scaled vectors and scalar, a[i] = b1[i]*c1 + b2[i]*c2 + s;
    */
-   void addVcVcVc(DeviceArray<cudaReal>& a,
+   void addVcVcS(DeviceArray<cudaReal>& a,
                   DeviceArray<cudaReal> const & b1, cudaReal const c1,
                   DeviceArray<cudaReal> const & b2, cudaReal const c2,
                   cudaReal const s)

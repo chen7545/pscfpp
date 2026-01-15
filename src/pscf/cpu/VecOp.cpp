@@ -22,7 +22,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i];
       }
@@ -50,8 +50,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] + c[i];
       }
@@ -64,7 +64,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
 
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] + c;
@@ -81,8 +81,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] - c[i];
       }
@@ -95,7 +95,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] - c;
       }
@@ -111,8 +111,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] * c[i];
       }
@@ -125,7 +125,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] * c;
       }
@@ -141,8 +141,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] / c[i];
       }
@@ -155,7 +155,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] / c;
       }
@@ -168,7 +168,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b/c[i];
       }
@@ -183,7 +183,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] += b[i];
       }
@@ -201,7 +201,6 @@ namespace VecOp {
       }
    }
 
-
    // In-place subtraction
 
    /*
@@ -211,7 +210,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] -= b[i];
       }
@@ -238,7 +237,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] *= b[i];
       }
@@ -265,7 +264,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] /= b[i];
       }
@@ -292,7 +291,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = exp(b[i]);
       }
@@ -305,7 +304,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = exp(b[i]*c);
       }
@@ -320,7 +319,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i]*b[i];
       }
@@ -335,7 +334,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = std::abs(b[i]);
       }
@@ -368,9 +367,23 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i]*c + s;
+      }
+   }
+
+   /*
+   * In-place add one scaled vector, a[i] += b[i]*c (real).
+   */
+   void addEqVc(Array<double>& a, 
+                Array<double> const & b, const double c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a[i] += b[i]*c;
       }
    }
 
@@ -388,22 +401,6 @@ namespace VecOp {
       UTIL_CHECK(b2.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b1[i]*c1 + b2[i]*c2 + s;
-      }
-   }
-
-   // In-place linear combinations (result is first vector)
-
-   /*
-   * In-place add one scaled vector, a[i] += b[i]*c (real).
-   */
-   void addEqVc(Array<double>& a, 
-                Array<double> const & b, const double c)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      for (int i = 0; i < n; ++i) {
-         a[i] += b[i]*c;
       }
    }
 
