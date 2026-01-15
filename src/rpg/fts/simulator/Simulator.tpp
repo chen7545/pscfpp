@@ -43,7 +43,7 @@ namespace Rpg {
    template <int D>
    Simulator<D>::Simulator(System<D>& system)
     : random_(),
-      cudaRandom_(),
+      vecRandom_(),
       hamiltonian_(0.0),
       idealHamiltonian_(0.0),
       fieldHamiltonian_(0.0),
@@ -728,7 +728,7 @@ namespace Rpg {
       // Set seed values for both random number generators
       // Default value seed_ = 0 uses clock time.
       random().setSeed(seed_);
-      cudaRandom().setSeed(seed_);
+      vecRandom().setSeed(seed_);
    }
 
    // Functions related to a Compressor

@@ -117,7 +117,7 @@ namespace Rpg {
       /**
       * Get Random number generator of parent System.
       */
-      CudaRandom& cudaRandom();
+      CudaRandom& vecRandom();
 
    private:
 
@@ -128,7 +128,7 @@ namespace Rpg {
       System<D>* systemPtr_;
 
       /// Pointer to random number generator
-      CudaRandom  *cudaRandomPtr_;
+      CudaRandom  *vecRandomPtr_;
 
    };
 
@@ -152,8 +152,8 @@ namespace Rpg {
    * Get Random number generator.
    */
    template <int D>
-   inline CudaRandom& BdStep<D>::cudaRandom()
-   {  return *cudaRandomPtr_; }
+   inline CudaRandom& BdStep<D>::vecRandom()
+   {  return *vecRandomPtr_; }
 
    // Explicit instantiation declarations
    extern template class BdStep<1>;

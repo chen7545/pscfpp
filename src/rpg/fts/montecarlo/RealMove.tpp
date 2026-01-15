@@ -99,7 +99,7 @@ namespace Rpg {
       for (j = 0; j < nMonomer - 1; ++j) {
          
          // Generate Gaussian distributed random numbers 
-         cudaRandom().normal(gaussianField_, sigma_, mean);
+         vecRandom().normal(gaussianField_, sigma_, mean);
          VecOp::eqV(dwc_, gaussianField_);
          
          // Loop over monomer types

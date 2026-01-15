@@ -29,7 +29,7 @@ namespace Rpg {
     : simulatorPtr_(&simulator),
       systemPtr_(&(simulator.system())),
       randomPtr_(&(simulator.random())),
-      cudaRandomPtr_(&(simulator.cudaRandom())),
+      vecRandomPtr_(&(simulator.vecRandom())),
       nAttempt_(0),
       nAccept_(0)
    {}

@@ -97,7 +97,7 @@ namespace Rpg {
          RField<D>& eta = etaNew(j);
         
          // Generate normal distributed random floating point numbers
-         cudaRandom().normal(gaussianField_, stddev, mean);
+         vecRandom().normal(gaussianField_, stddev, mean);
          VecOp::mulVS(eta, gaussianField_, b);
       
       }

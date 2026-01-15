@@ -109,7 +109,7 @@ namespace Rpg {
          RField<D> const & dc = simulator().dc(j);
          
          // Generate normal distributed random floating point numbers
-         cudaRandom().normal(gaussianField_, stddev, mean);
+         vecRandom().normal(gaussianField_, stddev, mean);
          
          // dwc
          VecOp::addVcVc(dwc_, dc, a, gaussianField_, b);

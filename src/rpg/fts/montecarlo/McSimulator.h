@@ -147,7 +147,7 @@ namespace Rpg {
 
       using Simulator<D>::system;
       using Simulator<D>::random;
-      using Simulator<D>::cudaRandom;
+      using Simulator<D>::vecRandom;
       using Simulator<D>::hasCompressor;
       using Simulator<D>::compressor;
       using Simulator<D>::hasPerturbation;

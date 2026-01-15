@@ -508,7 +508,7 @@ namespace Rpg {
       /**
       * Get cuda random number generator by reference.
       */
-      CudaRandom& cudaRandom();
+      CudaRandom& vecRandom();
 
       /**
       * Does this Simulator have a Compressor?
@@ -640,7 +640,7 @@ namespace Rpg {
       /**
       * Random number generator.
       */
-      CudaRandom cudaRandom_;
+      CudaRandom vecRandom_;
 
       /**
       * Eigenvector components of w fields on a real space grid.
@@ -850,8 +850,8 @@ namespace Rpg {
 
    // Get the GPU random number generator.
    template <int D>
-   inline CudaRandom& Simulator<D>::cudaRandom()
-   {  return cudaRandom_; }
+   inline CudaRandom& Simulator<D>::vecRandom()
+   {  return vecRandom_; }
 
    // Does this Simulator have a Compressor?
    template <int D>

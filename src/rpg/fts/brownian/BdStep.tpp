@@ -26,7 +26,7 @@ namespace Rpg {
    BdStep<D>::BdStep(BdSimulator<D>& simulator)
     : simulatorPtr_(&simulator),
       systemPtr_(&(simulator.system())),
-      cudaRandomPtr_(&(simulator.cudaRandom()))
+      vecRandomPtr_(&(simulator.vecRandom()))
    {}
 
    /*

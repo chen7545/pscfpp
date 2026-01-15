@@ -192,7 +192,7 @@ namespace Rpg {
       /**
       * Get cuda random number generator by reference.
       */
-      CudaRandom& cudaRandom();
+      CudaRandom& vecRandom();
       
       /**
       * Read the probability from file.
@@ -231,8 +231,8 @@ namespace Rpg {
       /// Pointer to random number generator
       Random  *randomPtr_;
       
-      /// Pointer to cudaRandom number generator
-      CudaRandom  *cudaRandomPtr_;
+      /// Pointer to vecRandom number generator
+      CudaRandom  *vecRandomPtr_;
 
       /// Probability of choosing this move
       double  probability_;
@@ -319,8 +319,8 @@ namespace Rpg {
    * Get CudaRandom number generator.
    */
    template <int D>
-   inline CudaRandom& McMove<D>::cudaRandom()
-   {  return *cudaRandomPtr_; }
+   inline CudaRandom& McMove<D>::vecRandom()
+   {  return *vecRandomPtr_; }
    
    /*
    * Get the probability.
