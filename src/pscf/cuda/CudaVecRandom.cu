@@ -1,4 +1,4 @@
-#include "CudaRandom.h"
+#include "CudaVecRandom.h"
 #include "ThreadArray.h"
 #include <util/global.h>
 #include <sys/time.h>
@@ -74,7 +74,7 @@ namespace Pscf {
    /*
    * Constructor.
    */
-   CudaRandom::CudaRandom()
+   CudaVecRandom::CudaVecRandom()
     : gen_(),
       seed_(0),
       isInitialized_(false)
@@ -88,7 +88,7 @@ namespace Pscf {
    /*
    * Destructor.
    */
-   CudaRandom::~CudaRandom()
+   CudaVecRandom::~CudaVecRandom()
    {}
 
    /*
@@ -96,7 +96,7 @@ namespace Pscf {
    *
    * \param seed value for random seed (private member variable seed)
    */
-   void CudaRandom::setSeed(unsigned long long seed)
+   void CudaVecRandom::setSeed(unsigned long long seed)
    {
       if (seed == 0) {
          timeval time;
@@ -115,7 +115,7 @@ namespace Pscf {
    /*
    * Populate array with uniform random floats in (0, 1].
    */
-   void CudaRandom::uniform(DeviceArray<float>& data)
+   void CudaVecRandom::uniform(DeviceArray<float>& data)
    {
       const int n = data.capacity();
       UTIL_CHECK(n > 0);
@@ -131,7 +131,7 @@ namespace Pscf {
    /*
    * Populate array with uniform random doubles in (0, 1].
    */
-   void CudaRandom::uniform(DeviceArray<double>& data)
+   void CudaVecRandom::uniform(DeviceArray<double>& data)
    {
       const int n = data.capacity();
       UTIL_CHECK(n > 0);
@@ -147,7 +147,7 @@ namespace Pscf {
    /*
    * Populate array with uniform random floats in (min, max].
    */
-   void CudaRandom::uniform(DeviceArray<float>& data, 
+   void CudaVecRandom::uniform(DeviceArray<float>& data, 
                             float min, float max)
    {
       UTIL_CHECK(max > min);
@@ -158,7 +158,7 @@ namespace Pscf {
    /*
    * Populate array with uniform random doubles in (min, max].
    */
-   void CudaRandom::uniform(DeviceArray<double>& data,
+   void CudaVecRandom::uniform(DeviceArray<double>& data,
                             double min, double max)
    {
       UTIL_CHECK(max > min);
@@ -169,7 +169,7 @@ namespace Pscf {
    /*
    * Populate array with normal-distributed random floats.
    */
-   void CudaRandom::normal(DeviceArray<float>& data,
+   void CudaVecRandom::normal(DeviceArray<float>& data,
                            float stddev, float mean)
    {
       UTIL_CHECK(data.capacity() > 0);
@@ -190,7 +190,7 @@ namespace Pscf {
    /*
    * Populate array with normal-distributed random doubles.
    */
-   void CudaRandom::normal(DeviceArray<double>& data,
+   void CudaVecRandom::normal(DeviceArray<double>& data,
                            double stddev, double mean)
    {
       UTIL_CHECK(data.capacity() > 0);
@@ -214,7 +214,7 @@ namespace Pscf {
    *
    * If not success, print info and throw Exception.
    */
-   void CudaRandom::errorCheck(curandStatus_t const & error)
+   void CudaVecRandom::errorCheck(curandStatus_t const & error)
    {
       if (error == CURAND_STATUS_SUCCESS) {
          return;
@@ -263,8 +263,8 @@ namespace Pscf {
                break;
          }
 
-         Log::file() << "CudaRandom error: " << errString << std::endl;
-         UTIL_THROW("CudaRandom number generation failed.");
+         Log::file() << "CudaVecRandom error: " << errString << std::endl;
+         UTIL_THROW("CudaVecRandom number generation failed.");
       }
    }
 

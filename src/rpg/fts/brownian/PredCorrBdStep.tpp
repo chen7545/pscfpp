@@ -16,6 +16,7 @@
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
 #include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/math/IntVec.h>
 #include <util/random/Random.h>
 
@@ -128,7 +129,7 @@ namespace Rpg {
       
       // Construct all random displacement components
       for (j = 0; j < nMonomer - 1; ++j) {
-         cudaRandom().normal(eta_[j], stddev, mean);
+         vecRandom().normal(eta_[j], stddev, mean);
          VecOp::mulEqS(eta_[j], b);
       }
 

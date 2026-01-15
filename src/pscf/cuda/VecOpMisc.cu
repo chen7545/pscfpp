@@ -137,6 +137,7 @@ namespace VecOp {
 
       // In-place addition of scaled vectors
 
+      #if 0
       /*
       * Vector subtraction, a[i] = b[i] - c[i] - d.
       *
@@ -159,6 +160,7 @@ namespace VecOp {
             a[i] = b[i] - c[i] - d;
          }
       }
+      #endif
 
       /*
       * Vector division in-place w/ coeff., a[i] /= (b[i] * c).
@@ -469,28 +471,7 @@ namespace VecOp {
    }
 
    /*
-   * Subtract vector and scalar, a[i] = b[i] - c[i] - d.
-   */
-   void subVVS(DeviceArray<cudaReal>& a,
-               DeviceArray<cudaReal> const & b,
-               DeviceArray<cudaReal> const & c, cudaReal const d)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(b.capacity() >= n);
-      UTIL_CHECK(c.capacity() >= n);
-
-      // GPU resources
-      int nBlocks, nThreads;
-      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
-
-      // Launch kernel
-      _subVVS<<<nBlocks, nThreads>>>(a.cArray(), b.cArray(),
-                                     c.cArray(), d, n);
-      cudaErrorCheck( cudaGetLastError() );
-   }
-
-   /*
-   * Vector division in-place w/ coeff., a[i] /= (b[i] * c).
+   * Vector in-place division by scaled vector, a[i] /= (b[i] * c).
    */
    void divEqVc(DeviceArray<cudaComplex>& a,
                 DeviceArray<cudaReal> const & b, cudaReal const c)

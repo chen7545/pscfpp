@@ -1199,6 +1199,7 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
+      #if 0
       // ~~~ Test subVVS ~~~
       VecOp::subVVS(dOutReal, dInReal, dInReal2, scalarReal);
       hOutReal = dOutReal;
@@ -1206,6 +1207,7 @@ public:
          refOutReal[i] = refInReal[i] - refInReal2[i] - refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
+      #endif
 
       // ~~~ Test divEqVc ~~~
       VecOp::eqV(dOutComplex, dInComplex);

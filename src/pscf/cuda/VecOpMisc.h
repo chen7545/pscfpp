@@ -147,20 +147,6 @@ namespace VecOp {
                  cudaReal const s);
 
    /**
-   * Vector subtraction, a[i] = b[i] - c[i] - d.
-   *
-   * \ingroup Pscf_Cuda_VecOp_Module
-   *
-   * \param a  real array (LHS)
-   * \param b  real array (RHS)
-   * \param c  real array (RHS)
-   * \param d  input scalar (RHS)
-   */
-   void subVVS(DeviceArray<cudaReal>& a,
-               DeviceArray<cudaReal> const & b,
-               DeviceArray<cudaReal> const & c, cudaReal const d);
-
-   /**
    * Vector division in-place w/ coeff., a[i] /= (b[i] * c).
    *
    * \ingroup Pscf_Cuda_VecOp_Module
