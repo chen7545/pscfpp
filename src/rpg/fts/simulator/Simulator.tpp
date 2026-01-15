@@ -21,11 +21,10 @@
 #include <rpg/fts/perturbation/PerturbationFactory.h>
 #include <rpg/fts/ramp/Ramp.h>
 #include <rpg/fts/ramp/RampFactory.h>
-#include <rpg/fts/VecOpFts.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
 #include <pscf/cuda/CudaVecRandom.h>
-#include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
@@ -225,7 +224,7 @@ namespace Rpg {
             if (PolymerModel::isThread()) {
                length = polymerPtr->length();
             } else {
-               length = (double) polymerPtr->nBead();
+               length = (double)polymerPtr->nBead();
             }
             // Recall: mu = ln(phi/q)
             if (phi > 1.0E-08) {
@@ -260,17 +259,13 @@ namespace Rpg {
 
       // Compute quadratic field contribution to HW
       double HW = 0.0;
-      double prefactor, s;
-      int j;
-      for (j = 0; j < nMonomer - 1; ++j) {
+      double prefactor, wSquare;
+      for (int j = 0; j < nMonomer - 1; ++j) {
+         UTIL_CHECK(tmpField_.capacity() == meshSize);
+         // Subtract constant shift sc_[j]
+         VecOp::subVS(tmpField_, wc_[j], sc_[j]);
+         wSquare = Reduce::sumSq(tmpField_);
          prefactor = -0.5*double(nMonomer)/chiEvals_[j];
-         // Obtain constant shift
-         s = sc_[j];
-         // Subtract of constant shift s
-         VecOp::subVS(tmpField_, wc_[j], s);
-         // Compute quadratic field contribution to HW
-         double wSquare = 0.0;
-         wSquare = Reduce::innerProduct(tmpField_, tmpField_);
          HW += prefactor * wSquare;
       }
 
@@ -448,20 +443,6 @@ namespace Rpg {
          sc_[i] = sc_[i]/double(nMonomer);
       }
 
-      #if 0
-      // Debugging output
-      for (i = 0; i < nMonomer; ++i) {
-         Log::file() << "Eigenpair " << i << "\n";
-         Log::file() << "value  =  " << chiEvals_[i] << "\n";
-         Log::file() << "vector = [ ";
-         for (j = 0; j < nMonomer; ++j) {
-            Log::file() << chiEvecs_(i, j) << "   ";
-         }
-         Log::file() << "]\n";
-         Log::file() << " sc[i] = " << sc_[i] << std::endl;
-      }
-      #endif
-
    }
 
    /*
@@ -473,21 +454,20 @@ namespace Rpg {
    {
       UTIL_CHECK(isAllocated_);
 
-      const int nMonomer = system().mixture().nMonomer();
+      double vec;
       int i,j;
+      const int nMonomer = system().mixture().nMonomer();
 
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
 
-         // Loop over grid points to zero out field wc_[i]
+         // Initialize field wc_[i] to zero
          RField<D>& Wc = wc_[i];
          VecOp::eqS(Wc, 0.0);
 
          // Loop over monomer types (j is a monomer index)
          for (j = 0; j < nMonomer; ++j) {
-            double vec = (cudaReal) chiEvecs_(i, j)/nMonomer;
-
-            // Loop over grid points
+            vec = chiEvecs_(i, j)/double(nMonomer);
             VecOp::addEqVc(Wc, system().w().rgrid(j), vec);
          }
       }
@@ -507,8 +487,9 @@ namespace Rpg {
       UTIL_CHECK(system().w().hasData());
       UTIL_CHECK(system().c().hasData());
 
-      const int nMonomer = system().mixture().nMonomer();
+      double vec;
       int i, j;
+      const int nMonomer = system().mixture().nMonomer();
 
       // Loop over eigenvectors (i is an eigenvector index)
       for (i = 0; i < nMonomer; ++i) {
@@ -517,11 +498,9 @@ namespace Rpg {
          RField<D>& Cc = cc_[i];
          VecOp::eqS(Cc, 0.0);
 
-         // Loop over monomer types
+         // Loop over monomer types (j is a monomer index)
          for (j = 0; j < nMonomer; ++j) {
-            double vec = chiEvecs_(i, j);
-
-            // Loop over grid points
+            vec = chiEvecs_(i, j);
             VecOp::addEqVc(Cc, system().c().rgrid(j), vec);
          }
       }
@@ -545,18 +524,15 @@ namespace Rpg {
       const double vMonomer = system().mixture().vMonomer();
       const double a = 1.0/vMonomer;
       double b, s;
-      int i;
 
       // Loop over composition eigenvectors (exclude the last)
-      for (i = 0; i < nMonomer - 1; ++i) {
+      for (int i = 0; i < nMonomer - 1; ++i) {
          RField<D>& Dc = dc_[i];
          RField<D> const & Wc = wc_[i];
          RField<D> const & Cc = cc_[i];
-         b = -1.0*double(nMonomer)/chiEvals_[i];
-         s = sc_[i];
-
-         // Loop over grid points
-         VecOpFts::computeDField(Dc, Wc, Cc, a, b, s);
+         b = -1.0*a*double(nMonomer)/chiEvals_[i];
+         s = -1.0*b*sc_[i];
+         VecOp::addVcVcS(Dc, Cc, a, Wc, b, s);
       }
 
       // Add derivatives arising from a perturbation (if any).
@@ -580,7 +556,6 @@ namespace Rpg {
       UTIL_CHECK(state_.isAllocated);
       UTIL_CHECK(!state_.hasData);
 
-      // Set fields
       int nMonomer = system().mixture().nMonomer();
 
       // Set field components
@@ -592,6 +567,7 @@ namespace Rpg {
       // Save cc based on ccSavePolicy
       if (state_.needsCc) {
          UTIL_CHECK(hasCc());
+         UTIL_CHECK(state_.cc.isAllocated());
          for (int i = 0; i < nMonomer; ++i) {
             state_.cc[i] = cc_[i];
          }
@@ -600,6 +576,7 @@ namespace Rpg {
       // Save dc based on dcSavePolicy
       if (state_.needsDc) {
          UTIL_CHECK(hasDc());
+         UTIL_CHECK(state_.dc.isAllocated());
          for (int i = 0; i < nMonomer - 1; ++i) {
             state_.dc[i] = dc_[i];
          }
@@ -622,9 +599,9 @@ namespace Rpg {
    }
 
    /*
-   * Restore a saved fts state.
+   * Restore a saved simulation state.
    *
-   * Invoked after the compressor fails to converge or an attempted 
+   * Invoked after the compressor fails to converge or an attempted
    * Monte-Carlo move is rejected.
    */
    template <int D>
@@ -633,7 +610,6 @@ namespace Rpg {
       UTIL_CHECK(state_.isAllocated);
       UTIL_CHECK(state_.hasData);
       int nMonomer = system().mixture().nMonomer();
-      int meshSize = system().domain().mesh().size();
 
       // Restore fields
       system().w().setRGrid(state_.w);

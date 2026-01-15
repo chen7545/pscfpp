@@ -8,9 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <pscf/cuda/cudaTypes.h>
+
 // Forward declarations
 namespace Pscf {
    class Interaction;
+   class CudaVecRandom;
+   template <typename T> class DeviceArray;
    namespace Prdc {
       class Environment;
       namespace Cuda {
@@ -98,6 +102,11 @@ namespace Rpg {
       using RFieldComparison = Prdc::Cuda::RFieldComparison<D>;
       using RFieldDftComparison = Prdc::Cuda::RFieldDftComparison<D>;
       using WaveList = Prdc::Cuda::WaveList<D>;
+
+      using VecRandom = CudaVecRandom;
+      using RealArray = DeviceArray<cudaReal>;
+      using CmplxArray = DeviceArray<cudaComplex>;
+
 
    };
 

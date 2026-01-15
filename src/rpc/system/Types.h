@@ -8,9 +8,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <fftw3.h>
+
 // Forward declarations
+namespace Util {
+   template <typename T> class Array;
+}
 namespace Pscf {
    class Interaction;
+   class CpuVecRandom;
    template <typename WT> class Species;
    template <typename WT> class PolymerSpecies;
    template <typename WT> class SolventSpecies;
@@ -106,6 +112,10 @@ namespace Rpc {
       using RFieldComparison = Prdc::Cpu::RFieldComparison<D>;
       using RFieldDftComparison = Prdc::Cpu::RFieldDftComparison<D>;
       using WaveList = Prdc::Cpu::WaveList<D>;
+
+      using VecRandom = CpuVecRandom;
+      using RealArray = Array<double>;
+      using CmplxArray = Array<fftw_complex>;
 
    };
 
