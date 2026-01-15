@@ -582,7 +582,7 @@ namespace Rpc {
       /**
       * Optionally read a Compressor parameter file block.
       *
-      * If isEnd it true on entry, the function returns without 
+      * If isEnd it true on entry, the function returns without
       * attempting to read the Compressor block.
       *
       * \param in  input parameter stream
@@ -621,7 +621,7 @@ namespace Rpc {
       /**
       * Optionally read a Ramp parameter file block.
       *
-      * If isEnd it true on entry, the function returns without 
+      * If isEnd it true on entry, the function returns without
       * attempting to read the Ramp block.
       *
       * \param in  input parameter stream
@@ -637,13 +637,6 @@ namespace Rpc {
       void setRamp(Ramp<D>* ptr);
 
       // Protected data members
-
-      #if 0
-      /**
-      * Random number generator.
-      */
-      Random random_;
-      #endif
 
       /**
       * Eigenvector components of w fields on a real space grid.
@@ -865,22 +858,20 @@ namespace Rpc {
    // Get the scalar random number generator by reference.
    template <int D>
    inline Random& Simulator<D>::random()
-   {  return *randomPtr_; }
+   {  
+      UTIL_ASSERT(randomPtr_);
+      return *randomPtr_; 
+   }
 
    // Get the vector random number generator by reference.
    template <int D>
    inline CpuVecRandom& Simulator<D>::vecRandom()
-   {  return *vecRandomPtr_; }
-
-   // Get the compressor factory by reference.
-   template <int D>
-   inline CompressorFactory<D>& Simulator<D>::compressorFactory()
    {
-      UTIL_CHECK(compressorFactoryPtr_);
-      return *compressorFactoryPtr_;
+      UTIL_ASSERT(vecRandomPtr_);
+      return *vecRandomPtr_; 
    }
 
-   // Does this Simulator have an associated Compressor?
+   // Does this Simulator have a Compressor?
    template <int D>
    inline bool Simulator<D>::hasCompressor() const
    {  return (bool)compressorPtr_; }
@@ -901,12 +892,20 @@ namespace Rpc {
       return *compressorPtr_;
    }
 
+   // Get the Compressor factory by reference.
+   template <int D>
+   inline CompressorFactory<D>& Simulator<D>::compressorFactory()
+   {
+      UTIL_CHECK(compressorFactoryPtr_);
+      return *compressorFactoryPtr_;
+   }
+
    // Does this Simulator have an associated Perturbation?
    template <int D>
    inline bool Simulator<D>::hasPerturbation() const
    {  return (bool)perturbationPtr_; }
 
-   // Get the perturbation (if any) by const reference.
+   // Get the Perturbation (if any) by const reference.
    template <int D>
    inline Perturbation<D> const & Simulator<D>::perturbation() const
    {
@@ -914,7 +913,7 @@ namespace Rpc {
       return *perturbationPtr_;
    }
 
-   // Get the perturbation (if any) by non-const reference.
+   // Get the Perturbation (if any) by non-const reference.
    template <int D>
    inline Perturbation<D>& Simulator<D>::perturbation()
    {
@@ -922,7 +921,7 @@ namespace Rpc {
       return *perturbationPtr_;
    }
 
-   // Get the perturbation factory by reference.
+   // Get the Perturbation factory by reference.
    template <int D>
    inline PerturbationFactory<D>& Simulator<D>::perturbationFactory()
    {
@@ -951,7 +950,7 @@ namespace Rpc {
       return *rampPtr_;
    }
 
-   // Get the ramp factory.
+   // Get the Ramp factory.
    template <int D>
    inline RampFactory<D>& Simulator<D>::rampFactory()
    {
@@ -991,7 +990,12 @@ namespace Rpc {
    inline double Simulator<D>::sc(int a) const
    {  return sc_[a]; }
 
-   // Hamiltonian and its derivatives
+   // Hamiltonian and its components
+
+   // Has the Hamiltonian been computed for the current w fields ?
+   template <int D>
+   inline bool Simulator<D>::hasHamiltonian() const
+   {  return hasHamiltonian_; }
 
    // Get the precomputed Hamiltonian.
    template <int D>
@@ -1024,11 +1028,6 @@ namespace Rpc {
       UTIL_CHECK(hasHamiltonian_);
       return perturbationHamiltonian_;
    }
-
-   // Has the Hamiltonian been computed for the current w fields ?
-   template <int D>
-   inline bool Simulator<D>::hasHamiltonian() const
-   {  return hasHamiltonian_; }
 
    // Fields
 
