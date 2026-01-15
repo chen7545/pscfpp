@@ -12,22 +12,28 @@
 
 #include <rpg/fts/simulator/SimState.h>    // member
 #include <prdc/cuda/RField.h>              // member (template arg)
-#include <util/random/Random.h>            // member
-#include <pscf/cuda/CudaRandom.h>          // member
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 
+// Forward declarations
+namespace Util {
+   class Random;
+}
+namespace Pscf {
+   class CudaVecRandom;
+   namespace Rpg {
+      template <int D> class System;
+      template <int D> class Compressor;
+      template <int D> class CompressorFactory;
+      template <int D> class Perturbation;
+      template <int D> class PerturbationFactory;
+      template <int D> class Ramp;
+      template <int D> class RampFactory;
+   }
+}
+
 namespace Pscf {
 namespace Rpg {
-
-   // Forward declarations
-   template <int D> class System;
-   template <int D> class Compressor;
-   template <int D> class CompressorFactory;
-   template <int D> class Perturbation;
-   template <int D> class PerturbationFactory;
-   template <int D> class Ramp;
-   template <int D> class RampFactory;
 
    using namespace Util;
    using namespace Prdc;
@@ -460,11 +466,11 @@ namespace Rpg {
       * Save a copy of the current system state.
       *
       * This function and restoreState() are intended for use in the
-      * implementation of field theoretic moves.  This function stores 
-      * the current w fields and the corresponding Hamiltonian value. 
-      * Current cc fields and dc fields are saved based on save policy. 
-      * This is normally the first step of a Monte-Carlo (MC) move, prior 
-      * to an attempted modification of the fields stored in the system 
+      * implementation of field theoretic moves.  This function stores
+      * the current w fields and the corresponding Hamiltonian value.
+      * Current cc fields and dc fields are saved based on save policy.
+      * This is normally the first step of a Monte-Carlo (MC) move, prior
+      * to an attempted modification of the fields stored in the system
       * w field container.
       */
       void saveState();
@@ -473,10 +479,10 @@ namespace Rpg {
       * Restore the system to the saved state.
       *
       * This function and saveState() are intended to be used together
-      * in the implementation of FTS moves. If an attempted Monte-Carlo 
+      * in the implementation of FTS moves. If an attempted Monte-Carlo
       * move is rejected, or if the compressor fails to converge after
       * an any attempted FTS move, restoreState() is called to restore
-      * the fields and Hamiltonian value that were saved by a previous 
+      * the fields and Hamiltonian value that were saved by a previous
       * call to the function saveState().
       */
       void restoreState();
@@ -485,7 +491,7 @@ namespace Rpg {
       * Clear the saved copy of the system state.
       *
       * This function, restoreState(), and saveState() are intended to
-      * be used together in the implementation of reversible FTS moves. 
+      * be used together in the implementation of reversible FTS moves.
       * If an attempted move is accepted, clearState() is called to
       * clear the stored state and indicate acceptance.
       */
@@ -508,7 +514,7 @@ namespace Rpg {
       /**
       * Get cuda random number generator by reference.
       */
-      CudaRandom& cudaRandom();
+      CudaVecRandom& vecRandom();
 
       /**
       * Does this Simulator have a Compressor?
@@ -592,7 +598,7 @@ namespace Rpg {
       /**
       * Optionally read a Perturbation parameter file block.
       *
-      * If isEnd is true on entry, this function returns without 
+      * If isEnd is true on entry, this function returns without
       * attempting to read the Perturbation block.
       *
       * \param in input parameter stream
@@ -633,21 +639,11 @@ namespace Rpg {
       // Protected data members
 
       /**
-      * Random number generator.
-      */
-      Random random_;
-
-      /**
-      * Random number generator.
-      */
-      CudaRandom cudaRandom_;
-
-      /**
       * Eigenvector components of w fields on a real space grid.
       *
-      * Each field component corresponds to a point-wise projection of 
-      * the monomer w fields onto an eigenvector of the projected chi 
-      * matrix. The number of components is equal to the number of 
+      * Each field component corresponds to a point-wise projection of
+      * the monomer w fields onto an eigenvector of the projected chi
+      * matrix. The number of components is equal to the number of
       * monomer types, nMonomer. The last component is a pressure-like
       * field.
       */
@@ -656,8 +652,8 @@ namespace Rpg {
       /**
       * Eigenvector components of c fields on a real space grid.
       *
-      * Each field component corresponds to a point-wise projection of 
-      * the monomer c fields onto an eigenvector of the projected chi 
+      * Each field component corresponds to a point-wise projection of
+      * the monomer c fields onto an eigenvector of the projected chi
       * matrix. The number of components is equal to the number of
       * monomer types, nMonomer. The last component must satisfy an
       * incompressibility constraint.
@@ -765,7 +761,9 @@ namespace Rpg {
       *
       * Each row (identified by first index) is an eigenvector.
       * The last eigenvector, with index nMonomer - 1, is always the
-      * vector e = [1, 1, ...., 1].
+      * vector e = [1, 1, ...., 1]. Distinct eigenvectors are orthogonal.
+      * Eigenvectors are normalized such that the sum of the square of the
+      * elements is equal to nMonomer.
       */
       DMatrix<double> chiEvecs_;
 
@@ -781,7 +779,7 @@ namespace Rpg {
       *
       * Component sc_[a] is equal to v_{a}^{T} chi e / M^2, where
       * e = [1 1 ... 1]^{T}, v_{a}^{T} is a row vector representation
-      * of eigenvector a of the projected chi matrix, given by element 
+      * of eigenvector a of the projected chi matrix, given by element
       * a of chiEvecs_, and M = nMonomer.
       */
       DArray<double>  sc_;
@@ -791,13 +789,25 @@ namespace Rpg {
       */
       mutable RField<D> tmpField_;
 
+      // Pointers to associated objects
+
       /**
       * Pointer to the parent system.
       */
       System<D>* systemPtr_;
 
       /**
-      * Pointer to compressor factory object.
+      * Pointer to a scalar random number generator.
+      */
+      Random* randomPtr_;
+
+      /**
+      * Pointer to a vector random number generator.
+      */
+      CudaVecRandom* vecRandomPtr_;
+
+      /**
+      * Pointer to a compressor factory object.
       */
       CompressorFactory<D>* compressorFactoryPtr_;
 
@@ -812,17 +822,17 @@ namespace Rpg {
       PerturbationFactory<D>* perturbationFactoryPtr_;
 
       /**
-      * Pointer to the perturbation (if any).
+      * Pointer to a perturbation (if any).
       */
       Perturbation<D>* perturbationPtr_;
 
       /**
-      * Pointer to the Ramp Factory.
+      * Pointer to a Ramp Factory.
       */
       RampFactory<D>* rampFactoryPtr_;
 
       /**
-      * Pointer to the Ramp (if any).
+      * Pointer to a Ramp (if any).
       */
       Ramp<D>* rampPtr_;
 
@@ -835,23 +845,31 @@ namespace Rpg {
 
    // Inline functions
 
+   // Access to associated objects via pointers
+
    // Get the parent System.
    template <int D>
    inline System<D>& Simulator<D>::system()
    {
-      UTIL_CHECK(systemPtr_);
+      UTIL_ASSERT(systemPtr_);
       return *systemPtr_;
    }
 
-   // Get the CPU random number generator.
+   // Get the scalar random number generator by reference.
    template <int D>
    inline Random& Simulator<D>::random()
-   {  return random_; }
+   {
+      UTIL_ASSERT(randomPtr_);
+      return *randomPtr_;
+   }
 
-   // Get the GPU random number generator.
+   // Get the GPU random number generator by reference.
    template <int D>
-   inline CudaRandom& Simulator<D>::cudaRandom()
-   {  return cudaRandom_; }
+   inline CudaVecRandom& Simulator<D>::vecRandom()
+   {
+      UTIL_ASSERT(vecRandomPtr_);
+      return *vecRandomPtr_;
+   }
 
    // Does this Simulator have a Compressor?
    template <int D>
@@ -903,7 +921,7 @@ namespace Rpg {
       return *perturbationPtr_;
    }
 
-   // Get the perturbation factory.
+   // Get the Perturbation factory.
    template <int D>
    inline PerturbationFactory<D>& Simulator<D>::perturbationFactory()
    {
@@ -932,7 +950,7 @@ namespace Rpg {
       return *rampPtr_;
    }
 
-   // Get the ramp factory.
+   // Get the Ramp factory.
    template <int D>
    inline RampFactory<D>& Simulator<D>::rampFactory()
    {
@@ -940,22 +958,24 @@ namespace Rpg {
       return *rampFactoryPtr_;
    }
 
-   // Return an array of eigenvalues of projected chi matrix.
-   template <int D>
-   inline double Simulator<D>::chiEval(int a) const
-   {  return chiEvals_[a]; }
+   // Projected Chi Matrix
 
-   // Return an array of eigenvalues of projected chi matrix.
+   // Return an array of eigenvalue of the projected chi matrix.
    template <int D>
    inline DArray<double> const & Simulator<D>::chiEvals() const
    {  return chiEvals_; }
+
+   // Return a single eigenvalue of the projected chi matrix.
+   template <int D>
+   inline double Simulator<D>::chiEval(int a) const
+   {  return chiEvals_[a]; }
 
    // Return a matrix of eigenvectors of the projected chi matrix.
    template <int D>
    inline DMatrix<double> const & Simulator<D>::chiEvecs() const
    {  return chiEvecs_; }
 
-   // Return a matrix of eigenvectors of the projected chi matrix.
+   // Return an element of an eigenvectors of the projected chi matrix.
    template <int D>
    inline double Simulator<D>::chiEvecs(int a, int i) const
    {  return chiEvecs_(a, i); }
@@ -969,6 +989,8 @@ namespace Rpg {
    template <int D>
    inline double Simulator<D>::sc(int a) const
    {  return sc_[a]; }
+
+   // Hamiltonian and its components
 
    // Has the Hamiltonian been computed for the current w fields ?
    template <int D>
@@ -1006,6 +1028,8 @@ namespace Rpg {
       UTIL_CHECK(hasHamiltonian_);
       return perturbationHamiltonian_;
    }
+
+   // Fields
 
    // Return all eigencomponents of the w fields.
    template <int D>

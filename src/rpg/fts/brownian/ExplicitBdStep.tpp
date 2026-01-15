@@ -15,6 +15,7 @@
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
 #include <rpg/system/System.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
 
@@ -109,7 +110,7 @@ namespace Rpg {
          RField<D> const & dc = simulator().dc(j);
          
          // Generate normal distributed random floating point numbers
-         cudaRandom().normal(gaussianField_, stddev, mean);
+         vecRandom().normal(gaussianField_, stddev, mean);
          
          // dwc
          VecOp::addVcVc(dwc_, dc, a, gaussianField_, b);

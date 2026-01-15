@@ -79,7 +79,7 @@ namespace Rpg {
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
-      using BdStep<D>::cudaRandom;
+      using BdStep<D>::vecRandom;
       using ParamComposite::read;
 
    private:

@@ -4,7 +4,7 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
 
@@ -14,7 +14,7 @@
 using namespace Util;
 using namespace Pscf;
 
-class CudaRandomTest : public UnitTest 
+class CudaVecRandomTest : public UnitTest 
 {
 
 public:
@@ -28,14 +28,14 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      CudaRandom random;
+      CudaVecRandom random;
       random.setSeed(6712983651284);
    }
 
    void testUniformDouble()
    {
       printMethod(TEST_FUNC);
-      CudaRandom random;
+      CudaVecRandom random;
       random.setSeed(6712983651284);
 
       int n = 100000;
@@ -86,7 +86,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      CudaRandom random;
+      CudaVecRandom random;
       random.setSeed(6712983651284);
 
       int n = 100000;
@@ -136,7 +136,7 @@ public:
    void testNormalDouble()
    {
       printMethod(TEST_FUNC);
-      CudaRandom random;
+      CudaVecRandom random;
       random.setSeed(6712983651284);
       
       int n = 100000;
@@ -179,7 +179,7 @@ public:
    void testNormalFloat()
    {
       printMethod(TEST_FUNC);
-      CudaRandom random;
+      CudaVecRandom random;
       random.setSeed(6712983651284);
 
       int n = 100000;
@@ -220,12 +220,12 @@ public:
    }
 };
 
-TEST_BEGIN(CudaRandomTest)
-TEST_ADD(CudaRandomTest, testConstructor)
-TEST_ADD(CudaRandomTest, testUniformDouble)
-TEST_ADD(CudaRandomTest, testUniformFloat)
-TEST_ADD(CudaRandomTest, testNormalDouble)
-TEST_ADD(CudaRandomTest, testNormalFloat)
-TEST_END(CudaRandomTest)
+TEST_BEGIN(CudaVecRandomTest)
+TEST_ADD(CudaVecRandomTest, testConstructor)
+TEST_ADD(CudaVecRandomTest, testUniformDouble)
+TEST_ADD(CudaVecRandomTest, testUniformFloat)
+TEST_ADD(CudaVecRandomTest, testNormalDouble)
+TEST_ADD(CudaVecRandomTest, testNormalFloat)
+TEST_END(CudaVecRandomTest)
 
 #endif

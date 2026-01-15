@@ -22,7 +22,7 @@
 #include <rpg/fts/compressor/Compressor.h>
 #include <rpg/system/System.h>
 
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/misc/Timer.h>
 #include <util/global.h>
 

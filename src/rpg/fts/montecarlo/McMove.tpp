@@ -13,7 +13,7 @@
 #include <rpg/fts/montecarlo/McSimulator.h>
 #include <rpg/fts/compressor/Compressor.h>
 #include <rpg/system/System.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/random/Random.h>
 
 namespace Pscf {
@@ -29,7 +29,7 @@ namespace Rpg {
     : simulatorPtr_(&simulator),
       systemPtr_(&(simulator.system())),
       randomPtr_(&(simulator.random())),
-      cudaRandomPtr_(&(simulator.cudaRandom())),
+      vecRandomPtr_(&(simulator.vecRandom())),
       nAttempt_(0),
       nAccept_(0)
    {}

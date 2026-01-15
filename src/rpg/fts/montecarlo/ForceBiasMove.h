@@ -90,7 +90,7 @@ namespace Rpg {
       using McMove<D>::system;
       using McMove<D>::simulator;
       using McMove<D>::random;
-      using McMove<D>::cudaRandom;
+      using McMove<D>::vecRandom;
       using McMove<D>::incrementNAttempt;
       using McMove<D>::incrementNAccept;
       using McMove<D>::incrementNFail;
