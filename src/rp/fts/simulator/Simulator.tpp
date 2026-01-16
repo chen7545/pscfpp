@@ -1,5 +1,5 @@
-#ifndef RPC_SIMULATOR_TPP
-#define RPC_SIMULATOR_TPP
+#ifndef RP_SIMULATOR_TPP
+#define RP_SIMULATOR_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,21 +10,6 @@
 
 #include "Simulator.h"
 
-#include <rpc/system/System.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/solvers/Polymer.h>
-#include <rpc/solvers/Solvent.h>
-#include <rpc/field/Domain.h>
-#include <rpc/fts/compressor/Compressor.h>
-#include <rpc/fts/compressor/CompressorFactory.h>
-#include <rpc/fts/perturbation/Perturbation.h>
-#include <rpc/fts/perturbation/PerturbationFactory.h>
-#include <rpc/fts/ramp/Ramp.h>
-#include <rpc/fts/ramp/RampFactory.h>
-#include <pscf/interaction/Interaction.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/Reduce.h>
-#include <pscf/cpu/CpuVecRandom.h>
 #include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
@@ -32,15 +17,15 @@
 #include <gsl/gsl_eigen.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   Simulator<D>::Simulator(System<D>& system)
+   template <int D, class T>
+   Simulator<D,T>::Simulator(SystemT& system)
     : hamiltonian_(0.0),
       idealHamiltonian_(0.0),
       fieldHamiltonian_(0.0),
@@ -65,17 +50,17 @@ namespace Rpc {
    {
       ParamComposite::setClassName("Simulator");
       randomPtr_ = new Random();
-      vecRandomPtr_ = new CpuVecRandom(*randomPtr_);
-      compressorFactoryPtr_ = new CompressorFactory<D>(system);
-      perturbationFactoryPtr_ = new PerturbationFactory<D>(*this);
-      rampFactoryPtr_ = new RampFactory<D>(*this);
+      vecRandomPtr_ = new typename T::VecRandom();
+      compressorFactoryPtr_ = new tyepname CompressorFactoryT(system);
+      perturbationFactoryPtr_ = new typename PerturbationFactoryT(*this);
+      rampFactoryPtr_ = new typename T::RampFactory(*this);
    }
 
    /*
    * Destructor.
    */
-   template <int D>
-   Simulator<D>::~Simulator()
+   template <int D, class T>
+   Simulator<D,T>::~Simulator()
    {
       if (compressorFactoryPtr_) {
          delete compressorFactoryPtr_;
@@ -100,8 +85,8 @@ namespace Rpc {
    /*
    * Allocate required memory.
    */
-   template <int D>
-   void Simulator<D>::allocate()
+   template <int D, class T>
+   void Simulator<D,T>::allocate()
    {
       UTIL_CHECK(!isAllocated_);
 
@@ -144,8 +129,8 @@ namespace Rpc {
    *
    * Virtual function - this default version is only used for unit tests.
    */
-   template <int D>
-   void Simulator<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void Simulator<D,T>::readParameters(std::istream &in)
    {
       // Optionally read a random number generator seed
       readRandomSeed(in);
@@ -165,24 +150,24 @@ namespace Rpc {
    /*
    * Perform a field theoretic simulation (unimplemented default).
    */
-   template <int D>
-   void Simulator<D>::simulate(int nStep)
-   {  UTIL_THROW("Error: Unimplemented function Simulator<D>::simulate"); }
+   template <int D, class T>
+   void Simulator<D,T>::simulate(int nStep)
+   {  UTIL_THROW("Error: Unimplemented function Simulator<D,T>::simulate"); }
 
    /*
    * Open, read and analyze a trajectory file (unimplemented default).
    */
-   template <int D>
-   void Simulator<D>::analyze(int min, int max,
-                              std::string classname,
-                              std::string filename)
-   {  UTIL_THROW("Error: Unimplemented function Simulator<D>::analyze"); }
+   template <int D, class T>
+   void Simulator<D,T>::analyze(int min, int max,
+                                std::string classname,
+                                std::string filename)
+   {  UTIL_THROW("Error: Unimplemented function Simulator<D,T>::analyze"); }
 
    /*
    * Clear all local state data (field eigen-components and Hamiltonian)
    */
-   template <int D>
-   void Simulator<D>::clearData()
+   template <int D, class T>
+   void Simulator<D,T>::clearData()
    {
       hasHamiltonian_ = false;
       hasWc_ = false;
@@ -193,8 +178,8 @@ namespace Rpc {
    /*
    * Compute field theoretic Hamiltonian H[W].
    */
-   template <int D>
-   void Simulator<D>::computeHamiltonian()
+   template <int D, class T>
+   void Simulator<D,T>::computeHamiltonian()
    {
       UTIL_CHECK(isAllocated_);
       UTIL_CHECK(system().w().hasData());
@@ -202,8 +187,8 @@ namespace Rpc {
       UTIL_CHECK(hasWc_);
       hasHamiltonian_ = false;
 
-      Mixture<D> const & mixture = system().mixture();
-      Domain<D> const & domain = system().domain();
+      typename T::Mixture const & mixture = system().mixture();
+      typename T::Domain const & domain = system().domain();
 
       const int nMonomer = mixture.nMonomer();
       const int meshSize = domain.mesh().size();
@@ -215,7 +200,7 @@ namespace Rpc {
       // Compute polymer ideal gas contributions to lnQ
       double lnQ = 0.0;
       if (np > 0) {
-         Polymer<D> const * polymerPtr;
+         typename T::Polymer const * polymerPtr;
          double length;
          for (int i = 0; i < np; ++i) {
             polymerPtr = &mixture.polymer(i);
@@ -235,7 +220,7 @@ namespace Rpc {
 
       // Compute solvent ideal gas contributions to lnQ
       if (ns > 0) {
-         Solvent<D> const * solventPtr;
+         typename T::Solvent const * solventPtr;
          double size;
          for (int i = 0; i < ns; ++i) {
             solventPtr = &mixture.solvent(i);
@@ -295,8 +280,8 @@ namespace Rpc {
       hasHamiltonian_ = true;
    }
 
-   template <int D>
-   void Simulator<D>::analyzeChi()
+   template <int D, class T>
+   void Simulator<D,T>::analyzeChi()
    {
       UTIL_CHECK(isAllocated_);
 
@@ -449,8 +434,8 @@ namespace Rpc {
    * Compute the eigenvector components of the w fields, using the
    * eigenvectors chiEvecs_ of the projected chi matrix as a basis.
    */
-   template <int D>
-   void Simulator<D>::computeWc()
+   template <int D, class T>
+   void Simulator<D,T>::computeWc()
    {
       UTIL_CHECK(isAllocated_);
 
@@ -462,7 +447,7 @@ namespace Rpc {
       for (i = 0; i < nMonomer; ++i) {
 
          // Initialize field wc_[i] to zero
-         RField<D>& Wc = wc_[i];
+         typename T::RField& Wc = wc_[i];
          VecOp::eqS(Wc, 0.0);
 
          // Loop over monomer types (j is a monomer index)
@@ -479,8 +464,8 @@ namespace Rpc {
    * Compute the eigenvector components of the c-fields, using the
    * eigenvectors chiEvecs_ of the projected chi matrix as a basis.
    */
-   template <int D>
-   void Simulator<D>::computeCc()
+   template <int D, class T>
+   void Simulator<D,T>::computeCc()
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -495,7 +480,7 @@ namespace Rpc {
       for (i = 0; i < nMonomer; ++i) {
 
          // Initialize field cc_[i] to zero
-         RField<D>& Cc = cc_[i];
+         typename T::RField& Cc = cc_[i];
          VecOp::eqS(Cc, 0.0);
 
          // Loop over monomer types (j is a monomer index)
@@ -511,8 +496,8 @@ namespace Rpc {
    /*
    * Compute d fields, i.e., functional derivatives of H[W].
    */
-   template <int D>
-   void Simulator<D>::computeDc()
+   template <int D, class T>
+   void Simulator<D,T>::computeDc()
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -527,9 +512,9 @@ namespace Rpc {
 
       // Loop over composition eigenvectors (exclude the last)
       for (int i = 0; i < nMonomer - 1; ++i) {
-         RField<D>& Dc = dc_[i];
-         RField<D> const & Wc = wc_[i];
-         RField<D> const & Cc = cc_[i];
+         typename T::RField& Dc = dc_[i];
+         typename T::RField const & Wc = wc_[i];
+         typename T::RField const & Cc = cc_[i];
          b = -1.0*a*double(nMonomer)/chiEvals_[i];
          s = -1.0*b*sc_[i];
          VecOp::addVcVcS(Dc, Cc, a, Wc, b, s);
@@ -548,8 +533,8 @@ namespace Rpc {
    *
    * Invoked before each attempted move.
    */
-   template <int D>
-   void Simulator<D>::saveState()
+   template <int D, class T>
+   void Simulator<D,T>::saveState()
    {
       UTIL_CHECK(system().w().hasData());
       UTIL_CHECK(hasWc());
@@ -604,8 +589,8 @@ namespace Rpc {
    * Invoked after the compressor fails to converge or an attempted
    * Monte-Carlo move is rejected.
    */
-   template <int D>
-   void Simulator<D>::restoreState()
+   template <int D, class T>
+   void Simulator<D,T>::restoreState()
    {
       UTIL_CHECK(state_.isAllocated);
       UTIL_CHECK(state_.hasData);
@@ -654,15 +639,15 @@ namespace Rpc {
    *
    * Invoked when an attempted move is accepted.
    */
-   template <int D>
-   void Simulator<D>::clearState()
+   template <int D, class T>
+   void Simulator<D,T>::clearState()
    {  state_.hasData = false; }
 
    /*
    * Output all timer results.
    */
-   template <int D>
-   void Simulator<D>::outputTimers(std::ostream& out) const
+   template <int D, class T>
+   void Simulator<D,T>::outputTimers(std::ostream& out) const
    {
       UTIL_CHECK(compressorPtr_);
       outputMdeCounter(out);
@@ -672,8 +657,8 @@ namespace Rpc {
    /*
    * Output modified diffusion equation (MDE) counter.
    */
-   template <int D>
-   void Simulator<D>::outputMdeCounter(std::ostream& out) const
+   template <int D, class T>
+   void Simulator<D,T>::outputMdeCounter(std::ostream& out) const
    {
       UTIL_CHECK(compressorPtr_);
       out << "MDE counter   "
@@ -684,8 +669,8 @@ namespace Rpc {
    /*
    * Clear all timers.
    */
-   template <int D>
-   void Simulator<D>::clearTimers()
+   template <int D, class T>
+   void Simulator<D,T>::clearTimers()
    {
       UTIL_CHECK(hasCompressor());
       compressor().clearTimers();
@@ -696,8 +681,8 @@ namespace Rpc {
    /*
    * Optionally read RNG seed, initialize random number generators.
    */
-   template <int D>
-   void Simulator<D>::readRandomSeed(std::istream& in)
+   template <int D, class T>
+   void Simulator<D,T>::readRandomSeed(std::istream& in)
    {
       // Optionally read a random number generator seed
       seed_ = 0;
@@ -714,8 +699,8 @@ namespace Rpc {
    /*
    * Optionally read a Compressor parameter file block.
    */
-   template <int D>
-   void Simulator<D>::readCompressor(std::istream& in, bool& isEnd)
+   template <int D, class T>
+   void Simulator<D,T>::readCompressor(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
          UTIL_CHECK(compressorFactoryPtr_);
@@ -735,8 +720,8 @@ namespace Rpc {
    /*
    * Optionally read a Perturbation parameter file block.
    */
-   template <int D>
-   void Simulator<D>::readPerturbation(std::istream& in, bool& isEnd)
+   template <int D, class T>
+   void Simulator<D,T>::readPerturbation(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
          UTIL_CHECK(perturbationFactoryPtr_);
@@ -752,10 +737,10 @@ namespace Rpc {
    }
 
    /*
-   * Set the associated Perturbation<D> object.
+   * Set the associated Perturbation object.
    */
-   template <int D>
-   void Simulator<D>::setPerturbation(Perturbation<D>* ptr)
+   template <int D, class T>
+   void Simulator<D,T>::setPerturbation(PerturbationT* ptr)
    {
       UTIL_CHECK(ptr);
       perturbationPtr_ = ptr;
@@ -766,8 +751,8 @@ namespace Rpc {
    /*
    * Optionally read a Ramp parameter file block.
    */
-   template <int D>
-   void Simulator<D>::readRamp(std::istream& in, bool& isEnd)
+   template <int D, class T>
+   void Simulator<D,T>::readRamp(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
          UTIL_CHECK(rampFactoryPtr_);
@@ -782,15 +767,15 @@ namespace Rpc {
    }
 
    /*
-   * Set the associated Ramp<D> object.
+   * Set the associated Ramp object.
    */
-   template <int D>
-   void Simulator<D>::setRamp(Ramp<D>* ptr)
+   template <int D, class T>
+   void Simulator<D,T>::setRamp(typename T::Ramp* ptr)
    {
       UTIL_CHECK(ptr);
       rampPtr_ = ptr;
    }
 
-}
-}
+} // namespace Rp
+} // namespace Pscf
 #endif

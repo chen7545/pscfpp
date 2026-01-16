@@ -53,6 +53,7 @@ namespace Pscf {
       template <int D> class SweepFactory;
       template <int D> class Simulator;
       template <int D> class SimulatorFactory;
+      template <int D> struct SimState;
    }
 }
 
@@ -105,6 +106,7 @@ namespace Rpc {
       using SweepFactory = Rpc::SweepFactory<D>;
       using Simulator = Rpc::Simulator<D>;
       using SimulatorFactory = Rpc::SimulatorFactory<D>;
+      using SimState = Rpc::SimState<D>;
 
       using RField = Prdc::Cpu::RField<D>;
       using RFieldDft = Prdc::Cpu::RFieldDft<D>;

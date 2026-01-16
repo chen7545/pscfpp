@@ -455,7 +455,7 @@ namespace Rpg {
       UTIL_CHECK(isAllocated_);
 
       double vec;
-      int i,j;
+      int i, j;
       const int nMonomer = system().mixture().nMonomer();
 
       // Loop over eigenvectors (i is an eigenvector index)
@@ -609,7 +609,7 @@ namespace Rpg {
    {
       UTIL_CHECK(state_.isAllocated);
       UTIL_CHECK(state_.hasData);
-      int nMonomer = system().mixture().nMonomer();
+      const int nMonomer = system().mixture().nMonomer();
 
       // Restore fields
       system().w().setRGrid(state_.w);
@@ -661,7 +661,7 @@ namespace Rpg {
    /*
    * Output all timer results.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::outputTimers(std::ostream& out) const
    {
       UTIL_CHECK(compressorPtr_);
@@ -672,7 +672,7 @@ namespace Rpg {
    /*
    * Output modified diffusion equation (MDE) counter.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::outputMdeCounter(std::ostream& out) const
    {
       UTIL_CHECK(compressorPtr_);
@@ -684,7 +684,7 @@ namespace Rpg {
    /*
    * Clear all timers.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::clearTimers()
    {
       UTIL_CHECK(hasCompressor());
@@ -697,14 +697,14 @@ namespace Rpg {
    * Optionally read RNG seed, initialize random number generators.
    */
    template <int D>
-   void Simulator<D>::readRandomSeed(std::istream &in)
+   void Simulator<D>::readRandomSeed(std::istream& in)
    {
       // Optionally read a random number generator seed
       seed_ = 0;
       readOptional(in, "seed", seed_);
 
-      // Set seed values for both random number generators
-      // Default value seed_ = 0 uses clock time.
+      // Set random number generator seed
+      // Default value seed_ = 0 uses the clock time.
       random().setSeed(seed_);
       vecRandom().setSeed(seed_);
    }
@@ -714,7 +714,7 @@ namespace Rpg {
    /*
    * Optionally read a Compressor parameter file block.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::readCompressor(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
@@ -725,7 +725,7 @@ namespace Rpg {
             compressorFactory().readObjectOptional(in, *this,
                                                    className, isEnd);
       }
-      if (!hasCompressor() && ParamComponent::echo()) {
+      if (!compressorPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Compressor{ [absent] }\n";
       }
    }
@@ -735,7 +735,7 @@ namespace Rpg {
    /*
    * Optionally read a Perturbation parameter file block.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::readPerturbation(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
@@ -746,7 +746,7 @@ namespace Rpg {
             perturbationFactory().readObjectOptional(in, *this,
                                                      className, isEnd);
       }
-      if (!hasPerturbation() && ParamComponent::echo()) {
+      if (!perturbationPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Perturbation{ [absent] }\n";
       }
    }
@@ -754,7 +754,7 @@ namespace Rpg {
    /*
    * Set the associated Perturbation<D> object.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::setPerturbation(Perturbation<D>* ptr)
    {
       UTIL_CHECK(ptr);
@@ -764,9 +764,9 @@ namespace Rpg {
    // Functions related to a Ramp
 
    /*
-   * Optionally read a parameter file block for an associated Ramp.
+   * Optionally read a Ramp parameter file block.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::readRamp(std::istream& in, bool& isEnd)
    {
       if (!isEnd) {
@@ -776,7 +776,7 @@ namespace Rpg {
          rampPtr_ =
             rampFactory().readObjectOptional(in, *this, className, isEnd);
       }
-      if (!hasRamp() && ParamComponent::echo()) {
+      if (!rampPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Ramp{ [absent] }\n";
       }
    }
@@ -784,7 +784,7 @@ namespace Rpg {
    /*
    * Set the associated Ramp<D> object.
    */
-   template<int D>
+   template <int D>
    void Simulator<D>::setRamp(Ramp<D>* ptr)
    {
       UTIL_CHECK(ptr);

@@ -47,6 +47,7 @@ namespace Pscf {
       template <int D> class SweepFactory;
       template <int D> class Simulator;
       template <int D> class SimulatorFactory;
+      template <int D> struct SimState;
    }
 }
 
@@ -95,6 +96,7 @@ namespace Rpg {
       using SweepFactory = Rpg::SweepFactory<D>;
       using Simulator = Rpg::Simulator<D>;
       using SimulatorFactory = Rpg::SimulatorFactory<D>;
+      using SimState = Rpg::SimState<D>;
 
       using RField = Prdc::Cuda::RField<D>;
       using RFieldDft = Prdc::Cuda::RFieldDft<D>;

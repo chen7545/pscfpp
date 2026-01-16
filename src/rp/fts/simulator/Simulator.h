@@ -1,5 +1,5 @@
-#ifndef RPC_SIMULATOR_H
-#define RPC_SIMULATOR_H
+#ifndef RP_SIMULATOR_H
+#define RP_SIMULATOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,8 +10,6 @@
 
 #include <util/param/ParamComposite.h>     // base class
 
-#include <rpc/fts/simulator/SimState.h>    // member
-#include <prdc/cpu/RField.h>               // member (template arg)
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 
@@ -19,28 +17,15 @@
 namespace Util {
    class Random;
 }
-namespace Pscf {
-   class CpuVecRandom;
-   namespace Rpc {
-      template <int D> class System;
-      template <int D> class Compressor;
-      template <int D> class CompressorFactory;
-      template <int D> class Perturbation;
-      template <int D> class PerturbationFactory;
-      template <int D> class Ramp;
-      template <int D> class RampFactory;
-   }
-}
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
-   * Field theoretic simulator (base class).
+   * Field theoretic PS-FTS simulator (base class).
    *
    * The Simulator base class provides tools needed in field-theoretic
    * simulations that are based on a partial saddle-point approximation.
@@ -69,20 +54,32 @@ namespace Rpc {
    * a suffix "c" refer to components of multi-component fields that are
    * defined using this eigenvector basis.
    *
-   * \ingroup Rpc_Fts_Module
+   * \ingroup Rp_Fts_Module
    */
-   template <int D>
+   template <int D, class T>
    class Simulator : public ParamComposite
    {
 
    public:
+
+      // Public type name aliases
+      using VecRandomT = typename T::VecRandom;
+      using SimStateT = typename T::SimState;
+      using SystemT = typename T::System;
+      using CompressorT = typeame T::Compressor;
+      using CompressorFactoryT = typename T::CompressorFactory;
+      using PerturbationT = typename T::Perturbation;
+      using PerturbationFactoryT = typename T::Perturbation;
+      using RampT = typename T::Ramp;
+      using RampFactoryT = typename T::RampFactory;
+      using RFieldT = typename T::RField;
 
       /**
       * Constructor.
       *
       * \param system parent System
       */
-      Simulator(System<D>& system);
+      Simulator(SystemT& system);
 
       /**
       * Destructor.
@@ -356,7 +353,7 @@ namespace Rpc {
       * a chemical field component \f$ W_{a}({\bf r}) \f$ as defined in
       * the documentation of computeWc(), for a = 0, ..., nMonomer - 1.
       */
-      DArray< RField<D> > const & wc() const;
+      DArray<RFieldT> const & wc() const;
 
       /**
       * Get one eigenvector component of the current w fields.
@@ -365,7 +362,7 @@ namespace Rpc {
       *
       * \param a eigenvector index in range 0 , ..., nMonomer -1
       */
-      RField<D> const & wc(int a) const;
+      RFieldT const & wc(int a) const;
 
       /**
       * Are eigen-components of the current w fields valid ?
@@ -406,7 +403,7 @@ namespace Rpc {
       * intentional, and is convenient for other aspects of the
       * underlying theory.
       */
-      DArray< RField<D> > const & cc() const;
+      DArray<RFieldT> const & cc() const;
 
       /**
       * Get one eigenvector component of the current c fields.
@@ -416,7 +413,7 @@ namespace Rpc {
       *
       * \param a eigenvector / eigenvalue index
       */
-      RField<D> const & cc(int a) const;
+      RFieldT const & cc(int a) const;
 
       /**
       * Are eigen-components of the current c fields valid ?
@@ -444,14 +441,14 @@ namespace Rpc {
       * respect to the field component \f$ W_{a} \f$ that is returned
       * by the member function wc(a).
       */
-      DArray< RField<D> > const & dc() const;
+      DArray<RFieldT> const & dc() const;
 
       /**
       * Get one eigenvector component of the current d fields.
       *
       * \param i  eigenvector / eigenvalue index
       */
-      RField<D> const & dc(int i) const;
+      RFieldT const & dc(int i) const;
 
       /**
       * Are the current d fields valid ?
@@ -504,7 +501,7 @@ namespace Rpc {
       /**
       * Get the parent system by reference.
       */
-      System<D>& system();
+      SystemT& system();
 
       /**
       * Get the scalar random number generator by reference.
@@ -514,7 +511,7 @@ namespace Rpc {
       /**
       * Get the vector random number generator by reference.
       */
-      CpuVecRandom& vecRandom();
+      VecRandomT& vecRandom();
 
       /**
       * Does this Simulator have a Compressor?
@@ -524,12 +521,12 @@ namespace Rpc {
       /**
       * Get the Compressor by const reference.
       */
-      Compressor<D> const & compressor() const;
+      CompressorT const & compressor() const;
 
       /**
       * Get the Compressor by non-const reference.
       */
-      Compressor<D>& compressor();
+      CompressorT& compressor();
 
       /**
       * Does this Simulator have a Perturbation?
@@ -539,12 +536,12 @@ namespace Rpc {
       /**
       * Get a Perturbation by const reference.
       */
-      Perturbation<D> const & perturbation() const;
+      PerturbationT const & perturbation() const;
 
       /**
       * Get a Perturbation by non-const reference.
       */
-      Perturbation<D>& perturbation();
+      PerturbationT& perturbation();
 
       /**
       * Does this Simulator have a Ramp?
@@ -554,12 +551,12 @@ namespace Rpc {
       /**
       * Get a Ramp by const reference.
       */
-      Ramp<D> const & ramp() const;
+      RampT const & ramp() const;
 
       /**
       * Get a Ramp by non-const reference.
       */
-      Ramp<D>& ramp();
+      RampT& ramp();
 
       ///@}
 
@@ -577,7 +574,7 @@ namespace Rpc {
       /**
       * Get the Compressor factory by reference.
       */
-      CompressorFactory<D>& compressorFactory();
+      CompressorFactoryT& compressorFactory();
 
       /**
       * Optionally read a Compressor parameter file block.
@@ -593,7 +590,7 @@ namespace Rpc {
       /**
       * Get the Perturbation factory by reference.
       */
-      PerturbationFactory<D>& perturbationFactory();
+      PerturbationFactoryT& perturbationFactory();
 
       /**
       * Optionally read a Perturbation parameter file block.
@@ -611,12 +608,12 @@ namespace Rpc {
       *
       * \param ptr pointer to a new Perturbation
       */
-      void setPerturbation(Perturbation<D>* ptr);
+      void setPerturbation(PerturbationT* ptr);
 
       /**
       * Get the Ramp factory by reference.
       */
-      RampFactory<D>& rampFactory();
+      RampFactoryT& rampFactory();
 
       /**
       * Optionally read a Ramp parameter file block.
@@ -634,7 +631,7 @@ namespace Rpc {
       *
       * \param ptr pointer to a new Ramp
       */
-      void setRamp(Ramp<D>* ptr);
+      void setRamp(RampT* ptr);
 
       // Protected data members
 
@@ -647,7 +644,7 @@ namespace Rpc {
       * monomer types, nMonomer. The last component is a pressure-like
       * field.
       */
-      DArray< RField<D> > wc_;
+      DArray<RFieldT> wc_;
 
       /**
       * Eigenvector components of c fields on a real space grid.
@@ -658,7 +655,7 @@ namespace Rpc {
       * monomer types, nMonomer. The last component must satisfy an
       * incompressibility constraint.
       */
-      DArray< RField<D> > cc_;
+      DArray<RFieldT> cc_;
 
       /**
       * Components of d fields on a real space grid.
@@ -666,7 +663,7 @@ namespace Rpc {
       * Each field component is the functional derivative of H[W]
       * with respect to one eigenvector w-field component.
       */
-      DArray< RField<D> > dc_;
+      DArray<RFieldT> dc_;
 
       /**
       * Previous state saved at the beginning of a step.
@@ -674,7 +671,7 @@ namespace Rpc {
       * This data structure is used to restore a previous state if the
       * compressor fails to converge or if a MC move is rejected.
       */
-      mutable SimState<D> state_;
+      mutable SimStateT state_;
 
       /**
       * Total field theoretic Hamiltonian H[W] (extensive value).
@@ -787,14 +784,14 @@ namespace Rpc {
       /**
       * Field used as temporary work space.
       */
-      mutable RField<D> tmpField_;
+      mutable RFieldT tmpField_;
 
       // Pointers to associated objects
 
       /**
       * Pointer to the parent system.
       */
-      System<D>* systemPtr_;
+      SystemT* systemPtr_;
 
       /**
       * Pointer to a scalar random number generator.
@@ -804,37 +801,37 @@ namespace Rpc {
       /**
       * Pointer to a vector random number generator.
       */
-      CpuVecRandom* vecRandomPtr_;
+      VecRandomT* vecRandomPtr_;
 
       /**
       * Pointer to a Compressor factory.
       */
-      CompressorFactory<D>* compressorFactoryPtr_;
+      CompressorFactoryT* compressorFactoryPtr_;
 
       /**
       * Pointer to a compressor.
       */
-      Compressor<D>* compressorPtr_;
+      CompressorT* compressorPtr_;
 
       /**
       * Pointer to a Perturbation factory.
       */
-      PerturbationFactory<D>* perturbationFactoryPtr_;
+      PerturbationFactoryT* perturbationFactoryPtr_;
 
       /**
       * Pointer to a Perturbation.
       */
-      Perturbation<D>* perturbationPtr_;
+      PerturbationT* perturbationPtr_;
 
       /**
       * Pointer to a Ramp factory.
       */
-      RampFactory<D>* rampFactoryPtr_;
+      RampFactoryT* rampFactoryPtr_;
 
       /**
       * Pointer to a Ramp.
       */
-      Ramp<D>* rampPtr_;
+      RampT* rampPtr_;
 
       /**
       * Has required memory been allocated?
@@ -848,111 +845,111 @@ namespace Rpc {
    // Access to associated objects via pointers
 
    // Get the parent System by reference.
-   template <int D>
-   inline System<D>& Simulator<D>::system()
+   template <int D, class T> inline 
+   typename T::System& Simulator<D,T>::system()
    {
       UTIL_ASSERT(systemPtr_);
       return *systemPtr_;
    }
 
    // Get the scalar random number generator by reference.
-   template <int D>
-   inline Random& Simulator<D>::random()
+   template <int D, class T> inline 
+   Random& Simulator<D,T>::random()
    {
       UTIL_ASSERT(randomPtr_);
       return *randomPtr_;
    }
 
    // Get the vector random number generator by reference.
-   template <int D>
-   inline CpuVecRandom& Simulator<D>::vecRandom()
+   template <int D, class T> inline 
+   typename T::VecRandom& Simulator<D,T>::vecRandom()
    {
       UTIL_ASSERT(vecRandomPtr_);
       return *vecRandomPtr_;
    }
 
    // Does this Simulator have a Compressor?
-   template <int D>
-   inline bool Simulator<D>::hasCompressor() const
+   template <int D, class T> inline 
+   bool Simulator<D,T>::hasCompressor() const
    {  return (bool)compressorPtr_; }
 
    // Get the Compressor by non-const reference.
-   template <int D>
-   inline Compressor<D>& Simulator<D>::compressor()
+   template <int D, class T> inline 
+   typename T::Compressor& Simulator<D,T>::compressor()
    {
       UTIL_CHECK(compressorPtr_);
       return *compressorPtr_;
    }
 
    // Get the Compressor by const reference.
-   template <int D>
-   inline Compressor<D> const & Simulator<D>::compressor() const
+   template <int D, class T> inline 
+   typename T::Compressor const & Simulator<D,T>::compressor() const
    {
       UTIL_CHECK(compressorPtr_);
       return *compressorPtr_;
    }
 
    // Get the Compressor factory by reference.
-   template <int D>
-   inline CompressorFactory<D>& Simulator<D>::compressorFactory()
+   template <int D, class T> inline 
+   typename T::CompressorFactory& Simulator<D,T>::compressorFactory()
    {
       UTIL_CHECK(compressorFactoryPtr_);
       return *compressorFactoryPtr_;
    }
 
    // Does this Simulator have an associated Perturbation?
-   template <int D>
-   inline bool Simulator<D>::hasPerturbation() const
+   template <int D, class T> inline 
+   bool Simulator<D,T>::hasPerturbation() const
    {  return (bool)perturbationPtr_; }
 
    // Get a Perturbation by const reference.
-   template <int D>
-   inline Perturbation<D> const & Simulator<D>::perturbation() const
+   template <int D, class T> inline 
+   typename T::Perturbation const & Simulator<D,T>::perturbation() const
    {
       UTIL_CHECK(perturbationPtr_);
       return *perturbationPtr_;
    }
 
    // Get a Perturbation by non-const reference.
-   template <int D>
-   inline Perturbation<D>& Simulator<D>::perturbation()
+   template <int D, class T> inline 
+   typename T::Perturbation& Simulator<D,T>::perturbation()
    {
       UTIL_CHECK(perturbationPtr_);
       return *perturbationPtr_;
    }
 
    // Get the Perturbation factory by reference.
-   template <int D>
-   inline PerturbationFactory<D>& Simulator<D>::perturbationFactory()
+   template <int D, class T> inline
+   typename T::PerturbationFactory& Simulator<D,T>::perturbationFactory()
    {
       UTIL_CHECK(perturbationFactoryPtr_);
       return *perturbationFactoryPtr_;
    }
 
    // Does this Simulator have an associated Ramp?
-   template <int D>
-   inline bool Simulator<D>::hasRamp() const
+   template <int D, class T> inline
+   bool Simulator<D,T>::hasRamp() const
    {  return (bool)rampPtr_; }
 
    // Get a Ramp by const reference.
-   template <int D>
-   inline Ramp<D> const & Simulator<D>::ramp() const
+   template <int D, class T> inline 
+   typename T::Ramp const & Simulator<D,T>::ramp() const
    {
       UTIL_CHECK(rampPtr_);
       return *rampPtr_;
    }
 
    // Get a Ramp by non-const reference.
-   template <int D>
-   inline Ramp<D>& Simulator<D>::ramp()
+   template <int D, class T> inline 
+   typename T::Ramp& Simulator<D,T>::ramp()
    {
       UTIL_CHECK(rampPtr_);
       return *rampPtr_;
    }
 
    // Get the Ramp factory by reference.
-   template <int D>
-   inline RampFactory<D>& Simulator<D>::rampFactory()
+   template <int D, class T> inline 
+   typename T::RampFactory& Simulator<D,T>::rampFactory()
    {
       UTIL_CHECK(rampFactoryPtr_);
       return *rampFactoryPtr_;
@@ -961,69 +958,69 @@ namespace Rpc {
    // Projected Chi Matrix
 
    // Return an array of eigenvalues of the projected chi matrix.
-   template <int D>
-   inline DArray<double> const & Simulator<D>::chiEvals() const
+   template <int D, class T> inline 
+   DArray<double> const & Simulator<D,T>::chiEvals() const
    {  return chiEvals_; }
 
    // Return a single eigenvalue of the projected chi matrix.
-   template <int D>
-   inline double Simulator<D>::chiEval(int a) const
+   template <int D, class T> inline 
+   double Simulator<D,T>::chiEval(int a) const
    {  return chiEvals_[a]; }
 
    // Return a matrix of eigenvectors of the projected chi matrix.
-   template <int D>
-   inline DMatrix<double> const & Simulator<D>::chiEvecs() const
+   template <int D, class T> inline 
+   DMatrix<double> const & Simulator<D,T>::chiEvecs() const
    {  return chiEvecs_; }
 
    // Return an element of an eigenvector of the projected chi matrix.
-   template <int D>
-   inline double Simulator<D>::chiEvecs(int a, int i) const
+   template <int D, class T> inline 
+   double Simulator<D,T>::chiEvecs(int a, int i) const
    {  return chiEvecs_(a, i); }
 
    // Return an array of values of vector S.
-   template <int D>
-   inline DArray<double> const & Simulator<D>::sc() const
+   template <int D, class T> inline 
+   DArray<double> const & Simulator<D,T>::sc() const
    {  return sc_; }
 
    // Return one component of vector S.
-   template <int D>
-   inline double Simulator<D>::sc(int a) const
+   template <int D, class T> inline 
+   double Simulator<D,T>::sc(int a) const
    {  return sc_[a]; }
 
    // Hamiltonian and its components
 
    // Has the Hamiltonian been computed for the current w fields ?
-   template <int D>
-   inline bool Simulator<D>::hasHamiltonian() const
+   template <int D, class T> inline 
+   bool Simulator<D,T>::hasHamiltonian() const
    {  return hasHamiltonian_; }
 
    // Get the precomputed total Hamiltonian.
-   template <int D>
-   inline double Simulator<D>::hamiltonian() const
+   template <int D, class T> inline 
+   double Simulator<D,T>::hamiltonian() const
    {
       UTIL_CHECK(hasHamiltonian_);
       return hamiltonian_;
    }
 
    // Get the ideal gas component of the precomputed Hamiltonian.
-   template <int D>
-   inline double Simulator<D>::idealHamiltonian() const
+   template <int D, class T> inline 
+   double Simulator<D,T>::idealHamiltonian() const
    {
       UTIL_CHECK(hasHamiltonian_);
       return idealHamiltonian_;
    }
 
    // Get the harmonic field component of the precomputed Hamiltonian.
-   template <int D>
-   inline double Simulator<D>::fieldHamiltonian() const
+   template <int D, class T> inline 
+   double Simulator<D,T>::fieldHamiltonian() const
    {
       UTIL_CHECK(hasHamiltonian_);
       return fieldHamiltonian_;
    }
 
    // Get the perturbation component of the precomputed Hamiltonian.
-   template <int D>
-   inline double Simulator<D>::perturbationHamiltonian() const
+   template <int D, class T> inline 
+   double Simulator<D,T>::perturbationHamiltonian() const
    {
       UTIL_CHECK(hasHamiltonian_);
       return perturbationHamiltonian_;
@@ -1032,64 +1029,59 @@ namespace Rpc {
    // Fields
 
    // Have eigenvector components of the current w fields been computed?
-   template <int D>
-   inline bool Simulator<D>::hasWc() const
+   template <int D, class T> inline 
+   bool Simulator<D,T>::hasWc() const
    {  return hasWc_; }
 
    // Return all eigencomponents of the w fields.
-   template <int D>
-   inline DArray< RField<D> > const & Simulator<D>::wc() const
+   template <int D, class T> inline 
+   DArray<typename T::RField> const & Simulator<D,T>::wc() const
    {  return wc_; }
 
    // Return a single eigenvector component of the w fields.
-   template <int D>
-   inline RField<D> const & Simulator<D>::wc(int a) const
+   template <int D, class T> inline 
+   typename T::RField const & Simulator<D,T>::wc(int a) const
    {  return wc_[a]; }
 
    // Have eigenvector components of the current c fields been computed?
-   template <int D>
-   inline bool Simulator<D>::hasCc() const
+   template <int D, class T> inline 
+   bool Simulator<D,T>::hasCc() const
    {  return hasCc_; }
 
    // Return all eigenvector components of the current c fields.
-   template <int D>
-   inline DArray< RField<D> > const & Simulator<D>::cc() const
+   template <int D, class T> inline 
+   DArray<typename T::RField> const & Simulator<D,T>::cc() const
    {  return cc_; }
 
    // Return a single eigenvector component of the current c fields.
-   template <int D>
-   inline RField<D> const & Simulator<D>::cc(int a) const
+   template <int D, class T> inline 
+   typename T::RField const & Simulator<D,T>::cc(int a) const
    {  return cc_[a]; }
 
    // Have eigenvector components of the current d fields been computed?
-   template <int D>
-   inline bool Simulator<D>::hasDc() const
+   template <int D, class T>
+   inline bool Simulator<D,T>::hasDc() const
    {  return hasDc_; }
 
    // Return all eigenvector components of the current d fields.
-   template <int D>
-   inline DArray< RField<D> > const & Simulator<D>::dc() const
+   template <int D, class T> inline 
+   DArray<typename T::RField> const & Simulator<D,T>::dc() const
    {  return dc_; }
 
    // Return a single eigenvector component of the current d fields.
-   template <int D>
-   inline RField<D> const & Simulator<D>::dc(int a) const
+   template <int D, class T> inline 
+   typename T::RField const & Simulator<D,T>::dc(int a) const
    {  return dc_[a]; }
 
    // Return the current converged simulation step index.
-   template <int D>
-   inline long Simulator<D>::iStep()
+   template <int D, class T>
+   inline long Simulator<D,T>::iStep()
    {  return iStep_; }
 
    // Return the current total simulation step index.
-   template <int D>
-   inline long Simulator<D>::iTotalStep()
+   template <int D, class T>
+   inline long Simulator<D,T>::iTotalStep()
    {  return iTotalStep_; }
-
-   // Explicit instantiation declarations
-   extern template class Simulator<1>;
-   extern template class Simulator<2>;
-   extern template class Simulator<3>;
 
 }
 }

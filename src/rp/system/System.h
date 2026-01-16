@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_SYSTEM_H
-#define PRDC_RL_SYSTEM_H
+#ifndef RP_SYSTEM_H
+#define RP_SYSTEM_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -25,9 +25,9 @@ namespace Pscf {
 namespace Pscf {
 namespace Rp {
 
-   // Namespace that may be used implicitly
+   // Namespaces that may be used implicitly
    using namespace Util;
-   using namespace Prdc; 
+   using namespace Pscf::Prdc; 
 
    /**
    * Base class template for classes that represent a complete system.
