@@ -62,7 +62,7 @@ namespace Rpc {
    * The eigenvalues and eigenvectors of this matrix are accessed via
    * the chiEvals and chiEvecs functions, respectively.
    *
-   * The computeWc, computeCc and computeDc functions compute components
+   * The functions computeWc, computeCc and computeDc compute components
    * of various types of multi-component fields (i.e., fields that are
    * associated with a monomer type index) in a basis of eigenvectors of
    * the projected chi matrix. Names such as wc, cc and dc that end with
@@ -94,7 +94,7 @@ namespace Rpc {
       *
       * Values of nMonomer and the mesh dimensions must be defined in
       * Mixture and Domain members of the parent System on entry. This
-      * function must be called by the readParameters method of any
+      * function should be called by the readParameters method of any
       * subclass.
       */
       void allocate();
@@ -102,7 +102,7 @@ namespace Rpc {
       /**
       * Read parameters for a simulation.
       *
-      * The default implementation reads an optional random seed, and
+      * The default implementation reads an optional random seed, an
       * optional Compressor block, an optional Perturbation, and an
       * optional Ramp, in that order. This default is intended to be
       * used only for unit testing.
@@ -151,7 +151,7 @@ namespace Rpc {
       * Clear field eigen-components and Hamiltonian components.
       *
       * On return from this function, hasHamiltonian(), hasWc(), hasCc(),
-      * and hasDc() all return false.
+      * and hasDc() will all return false.
       */
       void clearData();
 
@@ -311,7 +311,7 @@ namespace Rpc {
       double fieldHamiltonian() const;
 
       /**
-      * Get the perturbation to the standard Hamiltonian (if any).
+      * Get a perturbation to the standard Hamiltonian.
       *
       * A perturbation to the Hamiltonian, if any, is computed by an
       * associated Perturbation object. When a perturbation exists,
@@ -368,7 +368,7 @@ namespace Rpc {
       RField<D> const & wc(int a) const;
 
       /**
-      * Are eigen-components of current w fields valid ?
+      * Are eigen-components of the current w fields valid ?
       */
       bool hasWc() const;
 
@@ -419,7 +419,7 @@ namespace Rpc {
       RField<D> const & cc(int a) const;
 
       /**
-      * Are eigen-components of current c fields valid ?
+      * Are eigen-components of the current c fields valid ?
       */
       bool hasCc() const;
 
@@ -469,7 +469,7 @@ namespace Rpc {
       * implementation of field theoretic moves.  This function stores
       * the current w fields and the corresponding Hamiltonian value.
       * Current cc fields and dc fields are saved based on save policy.
-      * This is normally the first step of a Monte Carlo (MC) move, prior
+      * This is normally the first step of a Monte-Carlo (MC) move, prior
       * to an attempted modification of the fields stored in the system
       * w field container.
       */
@@ -479,9 +479,9 @@ namespace Rpc {
       * Restore the system to the saved state.
       *
       * This function and saveState() are intended to be used together
-      * in the implementation of FTS moves. If an attempted Monte-Carle
-      * move is rejected or if the compressor fails to converge after
-      * an attempted FTS move, restoreState() is called to restore the
+      * in the implementation of FTS moves. If an attempted Monte-Carlo
+      * move is rejected, or if the compressor fails to converge after
+      * any attempted FTS move, restoreState() is called to restore the
       * fields and Hamiltonian value that were saved by a previous call
       * to the function saveState().
       */
@@ -502,22 +502,22 @@ namespace Rpc {
       ///@{
 
       /**
-      * Get parent system by reference.
+      * Get the parent system by reference.
       */
       System<D>& system();
 
       /**
-      * Get scalar random number generator by reference.
+      * Get the scalar random number generator by reference.
       */
       Random& random();
 
       /**
-      * Get vector random number generator by reference.
+      * Get the vector random number generator by reference.
       */
       CpuVecRandom& vecRandom();
 
       /**
-      * Does this simulator have a Compressor?
+      * Does this Simulator have a Compressor?
       */
       bool hasCompressor() const;
 
@@ -532,32 +532,32 @@ namespace Rpc {
       Compressor<D>& compressor();
 
       /**
-      * Does this simulator have a Perturbation?
+      * Does this Simulator have a Perturbation?
       */
       bool hasPerturbation() const;
 
       /**
-      * Get the Perturbation by const reference.
+      * Get a Perturbation by const reference.
       */
       Perturbation<D> const & perturbation() const;
 
       /**
-      * Get the Perturbation by non-const reference.
+      * Get a Perturbation by non-const reference.
       */
       Perturbation<D>& perturbation();
 
       /**
-      * Does this simulator have a Ramp?
+      * Does this Simulator have a Ramp?
       */
       bool hasRamp() const;
 
       /**
-      * Get the Ramp by const reference.
+      * Get a Ramp by const reference.
       */
       Ramp<D> const & ramp() const;
 
       /**
-      * Get the Ramp by non-const reference.
+      * Get a Ramp by non-const reference.
       */
       Ramp<D>& ramp();
 
@@ -570,19 +570,19 @@ namespace Rpc {
       /**
       * Optionally read a random seed and initialize RNGs.
       *
-      * \param in input parameter stream
+      * \param in  input parameter stream
       */
       void readRandomSeed(std::istream& in);
 
       /**
-      * Get the compressor factory by reference.
+      * Get the Compressor factory by reference.
       */
       CompressorFactory<D>& compressorFactory();
 
       /**
       * Optionally read a Compressor parameter file block.
       *
-      * If isEnd it true on entry, the function returns without
+      * If isEnd is true on entry, this function returns without
       * attempting to read the Compressor block.
       *
       * \param in  input parameter stream
@@ -591,14 +591,14 @@ namespace Rpc {
       void readCompressor(std::istream& in, bool& isEnd);
 
       /**
-      * Get the perturbation factory by reference.
+      * Get the Perturbation factory by reference.
       */
       PerturbationFactory<D>& perturbationFactory();
 
       /**
       * Optionally read a Perturbation parameter file block.
       *
-      * If isEnd it true on entry, the function returns without
+      * If isEnd is true on entry, this function returns without
       * attempting to read the Perturbation block.
       *
       * \param in  input parameter stream
@@ -609,19 +609,19 @@ namespace Rpc {
       /**
       * Set the associated Perturbation.
       *
-      * \param ptr pointer to a new Perturbation<D> object.
+      * \param ptr pointer to a new Perturbation
       */
       void setPerturbation(Perturbation<D>* ptr);
 
       /**
-      * Get the ramp factory by reference.
+      * Get the Ramp factory by reference.
       */
       RampFactory<D>& rampFactory();
 
       /**
       * Optionally read a Ramp parameter file block.
       *
-      * If isEnd it true on entry, the function returns without
+      * If isEnd is true on entry, this function returns without
       * attempting to read the Ramp block.
       *
       * \param in  input parameter stream
@@ -630,9 +630,9 @@ namespace Rpc {
       void readRamp(std::istream& in, bool& isEnd);
 
       /**
-      * Set the associated ramp.
+      * Set the associated Ramp.
       *
-      * \param ptr pointer to a new Ramp<D> object.
+      * \param ptr pointer to a new Ramp
       */
       void setRamp(Ramp<D>* ptr);
 
@@ -682,26 +682,26 @@ namespace Rpc {
       double hamiltonian_;
 
       /**
-      * Ideal gas contribution (-lnQ) to Hamiltonian H[W]
+      * Ideal gas contribution (-lnQ) to Hamiltonian.
       */
       double idealHamiltonian_;
 
       /**
-      * Quadratic field contribution to Hamiltonian
+      * Quadratic field contribution to Hamiltonian.
       */
       double fieldHamiltonian_;
 
       /**
-      * Perturbation to the standard Hamiltonian (if any).
+      * Perturbation contribution to the Hamiltonian.
       *
-      * A perturbation to the Hamiltonian, if any, is computed by an
+      * A perturbation Hamiltonian component, if any, is computed by an
       * associated Perturbation object and added to the ideal and field
       * components to obtain the total hamiltonian_ value.
       */
       double perturbationHamiltonian_;
 
       /**
-      * Step counter - attempted steps for which the compressor converges.
+      * Step counter - number of steps for which the compressor converged.
       *
       * Steps for which the compressor fails to converge are returned to
       * the previous state so that another random displacement can be
@@ -757,12 +757,12 @@ namespace Rpc {
       DMatrix<double> chiP_;
 
       /**
-      * Eigenvectors of the projected chi matrix chiP_.
+      * Eigenvectors of the projected chi matrix.
       *
       * Each row (identified by first index) is an eigenvector.
       * The last eigenvector, with index nMonomer - 1, is always the
       * vector e = [1, 1, ...., 1]. Distinct eigenvectors are orthogonal.
-      * Eigenvectors normalized such that the sum of the square of the
+      * Eigenvectors are normalized such that the sum of the square of the
       * elements is equal to nMonomer.
       */
       DMatrix<double> chiEvecs_;
@@ -807,32 +807,32 @@ namespace Rpc {
       CpuVecRandom* vecRandomPtr_;
 
       /**
-      * Pointer to the compressor factory object.
+      * Pointer to a Compressor factory.
       */
       CompressorFactory<D>* compressorFactoryPtr_;
 
       /**
-      * Pointer to a compressor (if any).
+      * Pointer to a compressor.
       */
       Compressor<D>* compressorPtr_;
 
       /**
-      * Pointer to the perturbation Factory.
+      * Pointer to a Perturbation factory.
       */
       PerturbationFactory<D>* perturbationFactoryPtr_;
 
       /**
-      * Pointer to a perturbation (if any).
+      * Pointer to a Perturbation.
       */
       Perturbation<D>* perturbationPtr_;
 
       /**
-      * Pointer to the Ramp Factory.
+      * Pointer to a Ramp factory.
       */
       RampFactory<D>* rampFactoryPtr_;
 
       /**
-      * Pointer to a Ramp (if any)
+      * Pointer to a Ramp.
       */
       Ramp<D>* rampPtr_;
 
@@ -858,9 +858,9 @@ namespace Rpc {
    // Get the scalar random number generator by reference.
    template <int D>
    inline Random& Simulator<D>::random()
-   {  
+   {
       UTIL_ASSERT(randomPtr_);
-      return *randomPtr_; 
+      return *randomPtr_;
    }
 
    // Get the vector random number generator by reference.
@@ -868,7 +868,7 @@ namespace Rpc {
    inline CpuVecRandom& Simulator<D>::vecRandom()
    {
       UTIL_ASSERT(vecRandomPtr_);
-      return *vecRandomPtr_; 
+      return *vecRandomPtr_;
    }
 
    // Does this Simulator have a Compressor?
@@ -886,7 +886,7 @@ namespace Rpc {
 
    // Get the Compressor by const reference.
    template <int D>
-   inline Compressor<D> const& Simulator<D>::compressor() const
+   inline Compressor<D> const & Simulator<D>::compressor() const
    {
       UTIL_CHECK(compressorPtr_);
       return *compressorPtr_;
@@ -905,7 +905,7 @@ namespace Rpc {
    inline bool Simulator<D>::hasPerturbation() const
    {  return (bool)perturbationPtr_; }
 
-   // Get the Perturbation (if any) by const reference.
+   // Get a Perturbation by const reference.
    template <int D>
    inline Perturbation<D> const & Simulator<D>::perturbation() const
    {
@@ -913,7 +913,7 @@ namespace Rpc {
       return *perturbationPtr_;
    }
 
-   // Get the Perturbation (if any) by non-const reference.
+   // Get a Perturbation by non-const reference.
    template <int D>
    inline Perturbation<D>& Simulator<D>::perturbation()
    {
@@ -934,7 +934,7 @@ namespace Rpc {
    inline bool Simulator<D>::hasRamp() const
    {  return (bool)rampPtr_; }
 
-   // Get the ramp (if any) by const reference.
+   // Get a Ramp by const reference.
    template <int D>
    inline Ramp<D> const & Simulator<D>::ramp() const
    {
@@ -942,7 +942,7 @@ namespace Rpc {
       return *rampPtr_;
    }
 
-   // Get the ramp (if any) by non-const reference.
+   // Get a Ramp by non-const reference.
    template <int D>
    inline Ramp<D>& Simulator<D>::ramp()
    {
@@ -950,7 +950,7 @@ namespace Rpc {
       return *rampPtr_;
    }
 
-   // Get the Ramp factory.
+   // Get the Ramp factory by reference.
    template <int D>
    inline RampFactory<D>& Simulator<D>::rampFactory()
    {
@@ -980,12 +980,12 @@ namespace Rpc {
    inline double Simulator<D>::chiEvecs(int a, int i) const
    {  return chiEvecs_(a, i); }
 
-   // Return the vector S in eigenvector basis.
+   // Return an array of values of vector S.
    template <int D>
    inline DArray<double> const & Simulator<D>::sc() const
    {  return sc_; }
 
-   // Return one component of vector S in an eigenvector basis.
+   // Return one component of vector S.
    template <int D>
    inline double Simulator<D>::sc(int a) const
    {  return sc_[a]; }
@@ -1013,7 +1013,7 @@ namespace Rpc {
       return idealHamiltonian_;
    }
 
-   // Get the W field component of the precomputed Hamiltonian.
+   // Get the harmonic field component of the precomputed Hamiltonian.
    template <int D>
    inline double Simulator<D>::fieldHamiltonian() const
    {
@@ -1031,6 +1031,11 @@ namespace Rpc {
 
    // Fields
 
+   // Have eigenvector components of the current w fields been computed?
+   template <int D>
+   inline bool Simulator<D>::hasWc() const
+   {  return hasWc_; }
+
    // Return all eigencomponents of the w fields.
    template <int D>
    inline DArray< RField<D> > const & Simulator<D>::wc() const
@@ -1041,10 +1046,10 @@ namespace Rpc {
    inline RField<D> const & Simulator<D>::wc(int a) const
    {  return wc_[a]; }
 
-   // Have eigenvector components of current w fields been computed?
+   // Have eigenvector components of the current c fields been computed?
    template <int D>
-   inline bool Simulator<D>::hasWc() const
-   {  return hasWc_; }
+   inline bool Simulator<D>::hasCc() const
+   {  return hasCc_; }
 
    // Return all eigenvector components of the current c fields.
    template <int D>
@@ -1056,10 +1061,10 @@ namespace Rpc {
    inline RField<D> const & Simulator<D>::cc(int a) const
    {  return cc_[a]; }
 
-   // Have eigenvector components of current c fields been computed?
+   // Have eigenvector components of the current d fields been computed?
    template <int D>
-   inline bool Simulator<D>::hasCc() const
-   {  return hasCc_; }
+   inline bool Simulator<D>::hasDc() const
+   {  return hasDc_; }
 
    // Return all eigenvector components of the current d fields.
    template <int D>
@@ -1070,11 +1075,6 @@ namespace Rpc {
    template <int D>
    inline RField<D> const & Simulator<D>::dc(int a) const
    {  return dc_[a]; }
-
-   // Have eigenvector components of current d fields been computed?
-   template <int D>
-   inline bool Simulator<D>::hasDc() const
-   {  return hasDc_; }
 
    // Return the current converged simulation step index.
    template <int D>
