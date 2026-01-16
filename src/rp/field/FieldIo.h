@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_FIELD_IO_H
-#define PRDC_RL_FIELD_IO_H
+#ifndef RP_FIELD_IO_H
+#define RP_FIELD_IO_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -78,7 +78,7 @@ namespace Rp {
    * Rpg::FieldIo<D> subclasses, differ because the Cuda versions must
    * explicitly transfer data between Cpu and Gpu memory.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Field_Module
    */
    template <int D, class RFT, class KFT, class FFT>
    class FieldIo

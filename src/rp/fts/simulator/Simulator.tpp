@@ -10,6 +10,7 @@
 
 #include "Simulator.h"
 
+#include <pscf/chem/PolymerModel.h>
 #include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
@@ -25,7 +26,8 @@ namespace Rp {
    * Constructor.
    */
    template <int D, class T>
-   Simulator<D,T>::Simulator(SystemT& system)
+   Simulator<D,T>::Simulator(typename T::System& system,
+                             typename T::Simulator& simulator)
     : hamiltonian_(0.0),
       idealHamiltonian_(0.0),
       fieldHamiltonian_(0.0),
@@ -38,6 +40,7 @@ namespace Rp {
       hasCc_(false),
       hasDc_(false),
       systemPtr_(&system),
+      simulatorPtr_(&simulator),
       randomPtr_(nullptr),
       vecRandomPtr_(nullptr),
       compressorFactoryPtr_(nullptr),
@@ -51,9 +54,10 @@ namespace Rp {
       ParamComposite::setClassName("Simulator");
       randomPtr_ = new Random();
       vecRandomPtr_ = new typename T::VecRandom();
-      compressorFactoryPtr_ = new tyepname CompressorFactoryT(system);
-      perturbationFactoryPtr_ = new typename PerturbationFactoryT(*this);
-      rampFactoryPtr_ = new typename T::RampFactory(*this);
+      compressorFactoryPtr_ = new typename T::CompressorFactory(system);
+      perturbationFactoryPtr_ 
+             = new typename T::PerturbationFactory(simulator);
+      rampFactoryPtr_ = new typename T::RampFactory(simulator);
    }
 
    /*
@@ -300,26 +304,26 @@ namespace Rp {
          P(i,i) += 1.0;
       }
 
-      // Compute T = chi*P (temporary matrix)
-      DMatrix<double> T;
-      T.allocate(nMonomer, nMonomer);
+      // Compute CP = chi*P (temporary matrix)
+      DMatrix<double> CP;
+      CP.allocate(nMonomer, nMonomer);
       for (i = 0; i < nMonomer; ++i) {
          for (j = 0; j < nMonomer; ++j) {
-            T(i, j) = 0.0;
+            CP(i, j) = 0.0;
             for (k = 0; k < nMonomer; ++k) {
-               T(i,j) += chi(i,k)*P(k,j);
+               CP(i,j) += chi(i,k)*P(k,j);
             }
          }
       }
 
-      // Compute chiP = = P*chi*P = P*T
+      // Compute chiP = = P*chi*P = P*CP
       DMatrix<double> chiP;
       chiP.allocate(nMonomer, nMonomer);
       for (i = 0; i < nMonomer; ++i) {
          for (j = 0; j < nMonomer; ++j) {
             chiP(i, j) = 0.0;
             for (k = 0; k < nMonomer; ++k) {
-               chiP(i,j) += P(i,k)*T(k,j);
+               chiP(i,j) += P(i,k)*CP(k,j);
             }
          }
       }
@@ -740,7 +744,7 @@ namespace Rp {
    * Set the associated Perturbation object.
    */
    template <int D, class T>
-   void Simulator<D,T>::setPerturbation(PerturbationT* ptr)
+   void Simulator<D,T>::setPerturbation(typename T::Perturbation* ptr)
    {
       UTIL_CHECK(ptr);
       perturbationPtr_ = ptr;

@@ -1,5 +1,5 @@
-#ifndef PRDC_MASK_TMPL_TPP
-#define PRDC_MASK_TMPL_TPP
+#ifndef RP_MASK_TPP
+#define RP_MASK_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field

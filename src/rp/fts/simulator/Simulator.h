@@ -12,6 +12,7 @@
 
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
+#include <iostream>
 
 // Forward declarations
 namespace Util {
@@ -22,14 +23,27 @@ namespace Pscf {
 namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
 
    /**
-   * Field theoretic PS-FTS simulator (base class).
+   * Base class for field theoretic PS-FTS simulator.
    *
-   * The Simulator base class provides tools needed in field-theoretic
-   * simulations that are based on a partial saddle-point approximation.
-   * Subclasses designed for field theoretic Monte Carlo (MC) and Brownian
+   * <b> Template parameters and typename aliases </b>:
+   *
+   *    D - integer dimensionality of space (D=1, 2, or 3)
+   *    T - "Types" class, collection of aliases for related classes.
+   *
+   * <b> Usage </b>: An instantiation of Rp::Simulator\<D, T\> is used as 
+   * a base class for for each Simulation\<D\> class defined in namespaces
+   * Rpc and Rpg, for D=1, 2 or 3. In this usage, template parameter T is
+   * is taken to be an isntance of a template \<int D\> class Types that
+   * is defined in each of these namespaces. For each such instantiation,
+   * the Types\<D\> class defines a set of typename aliases for classes
+   * used in the relevant program level namespace. 
+   *
+   * <b> Purpose </b>: A Simulator base class provides tools needed in 
+   * field-theoretic simulations that are based on a partial saddle-point 
+   * approximation. In each of the program-level namespaces Rpc and Rpg,
+   * subclasses designed for field theoretic Monte Carlo (MC) and Brownian
    * dynamics (BD) simulations, named McSimulator and BdSimulator, provide
    * more specialized algorithms and data structures needed by these two
    * sampling methods.
@@ -63,23 +77,16 @@ namespace Rp {
    public:
 
       // Public type name aliases
-      using VecRandomT = typename T::VecRandom;
-      using SimStateT = typename T::SimState;
-      using SystemT = typename T::System;
-      using CompressorT = typeame T::Compressor;
-      using CompressorFactoryT = typename T::CompressorFactory;
-      using PerturbationT = typename T::Perturbation;
-      using PerturbationFactoryT = typename T::Perturbation;
-      using RampT = typename T::Ramp;
-      using RampFactoryT = typename T::RampFactory;
       using RFieldT = typename T::RField;
 
       /**
       * Constructor.
       *
-      * \param system parent System
+      * \param system  parent System
+      * \param simulator  enclosing instance of a subclass
       */
-      Simulator(SystemT& system);
+      Simulator(typename T::System& system, 
+                typename T::Simulator& simulator);
 
       /**
       * Destructor.
@@ -501,7 +508,7 @@ namespace Rp {
       /**
       * Get the parent system by reference.
       */
-      SystemT& system();
+      typename T::System& system();
 
       /**
       * Get the scalar random number generator by reference.
@@ -511,7 +518,7 @@ namespace Rp {
       /**
       * Get the vector random number generator by reference.
       */
-      VecRandomT& vecRandom();
+      typename T::VecRandom& vecRandom();
 
       /**
       * Does this Simulator have a Compressor?
@@ -521,12 +528,12 @@ namespace Rp {
       /**
       * Get the Compressor by const reference.
       */
-      CompressorT const & compressor() const;
+      typename T::Compressor const & compressor() const;
 
       /**
       * Get the Compressor by non-const reference.
       */
-      CompressorT& compressor();
+      typename T::Compressor& compressor();
 
       /**
       * Does this Simulator have a Perturbation?
@@ -536,12 +543,12 @@ namespace Rp {
       /**
       * Get a Perturbation by const reference.
       */
-      PerturbationT const & perturbation() const;
+      typename T::Perturbation const & perturbation() const;
 
       /**
       * Get a Perturbation by non-const reference.
       */
-      PerturbationT& perturbation();
+      typename T::Perturbation& perturbation();
 
       /**
       * Does this Simulator have a Ramp?
@@ -551,12 +558,12 @@ namespace Rp {
       /**
       * Get a Ramp by const reference.
       */
-      RampT const & ramp() const;
+      typename T::Ramp const & ramp() const;
 
       /**
       * Get a Ramp by non-const reference.
       */
-      RampT& ramp();
+      typename T::Ramp& ramp();
 
       ///@}
 
@@ -574,7 +581,7 @@ namespace Rp {
       /**
       * Get the Compressor factory by reference.
       */
-      CompressorFactoryT& compressorFactory();
+      typename T::CompressorFactory& compressorFactory();
 
       /**
       * Optionally read a Compressor parameter file block.
@@ -590,7 +597,7 @@ namespace Rp {
       /**
       * Get the Perturbation factory by reference.
       */
-      PerturbationFactoryT& perturbationFactory();
+      typename T::PerturbationFactory& perturbationFactory();
 
       /**
       * Optionally read a Perturbation parameter file block.
@@ -608,12 +615,12 @@ namespace Rp {
       *
       * \param ptr pointer to a new Perturbation
       */
-      void setPerturbation(PerturbationT* ptr);
+      void setPerturbation(typename T::Perturbation* ptr);
 
       /**
       * Get the Ramp factory by reference.
       */
-      RampFactoryT& rampFactory();
+      typename T::RampFactory& rampFactory();
 
       /**
       * Optionally read a Ramp parameter file block.
@@ -631,7 +638,7 @@ namespace Rp {
       *
       * \param ptr pointer to a new Ramp
       */
-      void setRamp(RampT* ptr);
+      void setRamp(typename T::Ramp* ptr);
 
       // Protected data members
 
@@ -671,7 +678,7 @@ namespace Rp {
       * This data structure is used to restore a previous state if the
       * compressor fails to converge or if a MC move is rejected.
       */
-      mutable SimStateT state_;
+      mutable typename T::SimState state_;
 
       /**
       * Total field theoretic Hamiltonian H[W] (extensive value).
@@ -791,7 +798,12 @@ namespace Rp {
       /**
       * Pointer to the parent system.
       */
-      SystemT* systemPtr_;
+      typename T::System* systemPtr_;
+
+      /**
+      * Pointer to the enclosing instance of a Rp::Simulator<D,T> subclass.
+      */
+      typename T::Simulator* simulatorPtr_;
 
       /**
       * Pointer to a scalar random number generator.
@@ -801,37 +813,37 @@ namespace Rp {
       /**
       * Pointer to a vector random number generator.
       */
-      VecRandomT* vecRandomPtr_;
+      typename T::VecRandom* vecRandomPtr_;
 
       /**
       * Pointer to a Compressor factory.
       */
-      CompressorFactoryT* compressorFactoryPtr_;
+      typename T::CompressorFactory* compressorFactoryPtr_;
 
       /**
       * Pointer to a compressor.
       */
-      CompressorT* compressorPtr_;
+      typename T::Compressor* compressorPtr_;
 
       /**
       * Pointer to a Perturbation factory.
       */
-      PerturbationFactoryT* perturbationFactoryPtr_;
+      typename T::PerturbationFactory* perturbationFactoryPtr_;
 
       /**
       * Pointer to a Perturbation.
       */
-      PerturbationT* perturbationPtr_;
+      typename T::Perturbation* perturbationPtr_;
 
       /**
       * Pointer to a Ramp factory.
       */
-      RampFactoryT* rampFactoryPtr_;
+      typename T::RampFactory* rampFactoryPtr_;
 
       /**
       * Pointer to a Ramp.
       */
-      RampT* rampPtr_;
+      typename T::Ramp* rampPtr_;
 
       /**
       * Has required memory been allocated?
