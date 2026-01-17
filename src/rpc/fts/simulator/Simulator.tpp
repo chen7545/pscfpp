@@ -22,12 +22,15 @@
 #include <rpc/fts/perturbation/PerturbationFactory.h>
 #include <rpc/fts/ramp/Ramp.h>
 #include <rpc/fts/ramp/RampFactory.h>
+
 #include <prdc/cpu/RField.h>
-#include <pscf/interaction/Interaction.h>
+
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/Reduce.h>
 #include <pscf/cpu/CpuVecRandom.h>
+#include <pscf/interaction/Interaction.h>
 #include <pscf/math/IntVec.h>
+
 #include <util/misc/Timer.h>
 #include <util/random/Random.h>
 #include <util/global.h>

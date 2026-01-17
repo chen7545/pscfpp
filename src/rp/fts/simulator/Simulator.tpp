@@ -695,7 +695,7 @@ namespace Rp {
       // Set random number generator seed
       // Default value seed_ = 0 uses the clock time.
       random().setSeed(seed_);
-      // Note: CudaVecRandom uses the associated scalar RNG
+      initializeVecRandom();
    }
 
    // Functions related to a Compressor
@@ -719,6 +719,16 @@ namespace Rp {
       }
    }
 
+   /*
+   * Get the Compressor factory by reference.
+   */
+   template <int D, class T>
+   typename T::CompressorFactory& Simulator<D,T>::compressorFactory()
+   {
+      UTIL_CHECK(compressorFactoryPtr_);
+      return *compressorFactoryPtr_;
+   }
+
    // Functions related to a Perturbation
 
    /*
@@ -738,6 +748,16 @@ namespace Rp {
       if (!perturbationPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Perturbation{ [absent] }\n";
       }
+   }
+
+   /*
+   * Get the Perturbation factory by reference.
+   */
+   template <int D, class T>
+   typename T::PerturbationFactory& Simulator<D,T>::perturbationFactory()
+   {
+      UTIL_CHECK(perturbationFactoryPtr_);
+      return *perturbationFactoryPtr_;
    }
 
    /*
@@ -768,6 +788,16 @@ namespace Rp {
       if (!rampPtr_ && ParamComponent::echo()) {
          Log::file() << indent() << "  Ramp{ [absent] }\n";
       }
+   }
+
+   /*
+   * Get the Ramp factory by reference.
+   */
+   template <int D, class T>
+   typename T::RampFactory& Simulator<D,T>::rampFactory()
+   {
+      UTIL_CHECK(rampFactoryPtr_);
+      return *rampFactoryPtr_;
    }
 
    /*

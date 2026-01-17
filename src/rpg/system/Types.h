@@ -48,6 +48,12 @@ namespace Pscf {
       template <int D> class Simulator;
       template <int D> class SimulatorFactory;
       template <int D> struct SimState;
+      template <int D> class Compressor;
+      template <int D> class CompressorFactory;
+      template <int D> class Perturbation;
+      template <int D> class PerturbationFactory;
+      template <int D> class Ramp;
+      template <int D> class RampFactory;
    }
 }
 
@@ -94,9 +100,16 @@ namespace Rpg {
       using IteratorFactory = Rpg::IteratorFactory<D>;
       using Sweep = Rpg::Sweep<D>;
       using SweepFactory = Rpg::SweepFactory<D>;
+
       using Simulator = Rpg::Simulator<D>;
       using SimulatorFactory = Rpg::SimulatorFactory<D>;
       using SimState = Rpg::SimState<D>;
+      using Compressor = Rpg::Compressor<D>;
+      using CompressorFactory = Rpg::CompressorFactory<D>;
+      using Perturbation = Rpg::Perturbation<D>;
+      using PerturbationFactory = Rpg::PerturbationFactory<D>;
+      using Ramp = Rpg::Ramp<D>;
+      using RampFactory = Rpg::RampFactory<D>;
 
       using RField = Prdc::Cuda::RField<D>;
       using RFieldDft = Prdc::Cuda::RFieldDft<D>;

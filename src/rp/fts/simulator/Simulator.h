@@ -579,6 +579,14 @@ namespace Rp {
       void readRandomSeed(std::istream& in);
 
       /**
+      * Initialize the vector RNG.
+      *  
+      * Empty default implementation can be used by Rpc::Simulator<D>.
+      */
+      virtual void initializeVecRandom()
+      {};
+
+      /**
       * Get the Compressor factory by reference.
       */
       typename T::CompressorFactory& compressorFactory();
@@ -901,14 +909,6 @@ namespace Rp {
       return *compressorPtr_;
    }
 
-   // Get the Compressor factory by reference.
-   template <int D, class T> inline 
-   typename T::CompressorFactory& Simulator<D,T>::compressorFactory()
-   {
-      UTIL_CHECK(compressorFactoryPtr_);
-      return *compressorFactoryPtr_;
-   }
-
    // Does this Simulator have an associated Perturbation?
    template <int D, class T> inline 
    bool Simulator<D,T>::hasPerturbation() const
@@ -930,14 +930,6 @@ namespace Rp {
       return *perturbationPtr_;
    }
 
-   // Get the Perturbation factory by reference.
-   template <int D, class T> inline
-   typename T::PerturbationFactory& Simulator<D,T>::perturbationFactory()
-   {
-      UTIL_CHECK(perturbationFactoryPtr_);
-      return *perturbationFactoryPtr_;
-   }
-
    // Does this Simulator have an associated Ramp?
    template <int D, class T> inline
    bool Simulator<D,T>::hasRamp() const
@@ -957,14 +949,6 @@ namespace Rp {
    {
       UTIL_CHECK(rampPtr_);
       return *rampPtr_;
-   }
-
-   // Get the Ramp factory by reference.
-   template <int D, class T> inline 
-   typename T::RampFactory& Simulator<D,T>::rampFactory()
-   {
-      UTIL_CHECK(rampFactoryPtr_);
-      return *rampFactoryPtr_;
    }
 
    // Projected Chi Matrix

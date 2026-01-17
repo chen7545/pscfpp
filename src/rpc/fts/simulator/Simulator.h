@@ -34,7 +34,7 @@ namespace Rpc {
    {
    public:
 
-      // Public typename alias
+      /// Alias for direct base class.
       using Base = Pscf::Rp::Simulator<D, Types<D> >;
 
       /**
@@ -43,6 +43,10 @@ namespace Rpc {
       * \param system  parent System object
       */
       Simulator(typename Types<D>::System& system);
+
+      Simulator(Simulator<D> const &) = delete;
+
+      Simulator<D>& operator=(Simulator<D> const &) = delete;
 
    };
 
