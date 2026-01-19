@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_MIXTURE_TPP
-#define PRDC_RL_MIXTURE_TPP
+#ifndef PR_MIXTURE_TPP
+#define PR_MIXTURE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -30,8 +30,8 @@ namespace Rp {
    /*
    * Constructor
    */
-   template <int D, class PT, class ST, class TT>
-   Mixture<D,PT,ST,TT>::Mixture()
+   template <int D, class TT>
+   Mixture<D,TT>::Mixture()
     : stress_(),
       ds_(-1.0),
       meshPtr_(nullptr),
@@ -45,15 +45,15 @@ namespace Rp {
    /*
    * Destructor
    */
-   template <int D, class PT, class ST, class TT>
-   Mixture<D,PT,ST,TT>::~Mixture()
+   template <int D,  class TT>
+   Mixture<D,TT>::~Mixture()
    {}
 
    /*
    * Read all parameters and initialize.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::readParameters(std::istream& in)
+   template <int D, class TT>
+   void Mixture<D,TT>::readParameters(std::istream& in)
    {
       // Read standard data for a mixture
       MixtureTmpl<PolymerT, SolventT, double>::readParameters(in);
@@ -75,8 +75,8 @@ namespace Rp {
    /*
    * Create associations with Mesh, FFT, UnitCell, and WaveList objects.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::associate(Mesh<D> const & mesh,
+   template <int D, class TT>
+   void Mixture<D,TT>::associate(Mesh<D> const & mesh,
                               FFTT const & fft,
                               UnitCell<D> const & cell,
                               WaveListT & waveList)
@@ -116,15 +116,15 @@ namespace Rp {
    /*
    * Create an association with a FieldIo object, for file output.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::setFieldIo(FieldIoT const & fieldIo)
+   template <int D, class TT>
+   void Mixture<D,TT>::setFieldIo(FieldIoT const & fieldIo)
    {  fieldIoPtr_ = &fieldIo; }
 
    /*
    * Allocate internal data containers in all solvers.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::allocate()
+   template <int D,  class TT>
+   void Mixture<D,TT>::allocate()
    {
       UTIL_CHECK(nMonomer() > 0);
       UTIL_CHECK(nPolymer()+ nSolvent() > 0);
@@ -152,8 +152,8 @@ namespace Rp {
    /*
    * Compute concentrations (but not total free energy).
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::compute(DArray<FieldT> const & wFields,
+   template <int D, class TT>
+   void Mixture<D,TT>::compute(DArray<FieldT> const & wFields,
                                       DArray<FieldT> & cFields,
                                       double phiTot)
    {
@@ -223,15 +223,15 @@ namespace Rp {
    /*
    * Set the isSymmetric boolean variable true or false.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::setIsSymmetric(bool isSymmetric)
+   template <int D, class TT>
+   void Mixture<D,TT>::setIsSymmetric(bool isSymmetric)
    {  isSymmetric_ = isSymmetric; }
 
    /*
    * Compute total SCFT stress for this mixture.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::computeStress(double phiTot)
+   template <int D, class TT>
+   void Mixture<D,TT>::computeStress(double phiTot)
    {
       UTIL_CHECK(nParam_ > 0);
       
@@ -276,8 +276,8 @@ namespace Rp {
    /*
    * Reset statistical segment length for one monomer type.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::setKuhn(int monomerId, double kuhn)
+   template <int D, class TT>
+   void Mixture<D,TT>::setKuhn(int monomerId, double kuhn)
    {
       // Set new Kuhn length for relevant Monomer object
       monomer(monomerId).setKuhn(kuhn);
@@ -297,8 +297,8 @@ namespace Rp {
    /*
    * Clear all data that depends on the unit cell parameters.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::clearUnitCellData()
+   template <int D, class TT>
+   void Mixture<D,TT>::clearUnitCellData()
    {
       if (nPolymer() > 0) {
          for (int i = 0; i < nPolymer(); ++i) {
@@ -314,8 +314,8 @@ namespace Rp {
    /*
    * Combine cFields for all blocks and solvents into one DArray
    */
-   template <int D, class PT, class ST, class TT> void 
-   Mixture<D,PT,ST,TT>::createBlockCRGrid(DArray<FieldT>& blockCFields)
+   template <int D, class TT> void 
+   Mixture<D,TT>::createBlockCRGrid(DArray<FieldT>& blockCFields)
    const
    {
       int np = nSolvent() + nBlock();
@@ -373,9 +373,9 @@ namespace Rp {
    * Output all concentration fields in real space (r-grid) format for
    * each block and solvent species to specified file.
    */
-   template <int D, class PT, class ST, class TT>
+   template <int D, class TT>
    void 
-   Mixture<D,PT,ST,TT>::writeBlockCRGrid(std::string const & filename) 
+   Mixture<D,TT>::writeBlockCRGrid(std::string const & filename) 
    const
    {
       UTIL_CHECK(fieldIoPtr_);
@@ -401,8 +401,8 @@ namespace Rp {
    /*
    * Write a specified slice of the propagator in r-grid format.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::writeQSlice(
+   template <int D, class TT>
+   void Mixture<D,TT>::writeQSlice(
                                   std::string const & filename,
                                   int polymerId, 
                                   int blockId,
@@ -427,8 +427,8 @@ namespace Rp {
    /*
    * Write the last (tail) slice of the propagator in r-grid format.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::writeQTail(
+   template <int D, class TT>
+   void Mixture<D,TT>::writeQTail(
                                   std::string const & filename,
                                   int polymerId, 
                                   int blockId, 
@@ -451,8 +451,8 @@ namespace Rp {
    /*
    * Write the entire propagator for a specified block and direction.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::writeQ(
+   template <int D, class TT>
+   void Mixture<D,TT>::writeQ(
                                   std::string const & filename,
                                   int polymerId, 
                                   int blockId, 
@@ -495,8 +495,8 @@ namespace Rp {
    /*
    * Write propagators for all blocks of all polymers to files.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::writeQAll(std::string const & basename)
+   template <int D, class TT>
+   void Mixture<D,TT>::writeQAll(std::string const & basename)
    {
       UTIL_CHECK(fieldIoPtr_);
       std::string filename;
@@ -525,8 +525,8 @@ namespace Rp {
    /*
    * Write stress to output stream.
    */
-   template <int D, class PT, class ST, class TT>
-   void Mixture<D,PT,ST,TT>::writeStress(std::ostream& out) const
+   template <int D, class TT>
+   void Mixture<D,TT>::writeStress(std::ostream& out) const
    {
       UTIL_CHECK(hasStress_);
 

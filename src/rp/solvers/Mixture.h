@@ -32,7 +32,7 @@ namespace Rp {
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
    *
-   * A Mixture contains lists of Polymer (PT) and Solvent (ST) 
+   * A Mixture contains lists of Polymer (PolymerT) and Solvent (SolventT)
    * objects. Each such object can solve statistical mechanics of a single 
    * molecule of the associated species in a set of specified chemical 
    * potential fields, and thereby compute concentrations and molecular 
@@ -45,33 +45,26 @@ namespace Rp {
    * different monomer types an  input and yields an array of total
    * monomer concentration fields (c fields) as an output.
    *
-   * Note: Most class templates defined in the Pscf::Prdc namespace for 
-   * use as base classes for classes defined in Pscf::Rpc and Pscf::Rpg 
-   * have names that end in the suffix Tmpl. This template for mixtures 
-   * in periodic systems has been named Mixture, however, because 
-   * Pscf::MixtureTmpl is the name of the more general template from 
-   * which it is derived, which can be used for systems tha are not
-   * periodic. 
-   *
    * \ingroup Pscf_Rp_Module
    * \ref user_param_mixture_page "Manual Page"
    */
-   template <int D, class PT, class ST, class TT>
-   class Mixture : public MixtureTmpl<PT, ST, double>
+   template <int D, class TT>
+   class Mixture : public 
+      MixtureTmpl<typename TT::Polymer, typename TT::Solvent, double>
    {
 
    public:
 
       // Public type name aliases
 
+      /// Polymer object type
+      using PolymerT = typename TT::Polymer;
+
+      /// Solvent object type
+      using SolventT = typename TT::Solvent;
+
       /// MixtureTmplT class.
-      using MixtureTmplT = MixtureTmpl<PT,ST, double>;
-
-      /// Solvent object type: SolventT = ST (inherited).
-      using typename MixtureTmplT::SolventT;
-
-      /// Polymer object type: PolymerT = PT (inherited).
-      using typename MixtureTmplT::PolymerT;
+      using MixtureTmplT = MixtureTmpl<PolymerT, SolventT, double>;
 
       /// Block type, for a block in a block polymer.
       using BlockT = typename TT::Block;
@@ -473,15 +466,15 @@ namespace Rp {
    /*
    * Has the stress been computed for the current w fields?
    */
-   template <int D, class PT, class ST, class TT>
-   inline bool Mixture<D,PT,ST,TT>::hasStress() const
+   template <int D, class TT>
+   inline bool Mixture<D,TT>::hasStress() const
    {  return hasStress_; }
 
    /*
    * Get derivative of free energy w/ respect to a unit cell parameter.
    */
-   template <int D, class PT, class ST, class TT>
-   inline double Mixture<D,PT,ST,TT>::stress(int parameterId) const
+   template <int D, class TT>
+   inline double Mixture<D,TT>::stress(int parameterId) const
    {
       UTIL_CHECK(hasStress_);
       UTIL_CHECK(parameterId < nParam_);

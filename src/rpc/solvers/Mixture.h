@@ -32,14 +32,13 @@ namespace Rpc {
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
-   class Mixture : public Rp::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >
+   class Mixture : public Rp::Mixture< D, Types<D> >
    {
 
    public:
 
       /// Direct (parent) base class.
-      using RpMixtureT
-         = typename Rp::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
+      using RpMixtureT = typename Rp::Mixture< D, Types<D> >;
 
       // Inherited public type name aliases
 
@@ -116,12 +115,9 @@ namespace Rpc {
 
 namespace Rp {
    // Explicit instantiation declarations for base class
-   extern template 
-   class Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
-   extern template 
-   class Mixture<2, Rpc::Polymer<2>, Rpc::Solvent<2>, Rpc::Types<2> >;
-   extern template 
-   class Mixture<3, Rpc::Polymer<3>, Rpc::Solvent<3>, Rpc::Types<3> >;
+   extern template class Mixture<1, Rpc::Types<1> >;
+   extern template class Mixture<2, Rpc::Types<2> >;
+   extern template class Mixture<3, Rpc::Types<3> >;
 } 
 
 } // namespace Pscf
