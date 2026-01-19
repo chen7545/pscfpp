@@ -9,13 +9,14 @@
 */
 
 #include "Polymer.h"
-#include "Block.h"
-#include "Propagator.h"
-#include <pscf/solvers/PolymerTmpl.tpp>
+#include <rpc/solvers/Block.h>
+#include <rpc/solvers/Propagator.h>
 #include <prdc/cpu/RField.h>
+#include <pscf/solvers/PolymerTmpl.tpp>
+#include <pscf/chem/PolymerModel.h>
 
 namespace Pscf {
-namespace Rpc { 
+namespace Rpc {
 
    /*
    * Constructor.
@@ -24,7 +25,7 @@ namespace Rpc {
    Polymer<D>::Polymer()
     : stress_(),
       nParam_(0)
-   {  ParamComposite::setClassName("Polymer");}
+   {  ParamComposite::setClassName("Polymer"); }
 
    /*
    * Destructor.
@@ -35,14 +36,14 @@ namespace Rpc {
 
    /*
    * Set the number of unit cell parameters.
-   */ 
+   */
    template <int D>
    void Polymer<D>::setNParams(int nParam)
-   {   nParam_ = nParam; }
+   {  nParam_ = nParam; }
 
    /*
    * Clear all data that depends on unit cell parameters.
-   */ 
+   */
    template <int D>
    void Polymer<D>::clearUnitCellData()
    {
@@ -54,7 +55,7 @@ namespace Rpc {
 
    /*
    * Compute solution to MDE and block concentrations.
-   */ 
+   */
    template <int D>
    void Polymer<D>::compute(DArray< RField<D> > const & wFields,
                             double phiTot)
@@ -67,7 +68,7 @@ namespace Rpc {
       }
 
       // Call base class PolymerTmpl solve() function
-      // Solve MDE for all propagators
+      // This solves the MDE for all propagators in a precalculated order
       solve(phiTot);
 
       // Compute block concentration fields
@@ -77,8 +78,7 @@ namespace Rpc {
          for (int i = 0; i < nBlock(); ++i) {
             block(i).computeConcentrationThread(prefactor);
          }
-      } else 
-      if (PolymerModel::isBead()) {
+      } else {
          prefactor = phi() / ( q() * (double)nBead() );
          for (int i = 0; i < nBlock(); ++i) {
             block(i).computeConcentrationBead(prefactor);
@@ -93,7 +93,8 @@ namespace Rpc {
    template <int D>
    void Polymer<D>::computeStress()
    {
-     
+      UTIL_CHECK(nParam_ > 0);
+
       // Compute stress contributions for all blocks
       double prefactor;
       if (PolymerModel::isThread()) {
@@ -108,15 +109,15 @@ namespace Rpc {
          }
       }
 
-      // Initialize all stress_ elements zero
+      // Initialize all stress_ elements to zero
       stress_.clear();
       for (int i = 0; i < nParam_; ++i) {
-        stress_.append(0.0);
+         stress_.append(0.0);
       }
 
       // Sum over all block stress contributions
       for (int i = 0; i < nBlock(); ++i) {
-         for (int j = 0; j < nParam_ ; ++j){
+         for (int j = 0; j < nParam_; ++j){
             stress_[j] += block(i).stress(j);
          }
       }

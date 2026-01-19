@@ -15,25 +15,30 @@
 namespace Util {
    template <typename T> class DArray;
 }
-namespace Pscf { 
+namespace Pscf {
    namespace Rpc {
       template <int D> class Block;
       template <int D> class Propagator;
    }
-   namespace Prdc { 
-      namespace Cpu { 
+   namespace Prdc {
+      namespace Cpu {
          template <int D> class RField;
       }
    }
+}
+
+// Explicit instantiation declarations for base classes
+namespace Pscf {
    extern template class PolymerTmpl< Rpc::Block<1>, Rpc::Propagator<1> >;
    extern template class PolymerTmpl< Rpc::Block<2>, Rpc::Propagator<2> >;
    extern template class PolymerTmpl< Rpc::Block<3>, Rpc::Propagator<3> >;
 }
 
-namespace Pscf { 
-namespace Rpc { 
+namespace Pscf {
+namespace Rpc {
 
-   using namespace Prdc;
+   using namespace Util;
+   using namespace Pscf::Prdc;
    using namespace Pscf::Prdc::Cpu;
 
    /**
@@ -43,8 +48,8 @@ namespace Rpc {
    * PolymerSpecies, return the value of phi (spatial average volume
    * fraction of a species) or mu (species chemical potential) computed
    * in the last call of the compute() function. If the ensemble for this
-   * species is closed, phi is read from the parameter file and mu is 
-   * computed. If the ensemble is open, mu is read from the parameter 
+   * species is closed, phi is read from the parameter file and mu is
+   * computed. If the ensemble is open, mu is read from the parameter
    * file and phi is computed.
    *
    * The block concentrations stored in the constituent Block<D> objects
@@ -96,56 +101,56 @@ namespace Rpc {
       * Clear all data that depends on unit cell parameters.
       *
       * This function should be called after each change in the unit cell.
-      * It calls Block<D>::clearUnitCellData() for all blocks in this 
+      * It calls Block<D>::clearUnitCellData() for all blocks in this
       * polymer.
-      */ 
+      */
       void clearUnitCellData();
 
       /**
-      * Compute solution to MDE and block concentrations.
-      * 
+      * Compute MDE solutions and block concentrations.
+      *
       * This function sets up w-fields in the MDE solvers for all blocks,
       * calls the base class PolymerTmpl solve function to solve the MDE
-      * for all blocks, and then computes concentrations associated with 
+      * for all blocks, and then computes concentrations associated with
       * all blocks. On return, the associated Block objects all contain
       * propagator solutions and block volume fraction fields, while q and
       * phi or mu are set to new values.
       *
       * The parameter phiTot is only relevant to problems such as thin
-      * films in which the material is excluded from part of the unit cell
-      * by imposing an inhogeneous constraint on the sum of the monomer
-      * concentrations (i.e., a "Mask"). 
+      * films in which the material is excluded from part of the unit
+      * cell by imposing an inhogeneous constraint on the sum of the
+      * monomer concentrations (i.e., a "mask").
       *
       * \param wFields array of chemical potential fields.
       * \param phiTot  volume fraction of unit cell occupied by material
-      */ 
-      void compute(DArray< RField<D> > const & wFields, 
+      */
+      void compute(DArray< RField<D> > const & wFields,
                    double phiTot = 1.0);
 
       /**
       * Compute SCFT stress contribution from this polymer species.
       *
-      * This function computes contributions from this species to the 
-      * derivatives of SCFT free energy per monomer with respect to unit 
+      * This function computes contributions from this species to the
+      * derivatives of SCFT free energy per monomer with respect to unit
       * cell parameters and stores the values. It requires that the MDE
-      * has been solved for all blocks prior to entry, and so must be 
+      * has been solved for all blocks prior to entry, and so must be
       * called after the compute function.
       */
       void computeStress();
 
       /**
-      * Get precomputed contribution to stress from this species.
-      *  
-      * Get the contribution from this polymer species to the deritative of
+      * Get the precomputed contribution to stress from this species.
+      *
+      * Get the contribution from this polymer species to the derivative of
       * free energy per monomer with respect to unit cell parameter n, as
       * computed by the most recent call to computeStress().
-      *  
-      * \param n index of unit cell parameter
+      *
+      * \param n  unit cell parameter index
       */
       double stress(int n) const;
 
       // Inherited public member functions
-      
+
       using Base::edge;
       using Base::block;
       using Base::propagator;
@@ -165,30 +170,30 @@ namespace Rpc {
       using Species<double>::setPhi;
       using Species<double>::setMu;
 
-   private: 
+   private:
 
       /// Stress contribution from this polymer species
       FSArray<double, 6> stress_;
 
-      /// Number of unit cell parameters.
+      /// Number of unit cell parameters
       int nParam_;
 
-      // Restricting access to inherited functions
+      // Restrict access to inherited functions
       using Base::solve;
       using Species<double>::setQ;
 
    };
 
    /// Get stress component n.
-   template <int D>
-   inline double Polymer<D>::stress(int n) const
+   template <int D> inline
+   double Polymer<D>::stress(int n) const
    {  return stress_[n]; }
-  
+
    // Explicit instantiation declarations
    extern template class Polymer<1>;
    extern template class Polymer<2>;
    extern template class Polymer<3>;
 
-}
-}
+} // namespace Rpc
+} // namespace Pscf
 #endif

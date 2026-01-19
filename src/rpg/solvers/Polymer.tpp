@@ -16,14 +16,15 @@
 #include <pscf/chem/PolymerModel.h>
 
 namespace Pscf {
-namespace Rpg { 
+namespace Rpg {
 
    /*
    * Constructor.
    */
    template <int D>
    Polymer<D>::Polymer()
-    : nParam_(0)
+    : stress_(),
+      nParam_(0)
    {  ParamComposite::setClassName("Polymer"); }
 
    /*
@@ -34,14 +35,14 @@ namespace Rpg {
    {}
 
    /*
-   * Store the number of lattice parameters in the unit cell.
-   */ 
+   * Set the number of unit cell parameters.
+   */
    template <int D>
-   void Polymer<D>::setNParams(int nParams)
-   {  nParam_ = nParams; }
+   void Polymer<D>::setNParams(int nParam)
+   {  nParam_ = nParam; }
 
    /*
-   * Clear all data that depends on unit cell dimensions.
+   * Clear all data that depends on unit cell parameters.
    */
    template <int D>
    void Polymer<D>::clearUnitCellData()
@@ -53,10 +54,10 @@ namespace Rpg {
    }
 
    /*
-   * Compute solution to MDE and concentrations.
-   */ 
+   * Compute solution to MDE and block concentrations.
+   */
    template <int D>
-   void Polymer<D>::compute(DArray< RField<D> > const & wFields, 
+   void Polymer<D>::compute(DArray< RField<D> > const & wFields,
                             double phiTot)
    {
       // Setup solvers for all blocks
@@ -93,7 +94,7 @@ namespace Rpg {
    void Polymer<D>::computeStress()
    {
       UTIL_CHECK(nParam_ > 0);
-      
+
       // Compute stress contributions for all blocks
       double prefactor;
       if (PolymerModel::isThread()) {
@@ -111,12 +112,12 @@ namespace Rpg {
       // Initialize all stress_ elements to zero
       stress_.clear();
       for (int i = 0; i < nParam_; ++i) {
-        stress_.append(0.0);
+         stress_.append(0.0);
       }
 
       // Sum over all block stress contributions
       for (int i = 0; i < nBlock(); ++i) {
-         for (int j=0; j < nParam_; ++j){
+         for (int j = 0; j < nParam_; ++j){
             stress_[j] += block(i).stress(j);
          }
       }
