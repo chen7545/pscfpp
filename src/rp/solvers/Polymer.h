@@ -1,5 +1,5 @@
-#ifndef RPG_POLYMER_H
-#define RPG_POLYMER_H
+#ifndef RP_POLYMER_H
+#define RP_POLYMER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -15,53 +15,34 @@
 namespace Util {
    template <typename T> class DArray;
 }
-namespace Pscf {
-   namespace Prdc {
-      namespace Cuda {
-         template <int D> class RField;
-      }
-   }
-   namespace Rpg {
-      template <int D> class Block;
-      template <int D> class Propagator;
-   }
-}
-
-// Explicit instantiation declarations for base classes
-namespace Pscf {
-   extern template class PolymerTmpl< Rpg::Block<1>, Rpg::Propagator<1> >;
-   extern template class PolymerTmpl< Rpg::Block<2>, Rpg::Propagator<2> >;
-   extern template class PolymerTmpl< Rpg::Block<3>, Rpg::Propagator<3> >;
-}
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
 
    /**
    * Descriptor and solver for one polymer species.
    *
-   * The phi() and mu() accessor functions, which are inherited from
-   * PolymerSpecies, return the value of phi (spatial average volume
-   * fraction of a species) or mu (species chemical potential) computed
-   * in the last call of the compute() function. If the ensemble for this
-   * species is closed, phi is read from the parameter file and mu is
-   * computed. If the ensemble is open, mu is read from the parameter
-   * file and phi is computed.
+   * Instantiations of this are used as base classes for Rpc::Polymer<D> 
+   * and Rpg::Poymer<D> class templates. These subclasses are analogous
+   * classes designed for use with Cpu and Gpu hardware.
    *
-   * The block concentrations stored in the constituent Block<D> objects
-   * contain the block concentrations (i.e., volume fractions) computed in
-   * the most recent call of the compute function. These can be accessed
-   * using the Block<D>::cField() function.
+   * <b> Template parameters </b>:
+   *
+   *   - D  dimension of space
+   *   - T  class with aliases for use in a program-level namespace.
+   *
+   * This template adds functions required for periodic systems to an
+   * appropriate instantiation of the PolymerTmpl base class template.
    *
    * \ref user_param_polymer_sec "Manual Page"
-   * \ingroup Rpg_Solver_Module
+   *
+   * \ingroup Rp_Solver_Module
    */
-   template <int D>
-   class Polymer : public PolymerTmpl< Block<D>, Propagator<D> >
+   template <int D, class T>
+   class Polymer 
+     : public PolymerTmpl<typename T::Block, typename T::Propagator>
    {
 
    public:
@@ -69,13 +50,13 @@ namespace Rpg {
       // Public type name aliases
 
       /// Base class, partial template specialization.
-      using Base = PolymerTmpl< Block<D>, Propagator<D> >;
+      using Base = PolymerTmpl<typename T::Block, typename T::Propagator>;
 
       /// Block type, for a block within a block polymer.
-      using BlockT = Block<D>;
+      using BlockT = typename T::Block;
 
       /// Propagator type, for one direction within a block.
-      using PropagatorT = Propagator<D>;
+      using PropagatorT = typename T::Propagator;
 
       // Public member functions
 
@@ -100,7 +81,7 @@ namespace Rpg {
       * Clear all data that depends on unit cell parameters.
       *
       * This function should be called after each change in the unit cell.
-      * It calls Block<D>::clearUnitCellData() for all blocks in this
+      * It calls Block::clearUnitCellData() for all blocks in this
       * polymer.
       */
       void clearUnitCellData();
@@ -123,7 +104,7 @@ namespace Rpg {
       * \param wFields array of chemical potential fields.
       * \param phiTot  volume fraction of unit cell occupied by material
       */
-      void compute(DArray< RField<D> > const & wFields,
+      void compute(DArray<typename T::RField> const & wFields,
                    double phiTot = 1.0);
 
       /**
@@ -184,15 +165,10 @@ namespace Rpg {
    };
 
    /// Get stress component n.
-   template <int D> inline
-   double Polymer<D>::stress(int n) const
+   template <int D, class T> inline
+   double Polymer<D,T>::stress(int n) const
    {  return stress_[n]; }
 
-   // Explicit instantiation declarations
-   extern template class Polymer<1>;
-   extern template class Polymer<2>;
-   extern template class Polymer<3>;
-
-} // namespace Rpg
+} // namespace Rp
 } // namespace Pscf
 #endif
