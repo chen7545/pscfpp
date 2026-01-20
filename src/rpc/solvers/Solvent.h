@@ -32,7 +32,6 @@ namespace Rpc {
    template <int D>
    class Solvent : public SolventSpecies<double>
    {
-
    public:
 
       /**
@@ -46,19 +45,25 @@ namespace Rpc {
       ~Solvent();
 
       /**
-      * Create an association with the mesh.
+      * Create an association with a mesh.
       *
-      * \param mesh associated Mesh<D> object
+      * Must be called before allocate().
+      *
+      * \param mesh  associated Mesh<D> object - spatial discretization
       */
       void associate(Mesh<D> const & mesh);
 
       /**
-      * Allocate memory for concentrationf field.
+      * Allocate memory for a concentration field.
+      *
+      * This function may only be called once during initialization,
+      * after the associate() function and before the first call to
+      * the compute() function.
       */
       void allocate();
 
       /**
-      * Compute monomer concentration field, q and phi and/or mu.
+      * Compute concentration field, q, and phi or mu.
       *
       * Computes monomer concentration field cField, partition function
       * q, and either the solvent volume fraction phi or solvent chemical
@@ -81,19 +86,6 @@ namespace Rpc {
       */
       RField<D> const & cField() const;
 
-      // Inherited accessor functions
-      using Pscf::Species<double>::phi;
-      using Pscf::Species<double>::mu;
-      using Pscf::Species<double>::q;
-      using Pscf::Species<double>::ensemble;
-      using Pscf::SolventSpecies<double>::monomerId;
-      using Pscf::SolventSpecies<double>::size;
-
-   protected:
-
-      // Inherited protected functions
-      using Pscf::Species<double>::setQ;
-
    private:
 
       /// Concentration field for this solvent.
@@ -104,13 +96,11 @@ namespace Rpc {
 
    };
 
-   // Inline member function
-
    /*
    * Get monomer concentration field for this solvent.
    */
-   template <int D>
-   inline RField<D> const & Solvent<D>::cField() const
+   template <int D> inline
+   RField<D> const & Solvent<D>::cField() const
    {  return cField_;  }
 
    // Explicit instantiation declarations

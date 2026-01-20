@@ -19,8 +19,7 @@ namespace Rpc {
    */
    template <int D>
    Solvent<D>::Solvent()
-    : SolventSpecies<double>(),
-      meshPtr_(nullptr)
+    : meshPtr_(nullptr)
    {  ParamComposite::setClassName("Solvent"); }
 
    /*
@@ -31,16 +30,18 @@ namespace Rpc {
    {}
 
    /*
-   * Create an association with a Mesh & allocate the concentration field.
+   * Create an association with a mesh.
    */
    template <int D>
    void Solvent<D>::associate(Mesh<D> const & mesh)
    {
+      UTIL_CHECK(!meshPtr_);
+      UTIL_CHECK(mesh.size() > 1);
       meshPtr_ = &mesh;
    }
 
    /*
-   * Allocate the concentration field (cField).
+   * Allocate memory for the concentration field (cField).
    */
    template <int D>
    void Solvent<D>::allocate()
@@ -55,7 +56,9 @@ namespace Rpc {
    template <int D>
    void Solvent<D>::compute(RField<D> const & wField, double phiTot)
    {
-      int nx = meshPtr_->size(); // Number of grid points
+      // Local constants
+      const int nx = meshPtr_->size(); 
+      const double s = size();
 
       // Initialize cField_ to zero
       for (int i = 0; i < nx; ++i) {
@@ -63,7 +66,6 @@ namespace Rpc {
       }
 
       // Evaluate unnormalized integral and Q
-      double s = size();
       double Q = 0.0;
       for (int i = 0; i < nx; ++i) {
           cField_[i] = exp(-s*wField[i]);
