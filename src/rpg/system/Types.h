@@ -61,9 +61,7 @@ namespace Pscf {
 namespace Rpg {
 
    // Namespaces that may be used implicitly
-   using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * List of aliases for types used the in Rpg namespace.
@@ -71,8 +69,7 @@ namespace Rpg {
    * \ingroup Rpg_System_Module
    */
    template <int D>
-   class Types
-   {
+   class Types {
 
    public:
 

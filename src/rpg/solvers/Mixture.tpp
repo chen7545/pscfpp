@@ -8,8 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Mixture.h"              // class header
-#include <rp/solvers/Mixture.tpp> // base class templ. implementation
+#include "Mixture.h"               // class header
 
 #include "Polymer.h"
 #include "Solvent.h"
@@ -18,6 +17,8 @@
 #include <rpg/field/FieldIo.h>
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/RField.h>
+
+#include <rp/solvers/Mixture.tpp>  // base class templ. implementation
 
 namespace Pscf {
 namespace Rpg {
@@ -53,7 +54,7 @@ namespace Rpg {
    template <int D>
    void Mixture<D>::eqS(FieldT& A, double c) const
    {
-      const int nx = mesh().size();
+      const int nx = RpMixtureT::mesh().size();
       UTIL_CHECK(nx == A.capacity());
       VecOp::eqS(A,c);
    }
@@ -64,7 +65,7 @@ namespace Rpg {
    template <int D>
    void Mixture<D>::addEqV(FieldT& A, FieldT const & B) const
    {
-      const int nx = mesh().size();
+      const int nx = RpMixtureT::mesh().size();
       UTIL_CHECK(nx == A.capacity());
       UTIL_CHECK(nx == B.capacity());
       VecOp::addEqV(A, B);
@@ -76,10 +77,12 @@ namespace Rpg {
    template <int D>
    void Mixture<D>::allocateBlocks()
    {
+      const double ds = RpMixtureT::ds();
+      const int np = MixtureBase<cudaReal>::nPolymer();
       int i, j;
-      for (i = 0; i < nPolymer(); ++i) {
+      for (i = 0; i < np; ++i) {
          for (j = 0; j < polymer(i).nBlock(); ++j) {
-            polymer(i).block(j).allocate(ds(), useBatchedFFT_);
+            polymer(i).block(j).allocate(ds, useBatchedFFT_);
          }
       }
    }

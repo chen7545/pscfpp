@@ -22,7 +22,7 @@ namespace Rp {
    using namespace Util;
 
    /**
-   * Descriptor and solver for one polymer species.
+   * Descriptor and MDE solver for one polymer species.
    *
    * Instantiations of this are used as base classes for Rpc::Polymer<D> 
    * and Rpg::Poymer<D> class templates. These subclasses are analogous
@@ -49,8 +49,15 @@ namespace Rp {
 
       // Public type name aliases
 
-      /// Base class, partial template specialization.
-      using Base = PolymerTmpl<typename T::Block, typename T::Propagator>;
+      /// Direct (parent) base class.
+      using PolymerTmplT 
+            = PolymerTmpl<typename T::Block, typename T::Propagator>;
+
+      /// Indirect (grandparent) base class.
+      using PolymerSpeciesT = PolymerSpecies<double>;
+
+      /// Species base class.
+      using SpeciesT = Species<double>;
 
       /// Block type, for a block within a block polymer.
       using BlockT = typename T::Block;
@@ -129,26 +136,25 @@ namespace Rp {
       */
       double stress(int n) const;
 
-      // Inherited public member functions
-
-      using Base::edge;
-      using Base::block;
-      using Base::propagator;
-      using PolymerSpecies<double>::vertex;
-      using PolymerSpecies<double>::propagatorId;
-      using PolymerSpecies<double>::path;
-      using PolymerSpecies<double>::nBlock;
-      using PolymerSpecies<double>::nVertex;
-      using PolymerSpecies<double>::nPropagator;
-      using PolymerSpecies<double>::length;
-      using PolymerSpecies<double>::nBead;
-      using PolymerSpecies<double>::type;
-      using Species<double>::phi;
-      using Species<double>::mu;
-      using Species<double>::q;
-      using Species<double>::ensemble;
-      using Species<double>::setPhi;
-      using Species<double>::setMu;
+      // Inherited non-dependent public member functions
+      using PolymerTmplT::edge;
+      using PolymerTmplT::block;
+      using PolymerTmplT::propagator;
+      using PolymerSpeciesT::vertex;
+      using PolymerSpeciesT::propagatorId;
+      using PolymerSpeciesT::path;
+      using PolymerSpeciesT::nBlock;
+      using PolymerSpeciesT::nVertex;
+      using PolymerSpeciesT::nPropagator;
+      using PolymerSpeciesT::length;
+      using PolymerSpeciesT::nBead;
+      using PolymerSpeciesT::type;
+      using SpeciesT::phi;
+      using SpeciesT::mu;
+      using SpeciesT::q;
+      using SpeciesT::ensemble;
+      using SpeciesT::setPhi;
+      using SpeciesT::setMu;
 
    private:
 
@@ -159,8 +165,8 @@ namespace Rp {
       int nParam_;
 
       // Restrict access to inherited functions
-      using Base::solve;
-      using Species<double>::setQ;
+      using PolymerTmplT::solve;
+      using SpeciesT::setQ;
 
    };
 
