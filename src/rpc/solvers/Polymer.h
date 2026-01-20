@@ -31,52 +31,25 @@ namespace Rpc {
    */
    template <int D>
    class Polymer : public Rp::Polymer<D, Types<D>>
-   {
+   {};
 
-   public:
+} 
+} 
 
-
-      /// Base class, partial template specialization.
-      using Base = PolymerTmpl< Block<D>, Propagator<D> >;
-
-      #if 0
-      // Inherited public member functions
-      using Base::edge;
-      using Base::block;
-      using Base::propagator;
-      using PolymerSpecies<double>::vertex;
-      using PolymerSpecies<double>::propagatorId;
-      using PolymerSpecies<double>::path;
-      using PolymerSpecies<double>::nBlock;
-      using PolymerSpecies<double>::nVertex;
-      using PolymerSpecies<double>::nPropagator;
-      using PolymerSpecies<double>::length;
-      using PolymerSpecies<double>::nBead;
-      using PolymerSpecies<double>::type;
-      using Species<double>::phi;
-      using Species<double>::mu;
-      using Species<double>::q;
-      using Species<double>::ensemble;
-      using Species<double>::setPhi;
-      using Species<double>::setMu;
-      #endif
-
-   };
-
-   // Explicit instantiation declarations
-   extern template class Polymer<1>;
-   extern template class Polymer<2>;
-   extern template class Polymer<3>;
-
-} // namespace Rpc
-} // namespace Pscf
-
-// Explicit instantiation declarations for base classes
+// Explicit instantiation declarations for derived and base classes
 namespace Pscf {
+   extern template class PolymerTmpl< Rpc::Block<1>, Rpc::Propagator<1> >; 
+   extern template class PolymerTmpl< Rpc::Block<2>, Rpc::Propagator<2> >;
+   extern template class PolymerTmpl< Rpc::Block<3>, Rpc::Propagator<3> >;
    namespace Rp {
       extern template class Polymer<1, Rpc::Types<1> >;
       extern template class Polymer<2, Rpc::Types<2> >;
       extern template class Polymer<3, Rpc::Types<3> >;
+   } 
+   namespace Rpc {
+      extern template class Polymer<1>;
+      extern template class Polymer<2>;
+      extern template class Polymer<3>;
    } 
 }
 

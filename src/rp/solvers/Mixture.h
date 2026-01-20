@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_MIXTURE_H
-#define PRDC_RL_MIXTURE_H
+#ifndef RP_MIXTURE_H
+#define RP_MIXTURE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -48,9 +48,9 @@ namespace Rp {
    * \ingroup Pscf_Rp_Module
    * \ref user_param_mixture_page "Manual Page"
    */
-   template <int D, class TT>
+   template <int D, class T>
    class Mixture : public 
-      MixtureTmpl<typename TT::Polymer, typename TT::Solvent, double>
+      MixtureTmpl<typename T::Polymer, typename T::Solvent, double>
    {
 
    public:
@@ -58,31 +58,34 @@ namespace Rp {
       // Public type name aliases
 
       /// Polymer object type
-      using PolymerT = typename TT::Polymer;
+      using PolymerT = typename T::Polymer;
 
       /// Solvent object type
-      using SolventT = typename TT::Solvent;
+      using SolventT = typename T::Solvent;
 
-      /// MixtureTmplT class.
+      /// MixtureTmpl base class.
       using MixtureTmplT = MixtureTmpl<PolymerT, SolventT, double>;
 
+      /// MixtureBase base class.
+      using MixtureBaseT = MixtureBase<double>;
+
       /// Block type, for a block in a block polymer.
-      using BlockT = typename TT::Block;
+      using BlockT = typename T::Block;
 
       /// Propagator type, for one direction within a block.
-      using PropagatorT = typename TT::Propagator;
+      using PropagatorT = typename T::Propagator;
 
       /// Field type, for data defined on a real-space grid.
-      using FieldT = typename TT::RField;
+      using FieldT = typename T::RField;
 
       /// WaveList type.
-      using FFTT = typename TT::FFT;
+      using FFTT = typename T::FFT;
 
       /// WaveList type.
-      using WaveListT = typename TT::WaveList;
+      using WaveListT = typename T::WaveList;
 
       /// FieldIo type.
-      using FieldIoT = typename TT::FieldIo;
+      using FieldIoT = typename T::FieldIo;
 
       // Public member functions
 
@@ -372,18 +375,18 @@ namespace Rp {
 
       ///@}
 
-      // Inherited public member functions
+      // Inherited non-dependent public member functions
       using MixtureTmplT::polymer;
       using MixtureTmplT::polymerSpecies;
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
-      using MixtureBase<double>::nMonomer;
-      using MixtureBase<double>::monomer;
-      using MixtureBase<double>::nPolymer;
-      using MixtureBase<double>::nSolvent;
-      using MixtureBase<double>::nBlock;
-      using MixtureBase<double>::vMonomer;
-      using MixtureBase<double>::isCanonical;
+      using MixtureBaseT::nMonomer;
+      using MixtureBaseT::monomer;
+      using MixtureBaseT::nPolymer;
+      using MixtureBaseT::nSolvent;
+      using MixtureBaseT::nBlock;
+      using MixtureBaseT::vMonomer;
+      using MixtureBaseT::isCanonical;
 
    protected:
 
@@ -402,11 +405,6 @@ namespace Rp {
       /// Return target value for the contour step size ds.
       double ds() const
       {  return ds_; }
-
-      // Inherited protected member functions
-      using ParamComposite::setClassName;
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
 
    private:
 
@@ -466,15 +464,15 @@ namespace Rp {
    /*
    * Has the stress been computed for the current w fields?
    */
-   template <int D, class TT>
-   inline bool Mixture<D,TT>::hasStress() const
+   template <int D, class T>
+   inline bool Mixture<D,T>::hasStress() const
    {  return hasStress_; }
 
    /*
    * Get derivative of free energy w/ respect to a unit cell parameter.
    */
-   template <int D, class TT>
-   inline double Mixture<D,TT>::stress(int parameterId) const
+   template <int D, class T>
+   inline double Mixture<D,T>::stress(int parameterId) const
    {
       UTIL_CHECK(hasStress_);
       UTIL_CHECK(parameterId < nParam_);

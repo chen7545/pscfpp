@@ -8,6 +8,9 @@
 #include "Mixture.tpp"
 
 namespace Pscf {
+   template class MixtureTmpl< Rpc::Polymer<1>, Rpc::Solvent<1> >;
+   template class MixtureTmpl< Rpc::Polymer<2>, Rpc::Solvent<2> >;
+   template class MixtureTmpl< Rpc::Polymer<3>, Rpc::Solvent<3> >;
    namespace Rp { 
       template class Mixture<1, Rpc::Types<1> >;
       template class Mixture<2, Rpc::Types<2> >;
