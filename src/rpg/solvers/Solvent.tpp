@@ -31,27 +31,47 @@ namespace Rpg {
    {}
 
    /*
-   * Compute concentration, q, phi or mu.
+   * Create an association with a mesh.
+   */
+   template <int D> 
+   void Solvent<D>::associate(Mesh<D> const & mesh)
+   {
+      UTIL_CHECK(!meshPtr_)
+      UTIL_CHECK(mesh.size() > 1);
+      meshPtr_ = &mesh;
+   }
+
+   /*
+   * Allocate memory for the concentration field (cField).
+   */
+   template <int D>
+   void Solvent<D>::allocate()
+   {
+      UTIL_CHECK(meshPtr_);
+      cField_.allocate(meshPtr_->dimensions());
+   }
+
+   /*
+   * Compute concentration, q, and phi or mu.
    */ 
    template <int D>
    void Solvent<D>::compute(RField<D> const & wField, double phiTot)
    {
-      int nx = meshPtr_->size(); // Number of grid points
+      // Local constants
+      const int nx = meshPtr_->size();
+      const double s = SolventSpecies<cudaReal>::size();
 
       // Evaluate unnormalized integral and Q
-      double s = SolventSpecies<cudaReal>::size();
       double Q = 0.0;
-
-      // cField_ = exp(-size() * wField)
       VecOp::expVc(cField_, wField, -1.0*size());
-
-      Q = Reduce::sum(cField_) / ((double) nx); // spatial average
-      Q /= phiTot; // correct for partial occupation
+      Q = Reduce::sum(cField_);
+      Q = Q / double(nx);     // spatial average
+      Q /= phiTot;            // correct for partial occupation
 
       // Note: phiTot = 1.0 except in the case of a mask that confines
       // material to a fraction of the unit cell. 
 
-      // Set q and compute mu or phi (depending on ensemble)
+      // Set q and compute mu or phi
       Species::setQ(Q);
 
       // Normalize concentration 
