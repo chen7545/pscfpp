@@ -1,5 +1,5 @@
-#ifndef RPC_SOLVENT_TPP
-#define RPC_SOLVENT_TPP
+#ifndef RP_SOLVENT_TPP
+#define RP_SOLVENT_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,32 +10,30 @@
 
 #include "Solvent.h"
 #include <pscf/mesh/Mesh.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/Reduce.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    /*
    * Constructor.
    */
-   template <int D>
-   Solvent<D>::Solvent()
+   template <int D, class T>
+   Solvent<D,T>::Solvent()
     : meshPtr_(nullptr)
    {  ParamComposite::setClassName("Solvent"); }
 
    /*
    * Destructor.
    */
-   template <int D>
-   Solvent<D>::~Solvent()
+   template <int D, class T>
+   Solvent<D,T>::~Solvent()
    {}
 
    /*
    * Create an association with a mesh.
    */
-   template <int D>
-   void Solvent<D>::associate(Mesh<D> const & mesh)
+   template <int D, class T>
+   void Solvent<D,T>::associate(Mesh<D> const & mesh)
    {
       UTIL_CHECK(!meshPtr_);
       UTIL_CHECK(mesh.size() > 1);
@@ -45,8 +43,8 @@ namespace Rpc {
    /*
    * Allocate memory for the concentration field (cField).
    */
-   template <int D>
-   void Solvent<D>::allocate()
+   template <int D, class T>
+   void Solvent<D,T>::allocate()
    {
       UTIL_CHECK(meshPtr_);
       cField_.allocate(meshPtr_->dimensions());
@@ -55,12 +53,13 @@ namespace Rpc {
    /*
    * Compute concentration, q, and phi or mu.
    */
-   template <int D>
-   void Solvent<D>::compute(RField<D> const & wField, double phiTot)
+   template <int D, class T>
+   void Solvent<D,T>::compute(typename T::RField const & wField, 
+                              double phiTot)
    {
       // Local constants
       const int nx = meshPtr_->size();
-      const double size = SolventSpecies<double>::size();
+      const double size = SolventSpeciesT::size();
 
       // Evaluate unnormalized integral and Q
       VecOp::expVc(cField_, wField, -1.0*size);
@@ -72,10 +71,10 @@ namespace Rpc {
       // material to a fraction of the unit cell.
 
       // Set q and compute mu or phi
-      Species::setQ(Q);
+      SpeciesT::setQ(Q);
 
       // Normalize concentration
-      double prefactor = phi()/Q;
+      double prefactor = SpeciesT::phi()/Q;
       VecOp::mulEqS(cField_, prefactor);
 
    }

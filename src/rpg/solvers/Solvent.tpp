@@ -13,7 +13,7 @@
 #include <pscf/mesh/Mesh.h>
 
 namespace Pscf {
-namespace Rpg { 
+namespace Rpg {
 
    /*
    * Constructor.
@@ -33,7 +33,7 @@ namespace Rpg {
    /*
    * Create an association with a mesh.
    */
-   template <int D> 
+   template <int D>
    void Solvent<D>::associate(Mesh<D> const & mesh)
    {
       UTIL_CHECK(!meshPtr_)
@@ -53,28 +53,27 @@ namespace Rpg {
 
    /*
    * Compute concentration, q, and phi or mu.
-   */ 
+   */
    template <int D>
    void Solvent<D>::compute(RField<D> const & wField, double phiTot)
    {
       // Local constants
       const int nx = meshPtr_->size();
-      const double s = SolventSpecies<cudaReal>::size();
+      const double size = SolventSpecies<cudaReal>::size();
 
       // Evaluate unnormalized integral and Q
-      double Q = 0.0;
-      VecOp::expVc(cField_, wField, -1.0*size());
-      Q = Reduce::sum(cField_);
+      VecOp::expVc(cField_, wField, -1.0*size);
+      double Q = Reduce::sum(cField_);
       Q = Q / double(nx);     // spatial average
       Q /= phiTot;            // correct for partial occupation
 
       // Note: phiTot = 1.0 except in the case of a mask that confines
-      // material to a fraction of the unit cell. 
+      // material to a fraction of the unit cell.
 
       // Set q and compute mu or phi
       Species::setQ(Q);
 
-      // Normalize concentration 
+      // Normalize concentration
       double prefactor = phi()/Q;
       VecOp::mulEqS(cField_, prefactor);
    }
