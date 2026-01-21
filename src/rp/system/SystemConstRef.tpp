@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_SYSTEM_CONST_REF_TPP
-#define PRDC_RL_SYSTEM_CONST_REF_TPP
+#ifndef RP_SYSTEM_CONST_REF_TPP
+#define RP_SYSTEM_CONST_REF_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field

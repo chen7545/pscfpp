@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_SCFT_THERMO_H
-#define PRDC_RL_SCFT_THERMO_H
+#ifndef RP_SCFT_THERMO_H
+#define RP_SCFT_THERMO_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
