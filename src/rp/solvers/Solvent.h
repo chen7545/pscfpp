@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/chem/SolventSpecies.h>   // base class
+#include <pscf/chem/SolventSpecies.h>  // base class
 
 // Forward declaration
 namespace Pscf {
@@ -17,10 +17,6 @@ namespace Pscf {
 
 namespace Pscf {
 namespace Rp {
-
-   using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
    * Solver and descriptor for a solvent species.
@@ -117,11 +113,6 @@ namespace Rp {
    template <int D, class T> inline
    typename T::RField const & Solvent<D,T>::cField() const
    {  return cField_;  }
-
-   // Explicit instantiation declarations
-   extern template class Solvent<1>;
-   extern template class Solvent<2>;
-   extern template class Solvent<3>;
 
 }
 }
