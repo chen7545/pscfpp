@@ -39,6 +39,7 @@ namespace Rpc {
 
    protected:
 
+      #if 0
       /// Alias for r-grid field type.
       using RFieldT = typename Base::RFieldT;
 
@@ -50,6 +51,7 @@ namespace Rpc {
       */
       double innerProduct(RFieldT const & A,
                           RFieldT const & B) const override;
+      #endif
 
    };
 

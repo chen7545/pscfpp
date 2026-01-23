@@ -6,7 +6,6 @@
 */
 
 #include "ScftThermo.h"            // class header
-#include <rp/scft/ScftThermo.tpp>  // base class template implementation
 
 #include <rpg/solvers/Mixture.h>
 #include <rpg/solvers/Polymer.h>
@@ -15,6 +14,8 @@
 #include <pscf/cuda/Reduce.h>
 #include <prdc/cuda/RField.h>
 #include <pscf/interaction/Interaction.h>
+
+#include <rp/scft/ScftThermo.tpp>  // base class template implementation
 
 namespace Pscf {
 
@@ -35,6 +36,7 @@ namespace Pscf {
        : Base(system)
       {};
 
+      #if 0
       /*
       * Inner product of r-grid fields.
       */
@@ -42,6 +44,7 @@ namespace Pscf {
       double ScftThermo<D>::innerProduct(RFieldT const & A, 
                                          RFieldT const & B) const
       {  return Cuda::Reduce::innerProduct(A, B); };
+      #endif
 
       // Explicit instantiation
       template class ScftThermo<1>;

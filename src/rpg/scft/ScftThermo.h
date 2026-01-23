@@ -38,9 +38,10 @@ namespace Rpg {
 
    protected:
 
+      #if 0 
       /// Alias for r-grid field type.
       using RFieldT = typename Base::RFieldT;
- 
+
       /**
       * Inner product of fields (sum of elements on a grid).
       * 
@@ -50,6 +51,7 @@ namespace Rpg {
       */
       double innerProduct(RFieldT const & A,
                           RFieldT const & B) const override;
+      #endif
 
    };
 

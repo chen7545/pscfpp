@@ -165,6 +165,7 @@ namespace Rp {
       using Base::mask;
       using Base::fileMaster;
 
+      #if 0
       /**
       * Inner product of two fields.
       *
@@ -175,6 +176,7 @@ namespace Rp {
       virtual
       double innerProduct(RFieldT const & A, RFieldT const & B) const
       {  return 0.0; };
+      #endif
 
    private:
 
@@ -212,8 +214,8 @@ namespace Rp {
       /**
       * Has SCFT free energy and pressure been computed?
       *
-      * This is set true in the compute() function, and is set false by
-      * clear function.
+      * This is set true by the compute() member function, and is set 
+      * false by the clear() function.
       */
       bool hasData_;
 

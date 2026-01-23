@@ -5,13 +5,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "ScftThermo.h"
+#include "ScftThermo.h"            // class header
 #include <rpc/solvers/Mixture.h>
 #include <rpc/solvers/Polymer.h>
 #include <rpc/solvers/Solvent.h>
 #include <rpc/field/Domain.h>
-#include <rp/scft/ScftThermo.tpp>
 #include <pscf/interaction/Interaction.h>
+#include <pscf/cpu/Reduce.h>
+
+#include <rp/scft/ScftThermo.tpp>  // base class implementation
 
 namespace Pscf {
 
@@ -32,6 +34,7 @@ namespace Pscf {
        : Base(system)
       {};
 
+      #if 0
       /*
       * Inner product of r-grid fields.
       */
@@ -48,6 +51,7 @@ namespace Pscf {
          }
          return sum;
       };
+      #endif
 
       // Explicit instantiation
       template class ScftThermo<1>;
