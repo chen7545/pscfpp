@@ -31,27 +31,8 @@ namespace Pscf {
       */
       template <int D>
       ScftThermo<D>::ScftThermo(System<D> const & system)
-       : Base(system)
+       : Rp::ScftThermo<D, System<D> >(system)
       {};
-
-      #if 0
-      /*
-      * Inner product of r-grid fields.
-      */
-      template <int D>
-      double ScftThermo<D>::innerProduct(RFieldT const & A,
-                                         RFieldT const & B) const
-      {
-         const int meshSize = Base::domain().mesh().size();
-         UTIL_CHECK(meshSize == A.capacity())
-         UTIL_CHECK(meshSize == B.capacity())
-         double sum = 0.0;
-         for (int k = 0; k < meshSize; ++k) {
-            sum += A[k]*B[k];
-         }
-         return sum;
-      };
-      #endif
 
       // Explicit instantiation
       template class ScftThermo<1>;

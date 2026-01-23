@@ -14,15 +14,18 @@
 #include "Block.h"
 #include "Propagator.h"
 #include <rpc/field/FieldIo.h>
-#include <rp/solvers/Mixture.tpp>
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/RField.h>
+#include <pscf/cpu/VecOp.h>
+
+#include <rp/solvers/Mixture.tpp>
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Prdc;
 
+   #if 0
    template <int D>
    void Mixture<D>::eqS(FieldT& A, double c) const
    {
@@ -43,6 +46,7 @@ namespace Rpc {
          A[i] += B[i];
       }
    }
+   #endif
 
    /*
    * Allocate memory for all blocks.

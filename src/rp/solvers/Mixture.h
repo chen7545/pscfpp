@@ -32,18 +32,25 @@ namespace Rp {
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
    *
-   * A Mixture contains lists of Polymer (PolymerT) and Solvent (SolventT)
-   * objects. Each such object can solve statistical mechanics of a single 
-   * molecule of the associated species in a set of specified chemical 
-   * potential fields, and thereby compute concentrations and molecular 
-   * partition functions for all species in non-interacting reference 
-   * system. 
+   * The template Rp::Mixture is designed to be used base class for 
+   * instantiations of the Rpc::Mixture<D> and Rpg::Mixture<D> class
+   * template. The template parameters of R::Mixture<int D, class T> 
+   * are the dimension of space, D, and a class T = Rpc::Types<D> or
+   * T = Rpg::Types<D> that contains a collection of class name aliases 
+   * for classes used in the Rpc or Rpg program level namespace.
+   *
+   * A Mixture contains a list of Polymer (T::Polymer) objects and a
+   * list of Solvent (T::Solvent) objects. Each such object can solve 
+   * the statistical mechanics problem for a single molecule of the 
+   * associated species in a set of specified chemical potential 
+   * fields, and thereby compute concentrations and molecular partition
+   * functions for all species in non-interacting reference system. 
    *
    * The compute() member function computes single-molecule partition 
-   * functions and monomer concentrations all species.  This function 
+   * functions and monomer concentrations for all species.  This function 
    * takes an array of chemical potential fields (w fields) acting on
-   * different monomer types an  input and yields an array of total
-   * monomer concentration fields (c fields) as an output.
+   * different monomer types an input and yields an output array of 
+   * total monomer concentration fields (c fields).
    *
    * \ingroup Pscf_Rp_Module
    * \ref user_param_mixture_page "Manual Page"
@@ -63,12 +70,6 @@ namespace Rp {
       /// Solvent object type
       using SolventT = typename T::Solvent;
 
-      /// MixtureTmpl base class.
-      using MixtureTmplT = MixtureTmpl<PolymerT, SolventT, double>;
-
-      /// MixtureBase base class.
-      using MixtureBaseT = MixtureBase<double>;
-
       /// Block type, for a block in a block polymer.
       using BlockT = typename T::Block;
 
@@ -86,6 +87,12 @@ namespace Rp {
 
       /// FieldIo type.
       using FieldIoT = typename T::FieldIo;
+
+      /// MixtureTmpl direct (parent) base class.
+      using MixtureTmplT = MixtureTmpl<PolymerT, SolventT, double>;
+
+      /// MixtureBase indirect (grandparent) base class.
+      using MixtureBaseT = typename MixtureTmplT::MixtureBaseT;
 
       // Public member functions
 
@@ -435,22 +442,6 @@ namespace Rp {
       bool isSymmetric_;
 
       // Private member functions (pure virtual)
-
-      /**
-      * Set all elements of a field to a common scalar: A[i] = s.
-      *
-      * \param A  field (LHS)
-      * \param s  scalar (RHS)
-      */
-      virtual void eqS(FieldT& A, double s) const = 0;
-
-      /**
-      * Compound addition assignment for fields : A[i] += B[i].
-      *
-      * \param A  field (LHS)
-      * \param B  field (RHS)
-      */
-      virtual void addEqV(FieldT& A, FieldT const & B) const = 0;
 
       /**
       * Allocate all blocks of all polymers.

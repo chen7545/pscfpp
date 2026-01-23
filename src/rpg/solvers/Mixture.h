@@ -58,29 +58,8 @@ namespace Rpg {
 
    private:
 
-      
-      // Private member data
-
       /// Use batched FFTs to compute stress? (faster, but doubles memory)
       bool useBatchedFFT_;
-
-      // Private member functions
-
-      /**
-      * Set all elements of a field to a common scalar: A[i] = s.
-      *
-      * \param A  field (LHS)
-      * \param s  scalar (RHS)
-      */
-      virtual void eqS(FieldT& A, double s) const override;
-
-      /**
-      * Compound addition assignment for fields : A[i] += B[i].
-      *
-      * \param A  field (LHS)
-      * \param B  field (RHS)
-      */
-      virtual void addEqV(FieldT& A, FieldT const & B) const override;
 
       /**
       * Allocate memory for all blocks

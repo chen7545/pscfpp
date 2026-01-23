@@ -35,7 +35,6 @@ namespace Rpc {
    template <int D>
    class Mixture : public Rp::Mixture< D, Types<D> >
    {
-
    public:
 
       /// Direct (parent) base class.
@@ -48,22 +47,6 @@ namespace Rpc {
       using MixtureTmplT::polymer;
 
    private:
-
-      /**
-      * Set all elements of a field to a common scalar: A[i] = s.
-      *
-      * \param A  field (LHS)
-      * \param s  scalar (RHS)
-      */
-      void eqS(FieldT& A, double s) const override;
-
-      /**
-      * Compound addition assignment for fields : A[i] += B[i].
-      *
-      * \param A  field (LHS)
-      * \param B  field (RHS)
-      */
-      void addEqV(FieldT& A, FieldT const & B) const override;
 
       /**
       * Allocate memory for all blocks

@@ -17,21 +17,21 @@
 #include <rpg/field/FieldIo.h>
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/RField.h>
+#include <pscf/cuda/VecOp.h>
 
-#include <rp/solvers/Mixture.tpp>  // base class templ. implementation
+#include <rp/solvers/Mixture.tpp>  // base class template implementation
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /*
    * Constructor
    */
    template <int D>
    Mixture<D>::Mixture()
-    : RpMixtureT(),
+    : Rp::Mixture<D, Types<D> >(),
       useBatchedFFT_(true)
    {}
 
@@ -46,29 +46,6 @@ namespace Rpg {
       // Optionally read useBatchedFFT boolean
       useBatchedFFT_ = true;
       ParamComposite::readOptional(in, "useBatchedFFT", useBatchedFFT_);
-   }
-
-   /*
-   * Set all elements of a field to a single scalar: A[i] = c.
-   */
-   template <int D>
-   void Mixture<D>::eqS(FieldT& A, double c) const
-   {
-      const int nx = RpMixtureT::mesh().size();
-      UTIL_CHECK(nx == A.capacity());
-      VecOp::eqS(A,c);
-   }
-
-   /*
-   * Compound addition-assignment of two fields: A[i] += B[i]
-   */
-   template <int D>
-   void Mixture<D>::addEqV(FieldT& A, FieldT const & B) const
-   {
-      const int nx = RpMixtureT::mesh().size();
-      UTIL_CHECK(nx == A.capacity());
-      UTIL_CHECK(nx == B.capacity());
-      VecOp::addEqV(A, B);
    }
 
    /*

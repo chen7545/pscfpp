@@ -168,7 +168,7 @@ namespace Rp {
 
       // Clear all monomer concentration fields, check capacities
       for (i = 0; i < nm; ++i) {
-         eqS(cFields[i], 0.0);
+         VecOp::eqS(cFields[i], 0.0);
       }
 
       // Process polymer species
@@ -187,7 +187,7 @@ namespace Rp {
                UTIL_CHECK(monomerId < nm);
                FieldT& monomerField = cFields[monomerId];
                FieldT const & blockField = polymer(i).block(j).cField();
-               addEqV(monomerField, blockField);
+               VecOp::addEqV(monomerField, blockField);
             }
          }
 
@@ -209,7 +209,7 @@ namespace Rp {
             UTIL_CHECK(monomerId < nm);
             FieldT& monomerField = cFields[monomerId];
             FieldT const & solventField = solvent(i).cField();
-            addEqV(monomerField, solventField);
+            VecOp::addEqV(monomerField, solventField);
          }
 
       }
@@ -333,7 +333,7 @@ namespace Rp {
          if (!blockCFields[i].isAllocated()) {
             blockCFields[i].allocate(mesh().dimensions());
          }
-         eqS(blockCFields[i], 0.0);
+         VecOp::eqS(blockCFields[i], 0.0);
       }
 
       // Initialize section (block or solvent) index
