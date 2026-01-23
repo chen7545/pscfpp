@@ -42,28 +42,27 @@ namespace Rp {
    */
    template <int D, class T>
    class Polymer 
-     : public PolymerTmpl<typename T::Block, typename T::Propagator>
+     : public PolymerTmpl<typename T::Block, typename T::Propagator, double>
    {
 
    public:
 
       // Public type name aliases
 
-      /// Direct (parent) base class.
-      using PolymerTmplT 
-            = PolymerTmpl<typename T::Block, typename T::Propagator>;
-
-      /// Indirect (grandparent) base class.
-      using PolymerSpeciesT = PolymerSpecies<double>;
-
-      /// Species base class.
-      using SpeciesT = Species<double>;
-
       /// Block type, for a block within a block polymer.
       using BlockT = typename T::Block;
 
       /// Propagator type, for one direction within a block.
       using PropagatorT = typename T::Propagator;
+
+      /// Direct base class, instantiation of PolymerTmpl.
+      using PolymerTmplT = PolymerTmpl<BlockT, PropagatorT, double>;
+
+      /// Indirect base, instantiation of PolymerSpecies (inherited).
+      using typename PolymerTmplT::PolymerSpeciesT;
+
+      /// Indirect base, instantiation of Species (inherited).
+      using typename PolymerTmplT::SpeciesT;
 
       // Public member functions
 

@@ -67,6 +67,16 @@ namespace Pscf {
       */
       using PropagatorT = PT;
 
+      /**
+      * Direct (parent) base class.
+      */
+      using PolymerSpeciesT = PolymerSpecies<WT>;
+
+      /**
+      * Indirect (grandparent) base class.
+      */
+      using SpeciesT = Species<WT>;
+
       // Public member functions
 
       /**
