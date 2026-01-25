@@ -183,6 +183,19 @@ namespace Pscf {
                  Array<fftw_complex> const & c);
 
       /**
+      * Vector subtraction, a[i] = b[i] - c[i] (mixed).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  complex array (LHS)
+      * \param b  complex array (RHS)
+      * \param c  real array (RHS)
+      */
+      void subVV(Array<fftw_complex> & a,
+                 Array<fftw_complex> const & b,
+                 Array<double> const & c);
+
+      /**
       * Vector-scalar subtraction, a[i] = b[i] - c (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
@@ -446,7 +459,7 @@ namespace Pscf {
       * \param a  complex array (LHS)
       * \param b  complex scalar (RHS)
       */
-      void mulEqV(Array<fftw_complex>& a, fftw_complex const & b);
+      void mulEqS(Array<fftw_complex>& a, fftw_complex const & b);
 
       /**
       * Vector-scalar in-place multiplication, a[i] *= b (mixed)

@@ -4,9 +4,11 @@
 #include <test/CompositeTestRunner.h>
 
 #include "CpuComplexTest.h"
+#include "CpuVecOpTest.h"
 
 TEST_COMPOSITE_BEGIN(CpuTestComposite)
 TEST_COMPOSITE_ADD_UNIT(CpuComplexTest);
+TEST_COMPOSITE_ADD_UNIT(CpuVecOpTest);
 TEST_COMPOSITE_END
 
 #endif

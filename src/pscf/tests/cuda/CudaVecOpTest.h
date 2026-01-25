@@ -1319,7 +1319,7 @@ public:
       TEST_ASSERT(n > 0);
 
       for (int i = 0; i < n; i++) {
-         TEST_ASSERT(abs(a[i] - b[i]) < tolerance_);
+         TEST_ASSERT(std::abs(a[i] - b[i]) < tolerance_);
       }
    }
 
@@ -1331,8 +1331,8 @@ public:
       TEST_ASSERT(n > 0);
 
       for (int i = 0; i < n; i++) {
-         TEST_ASSERT(abs(a[i].x - b[i].real()) < tolerance_);
-         TEST_ASSERT(abs(a[i].y - b[i].imag()) < tolerance_);
+         TEST_ASSERT(std::abs(a[i].x - b[i].real()) < tolerance_);
+         TEST_ASSERT(std::abs(a[i].y - b[i].imag()) < tolerance_);
       }
    }
 
