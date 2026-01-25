@@ -8,6 +8,7 @@
 #include <pscf/cuda/DeviceArray.h>
 #include <pscf/cuda/complex.h>
 #include <pscf/cuda/cudaTypes.h>
+#include <pscf/cpu/VecOp.h>
 #include <pscf/math/FieldComparison.h>
 
 #include <util/math/Constants.h>
@@ -120,6 +121,30 @@ public:
 
    void tearDown()
    {}
+
+   void checkEqualReal(HostDArray<cudaReal>& a, DArray<numType>& b)
+   {
+      int n = a.capacity();
+      TEST_ASSERT(b.capacity() == n);
+      TEST_ASSERT(n > 0);
+
+      for (int i = 0; i < n; i++) {
+         TEST_ASSERT(std::abs(a[i] - b[i]) < tolerance_);
+      }
+   }
+
+   void checkEqualComplex(HostDArray<cudaComplex>& a,
+                          DArray<std::complex<numType> >& b)
+   {
+      int n = a.capacity();
+      TEST_ASSERT(b.capacity() == n);
+      TEST_ASSERT(n > 0);
+
+      for (int i = 0; i < n; i++) {
+         TEST_ASSERT(std::abs(a[i].x - b[i].real()) < tolerance_);
+         TEST_ASSERT(std::abs(a[i].y - b[i].imag()) < tolerance_);
+      }
+   }
 
    // Test VecOp::eqV and VecOp::eqS
    void testEq()
@@ -340,14 +365,17 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      // ~~~ Test subVS ~~~
+      // ~~~ Test subVS (real) ~~~
       VecOp::subVS(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
          refOutReal[i] = refInReal[i] - refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
+      VecOp::subVS(refOutReal, hInReal, scalarReal); // cpu version
+      checkEqualReal(hOutReal, refOutReal);
 
+      // ~~~ Test subVS (complex) ~~~
       VecOp::subVS(dOutComplex, dInComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) {
@@ -643,7 +671,7 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      // ~~~ Test addEqS ~~~
+      // ~~~ Test addEqS (real) ~~~
       VecOp::eqV(dOutReal, dInReal);
       VecOp::addEqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
@@ -651,6 +679,9 @@ public:
          refOutReal[i] = refInReal[i];
          refOutReal[i] += refScalarReal;
       }
+      checkEqualReal(hOutReal, refOutReal); 
+      VecOp::eqV(refOutReal, hInReal);       // Cpu version
+      VecOp::addEqS(refOutReal, scalarReal); // Cpu Version
       checkEqualReal(hOutReal, refOutReal);
 
       VecOp::eqV(dOutComplex, dInComplex);
@@ -1198,16 +1229,9 @@ public:
          refOutReal[i] += refInReal2[i] * refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
-
-      #if 0
-      // ~~~ Test subVVS ~~~
-      VecOp::subVVS(dOutReal, dInReal, dInReal2, scalarReal);
-      hOutReal = dOutReal;
-      for (int i = 0; i < n; i++) {
-         refOutReal[i] = refInReal[i] - refInReal2[i] - refScalarReal;
-      }
+      VecOp::eqV(refOutReal, hInReal);                  // cpu version
+      VecOp::addEqVc(refOutReal, hInReal2, scalarReal); // cpu version
       checkEqualReal(hOutReal, refOutReal);
-      #endif
 
       // ~~~ Test divEqVc ~~~
       VecOp::eqV(dOutComplex, dInComplex);
@@ -1225,6 +1249,8 @@ public:
       for (int i = 0; i < n; i++) {
          refOutReal[i] = exp(refInReal[i] * refScalarReal);
       }
+      checkEqualReal(hOutReal, refOutReal);
+      VecOp::expVc(refOutReal, hInReal, scalarReal);  // Cpu version
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test eqVPair ~~~
@@ -1295,7 +1321,7 @@ public:
       hOutReal = dOutReal;
       checkEqualReal(hOutReal, refOutReal);
 
-      // ~~~ Test sqAbsV ~~~
+      // ~~~ Test sqAbsV (complex) ~~~
       VecOp::sqAbsV(dOutReal, dInComplex);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
@@ -1303,37 +1329,13 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
-      // ~~~ Test sqSqAbsV ~~~
+      // ~~~ Test sqSqAbsV (complex)  ~~~
       VecOp::sqSqAbsV(dOutReal, dInComplex);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
          refOutReal[i] = std::pow(std::norm(refInComplex[i]), 2.0);
       }
       checkEqualReal(hOutReal, refOutReal);
-   }
-
-   void checkEqualReal(HostDArray<cudaReal>& a, DArray<numType>& b)
-   {
-      int n = a.capacity();
-      TEST_ASSERT(b.capacity() == n);
-      TEST_ASSERT(n > 0);
-
-      for (int i = 0; i < n; i++) {
-         TEST_ASSERT(std::abs(a[i] - b[i]) < tolerance_);
-      }
-   }
-
-   void checkEqualComplex(HostDArray<cudaComplex>& a,
-                          DArray<std::complex<numType> >& b)
-   {
-      int n = a.capacity();
-      TEST_ASSERT(b.capacity() == n);
-      TEST_ASSERT(n > 0);
-
-      for (int i = 0; i < n; i++) {
-         TEST_ASSERT(std::abs(a[i].x - b[i].real()) < tolerance_);
-         TEST_ASSERT(std::abs(a[i].y - b[i].imag()) < tolerance_);
-      }
    }
 
 };

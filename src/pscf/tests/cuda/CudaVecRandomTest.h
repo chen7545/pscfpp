@@ -133,6 +133,60 @@ public:
 
    }
 
+   void testUniformRangeDouble()
+   {
+      printMethod(TEST_FUNC);
+      CudaVecRandom random;
+      random.setSeed(6712983651284);
+
+      int n = 100000;
+      DeviceArray<float> d_(n);
+      HostDArray<float> h_(n);
+
+      const double min = -1.34;
+      const double max =  3.57;
+      random.uniform(d_, min, max);
+
+      h_ = d_;
+
+      //setVerbose(1);
+      if (verbose() > 0) {
+         std::cout << std::endl;
+      }
+
+      const double mean = 0.5*(min + max);
+      const double diff = max - min;
+      const double stddev = diff/sqrt(12.0);
+
+      double ave = 0.0;
+      double var = 0.0;
+      double val = 0.0;
+      for (int i = 0; i < n; ++i) {
+         TEST_ASSERT(h_[i] >= min);
+         TEST_ASSERT(h_[i] < max);
+         val = h_[i] - mean;
+         ave += val;
+         var += val*val;
+         if (verbose() > 1) {
+            std::cout << Int(i,5) << "  " 
+                      << Dbl(h_[i]) << std::endl;
+         }
+      }
+      ave = ave/double(n);
+      var = var/double(n);
+      ave = ave;
+      var = sqrt(var) - stddev;
+      ave = ave/stddev;
+      var = var/stddev;
+      if (verbose() > 0) {
+         std::cout << "Average  " << ave << std::endl;
+         std::cout << "StdDev   " << var << std::endl;
+      }
+      TEST_ASSERT(fabs(ave) < 0.1);
+      TEST_ASSERT(fabs(var) < 0.1);
+
+   }
+
    void testNormalDouble()
    {
       printMethod(TEST_FUNC);
@@ -224,6 +278,7 @@ TEST_BEGIN(CudaVecRandomTest)
 TEST_ADD(CudaVecRandomTest, testConstructor)
 TEST_ADD(CudaVecRandomTest, testUniformDouble)
 TEST_ADD(CudaVecRandomTest, testUniformFloat)
+TEST_ADD(CudaVecRandomTest, testUniformRangeDouble)
 TEST_ADD(CudaVecRandomTest, testNormalDouble)
 TEST_ADD(CudaVecRandomTest, testNormalFloat)
 TEST_END(CudaVecRandomTest)

@@ -181,19 +181,21 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test subVS ~~~
+      // ~~~ Test subVS (real) ~~~
       VecOp::subVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) {
          refOutReal[i] = inReal[i] - scalarReal;
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test subVS (complex) ~~~
       VecOp::subVS(outComplex, inComplex, scalarComplex);
       for (int i = 0; i < n; i++) {
          sub(refOutComplex[i], inComplex[i], scalarComplex);
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test subVS (mixed) ~~~
       VecOp::subVS(outComplex, inComplex, scalarReal);
       for (int i = 0; i < n; i++) {
          sub(refOutComplex[i], inComplex[i], scalarReal);
@@ -207,39 +209,42 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      // ~~~ Test mulVV ~~~
+      // ~~~ Test mulVV (real) ~~~
       VecOp::mulVV(outReal, inReal, inReal2);
       for (int i = 0; i < n; i++) {
          refOutReal[i] = inReal[i] * inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test mulVV (complex) ~~~
       VecOp::mulVV(outComplex, inComplex, inComplex2);
       for (int i = 0; i < n; i++) {
          mul(refOutComplex[i], inComplex[i], inComplex2[i]);
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test mulVV (mixed) ~~~
       VecOp::mulVV(outComplex, inComplex, inReal);
       for (int i = 0; i < n; i++) {
          mul(refOutComplex[i], inComplex[i], inReal[i]);
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test mulVS ~~~
+      // ~~~ Test mulVS (real) ~~~
       VecOp::mulVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) {
          refOutReal[i] = inReal[i] * scalarReal;
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test mulVS (complex) ~~~
       VecOp::mulVS(outComplex, inComplex, scalarComplex);
       for (int i = 0; i < n; i++) {
          mul(refOutComplex[i], inComplex[i], scalarComplex);
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-
+      // ~~~ Test mulVS (mixed) ~~~
       VecOp::mulVS(outComplex, inComplex, scalarReal);
       for (int i = 0; i < n; i++) {
          mul(refOutComplex[i], inComplex[i], scalarReal);
@@ -266,13 +271,14 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test divVS ~~~
+      // ~~~ Test divVS (real) ~~~
       VecOp::divVS(outReal, inReal, scalarReal);
       for (int i = 0; i < n; i++) {
          refOutReal[i] = inReal[i] / scalarReal;
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test divVS (mixed) ~~~
       VecOp::divVS(outComplex, inComplex, scalarReal);
       for (int i = 0; i < n; i++) {
          div(refOutComplex[i], inComplex[i], scalarReal);
@@ -286,7 +292,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      // ~~~ Test addEqV ~~~
+      // ~~~ Test addEqV (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::addEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) {
@@ -295,6 +301,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test addEqV (complex) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::addEqV(outComplex, inComplex2);
       for (int i = 0; i < n; i++) {
@@ -303,6 +310,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test addEqV (complex, real and imaginar inputs) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::addEqV(outComplex, inReal, inReal2);
       for (int i = 0; i < n; i++) {
@@ -312,6 +320,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test addEqV (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::addEqV(outComplex, inReal);
       for (int i = 0; i < n; i++) {
@@ -320,7 +329,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test addEqS ~~~
+      // ~~~ Test addEqS (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::addEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -329,6 +338,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test addEqS (complex) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::addEqS(outComplex, scalarComplex);
       for (int i = 0; i < n; i++) {
@@ -337,6 +347,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test addEqS (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::addEqS(outComplex, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -352,7 +363,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      // ~~~ Test subEqV ~~~
+      // ~~~ Test subEqV (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::subEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) {
@@ -361,6 +372,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test subEqV (complex) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::subEqV(outComplex, inComplex2);
       for (int i = 0; i < n; i++) {
@@ -369,6 +381,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test subEqV (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::subEqV(outComplex, inReal);
       for (int i = 0; i < n; i++) {
@@ -377,7 +390,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test subEqS ~~~
+      // ~~~ Test subEqS (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::subEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -386,6 +399,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test subEqS (complex) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::subEqS(outComplex, scalarComplex);
       for (int i = 0; i < n; i++) {
@@ -394,6 +408,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test subEqS (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::subEqS(outComplex, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -433,7 +448,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test mulEqS ~~~
+      // ~~~ Test mulEqS (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::mulEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -442,6 +457,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test mulEqS (complex) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::mulEqS(outComplex, scalarComplex);
       for (int i = 0; i < n; i++) {
@@ -450,6 +466,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
+      // ~~~ Test mulEqS (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::mulEqS(outComplex, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -465,7 +482,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      // ~~~ Test divEqV ~~~
+      // ~~~ Test divEqV (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::divEqV(outReal, inReal2);
       for (int i = 0; i < n; i++) {
@@ -474,6 +491,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test divEqV (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::divEqV(outComplex, inReal2);
       for (int i = 0; i < n; i++) {
@@ -482,7 +500,7 @@ public:
       }
       checkEqualComplex(outComplex, refOutComplex);
 
-      // ~~~ Test divEqS ~~~
+      // ~~~ Test divEqS (real) ~~~
       VecOp::eqV(outReal, inReal);
       VecOp::divEqS(outReal, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -491,6 +509,7 @@ public:
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ Test divEqS (mixed) ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::divEqS(outComplex, scalarReal);
       for (int i = 0; i < n; i++) {
@@ -506,13 +525,14 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      // ~~~ Test using full arrays ~~~
+      // ~~~ expV (real) ~~~~~~
       VecOp::expV(outReal, inReal);
       for (int i = 0; i < n; i++) {
          refOutReal[i] = std::exp(inReal[i]);
       }
       checkEqualReal(outReal, refOutReal);
 
+      // ~~~ expV (complex) ~~~~~~~
       VecOp::expV(outComplex, inComplex);
       std::complex<double> c, d;
       for (int i = 0; i < n; i++) {
@@ -521,6 +541,13 @@ public:
          assign(refOutComplex[i], d);
       }
       checkEqualComplex(outComplex, refOutComplex);
+
+      // ~~~ expVc (real) ~~~~~~
+      VecOp::expVc(outReal, inReal, scalarReal);
+      for (int i = 0; i < n; i++) {
+         refOutReal[i] = std::exp(inReal[i]*scalarReal);
+      }
+      checkEqualReal(outReal, refOutReal);
 
    }
 
@@ -549,23 +576,22 @@ public:
 
    }
 
-   #if 0
    // Test the other miscellaneous vector operations in Vec.h
    void testMisc()
    {
       printMethod(TEST_FUNC);
 
       // ~~~ Test addVcVc ~~~
-      VecOp::addVcVc(outReal, inReal, scalarReal, inReal2, -1.0);
+      VecOp::addVcVc(outReal, inReal, scalarReal, inReal2, -2.0);
       for (int i = 0; i < n; i++) {
-         refOutReal[i] = inReal[i] * scalarReal - inReal2[i];
+         refOutReal[i] = inReal[i] * scalarReal + (-2.0)*inReal2[i];
       }
       checkEqualReal(outReal, refOutReal);
 
-      // ~~~ Test addVcVcVc ~~~
-      VecOp::addVcVcVc(outReal, inReal, scalarReal, inReal2, -1.0, inReal, 1.0);
+      // ~~~ Test addVcVcS ~~~
+      VecOp::addVcVcS(outReal, inReal, scalarReal, inReal2, -2.0, 0.36);
       for (int i = 0; i < n; i++) {
-         refOutReal[i] = inReal[i] * (scalarReal + 1) - inReal2[i];
+         refOutReal[i] = inReal[i] * scalarReal + (-2.0)*inReal2[i] + 0.36;
       }
       checkEqualReal(outReal, refOutReal);
 
@@ -587,6 +613,7 @@ public:
       checkEqualReal(outReal, refOutReal);
       #endif
 
+      #if 0
       // ~~~ Test divEqVc ~~~
       VecOp::eqV(outComplex, inComplex);
       VecOp::divEqVc(outComplex, inReal2, scalarReal);
@@ -677,8 +704,8 @@ public:
          refOutReal[i] = std::pow(std::norm(inComplex[i]), 2.0);
       }
       checkEqualReal(outReal, refOutReal);
+      #endif
    }
-   #endif
 
    void checkEqualReal(DArray<double>& a, DArray<double>& b)
    {
@@ -717,10 +744,7 @@ TEST_ADD(CpuVecOpTest, testMulEq)
 TEST_ADD(CpuVecOpTest, testDivEq)
 TEST_ADD(CpuVecOpTest, testExp)
 TEST_ADD(CpuVecOpTest, testSq)
-
-#if 0
 TEST_ADD(CpuVecOpTest, testMisc)
-#endif
 
 TEST_END(CpuVecOpTest)
 
