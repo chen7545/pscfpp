@@ -15,20 +15,24 @@ to enable the use of an NVIDIA graphics processing unit (GPU). PSCF is
 distributed only in source code form, and so must be compiled by the 
 user. 
 
-## Methods: SCFT and PS-FTS
+## Methods: SCFT and FTS
 
 PSCF was originally designed for SCFT calculations, and provides an
 extensive set of tools for this purpose .  The acronym PSCF stands for 
 Polymer Self-Consistent Field, reflecting this origin.
 
-PSCF can now also perform field theoretic simulation calculations that 
-rely on a partial saddle-point approximation (PS-FTS). Such simulations 
-can be performed using ether Brownian dynamics (BD) or Monte-Carlo (MC) 
-sampling techniques. 
+PSCF now also provides a reasonably complete set of tools for field 
+theoretic simulation calculations that rely on a partial saddle-point 
+approximation (PS-FTS). Such simulations can be performed using ether 
+Brownian dynamics (BD) or Monte-Carlo (MC) sampling techniques. 
 
-The fully-fluctuating formulation of polymer field theory (which is not 
-implemented in PSCF) requires the stochastic sampling of complex-valued 
-fields. The partial saddle-point approximation for FTS used in the current
+This current version of PSCF does not yet provide tools for
+fully-fluctuating complex Langevin field theoretic simulations 
+(CL-FTS), which is planned for a future release. The source code 
+of the current version does, however, contain some of the basic 
+building blocks that will be needed CL-FTS, on which work is ongoing.
+
+The partial saddle-point approximation for FTS used in the current 
 version of PSCF is an approximation for incompressible models in which a 
 Langrange multiplier pressure-like field that imposes a constraint on the 
 total monomer density is approximated at a mean-field (or saddle-point) 
@@ -41,7 +45,7 @@ building blocks as those used in SCFT.
 
 The current C++/CUDA version of PSCF originated as a completely rewritten
 version of an older Fortran SCFT program of the same name. The older
-Fortran version of PSCF builds a single program that was designed for SCFT 
+Fortran PSCF package builds a single program that was designed for SCFT 
 analysis of systems that can contain mixtures of linear block polymers and 
 small molecule solvents in a domain with periodic boundary conditions. 
 The current C++/CUDA version is intended to supersede the Fortran version, 
@@ -73,11 +77,11 @@ PSCF provides source code for the following three executable programs:
 
    - **pscf_1d** : The pscf_1d program is is designed to perform SCFT
      calculations for one-dimensional (1D) problems in Cartesian,
-     cylindrical or spherical coordinates. A finite difference method is
-     used to solve the underlying partial differential equation, known
-     as the modified diffusion equation (MDE). This program can be used
-     to treat problems involving flat and curved interfaces, as well as
-     cylindrical and spherical micelles.
+     cylindrical or spherical coordinates. A finite difference spatial
+     discretization is used to solve the underlying partial differential 
+     equation, known as the modified diffusion equation (MDE). This 
+     program can be used to treat problems involving flat and curved 
+     interfaces, as well as cylindrical and spherical micelles.
 
    - **pscf_rpc** : The pscf_rpc program can be used to perform SCFT and
      PS-FTS calculations for systems that are periodic in 1, 2 or 3 
@@ -103,7 +107,7 @@ using either the standard Gaussian model of polymer conformations as
 continuous random walks or (in pscf_rpc and pscf_rpg) using a discrete 
 bead-spring model with harmonic springs.
 
-Features relevant to both SCFT and PS-FTS (all programs):
+Features applicable to both SCFT and PS-FTS (all programs):
 
   - Ability to treat acyclic branched block polymers
 

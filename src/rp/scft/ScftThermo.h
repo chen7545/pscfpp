@@ -20,12 +20,18 @@ namespace Rp {
    /**
    * %Base class for SCFT thermodynamic property calculators.
    *
-   * This class computes and stores values for the SCFT Helmholtz
-   * free energy and pressure, and free energy components (ideal,
-   * interaction, external). It is used as a base class for 
-   * classes named ScftThermo defined in Rpc and Rpg namespaces.
+   * This class computes and stores values for the SCFT Helmholtz free
+   * energy and pressure, and free energy components (ideal, interaction,
+   * external). Instantiations of this template are used as base classes 
+   * for class templates named ScftThermo<D> that are defined in Rpc and 
+   * Rpg namespaces.
    *
-   * \ingroup Pscf_Rp_Module
+   * Template parameters:
+   *
+   *   - D   dimension of space
+   *   - ST  System class type (Rpc::System<D> or Rpg::System<D>)
+   *
+   * \ingroup Rp_Scft_Module
    */
    template <int D, class ST>
    class ScftThermo : protected Rp::SystemConstRef<ST>
@@ -34,10 +40,10 @@ namespace Rp {
    public:
 
       /// Base class type name alias.
-      using Base = Rp::SystemConstRef<ST>;
+      using SystemConstRefT = Rp::SystemConstRef<ST>;
 
       /// Parent System type name alias.
-      using SystemT = typename Base::SystemT;
+      using SystemT = typename SystemConstRefT::SystemT;
 
       // Public member functions
 
@@ -146,37 +152,24 @@ namespace Rp {
    protected:
 
       // Protected inherited type name aliases.
-      using MixtureT = typename Base::MixtureT;
-      using InteractionT = typename Base::InteractionT;
-      using DomainT = typename Base::DomainT;
-      using WFieldsT = typename Base::WFieldsT;
-      using CFieldsT = typename Base::CFieldsT;
-      using MaskT = typename Base::MaskT;
-      using RFieldT = typename Base::RFieldT;
+      using MixtureT = typename SystemConstRefT::MixtureT;
+      using InteractionT = typename SystemConstRefT::InteractionT;
+      using DomainT = typename SystemConstRefT::DomainT;
+      using WFieldsT = typename SystemConstRefT::WFieldsT;
+      using CFieldsT = typename SystemConstRefT::CFieldsT;
+      using MaskT = typename SystemConstRefT::MaskT;
+      using RFieldT = typename SystemConstRefT::RFieldT;
 
       // Protected inherited member functions
-      using Base::system;
-      using Base::mixture;
-      using Base::interaction;
-      using Base::domain;
-      using Base::c;
-      using Base::w;
-      using Base::h;
-      using Base::mask;
-      using Base::fileMaster;
-
-      #if 0
-      /**
-      * Inner product of two fields.
-      *
-      * \param A  1st field
-      * \param B  2nd field
-      * \return inner product (sum of product A[i]*B[i] over mesh points)
-      */
-      virtual
-      double innerProduct(RFieldT const & A, RFieldT const & B) const
-      {  return 0.0; };
-      #endif
+      using SystemConstRefT::system;
+      using SystemConstRefT::mixture;
+      using SystemConstRefT::interaction;
+      using SystemConstRefT::domain;
+      using SystemConstRefT::c;
+      using SystemConstRefT::w;
+      using SystemConstRefT::h;
+      using SystemConstRefT::mask;
+      using SystemConstRefT::fileMaster;
 
    private:
 

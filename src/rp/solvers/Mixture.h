@@ -52,7 +52,7 @@ namespace Rp {
    * different monomer types an input and yields an output array of 
    * total monomer concentration fields (c fields).
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Solver_Module
    * \ref user_param_mixture_page "Manual Page"
    */
    template <int D, class T>

@@ -19,44 +19,33 @@ namespace Pscf {
    *
    * A reduction is any operation that involves reducing all of the
    * elements of an array (or several arrays) to a single scalar result. 
-   * Examples include taking the sum or finding the maximum of all
-   * array elements. Highly efficient algorithms have been developed
-   * to perform such operations in parallel on a GPU, and those
-   * algorithms are implemented here.
+   * Examples include taking the sum or finding the maximum of all all
+   * elements of a single array, or evaluating a Euclidean inner product
+   * of two real arrays. 
    *
    * A wrapper function is provided for each reduction operation, which
-   * takes a DeviceArray as an input and returns a single value. The
-   * wrappers are called on the host, and they call CUDA kernels
-   * internally to perform the reductions in parallel.
+   * takes one or more DeviceArray containers as inputs and returns a 
+   * single value. Each wrapper function is a standard C++ function that
+   * may be called on the host CPU. The implementation of each such
+   * wrapper function calls one of the device-wide algorithms defined
+   * in the CUB library, which is part of the CUDA Core Compute library
+   * collection that is distributed with the CUDA development kit.
    *
-   * The CUDA kernels that perform the parallel reductions are not
-   * intended to be called directly. The wrappers and CUDA kernels are
-   * implemented together in a way that optimizes the speed of the
-   * overall operation. To do this, several important aspects of the
-   * algorithm are performed by the wrapper, detailed further below.
-   *
-   * First, the CUDA kernels do not perform the entire reduction.
-   * Rather, each block of threads in the GPU is reduced to a single
-   * value, and the kernel returns an array containing one value for
-   * each thread block. The kernel wrapper then performs the remaining
-   * reduction by either calling the kernel again or performing the
-   * remaining reduction on the host, depending on the size of the
-   * array output by the first kernel. Once the array is smaller than
-   * 1e5 elements, the remaining reduction is performed on the CPU.
-   * (This value is chosen because the GPU does not significantly
-   * speed up reductions on arrays smaller than 1e5 elements.)
-   *
-   * Second, the CUDA kernels are designed to use a number of threads
-   * that is only half the size of the input array (rounded up to the
-   * nearest multiple of the thread block size). The kernel wrapper
-   * properly determines the GPU configuration before calling the kernel.
+   * Reduction functions that return a real number return a value of
+   * type cudaReal. Functions that return a complex number instead return 
+   * a value of type std::complex<cudaReal>. Complex values are returned
+   * as std::complex<cudaReal> rather than cudaComplex to allow similar
+   * interfaces to be used by reduction functions declared here and by
+   * by analogous functions defined in src/pscf/cpu/Reduced.h that take
+   * take standard Array containers as inputs and perform calculations 
+   * on the CPU.
    *
    * \defgroup Pscf_Cuda_Reduce_Module Reduce (GPU)
    * \ingroup Pscf_Cuda_Module
    */
 
    /**
-   * Reduction operations on CPU or GPU.
+   * Reduction operations performed on a GPU.
    *
    * \ingroup Pscf_Math_Module
    */
@@ -101,8 +90,8 @@ namespace Pscf {
       /**
       * Return sum of squares of elements of a complex array.
       *
-      * This function returns the complex sum of complex squares of elements.
-      * This is not the same as the Hilbert space inner product.
+      * This function returns the complex sum of complex squares of 
+      * elements. This is not the same as a Hilbert space inner product.
       *
       * \ingroup Pscf_Cuda_Reduce_Module
       *
@@ -112,7 +101,7 @@ namespace Pscf {
       std::complex<cudaReal> sumSq(DeviceArray<cudaComplex> const & in);
 
       /**
-      * Return inner product of two real arrays.
+      * Return the inner product of two real arrays.
       *
       * \ingroup Pscf_Cuda_Reduce_Module
       *

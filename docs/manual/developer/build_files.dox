@@ -6,9 +6,9 @@
 
 This file briefly discusses the contents and purpose of different
 types of makefiles and makefile fragments that are used in the PSCF
-build system.  All files with a file name suffix .mk are makefile
-fragments that are included into makefiles via the make
-\ref developer_build_make_include_sec "include directive".
+build system.  Any file with a file name suffix .mk is a makefile
+fragment that is designed to be included into makefiles via the 
+make \ref developer_build_make_include_sec "include directive".
 
 \section developer_build_files_dirs_sec File locations
 
@@ -25,12 +25,10 @@ exist in different levels of the src directory tree:
   - Every subdirectory of the src directory tree that contains compilable
     source files contains a makefile and a file named sources.mk
 
-In addition, PSCF root directory contains a makefile at this point.
+In addition, the PSCF root directory will contain a makefile.
 
-Before the configure script is run, there are not any makefiles or
-makefile fragments in the bld directory.  After the configure script
-is run, the following types of files will exist in the bld directory
-tree:
+After the configure script is run, the following types of build system
+files will also exist in the bld directory tree:
 
   - The root of the bld directory tree will contains a makefile and a
     file named config.mk
@@ -47,7 +45,7 @@ Compilation leads to creation of additional intermediate object,
 dependency and library files in either the src directory (for in-source
 compilation) or the bld directory (for out-of-source) compilation, as
 discussed \ref developer_build_process_page "previously". Each
-dependency files is a short makefile fragments that can be included
+dependency file is a short makefile fragments that can be included
 into makefiles.
 
 \section developer_build_files_types_sec Makefile fragment file types

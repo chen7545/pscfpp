@@ -96,7 +96,7 @@ namespace VecOp {
    */
    void addVcS(DeviceArray<cudaReal>& a,
                DeviceArray<cudaReal> const & b, cudaReal const c,
-               DeviceArray<cudaReal> const & d, cudaReal const e);
+               cudaReal const s);
 
    /**
    * Add a scaled vector in-place, a[i] += b[i] * c (real).
@@ -136,7 +136,7 @@ namespace VecOp {
    *
    * \param a  real output array (LHS)
    * \param b1  real input array 1 (RHS)
-   * \param c2  real coefficient of b1 (RHS)
+   * \param c1  real coefficient of b1 (RHS)
    * \param b2  real input array 2 (RHS)
    * \param c2  real coefficient of b2 (RHS)
    * \param s  real scalar summand (RHS)
