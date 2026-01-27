@@ -404,5 +404,62 @@ namespace VecOp {
       }
    }
 
+   // Pair operations (two output arrays and a shared input)
+
+   /*
+   * Vector assignment in pairs, ax[i] = b[i], x = 1, 2 (real).
+   */
+   void eqVPair(Array<double>& a1, 
+                Array<double>& a2,
+                Array<double> const & b)
+   {
+      const int n = a1.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(a2.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a1[i] = b[i];
+         a2[i] = b[i];
+      }
+   }
+
+   /*
+   * Vector multiplication in pairs, ax[i] = bx[i] * c[i], x=1,2 (real).
+   */
+   void mulVVPair(Array<double>& a1, 
+                  Array<double>& a2,
+                  Array<double> const & b1,
+                  Array<double> const & b2,
+                  Array<double> const & c)
+   {
+      const int n = a1.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(a2.capacity() == n);
+      UTIL_CHECK(b1.capacity() >= n);
+      UTIL_CHECK(b2.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a1[i] = b1[i]*c[i];
+         a2[i] = b2[i]*c[i];
+      }
+   }
+
+   /*
+   * In-place vector multiplication in pairs, ax[i] *= b[i], x=1,2 (real).
+   */
+   void mulEqVPair(Array<double>& a1, 
+                   Array<double>& a2,
+                   Array<double> const & b)
+   {
+      const int n = a1.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(a2.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a1[i] *= b[i];
+         a2[i] *= b[i];
+      }
+   }
+
 } // namespace VecOp
 } // namespace Pscf
