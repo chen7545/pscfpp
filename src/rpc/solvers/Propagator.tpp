@@ -10,7 +10,8 @@
 
 #include "Propagator.h"
 #include "Block.h"
-
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
 #include <pscf/mesh/Mesh.h>
 
 namespace Pscf {
@@ -91,42 +92,25 @@ namespace Rpc {
    void Propagator<D>::computeHead()
    {
       UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
+      // int nx = meshPtr_->size();
 
-      // Reference to head of this propagator
+      // Reference to head slice of this propagator
       FieldT& qh = qFields_[0];
 
-      // Initialize qh field to 1.0 at all grid points
-      for (int ix = 0; ix < nx; ++ix) {
-         qh[ix] = 1.0;
-      }
+      // Initialize head slice qh to 1.0 at all grid points
+      VecOp::eqS(qh, 1.0);
 
+      // Pointwise multiply tail q-fields of all sources
       if (!isHeadEnd()) {
-         // Pointwise multiply tail q-fields of all sources
+         UTIL_CHECK(nSource() > 0);
          for (int is = 0; is < nSource(); ++is) {
             if (!source(is).isSolved()) {
                UTIL_THROW("Source not solved in computeHead");
             }
-            FieldT const& qt = source(is).tail();
-            for (int ix = 0; ix < nx; ++ix) {
-               qh[ix] *= qt[ix];
-            }
+            VecOp::mulEqV(qh, source(is).tail());
          }
       }
 
-   }
-
-   /*
-   * Compute initial head q-field for the bead model.
-   */
-   template <int D>
-   void Propagator<D>::assign(FieldT& lhs, FieldT const & rhs)
-   {
-      int nx = lhs.capacity();
-      UTIL_CHECK(rhs.capacity() == nx);
-      for (int ix = 0; ix < nx; ++ix) {
-          lhs[ix] = rhs[ix];
-      }
    }
 
    /*
@@ -153,7 +137,7 @@ namespace Rpc {
 
          // Half-bond and bead weight for first bead
          if (isHeadEnd()) {
-            assign(qFields_[1], qFields_[0]);
+            VecOp::eqV(qFields_[1], qFields_[0]);
          } else {
             block().stepHalfBondBead(qFields_[0], qFields_[1]);
          }
@@ -167,7 +151,7 @@ namespace Rpc {
 
          // Half-bond for tail slice
          if (isTailEnd()) {
-            assign(qFields_[ns_-1], qFields_[ns_-2]);
+            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
@@ -209,7 +193,7 @@ namespace Rpc {
 
          // Half-bond and bead weight for first bead
          if (isHeadEnd()) {
-            assign(qFields_[1], qFields_[0]);
+            VecOp::eqV(qFields_[1], qFields_[0]);
          } else {
             block().stepHalfBondBead(qFields_[0], qFields_[1]);
          }
@@ -223,7 +207,7 @@ namespace Rpc {
 
          // Half-bond for tail
          if (isTailEnd()) {
-            assign(qFields_[ns_-1], qFields_[ns_-2]);
+            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
@@ -243,6 +227,8 @@ namespace Rpc {
    void Propagator<D>::computeQ(double & Q) const
    {
       // Preconditions
+      UTIL_CHECK(meshPtr_);
+      UTIL_CHECK(isAllocated_);
       if (!isSolved()) {
          UTIL_THROW("Propagator is not solved.");
       }
@@ -253,27 +239,22 @@ namespace Rpc {
          UTIL_THROW("Partner propagator is not solved");
       }
       UTIL_CHECK(isHeadEnd() == partner().isTailEnd());
-      UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
+      //int nx = meshPtr_->size();
 
       Q = 0.0;
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
          FieldT const& qt = partner().q(ns_-2);
-         for (int ix = 0; ix < nx; ++ix) {
-            Q += qt[ix];
-         }
+         Q = Reduce::sum(qt); 
       } else {
          // Compute average product of head slice and partner tail slice
          FieldT const& qh = head();
          FieldT const& qt = partner().tail();
-         for (int ix = 0; ix < nx; ++ix) {
-            Q += qh[ix]*qt[ix];
-         }
+         Q = Reduce::innerProduct(qh, qt); 
       }
-      Q /= double(nx);
+      Q /= double(meshPtr_->size());
    }
 
-}
-}
+} // namespace Rpc
+} // namespace Pscf
 #endif

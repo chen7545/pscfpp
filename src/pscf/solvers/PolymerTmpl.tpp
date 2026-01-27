@@ -138,9 +138,12 @@ namespace Pscf {
          v1Ptr = &vertex(v1Id);
          p0Ptr = &(block(bId).propagator(0));
          p1Ptr = &(block(bId).propagator(1));
+         UTIL_CHECK(v0Ptr->size() >= 1);
+         UTIL_CHECK(v1Ptr->size() >= 1);
          UTIL_CHECK(p0Ptr->nSource() == (v0Ptr->size() - 1));
          UTIL_CHECK(p1Ptr->nSource() == (v1Ptr->size() - 1));
          UTIL_CHECK(p0Ptr->isHeadEnd() == p1Ptr->isTailEnd());
+         UTIL_CHECK(p0Ptr->isTailEnd() == p1Ptr->isHeadEnd());
          UTIL_CHECK(p0Ptr->isHeadEnd() == (v0Ptr->size() == 1));
          UTIL_CHECK(p1Ptr->isHeadEnd() == (v1Ptr->size() == 1));
       }

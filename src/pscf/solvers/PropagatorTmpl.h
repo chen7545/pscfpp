@@ -139,8 +139,8 @@ namespace Pscf
       /**
       * Set flags indicating whether vertices are chain ends.
       *
-      * \param isHeadEnd  Does this propagator own the head vertex bead?
-      * \param isTailEnd  Does this propagator own the tail vertex bead?
+      * \param isHeadEnd  Is the head vertex a chain end?
+      * \param isTailEnd  Is the tail vertex a chain end?
       */
       void setEndFlags(bool isHeadEnd, bool isTailEnd);
  

@@ -12,7 +12,6 @@
 #include "Block.h"
 #include <prdc/cuda/resources.h>
 #include <pscf/mesh/Mesh.h>
-#include <util/containers/DArray.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -24,8 +23,8 @@ namespace Rpg {
    */
    template <int D>
    Propagator<D>::Propagator()
-    : blockPtr_(0),
-      meshPtr_(0),
+    : blockPtr_(nullptr),
+      meshPtr_(nullptr),
       ns_(0),
       isAllocated_(false)
    {}
@@ -35,17 +34,17 @@ namespace Rpg {
    */
    template <int D>
    Propagator<D>::~Propagator()
-   {  
-      dissociateQFields(); 
+   {
+      dissociateQFields();
 
       /*
       * The above function dissociates elements of qFields_ from memory
       * owned by qFieldsAll_. Because this destructor body is called before
       * destructors for members, this operation will occur before either
       * container is destroyed.  Strictly speaking, this is a redundant
-      * safety measure as long as qFields_ before qFieldsAll_ in the 
+      * safety measure as long as qFields_ before qFieldsAll_ in the
       * declaration of data members, because this order causes qFields_
-      * to to be destroyed before qFieldsAll_, and the destructor for 
+      * to to be destroyed before qFieldsAll_, and the destructor for
       * each element of qFields_ would also destroy the association if
       * it still existed at that point.
       */
@@ -60,13 +59,13 @@ namespace Rpg {
    * a DeviceArray<T> container that is still referred to by one or
    * more other such containers. Associations are kept track of via
    * a private ReferenceCounter owned by qFieldsAll_ (which stores
-   * the number of remaining references), and via a data pointer and 
+   * the number of remaining references), and via a data pointer and
    * CountedReference object owned by each element of qFields_ that
-   * has a pointer to the associated ReferenceCounter. For each 
+   * has a pointer to the associated ReferenceCounter. For each
    * element of qFields_, invoking the dissociate() member function
-   * nullifies the array data pointer, sets the array capacity to 
-   * zero, decrements the number of references in the associated 
-   * ReferenceCounter owned by qFieldsAll_, and nullifies the pointer 
+   * nullifies the array data pointer, sets the array capacity to
+   * zero, decrements the number of references in the associated
+   * ReferenceCounter owned by qFieldsAll_, and nullifies the pointer
    * to this ReferenceCounter.
    */
    template <int D>
@@ -98,7 +97,7 @@ namespace Rpg {
       // Set up array of associated RField<D> arrays
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
-         qFields_[i].associate(qFieldsAll_, 
+         qFields_[i].associate(qFieldsAll_,
                                i*meshSize, meshPtr_->dimensions());
       }
       isAllocated_ = true;
@@ -128,7 +127,7 @@ namespace Rpg {
       // Recreate associations between qFields_ and qFieldsAll_
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
-         qFields_[i].associate(qFieldsAll_, i*meshSize, 
+         qFields_[i].associate(qFieldsAll_, i*meshSize,
                                meshPtr_->dimensions());
       }
 
@@ -142,16 +141,30 @@ namespace Rpg {
    void Propagator<D>::computeHead()
    {
       UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
 
-      // Initialize head field (s=0) to 1.0 at all grid points
-      VecOp::eqS(qFields_[0], 1.0);
+      // Reference to head of this propagator
+      FieldT& qh = qFields_[0];
 
+      // Initialize head slice to 1.0 at all grid points
+      //VecOp::eqS(qFields_[0], 1.0);
+      VecOp::eqS(qh, 1.0);
+
+      if (nSource() > 0) {
+         // Pointwise multiply tail q-fields of all sources
+         for (int is = 0; is < nSource(); ++is) {
+            if (!source(is).isSolved()) {
+               UTIL_THROW("Source not solved in computeHeadThread");
+            }
+            VecOp::mulEqV(qh, source(is).tail());
+         }
+      }
+
+      #if 0
       // Multiply head q-field by tail q-fields of all sources
       if (nSource() > 0) {
          DArray<DeviceArray<cudaReal> const *> tails;
          tails.allocate(nSource()+1);
-         tails[0] = &qFields_[0]; 
+         tails[0] = &qFields_[0];
          for (int is = 0; is < nSource(); ++is) {
             if (!source(is).isSolved()) {
                UTIL_THROW("Source not solved in computeHeadThread");
@@ -160,6 +173,8 @@ namespace Rpg {
          }
          VecOp::mulVMany(qFields_[0], tails);
       }
+      #endif
+
    }
 
    /*
@@ -170,7 +185,7 @@ namespace Rpg {
    {
       UTIL_CHECK(blockPtr_);
       UTIL_CHECK(isAllocated());
-      
+
       // Initialize head, starting with product of source propagators
       computeHead();
 
@@ -209,7 +224,6 @@ namespace Rpg {
          // This should be impossible
          UTIL_THROW("Unexpected PolymerModel type");
       }
-
       setIsSolved(true);
    }
 
@@ -299,4 +313,3 @@ namespace Rpg {
 }
 }
 #endif
-

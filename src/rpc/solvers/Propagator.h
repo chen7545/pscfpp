@@ -9,8 +9,9 @@
 */
 
 #include <pscf/solvers/PropagatorTmpl.h> // base class template
-#include <prdc/cpu/RField.h>             // member template
-#include <util/containers/DArray.h>      // member template
+#include <prdc/cpu/RField.h>             // member 
+#include <util/containers/DArray.h>      // member
+
 
 // Forward declarations
 namespace Pscf {
@@ -59,12 +60,12 @@ namespace Rpc {
       // Public typename aliases
 
       /**
-      * Base class (partial template specialization).
+      * Direct (parent) base class.
       */
-      using Base = PropagatorTmpl< Propagator<D> >;
+      using PropagatorTmpT = PropagatorTmpl< Propagator<D> >;
 
       /**
-      * Field type (function of position, defined on a r-space grid).
+      * Field type (function of position, defined on an r-space grid).
       */
       using FieldT = RField<D>;
 
@@ -83,7 +84,7 @@ namespace Rpc {
       /**
       * Associate this propagator with a block.
       *
-      * \param block associated Block object.
+      * \param block associated Block object
       */
       void setBlock(Block<D>& block);
 
@@ -110,7 +111,7 @@ namespace Rpc {
       * occur during some parameter sweeps. See docs for allocate and ns.
       *
       * An Exception is thrown if the propagator has not been previously
-      * allocated, or if the parameter ns is equal to the current value.
+      * allocated, or if it is allocated but the value of ns is unchanged.
       *
       * \param ns  number of slices (including end points)
       */
@@ -139,7 +140,7 @@ namespace Rpc {
       void solve(FieldT const & head);
 
       /**
-      * Compute and return partition function for the polymer.
+      * Compute and return partition function for the polymer molecule.
       *
       * This function computes the partition function Q for the molecule
       * as a spatial average of the pointwise product of the initial/head
@@ -150,19 +151,19 @@ namespace Rpc {
       void computeQ(double & Q) const;
 
       /**
-      * Return q-field at specified step.
+      * Return q-field at a specified step.
       *
-      * \param i step index, 0 <= i < ns
+      * \param i  step index, 0 <= i < ns
       */
       const FieldT& q(int i) const;
 
       /**
-      * Return q-field at beginning of the block (initial condition).
+      * Return q-field at the initial (head) vertex.
       */
       const FieldT& head() const;
 
       /**
-      * Return q-field at the end of the block.
+      * Return q-field at the terminal (tail) vertex.
       *
       * This function throws an Exception if invoked while the bead model
       * is in use (i.e., if PolymerModel::isThread() == false) and the tail
@@ -194,14 +195,14 @@ namespace Rpc {
 
       // Inherited public members with non-dependent names
 
-      using Base::nSource;
-      using Base::source;
-      using Base::partner;
-      using Base::setIsSolved;
-      using Base::isSolved;
-      using Base::hasPartner;
-      using Base::isHeadEnd;
-      using Base::isTailEnd;
+      using PropagatorTmpT::nSource;
+      using PropagatorTmpT::source;
+      using PropagatorTmpT::partner;
+      using PropagatorTmpT::setIsSolved;
+      using PropagatorTmpT::isSolved;
+      using PropagatorTmpT::hasPartner;
+      using PropagatorTmpT::isHeadEnd;
+      using PropagatorTmpT::isTailEnd;
 
    private:
 
@@ -223,19 +224,17 @@ namespace Rpc {
       /// Is this propagator allocated?
       bool isAllocated_;
 
-      /**
-      * Compute initial q-field at head.
-      *
-      * In either model, the head slice of each propagator is the product
-      * of tail slices for incoming propagators from other bonds that
-      * terminate at the head vertex.
-      */
-      void computeHead();
+      // Private member function
 
       /**
-      * Assign one slice to another (RHS = LHS).
+      * Compute initial q-field at the head vertex.
+      *
+      * In either the thread or bead model, the head slice of each 
+      * propagator is the product of tail slices for incoming propagators 
+      * from other bonds that terminate at the head vertex, or 1 for a
+      * chain end.
       */
-      void assign(FieldT& lhs, FieldT const & rhs);
+      void computeHead();
 
    };
 
@@ -244,18 +243,17 @@ namespace Rpc {
    /*
    * Return q-field at beginning of block.
    */
-   template <int D>
-   inline
+   template <int D> inline
    typename Propagator<D>::FieldT const& Propagator<D>::head() const
    {
       UTIL_CHECK(isSolved());
-      return qFields_[0]; }
+      return qFields_[0]; 
+   }
 
    /*
    * Return q-field at end of block.
    */
-   template <int D>
-   inline
+   template <int D> inline
    typename Propagator<D>::FieldT const& Propagator<D>::tail() const
    {
       UTIL_CHECK(isSolved());
@@ -266,8 +264,7 @@ namespace Rpc {
    /*
    * Return q-field at specified step.
    */
-   template <int D>
-   inline
+   template <int D> inline
    typename Propagator<D>::FieldT const& Propagator<D>::q(int i) const
    {
       UTIL_CHECK(isSolved());
@@ -277,8 +274,7 @@ namespace Rpc {
    /*
    * Get the associated Block object by const reference.
    */
-   template <int D>
-   inline
+   template <int D> inline
    Block<D> const & Propagator<D>::block() const
    {
       UTIL_ASSERT(blockPtr_);
@@ -288,19 +284,22 @@ namespace Rpc {
    /*
    * Get the number of counter grid points.
    */
-   template <int D>
-   inline int Propagator<D>::ns() const
+   template <int D> inline 
+   int Propagator<D>::ns() const
    {  return ns_; }
 
-   template <int D>
-   inline bool Propagator<D>::isAllocated() const
+   /*
+   * Has memory been allocated for this propagator?
+   */
+   template <int D> inline 
+   bool Propagator<D>::isAllocated() const
    {  return isAllocated_; }
 
    /*
    * Associate this propagator with a unique block.
    */
-   template <int D>
-   inline void Propagator<D>::setBlock(Block<D>& block)
+   template <int D> inline 
+   void Propagator<D>::setBlock(Block<D>& block)
    {  blockPtr_ = &block; }
 
    // Explicit instantiation declarations

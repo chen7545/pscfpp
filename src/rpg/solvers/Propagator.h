@@ -9,11 +9,9 @@
 */
 
 #include <pscf/solvers/PropagatorTmpl.h> // base class template
-
 #include <prdc/cuda/RField.h>            // member
 #include <pscf/cuda/DeviceArray.h>       // member
-#include <util/containers/DArray.h>      // member array
-
+#include <util/containers/DArray.h>      // member
 
 // Forward declarations
 namespace Pscf {
@@ -48,8 +46,8 @@ namespace Rpg {
    * These quantities are set and stored by the block because their values
    * are the same for the two propagators owned by each block, but may be
    * different for different blocks. The algorithm used by a Propagator
-   * to solve the the MDE repeatedly calls the step functions provided
-   * by the parent Block.
+   * to solve the MDE repeatedly calls the step functions provided by the
+   * parent Block.
    *
    * \ingroup Rpg_Solver_Module
    */
@@ -62,13 +60,12 @@ namespace Rpg {
       // Public typename aliases
 
       /**
-      * Base class type (partial template specialization).
+      * Direct (parent) base class.
       */
-      using Base = PropagatorTmpl< Propagator<D> >;
-
+      using PropagatorTmplT = PropagatorTmpl< Propagator<D> >;
 
       /**
-      * Field type (function of position, defined on real space grid).
+      * Field type (function of position, defined on an r-space grid).
       */
       using FieldT = RField<D>;
 
@@ -87,7 +84,7 @@ namespace Rpg {
       /**
       * Associate this propagator with a block.
       *
-      * \param block associated Block object.
+      * \param block associated Block object
       */
       void setBlock(Block<D>& block);
 
@@ -102,8 +99,8 @@ namespace Rpg {
       *
       * An Exception is thrown if the propagator is already allocated.
       *
-      * \param ns number of points along chain contour
-      * \param mesh spatial discretization mesh
+      * \param ns  number of points along chain contour
+      * \param mesh  spatial discretization mesh
       */
       void allocate(int ns, const Mesh<D>& mesh);
 
@@ -113,8 +110,8 @@ namespace Rpg {
       * This function is used when the value of ns is changed, which can
       * occur during some parameter sweeps. See docs for allocate and ns.
       *
-      * An Exceptions is thrown if the propagator has not been previously
-      * allocated.
+      * An Exception is thrown if the propagator has not been previously
+      * allocated, or if it is allocated but the value of ns is unchanged.
       *
       * \param ns number of slices (including end points at vertices)
       */
@@ -138,35 +135,35 @@ namespace Rpg {
       * block with a specified initial condition, which is given by the
       * function parameter "head".
       *
-      * \param head initial condition of q-field at head of block
+      * \param head  initial condition of q-field at head of block
       */
       void solve(RField<D> const & head);
 
       /**
-      * Compute and return partition function for the molecule.
+      * Compute and return partition function for the polymer molecule.
       *
       * This function computes the partition function Q for the molecule
       * as a spatial average of the pointwise product of the initial/head
       * slice for this propagator and final/tail slice of its partner.
       *
-      * \param Q output value, spatial average of q*q^{+} at head
+      * \param Q  output value, spatial average of q*q^{+} at head
       */
       void computeQ(double & Q);
 
       /**
-      * Return q-field at specified slice.
+      * Return q-field at a specified slice.
       *
-      * \param i step index
+      * \param i  step index, 0 <= i < ns
       */
       RField<D> const & q(int i) const;
 
       /**
-      * Return q-field at initial (head) vertex.
+      * Return q-field at the initial (head) vertex.
       */
       RField<D> const & head();
 
       /**
-      * Return q-field at terminal (tail) vertex.
+      * Return q-field at the terminal (tail) vertex.
       *
       * This function throws an Exception if invoked while the bead model
       * is in use (i.e., if PolymerModel::isThread(() == false) and the tail
@@ -194,7 +191,7 @@ namespace Rpg {
       * Get the number of values of s (or slices), including head and tail.
       *
       * The value of ns is the number of values of s at which q(r,s) is
-      * calculated, including the ned values at the terminating vertices
+      * calculated, including the end values at the terminating vertices
       * (the head and tail). In the bead model, this is two more than the
       * number of beads in the block. In the thread model, this is one
       * more than the number length/ds of contour length steps.
@@ -208,14 +205,14 @@ namespace Rpg {
 
       // Inherited public members with non-dependent names
 
-      using Base::nSource;
-      using Base::source;
-      using Base::partner;
-      using Base::setIsSolved;
-      using Base::isSolved;
-      using Base::hasPartner;
-      using Base::isHeadEnd;
-      using Base::isTailEnd;
+      using PropagatorTmplT::nSource;
+      using PropagatorTmplT::source;
+      using PropagatorTmplT::partner;
+      using PropagatorTmplT::setIsSolved;
+      using PropagatorTmplT::isSolved;
+      using PropagatorTmplT::hasPartner;
+      using PropagatorTmplT::isHeadEnd;
+      using PropagatorTmplT::isTailEnd;
 
    private:
 
@@ -236,7 +233,7 @@ namespace Rpg {
       * corresponds to a single contour value. There are ns_ of such
       * slices, which is the capacity of the outer DArray.
       *
-      * The qFields_ container should appear after qFieldsAll_ in the
+      * The qFields_ container must appear after qFieldsAll_ in the
       * declaration of member variables to guarantee that all elements of
       * qFields_ are destroyed before the qFieldsAll_ container that owns
       * the data. The destructor for each RField<D> element will delete
@@ -259,11 +256,12 @@ namespace Rpg {
       // Private member functions
 
       /**
-      * Compute initial q-field at head.
+      * Compute initial q-field at the head vertex.
       *
-      * In either the thread or bead model, the head slice of each 
-      * propagator is the product of tail slices for incoming propagators 
-      * from other bonds that terminate at the head vertex.
+      * In either the thread or bead model, the head slice of each
+      * propagator is the product of tail slices for incoming propagators
+      * from other bonds that terminate at the head vertex, or 1 for a
+      * chain end.
       */
       void computeHead();
 
@@ -298,7 +296,7 @@ namespace Rpg {
    }
 
    /*
-   * Return const q-field at specified step by reference.
+   * Return the q-field at specified step by const reference.
    */
    template <int D> inline
    RField<D> const & Propagator<D>::q(int i) const
@@ -318,7 +316,7 @@ namespace Rpg {
    }
 
    /*
-   * Get the associated Block object (non-const reference)
+   * Get the associated Block object (non-const reference).
    */
    template <int D> inline
    Block<D>& Propagator<D>::block()
@@ -328,7 +326,7 @@ namespace Rpg {
    }
 
    /*
-   * Get the associated Block object (const reference)
+   * Get the associated Block object (const reference).
    */
    template <int D> inline
    Block<D> const & Propagator<D>::block() const
@@ -344,12 +342,15 @@ namespace Rpg {
    int Propagator<D>::ns() const
    {  return ns_; }
 
+   /*
+   * Has memory been allocated for this propagator? 
+   */
    template <int D> inline
    bool Propagator<D>::isAllocated() const
    {  return isAllocated_; }
 
    /*
-   * Associate this propagator with a block and direction
+   * Associate this propagator with a block and direction.
    */
    template <int D> inline
    void Propagator<D>::setBlock(Block<D>& block)

@@ -102,6 +102,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(eq(block.ds(), 0.02));
@@ -131,9 +135,12 @@ public:
       waveList.allocate(mesh, unitCell);
 
       block.associate(mesh, fft, unitCell, waveList);
-
       double ds = 0.26;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(eq(block.ds(), 0.25));
@@ -169,6 +176,11 @@ public:
       double ds = 0.3;
       block.allocate(ds);
 
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
+
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(block.ns() == 7);
       TEST_ASSERT(eq(block.ds(), 1.0/3.0));
@@ -200,6 +212,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 4.0));
 
@@ -238,6 +254,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 3.0));
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
@@ -279,6 +299,10 @@ public:
       double ds = 0.5;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 3.0));
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
@@ -319,6 +343,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 3.0));
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
@@ -360,6 +388,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       RField<1> w;
@@ -535,6 +567,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 3.0));
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
@@ -624,6 +660,10 @@ public:
       double ds = 0.02;
       block.associate(mesh, fft, unitCell, waveList);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 3.0));
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
