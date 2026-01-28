@@ -107,6 +107,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(eq(block.ds(), 0.02));
@@ -142,6 +146,10 @@ public:
       // Allocate block
       double ds = 0.26;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(eq(block.ds(), 0.25));
@@ -177,6 +185,10 @@ public:
       // Allocate block
       double ds = 0.3;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(block.ns() == 7);
@@ -215,6 +227,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       int nx = mesh.size();
@@ -264,6 +280,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       int nx = mesh.size();
@@ -308,6 +328,10 @@ public:
       double ds = 0.5;
       block.associate(mesh, fft, unitCell, wavelist);
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       TEST_ASSERT(eq(unitCell.rBasis(0)[0], 3.0));
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
@@ -357,6 +381,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       int nx = mesh.size();
@@ -404,6 +432,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       int nx = mesh.size();
@@ -610,6 +642,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       int nx = mesh.size();
@@ -715,6 +751,10 @@ public:
       // Allocate block
       double ds = 0.02;
       block.allocate(ds);
+      bool isEnd0 = true;
+      bool isEnd1 = true;
+      block.propagator(0).setEndFlags(isEnd0, isEnd1);
+      block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
       int nx = mesh.size();

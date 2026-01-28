@@ -10,7 +10,8 @@
 
 #include "Propagator.h"
 #include "Block.h"
-#include <prdc/cuda/resources.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
 #include <pscf/mesh/Mesh.h>
 
 namespace Pscf {
@@ -146,34 +147,18 @@ namespace Rpg {
       FieldT& qh = qFields_[0];
 
       // Initialize head slice to 1.0 at all grid points
-      //VecOp::eqS(qFields_[0], 1.0);
       VecOp::eqS(qh, 1.0);
 
-      if (nSource() > 0) {
-         // Pointwise multiply tail q-fields of all sources
+      // Pointwise multiply tail q-fields of all sources
+      if (!isHeadEnd()) {
+         UTIL_CHECK(nSource() > 0);
          for (int is = 0; is < nSource(); ++is) {
             if (!source(is).isSolved()) {
-               UTIL_THROW("Source not solved in computeHeadThread");
+               UTIL_THROW("Source not solved in computeHead");
             }
             VecOp::mulEqV(qh, source(is).tail());
          }
       }
-
-      #if 0
-      // Multiply head q-field by tail q-fields of all sources
-      if (nSource() > 0) {
-         DArray<DeviceArray<cudaReal> const *> tails;
-         tails.allocate(nSource()+1);
-         tails[0] = &qFields_[0];
-         for (int is = 0; is < nSource(); ++is) {
-            if (!source(is).isSolved()) {
-               UTIL_THROW("Source not solved in computeHeadThread");
-            }
-            tails[is+1] = &(source(is).tail());
-         }
-         VecOp::mulVMany(qFields_[0], tails);
-      }
-      #endif
 
    }
 
@@ -215,7 +200,7 @@ namespace Rpg {
 
          // Half-bond for tail slice
          if (isTailEnd()) {
-            VecOp::eqV(qFields_[ns_-2], qFields_[ns_-2]);
+            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
@@ -263,8 +248,8 @@ namespace Rpg {
          }
 
          // Half-bond for tail slice
-         if (!isTailEnd()) {
-            VecOp::eqV(qFields_[ns_-2], qFields_[ns_-2]);
+         if (isTailEnd()) {
+            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
