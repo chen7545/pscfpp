@@ -14,9 +14,8 @@
 #include <prdc/cpu/RFieldDft.h>           // member
 #include <util/containers/FSArray.h>      // member
 
+// Forward declarations
 namespace Pscf {
-
-   // Forward declarations
    template <int D> class Mesh;
    namespace Prdc{
       template <int D> class UnitCell;
@@ -28,15 +27,6 @@ namespace Pscf {
    namespace Rpc{
       template <int D> class Propagator;
    }
-
-   // Explicit instantiation declarations for base classes
-   extern template
-   class BlockTmpl< Rpc::Propagator<1>, Prdc::Cpu::RField<1> >;
-   extern template
-   class BlockTmpl< Rpc::Propagator<2>, Prdc::Cpu::RField<2> >;
-   extern template
-   class BlockTmpl< Rpc::Propagator<3>, Prdc::Cpu::RField<3> >;
-
 }
 
 namespace Pscf {
@@ -63,14 +53,14 @@ namespace Rpc {
 
       // Public type name aliases
 
-      /// Base class.
-      using Base = BlockTmpl< Propagator<D>, RField<D> >;
+      /// Direct (parent) base class.
+      using BlockTmplT = BlockTmpl< Propagator<D>, RField<D> >;
 
       /// Propagator type (inherited).
-      using typename Base::PropagatorT;
+      using typename BlockTmplT::PropagatorT;
 
       /// Field type (inherited).
-      using typename Base::FieldT;
+      using typename BlockTmplT::FieldT;
 
       // Public member functions
 
@@ -84,6 +74,9 @@ namespace Rpc {
       */
       ~Block();
 
+      /// \name Initialization and State Mutators
+      ///@{
+     
       /**
       * Create permanent associations with related objects.
       *
@@ -94,12 +87,12 @@ namespace Rpc {
       * \param mesh  Mesh<D> object, spatial discretization meth
       * \param fft  FFT<D> object, Fast Fourier Transform
       * \param cell  UnitCell<D> object, crystallographic unit cell
-      * \param wavelist  WaveList<D>, container for wavevector properties
+      * \param waveList  WaveList<D>, container for wavevector properties
       */
       void associate(Mesh<D> const& mesh,
                      FFT<D> const& fft,
                      UnitCell<D> const& cell,
-                     WaveList<D>& wavelist);
+                     WaveList<D>& waveList);
 
       /**
       * Allocate memory and set contour step size.
@@ -166,6 +159,10 @@ namespace Rpc {
       */
       void setupSolver(RField<D> const & w);
 
+      ///@}
+      /// \name MDE Step Functions
+      ///@{
+ 
       /**
       * Compute one step of solution of MDE for the thread model.
       *
@@ -227,6 +224,10 @@ namespace Rpc {
       */
       void stepHalfBondBead(RField<D> const & qin, RField<D>& qout) const;
 
+      ///@}
+      /// \name Monomer Concentration Computation
+      ///@{
+ 
       /**
       * Compute the concentration for this block, for the thread model.
       *
@@ -278,6 +279,10 @@ namespace Rpc {
       */
       void computeConcentrationBead(double prefactor);
 
+      ///@}
+      /// \name Stress Computation
+      ///@{
+ 
       /**
       * Compute stress contribution for this block, using thread model.
       *
@@ -310,6 +315,10 @@ namespace Rpc {
       */
       double stress(int n) const;
 
+      ///@}
+      /// \name Accessors
+      ///@{
+  
       /**
       * Get contour length step size.
       */
@@ -330,29 +339,13 @@ namespace Rpc {
       */
       int ns() const;
 
-      // Inherited public member functions with non-dependent names
-
-      using Base::setKuhn;
-      using Base::propagator;
-      using Base::cField;
-      using Base::kuhn;
-
-      using Edge::setId;
-      using Edge::setVertexIds;
-      using Edge::setMonomerId;
-      using Edge::setLength;
-      using Edge::id;
-      using Edge::monomerId;
-      using Edge::vertexIds;
-      using Edge::vertexId;
-      using Edge::length;
-      using Edge::nBead;
+      // Inherited inherited functions with non-dependent names (selected)
+      using BlockTmplT::propagator;
+      using BlockTmplT::cField;
 
    private:
 
       // Private member data
-
-      // In bead model, ds=1 by definition.
 
       /// Stress arising from this block.
       FSArray<double, 6> stress_;
@@ -402,14 +395,18 @@ namespace Rpc {
       /// Number of wavevectors in wavevector mesh
       int kSize_;
 
-      /// Contour length step size (actual step size for this block)
+      /// Contour step size (actual step size for this block)
+      // In bead model, ds=1 by definition.
       double ds_;
 
-      /// Contour length step size (value input in param file)
+      /// Target contour step size for thread model (from param file)
       double dsTarget_;
 
       /// Number of contour grid points = # of contour steps + 1
       int ns_;
+
+      /// Number of unit cell parameters.
+      int nParams_;
 
       /// Have arrays been allocated ?
       bool isAllocated_;
@@ -417,28 +414,19 @@ namespace Rpc {
       /// Are expKsq_ arrays up to date ? (initialize false)
       bool hasExpKsq_;
 
-      /// Get associated UnitCell<D> as const reference.
-      UnitCell<D> const & unitCell() const
-      {  return *unitCellPtr_; }
-
-      /// Get associated WaveList<D> by const reference.
-      WaveList<D> const & wavelist() const
-      {  return *waveListPtr_; }
-
-      /// Number of unit cell parameters.
-      int nParams_;
-
       // Private member functions
 
-      /**
-      * Get associated spatial Mesh by const reference.
-      */
+      /// Get associated spatial Mesh by const reference (private).
       Mesh<D> const & mesh() const;
 
-      /**
-      * Get associated FFT object by const reference.
-      */
+      /// Get associated FFT object by const reference (private).
       FFT<D> const & fft() const;
+
+      /// Get associated UnitCell<D> as const reference (private).
+      UnitCell<D> const & unitCell() const;
+
+      /// Get associated WaveList<D> by non-const reference (private).
+      WaveList<D> & waveList();
 
       /**
       * Compute expKSq arrays.
@@ -464,7 +452,9 @@ namespace Rpc {
    inline double Block<D>::stress(int n) const
    {  return stress_[n]; }
 
-   // Get associated Mesh<D> object by const reference.
+   // Private inline member function definitions
+
+   // Get associated Mesh<D> object by const reference (private).
    template <int D>
    inline Mesh<D> const & Block<D>::mesh() const
    {
@@ -472,7 +462,7 @@ namespace Rpc {
       return *meshPtr_;
    }
 
-   // Get associated FFT<D> object by const reference.
+   // Get associated FFT<D> object by const reference (private).
    template <int D>
    inline FFT<D> const & Block<D>::fft() const
    {
@@ -480,11 +470,41 @@ namespace Rpc {
       return * fftPtr_;
    }
 
-   // Explicit instantiation declarations
-   extern template class Block<1>;
-   extern template class Block<2>;
-   extern template class Block<3>;
+   // Get associated UnitCell<D> by const reference (private).
+   template <int D>
+   UnitCell<D> const & Block<D>::unitCell() const
+   {
+      UTIL_CHECK(unitCellPtr_);
+      return *unitCellPtr_;
+   }
 
-} // R1d
-} // Pscf
+   // Get associated WaveList<D> by reference (private).
+   template <int D>
+   WaveList<D>& Block<D>::waveList()
+   {
+      UTIL_CHECK(waveListPtr_);
+      return *waveListPtr_;
+   }
+
+} // namespace R1d
+} // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+
+   // BlockTmpl base class instantiations
+   extern template
+   class BlockTmpl< Rpc::Propagator<1>, Prdc::Cpu::RField<1> >;
+   extern template
+   class BlockTmpl< Rpc::Propagator<2>, Prdc::Cpu::RField<2> >;
+   extern template
+   class BlockTmpl< Rpc::Propagator<3>, Prdc::Cpu::RField<3> >;
+
+   namespace Rpc {
+      extern template class Block<1>;
+      extern template class Block<2>;
+      extern template class Block<3>;
+   }
+
+}
 #endif

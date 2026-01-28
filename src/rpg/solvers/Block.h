@@ -18,9 +18,8 @@
 
 #include <prdc/cuda/resources.h>
 
+// Forward declarations
 namespace Pscf {
-
-   // Forward declarations
    template <int D> class Mesh;
    namespace Prdc {
       template <int D> class UnitCell;
@@ -32,15 +31,6 @@ namespace Pscf {
    namespace Rpg {
       template <int D> class Propagator;
    }
-
-   // Explicit instantiation declarations for base classes
-   extern template 
-   class BlockTmpl< Rpg::Propagator<1>, Prdc::Cuda::RField<1> >;
-   extern template 
-   class BlockTmpl< Rpg::Propagator<2>, Prdc::Cuda::RField<2> >;
-   extern template 
-   class BlockTmpl< Rpg::Propagator<3>, Prdc::Cuda::RField<3> >;
-
 }
 
 namespace Pscf {
@@ -53,7 +43,7 @@ namespace Rpg {
    /**
    * Block within a branched polymer.
    *
-   * A Block has two Propagator<D> members and a RField<D> concentraiton 
+   * A Block has two Propagator<D> members and a RField<D> concentraiton
    * field. Block indirectly derived from Edge.
    *
    * \ingroup Rpg_Solver_Module
@@ -66,14 +56,14 @@ namespace Rpg {
 
       // Public type name aliases
 
-      /// Base class.
-      using Base = BlockTmpl< Propagator<D>, RField<D> > ;
+      /// Direct (parent) base class.
+      using BlockTmplT = BlockTmpl< Propagator<D>, RField<D> > ;
 
       /// Propagator type (inherited).
-      using typename Base::PropagatorT;
+      using typename BlockTmplT::PropagatorT;
 
       /// Field type (inherited).
-      using typename Base::FieldT;
+      using typename BlockTmplT::FieldT;
 
       /// Fast Fourier Transform (FFT) type.
       using FFTT = FFT<D>;
@@ -93,6 +83,9 @@ namespace Rpg {
       */
       ~Block();
 
+      /// \name Setup (mutators)
+      ///@{
+
       /**
       * Create permanent associations with related objects.
       *
@@ -103,12 +96,12 @@ namespace Rpg {
       * \param mesh  Mesh<D> object - spatial discretization mesh
       * \param fft  FFT<D> object - Fourier transforms
       * \param cell  UnitCell<D> object - crystallographic unit cell
-      * \param wavelist  WaveList<D> object - properties of wavevectors
+      * \param waveList  WaveList<D> object - properties of wavevectors
       */
       void associate(Mesh<D> const & mesh,
                      FFT<D> const & fft,
                      UnitCell<D> const & cell,
-                     WaveList<D>& wavelist);
+                     WaveList<D>& waveList);
 
       /**
       * Allocate memory and set contour step size for thread model.
@@ -174,6 +167,10 @@ namespace Rpg {
       */
       void setupSolver(RField<D> const & w);
 
+      ///@}
+      /// \name MDE Step Functions
+      ///@{
+
       /**
       * Compute step of integration loop, from i to i+1.
       *
@@ -185,7 +182,7 @@ namespace Rpg {
       * \param qin  slice i of propagator q (input)
       * \param qout  slice i+1 of propagator q (output)
       */
-      void stepThread(RField<D> const & qin, RField<D>& qout);
+      void stepThread(RField<D> const & qin, RField<D>& qout) const;
 
       /**
       * Compute one step of solution of MDE for the bead model.
@@ -198,7 +195,7 @@ namespace Rpg {
       * \param qin  slice i of propagator q (input)
       * \param qout  slice i+1 of propagator q (output)
       */
-      void stepBead(RField<D> const & qin, RField<D>& qout);
+      void stepBead(RField<D> const & qin, RField<D>& qout) const;
 
       /**
       * Apply the exponential field operator for the bead model.
@@ -208,7 +205,7 @@ namespace Rpg {
       *
       * \param q  slice of propagator q, modified in placde
       */
-      void stepFieldBead(RField<D> & q);
+      void stepFieldBead(RField<D> & q) const;
 
       /**
       * Compute a bond operator for the bead model.
@@ -220,7 +217,7 @@ namespace Rpg {
       * \param qin  slice i of propagator q (input)
       * \param qout  slice i+1 of propagator q (output)
       */
-      void stepBondBead(RField<D> const & qin, RField<D>& qout);
+      void stepBondBead(RField<D> const & qin, RField<D>& qout) const;
 
       /**
       * Compute a half-bond operator for the bead model.
@@ -232,7 +229,11 @@ namespace Rpg {
       * \param qin  slice i of propagator q (input)
       * \param qout  slice i+1 of propagator q (output)
       */
-      void stepHalfBondBead(RField<D> const & qin, RField<D>& qout);
+      void stepHalfBondBead(RField<D> const & qin, RField<D>& qout) const;
+
+      ///@}
+      /// \name Monomer Concentration Computation
+      ///@{
 
       /**
       * Compute unnormalized concentration for block by integration.
@@ -271,25 +272,9 @@ namespace Rpg {
       */
       void computeConcentrationBead(double prefactor);
 
-      /**
-      * Compute the spatial average of the product used to compute Q.
-      *
-      * This function computes the spatial average of the product
-      * q0[i]*q1[i], where q0 and q1 and are complementary propagator
-      * slices, and i is a spatial mesh rank.
-      */
-      double averageProduct(RField<D> const& q0, RField<D> const& q1);
-
-      /**
-      * Compute the spatial average of the product used to compute Q.
-      *
-      * This computes the spatial average of the product
-      * q0[i]*q1[i]/exp(-W[i]), where q0 and q1 and are complementary
-      * propagator slices for a bead model, and i is mesh rank. This is
-      * used in the bead model for computation of Q from propagator
-      * slices associated with a bead that is owned by the propagator.
-      */
-      double averageProductBead(RField<D> const& q0, RField<D> const& q1);
+      ///@}
+      /// \name Stress Computation
+      ///@{
 
       /**
       * Compute stress contribution for this block, using thread model.
@@ -316,17 +301,11 @@ namespace Rpg {
       *
       * \param n  unit cell parameter index
       */
-      double stress(int n);
+      double stress(int n) const;
 
-      /**
-      * Return associated spatial Mesh by const reference.
-      */
-      Mesh<D> const & mesh() const;
-
-      /**
-      * Return associated FFT<D> object by const reference.
-      */
-      FFT<D> const & fft() const;
+      ///@}
+      /// \name Accessors
+      ///@{
 
       /**
       * Contour length step size.
@@ -338,23 +317,11 @@ namespace Rpg {
       */
       int ns() const;
 
-      // Functions with non-dependent names from direct base.
-      using Base::setKuhn;
-      using Base::propagator;
-      using Base::cField;
-      using Base::kuhn;
+      ///@}
 
-      // Functions with non-dependent names from Edge
-      using Edge::setId;
-      using Edge::setVertexIds;
-      using Edge::setMonomerId;
-      using Edge::setLength;
-      using Edge::id;
-      using Edge::monomerId;
-      using Edge::vertexIds;
-      using Edge::vertexId;
-      using Edge::length;
-      using Edge::nBead;
+      // Inherited functions with non-dependent names (selected)
+      using BlockTmplT::propagator;
+      using BlockTmplT::cField;
 
    private:
 
@@ -391,7 +358,7 @@ namespace Rpg {
       * allow batched FFTs to be performed on both fields simultaneously,
       * which occurs in stepThread().
       */
-      DeviceArray<cudaReal> qrPair_;
+      mutable DeviceArray<cudaReal> qrPair_;
 
       /**
       * Workspace array containing two k-grid fields, stored on the device.
@@ -400,23 +367,23 @@ namespace Rpg {
       * allow batched FFTs to be performed on both fields simultaneously,
       * which occurs in stepThread().
       */
-      DeviceArray<cudaComplex> qkPair_;
+      mutable DeviceArray<cudaComplex> qkPair_;
 
       // R-grid work space (used in productAverage)
-      RField<D> qr_;
+      mutable RField<D> qr_;
 
       // K-grid work space (used for FFT of q in stepBondBead)
-      RFieldDft<D> qk_;
+      mutable RFieldDft<D> qk_;
 
       /// Container for batched FFTs of q0 (forward) in contiguous memory
-      DeviceArray<cudaComplex> q0kBatched_;
+      mutable DeviceArray<cudaComplex> q0kBatched_;
 
       /// Container for batched FFTs of q1 (reverse) in contiguous memory
-      DeviceArray<cudaComplex> q1kBatched_;
+      mutable DeviceArray<cudaComplex> q1kBatched_;
 
       // Slices of forward and reverse propagator on a k-grid (for stress)
-      RFieldDft<D> q0k_;
-      RFieldDft<D> q1k_;
+      mutable RFieldDft<D> q0k_;
+      mutable RFieldDft<D> q1k_;
 
       /// Const pointer to associated Mesh<D> object.
       Mesh<D> const * meshPtr_;
@@ -445,25 +412,29 @@ namespace Rpg {
       /// Number of chain contour positions (= # contour steps + 1).
       int ns_;
 
+      /// Number of unit cell parameters
+      int nParams_;
+
       /// Have arrays been allocated?
       bool isAllocated_;
 
       /// Are expKsq_ arrays up to date ? (initialize false)
       bool hasExpKsq_;
 
-      /// Use batched FFTs to compute stress? (faster, but doubles memory use)
+      /// Use batched FFTs to compute stress? (faster, but 2X memory use)
       bool useBatchedFFT_;
 
-      /// Get associated UnitCell<D> by const reference.
-      UnitCell<D> const & unitCell() const
-      {  return *unitCellPtr_; }
+      /// Return associated spatial Mesh by const reference.
+      Mesh<D> const & mesh() const;
 
-      /// Get the WaveList by const reference.
-      WaveList<D> const & wavelist() const
-      {  return *waveListPtr_; }
+      /// Return associated FFT<D> object by const reference.
+      FFT<D> const & fft() const;
 
-      /// Number of unit cell parameters
-      int nParams_;
+      /// Get associated UnitCell<D> by const reference (private).
+      UnitCell<D> const & unitCell() const;
+
+      /// Get the WaveList by non-const reference (private).
+      WaveList<D> & waveList();
 
       /// Compute expKSq_ arrays.
       void computeExpKsq();
@@ -484,7 +455,7 @@ namespace Rpg {
 
    // Get derivative of free energy w/ respect to a unit cell parameter.
    template <int D>
-   inline double Block<D>::stress(int n)
+   inline double Block<D>::stress(int n) const
    {  return stress_[n]; }
 
    // Get Mesh by reference.
@@ -503,11 +474,36 @@ namespace Rpg {
       return *fftPtr_;
    }
 
-   // Explicit instantiation declarations
-   extern template class Block<1>;
-   extern template class Block<2>;
-   extern template class Block<3>;
+   // Get associated UnitCell<D> by const reference (private).
+   template <int D>
+   UnitCell<D> const & Block<D>::unitCell() const
+   {  return *unitCellPtr_; }
 
-}
+   // Get the WaveList by non-const reference (private).
+   template <int D>
+   WaveList<D> & Block<D>::waveList()
+   {  return *waveListPtr_; }
+
+} // namespace Rpg
+} // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+
+   // Declarations for base classes
+   extern template
+   class BlockTmpl< Rpg::Propagator<1>, Prdc::Cuda::RField<1> >;
+   extern template
+   class BlockTmpl< Rpg::Propagator<2>, Prdc::Cuda::RField<2> >;
+   extern template
+   class BlockTmpl< Rpg::Propagator<3>, Prdc::Cuda::RField<3> >;
+
+   namespace Rpg {
+
+      extern template class Block<1>;
+      extern template class Block<2>;
+      extern template class Block<3>;
+
+   }
 }
 #endif

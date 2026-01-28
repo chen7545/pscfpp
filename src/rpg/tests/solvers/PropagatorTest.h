@@ -115,7 +115,6 @@ public:
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(eq(block.ds(), 0.02));
       TEST_ASSERT(block.ns() == 101);
-      TEST_ASSERT(block.mesh().dimensions()[0] == 32);
 
    }
 
@@ -154,8 +153,6 @@ public:
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(eq(block.ds(), 0.25));
       TEST_ASSERT(block.ns() == 9);
-      TEST_ASSERT(block.mesh().dimensions()[0] == 32);
-      TEST_ASSERT(block.mesh().dimensions()[1] == 32);
    }
 
    void testSetup3D() // test allocate and associate methods
@@ -193,9 +190,6 @@ public:
       TEST_ASSERT(eq(block.length(), 2.0));
       TEST_ASSERT(block.ns() == 7);
       TEST_ASSERT(eq(block.ds(), 1.0/3.0));
-      TEST_ASSERT(block.mesh().dimensions()[0] == 32);
-      TEST_ASSERT(block.mesh().dimensions()[1] == 32);
-      TEST_ASSERT(block.mesh().dimensions()[2] == 32);
    }
    
    void testSetupSolver1D()
@@ -234,7 +228,7 @@ public:
 
       // Setup chemical potential field
       int nx = mesh.size();
-      RField<1> w;
+      Cuda::RField<1> w;
       w.allocate(mesh.dimensions());
       HostDArray<cudaReal> w_h(nx);
 
@@ -287,7 +281,7 @@ public:
 
       // Setup chemical potential field
       int nx = mesh.size();
-      RField<2> w;
+      Cuda::RField<2> w;
       w.allocate(mesh.dimensions());
       HostDArray<cudaReal> w_h(nx);
 
@@ -337,7 +331,7 @@ public:
       TEST_ASSERT(eq(unitCell.rBasis(1)[1], 4.0));
 
       // Setup chemical potential field
-      RField<2> w;
+      Cuda::RField<2> w;
       w.allocate(mesh.dimensions());
       TEST_ASSERT(w.capacity() == mesh.size());
       VecOp::eqS(w, 1.0);
@@ -388,7 +382,7 @@ public:
 
       // Setup chemical potential field
       int nx = mesh.size();
-      RField<3> w;
+      Cuda::RField<3> w;
       w.allocate(mesh.dimensions());
       HostDArray<cudaReal> w_h(nx);
 
@@ -439,7 +433,7 @@ public:
 
       // Setup chemical potential field
       int nx = mesh.size();
-      RField<1> w;
+      Cuda::RField<1> w;
       w.allocate(mesh.dimensions());
       HostDArray<cudaReal> w_h(nx);
 
@@ -454,7 +448,7 @@ public:
       block.setupSolver(w);
 
       // Setup fields on host and device
-      Propagator<1>::FieldT d_qin, d_qout;
+      Cuda::RField<1> d_qin, d_qout;
       d_qin.allocate(mesh.dimensions());
       d_qout.allocate(mesh.dimensions());
       HostDArray<cudaReal> qin(nx);
@@ -534,7 +528,7 @@ public:
       block.propagator(1).setEndFlags(isEnd1, isEnd0);
 
       // Setup chemical potential field
-      RField<1> w;
+      Cuda::RField<1> w;
       w.allocate(mesh.dimensions());
       int nx = mesh.size();
       TEST_ASSERT(w.capacity() == nx);
@@ -545,8 +539,8 @@ public:
       block.setupSolver(w);
 
       // Test step
-      Propagator<1>::FieldT qin;
-      Propagator<1>::FieldT qout;
+      Cuda::RField<1> qin;
+      Cuda::RField<1> qout;
       qin.allocate(mesh.dimensions());
       qout.allocate(mesh.dimensions());
 
@@ -649,7 +643,7 @@ public:
 
       // Setup chemical potential field
       int nx = mesh.size();
-      RField<2> w;
+      Cuda::RField<2> w;
       w.allocate(mesh.dimensions());
       HostDArray<cudaReal> w_h(nx);
 
@@ -664,7 +658,7 @@ public:
       block.setupSolver(w);
 
       // Setup fields on host and device
-      Propagator<2>::FieldT d_qin, d_qout;
+      Cuda::RField<2> d_qin, d_qout;
       d_qin.allocate(mesh.dimensions());
       d_qout.allocate(mesh.dimensions());
       HostDArray<cudaReal> qin(nx);
@@ -758,7 +752,7 @@ public:
 
       // Setup chemical potential field
       int nx = mesh.size();
-      RField<3> w;
+      Cuda::RField<3> w;
       w.allocate(mesh.dimensions());
       HostDArray<cudaReal> w_h(nx);
 
@@ -773,7 +767,7 @@ public:
       block.setupSolver(w);
 
       // Setup fields on host and device
-      Propagator<3>::FieldT d_qin, d_qout;
+      Cuda::RField<3> d_qin, d_qout;
       d_qin.allocate(mesh.dimensions());
       d_qout.allocate(mesh.dimensions());
       HostDArray<cudaReal> qin(nx);

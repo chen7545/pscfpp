@@ -407,8 +407,8 @@ public:
       block.setupSolver(w);
 
       // Test step
-      Propagator<1>::FieldT qin;
-      Propagator<1>::FieldT qout;
+      RField<1> qin;
+      RField<1> qout;
       qin.allocate(mesh.dimensions());
       qout.allocate(mesh.dimensions());
 
@@ -488,8 +488,8 @@ public:
       block.setupSolver(w);
 
       // Test step
-      Propagator<1>::FieldT qin;
-      Propagator<1>::FieldT qout;
+      RField<1> qin;
+      RField<1> qout;
       qin.allocate(mesh.dimensions());
       qout.allocate(mesh.dimensions());
 
@@ -590,8 +590,8 @@ public:
       block.setupSolver(w);
 
       // Test step
-      Propagator<2>::FieldT qin;
-      Propagator<2>::FieldT qout;
+      RField<2> qin;
+      RField<2> qout;
       qin.allocate(mesh.dimensions());
       qout.allocate(mesh.dimensions());
 
@@ -684,8 +684,8 @@ public:
       block.setupSolver(w);
 
       // Test step
-      Propagator<3>::FieldT qin;
-      Propagator<3>::FieldT qout;
+      RField<3> qin;
+      RField<3> qout;
       qin.allocate(mesh.dimensions());
       qout.allocate(mesh.dimensions());
 

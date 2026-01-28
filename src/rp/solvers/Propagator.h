@@ -14,24 +14,23 @@
 
 // Forward declaration
 namespace Pscf {
-   template <int D, class T> class Mesh;
+   template <int D> class Mesh;
 }
 
 namespace Pscf {
 namespace Rp {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
 
    /**
    * MDE solver for one direction of one block.
    *
-   * A fully initialized Propagator<D> has an associations with a Block
+   * A fully initialized Propagator has an associations with a Block
    * object that owns this propagator and its partner, and with a partner
-   * Propagator<D> that solves the MDE within the same block in the
+   * Propagator that solves the MDE within the same block in the
    * opposite direction. It also has an association with a Mesh<D> that
    * describes a spatial grid, and associations with zero or more source
-   * Propagator<D> objects that are used to compute an initial condition
+   * Propagator objects that are used to compute an initial condition
    * for this propagator at the head vertex.
    *
    * The associated Block stores information required to numerically
@@ -47,19 +46,11 @@ namespace Rp {
    * \ingroup Rp_Solver_Module
    */
    template <int D, class T>
-   class Propagator : public PropagatorTmpl< T::Propagator >
+   class Propagator : public PropagatorTmpl<typename T::Propagator>
    {
 
    public:
 
-      // Public typename aliases
-
-      // Direct (parent) base class.
-      using PropagatorTmplT = PropagatorTmpl< T::Propagator >;
-
-      // Types specific to program-level namespace
-      using FieldT = T::RField;
-      using BlockT = T::Block;
 
       // Member functions
 
@@ -78,7 +69,7 @@ namespace Rp {
       *
       * \param block associated Block object
       */
-      void setBlock(BlockT& block);
+      void setBlock(typename T::Block& block);
 
       /**
       * Allocate memory used by this propagator.
@@ -129,7 +120,7 @@ namespace Rp {
       *
       * \param head  initial condition of q-field at head of block
       */
-      void solve(FieldT const & head);
+      void solve(typename T::RField const & head);
 
       /**
       * Compute and return partition function for the polymer molecule.
@@ -147,12 +138,12 @@ namespace Rp {
       *
       * \param i  step index, 0 <= i < ns
       */
-      const FieldT& q(int i) const;
+      const typename T::RField& q(int i) const;
 
       /**
       * Return q-field at the initial (head) vertex.
       */
-      const FieldT& head() const;
+      const typename T::RField& head() const;
 
       /**
       * Return q-field at the terminal (tail) vertex.
@@ -162,12 +153,17 @@ namespace Rp {
       * for this propagator is a chain end (i.e., if isTailEnd() == true).
       * In this case, the tail slice is not needed, and so is not computed.
       */
-      const FieldT& tail() const;
+      const typename T::RField& tail() const;
 
       /**
       * Get the associated Block object by const reference.
       */
-      BlockT const & block() const;
+      typename T::Block const & block() const;
+
+      /**
+      * Return the associated Mesh object by const reference.
+      */
+      Mesh<D> const & mesh() const;
 
       /**
       * Get the number of values of s (or slices), including head and tail.
@@ -185,8 +181,10 @@ namespace Rp {
       */
       bool isAllocated() const;
 
-      // Inherited public members with non-dependent names
+      /// Direct (parent) base class.
+      using PropagatorTmplT = PropagatorTmpl<typename T::Propagator>;
 
+      // Inherited public members with non-dependent names
       using PropagatorTmplT::nSource;
       using PropagatorTmplT::source;
       using PropagatorTmplT::partner;
@@ -199,7 +197,7 @@ namespace Rp {
    protected:
 
       /// Array of propagator slices at different contour variable values.
-      DArray<FieldT> qFields_;
+      DArray<typename T::RField> qFields_;
 
       /// Number of slices, including head and tail slices.
       int ns_;
@@ -217,10 +215,15 @@ namespace Rp {
       */
       void computeHead();
 
+      /**
+      * Get the associated Block object by non-const reference.
+      */
+      typename T::Block& block();
+
    private:
 
       /// Pointer to the associated Block.
-      BlockT* blockPtr_;
+      typename T::Block* blockPtr_;
 
       /// Pointer to the associated Mesh.
       Mesh<D> const * meshPtr_;
@@ -233,9 +236,9 @@ namespace Rp {
    * Return q-field at beginning of block.
    */
    template <int D, class T> inline
-   typename Propagator<D,T>::FieldT const& Propagator<D,T>::head() const
+   typename T::RField const& Propagator<D,T>::head() const
    {
-      UTIL_CHECK(isSolved());
+      UTIL_CHECK(PropagatorTmplT::isSolved());
       return qFields_[0];
    }
 
@@ -243,9 +246,9 @@ namespace Rp {
    * Return q-field at end of block.
    */
    template <int D, class T> inline
-   typename Propagator<D,T>::FieldT const& Propagator<D,T>::tail() const
+   typename T::RField const& Propagator<D,T>::tail() const
    {
-      UTIL_CHECK(isSolved());
+      UTIL_CHECK(PropagatorTmplT::isSolved());
       UTIL_CHECK(PolymerModel::isThread() || !isTailEnd());
       return qFields_[ns_-1];
    }
@@ -254,9 +257,9 @@ namespace Rp {
    * Return q-field at specified step.
    */
    template <int D, class T> inline
-   typename Propagator<D,T>::FieldT const& Propagator<D,T>::q(int i) const
+   typename T::RField const& Propagator<D,T>::q(int i) const
    {
-      UTIL_CHECK(isSolved());
+      UTIL_CHECK(PropagatorTmplT::isSolved());
       return qFields_[i];
    }
 
@@ -268,6 +271,26 @@ namespace Rp {
    {
       UTIL_ASSERT(blockPtr_);
       return *blockPtr_;
+   }
+
+   /*
+   * Get the associated Block object by non-const reference.
+   */
+   template <int D, class T> inline
+   typename T::Block& Propagator<D,T>::block()
+   {
+      UTIL_ASSERT(blockPtr_);
+      return *blockPtr_;
+   }
+
+   /*
+   * Get the associated Mesh object by const reference.
+   */
+   template <int D, class T> inline
+   Mesh<D> const & Propagator<D,T>::mesh() const
+   {
+      UTIL_ASSERT(meshPtr_);
+      return *meshPtr_;
    }
 
    /*
@@ -288,7 +311,7 @@ namespace Rp {
    * Associate this propagator with a unique block.
    */
    template <int D, class T> inline
-   void Propagator<D,T>::setBlock(BlockT& block)
+   void Propagator<D,T>::setBlock(typename T::Block& block)
    {  blockPtr_ = &block; }
 
 } // namespace Rp

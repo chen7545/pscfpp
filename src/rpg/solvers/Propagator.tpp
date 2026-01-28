@@ -10,9 +10,12 @@
 
 #include "Propagator.h"
 #include "Block.h"
+#include <prdc/cuda/RField.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
 #include <pscf/mesh/Mesh.h>
+
+#include <rp/solvers/Propagator.tpp>
 
 namespace Pscf {
 namespace Rpg {
@@ -24,10 +27,7 @@ namespace Rpg {
    */
    template <int D>
    Propagator<D>::Propagator()
-    : blockPtr_(nullptr),
-      meshPtr_(nullptr),
-      ns_(0),
-      isAllocated_(false)
+    : RpPropagatorT()
    {}
 
    /*
@@ -40,17 +40,68 @@ namespace Rpg {
 
       /*
       * The above function dissociates elements of qFields_ from memory
-      * owned by qFieldsAll_. Because this destructor body is called before
-      * destructors for members, this operation will occur before either
-      * container is destroyed.  Strictly speaking, this is a redundant
-      * safety measure as long as qFields_ before qFieldsAll_ in the
-      * declaration of data members, because this order causes qFields_
-      * to to be destroyed before qFieldsAll_, and the destructor for
-      * each element of qFields_ would also destroy the association if
-      * it still existed at that point.
+      * owned by qFieldsAll_. Because this destructor body is called 
+      * before the destructors for members, disassociation will occur
+      * before either qFieldsAll_ or qFields_ is destroyed.  
       */
 
    }
+
+   /*
+   * Allocate memory used by this propagator.
+   */
+   template <int D>
+   void Propagator<D>::allocate(int ns, const Mesh<D>& mesh)
+   {
+      RpPropagatorT::allocate(ns, mesh);
+
+      const int meshSize = mesh.size();
+      IntVec<D> const & meshDimensions = mesh.dimensions();
+
+      // Allocate memory in qFieldsAll_ using value of ns
+      qFieldsAll_.allocate(ns * meshSize);
+
+      // Set up array of associated RField<D> arrays
+      qFields_.allocate(ns);
+      for (int i = 0; i < ns; ++i) {
+         qFields_[i].associate(qFieldsAll_, i*meshSize, meshDimensions);
+      }
+      isAllocated_ = true;
+
+      PropagatorTmplT::setIsSolved(false);
+   }
+
+   /*
+   * Reallocate memory used by this propagator using new ns value.
+   */
+   template <int D>
+   void Propagator<D>::reallocate(int ns)
+   {
+      RpPropagatorT::reallocate(ns);
+
+      // Deallocate memory previously used by this propagator.
+      dissociateQFields();      // dissociate, nulliify data pointers
+      qFields_.deallocate();    // destroy RField<D> objects for slices
+      qFieldsAll_.deallocate(); // destroy contiguous data block
+
+      // Store mesh properties
+      Mesh<D> const & mesh = RpPropagatorT::mesh();
+      const int meshSize = mesh.size();
+      IntVec<D> const & meshDimensions = mesh.dimensions();
+
+      // Allocate memory in qFieldsAll_ using new value of ns
+      qFieldsAll_.allocate(ns * meshSize);
+
+      // Recreate associations between qFields_ and qFieldsAll_
+      qFields_.allocate(ns);
+      for (int i = 0; i < ns; ++i) {
+         qFields_[i].associate(qFieldsAll_, i*meshSize, meshDimensions);
+      }
+
+      PropagatorTmplT::setIsSolved(false);
+   }
+
+   // Private member functions
 
    /*
    * Dissociate qFields_ from associated memory blocks in qFieldsAll_.
@@ -80,219 +131,6 @@ namespace Rpg {
             }
          }
       }
-   }
-
-   /*
-   * Allocate memory used by this propagator.
-   */
-   template <int D>
-   void Propagator<D>::allocate(int ns, const Mesh<D>& mesh)
-   {
-      ns_ = ns;
-      meshPtr_ = &mesh;
-
-      // Allocate memory in qFieldsAll_ using value of ns
-      int meshSize = meshPtr_->size();
-      qFieldsAll_.allocate(ns * meshSize);
-
-      // Set up array of associated RField<D> arrays
-      qFields_.allocate(ns);
-      for (int i = 0; i < ns; ++i) {
-         qFields_[i].associate(qFieldsAll_,
-                               i*meshSize, meshPtr_->dimensions());
-      }
-      isAllocated_ = true;
-   }
-
-   /*
-   * Reallocate memory used by this propagator using new ns value.
-   */
-   template <int D>
-   void Propagator<D>::reallocate(int ns)
-   {
-      // Preconditions
-      UTIL_CHECK(meshPtr_);
-      UTIL_CHECK(isAllocated_);
-      UTIL_CHECK(ns_ != ns);
-      ns_ = ns;
-
-      // Deallocate memory previously used by this propagator.
-      dissociateQFields();      // dissociate, nulliify data pointers
-      qFields_.deallocate();    // destroy RField<D> objects for slices
-      qFieldsAll_.deallocate(); // destroy actual propagator data block
-
-      // Allocate memory in qFieldsAll_ using new value of ns
-      int meshSize = meshPtr_->size();
-      qFieldsAll_.allocate(ns * meshSize);
-
-      // Recreate associations between qFields_ and qFieldsAll_
-      qFields_.allocate(ns);
-      for (int i = 0; i < ns; ++i) {
-         qFields_[i].associate(qFieldsAll_, i*meshSize,
-                               meshPtr_->dimensions());
-      }
-
-      setIsSolved(false);
-   }
-
-   /*
-   * Compute initial head q-field from final tail q-fields of sources.
-   */
-   template <int D>
-   void Propagator<D>::computeHead()
-   {
-      UTIL_CHECK(meshPtr_);
-
-      // Reference to head of this propagator
-      FieldT& qh = qFields_[0];
-
-      // Initialize head slice to 1.0 at all grid points
-      VecOp::eqS(qh, 1.0);
-
-      // Pointwise multiply tail q-fields of all sources
-      if (!isHeadEnd()) {
-         UTIL_CHECK(nSource() > 0);
-         for (int is = 0; is < nSource(); ++is) {
-            if (!source(is).isSolved()) {
-               UTIL_THROW("Source not solved in computeHead");
-            }
-            VecOp::mulEqV(qh, source(is).tail());
-         }
-      }
-
-   }
-
-   /*
-   * Solve the modified diffusion equation for this block.
-   */
-   template <int D>
-   void Propagator<D>::solve()
-   {
-      UTIL_CHECK(blockPtr_);
-      UTIL_CHECK(isAllocated());
-
-      // Initialize head, starting with product of source propagators
-      computeHead();
-
-      if (PolymerModel::isThread()) {
-
-         // MDE step loop for thread model
-         for (int iStep = 0; iStep < ns_ - 1; ++iStep) {
-            block().stepThread(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-      } else
-      if (PolymerModel::isBead()) {
-
-         // Half-bond and bead weight for first bead
-         if (isHeadEnd()) {
-            VecOp::eqV(qFields_[1], qFields_[0]);
-         } else {
-            block().stepHalfBondBead(qFields_[0], qFields_[1]);
-         }
-         block().stepFieldBead(qFields_[1]);
-
-         // MDE step loop for bead model (stop before tail vertex)
-         int iStep;
-         for (iStep = 1; iStep < ns_ - 2; ++iStep) {
-            block().stepBead(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-         // Half-bond for tail slice
-         if (isTailEnd()) {
-            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
-         } else {
-            block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
-         }
-
-      } else {
-         // This should be impossible
-         UTIL_THROW("Unexpected PolymerModel type");
-      }
-      setIsSolved(true);
-   }
-
-   /*
-   * Solve the modified diffusion equation with specified initial field.
-   */
-   template <int D>
-   void Propagator<D>::solve(RField<D> const & head)
-   {
-      UTIL_CHECK(isAllocated());
-
-      // Initialize head slice (index 0)
-      VecOp::eqV(qFields_[0], head);
-
-      if (PolymerModel::isThread()) {
-
-         // MDE step loop for thread model
-         for (int iStep = 0; iStep < ns_ - 1; ++iStep) {
-            block().stepThread(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-      } else
-      if (PolymerModel::isBead()) {
-
-         // Half-bond and bead weight for first bead
-         if (isHeadEnd()) {
-            VecOp::eqV(qFields_[1], qFields_[0]);
-         } else {
-            block().stepHalfBondBead(qFields_[0], qFields_[1]);
-         }
-         block().stepFieldBead(qFields_[1]);
-
-         // MDE step loop for bead model (stop before tail vertex)
-         int iStep;
-         for (iStep = 1; iStep < ns_ - 2; ++iStep) {
-            block().stepBead(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-         // Half-bond for tail slice
-         if (isTailEnd()) {
-            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
-         } else {
-            block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
-         }
-
-      } else {
-         // This should be impossible
-         UTIL_THROW("Unexpected PolymerModel type");
-      }
-      setIsSolved(true);
-   }
-
-   /*
-   * Integrate to calculate monomer concentration for this block
-   */
-   template <int D>
-   void Propagator<D>::computeQ(double & Q)
-   {
-      // Preconditions
-      UTIL_CHECK(meshPtr_);
-      UTIL_CHECK(isAllocated_);
-      if (!isSolved()) {
-         UTIL_THROW("Propagator is not solved.");
-      }
-      if (!hasPartner()) {
-         UTIL_THROW("Propagator has no partner set.");
-      }
-      if (!partner().isSolved()) {
-         UTIL_THROW("Partner propagator is not solved");
-      }
-      UTIL_CHECK(isHeadEnd() == partner().isTailEnd());
-
-      Q = 0.0;
-      if (PolymerModel::isBead() && isHeadEnd()) {
-         // Compute average of q for last bead of partner
-         RField<D> const & qt = partner().q(ns_-2);
-         Q = Reduce::sum(qt);
-      } else {
-         // Compute average product of head slice and partner tail slice
-         RField<D> const & qh = head();
-         RField<D> const & qt = partner().tail();
-         Q = Reduce::innerProduct(qh, qt);
-      }
-      Q /= double(meshPtr_->size());
    }
 
 }

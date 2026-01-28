@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include "Propagator.h"
 #include <pscf/mesh/Mesh.h>
 
 namespace Pscf {
@@ -20,10 +21,10 @@ namespace Rp {
    */
    template <int D, class T>
    Propagator<D,T>::Propagator()
-    : blockPtr_(nullptr),
-      meshPtr_(nullptr),
-      ns_(0),
+    : ns_(0),
       isAllocated_(false),
+      blockPtr_(nullptr),
+      meshPtr_(nullptr)
    {}
 
    /*
@@ -65,15 +66,16 @@ namespace Rp {
       UTIL_CHECK(meshPtr_);
 
       // Reference to head slice of this propagator
-      FieldT& qh = qFields_[0];
+      typename T::RField& qh = qFields_[0];
 
       // Initialize head slice qh to 1.0 at all grid points
       VecOp::eqS(qh, 1.0);
 
       // Pointwise multiply tail q-fields of all sources
       if (!isHeadEnd()) {
-         UTIL_CHECK(nSource() > 0);
-         for (int is = 0; is < nSource(); ++is) {
+         const int ns = nSource();
+         UTIL_CHECK(ns > 0);
+         for (int is = 0; is < ns; ++is) {
             if (!source(is).isSolved()) {
                UTIL_THROW("Source not solved in computeHead");
             }
@@ -131,29 +133,25 @@ namespace Rp {
          UTIL_THROW("Unexpected PolymerModel type");
       }
 
-      setIsSolved(true);
+      PropagatorTmplT::setIsSolved(true);
    }
 
    /*
    * Solve the MDE with a specified initial condition at the head.
    */
    template <int D, class T>
-   void Propagator<D,T>::solve(FieldT const & head)
+   void Propagator<D,T>::solve(typename T::RField const & head)
    {
       UTIL_CHECK(blockPtr_);
       UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
-      UTIL_CHECK(head.capacity() == nx);
+      UTIL_CHECK(head.capacity() == mesh().size());
 
-      // Initialize initial (head) field
-      FieldT& qh = qFields_[0];
-      for (int i = 0; i < nx; ++i) {
-         qh[i] = head[i];
-      }
+      // Initialize initial (head) slice
+      VecOp::eqV(qFields_[0], head);
 
       if (PolymerModel::isThread()) {
 
-         // MDE step loop for thread model
+         // MDE integration loop for thread model
          for (int iStep = 0; iStep < ns_ - 1; ++iStep) {
             block().stepThread(qFields_[iStep], qFields_[iStep + 1]);
          }
@@ -187,7 +185,7 @@ namespace Rp {
          UTIL_THROW("Unexpected PolymerModel type");
       }
 
-      setIsSolved(true);
+      PropagatorTmplT::setIsSolved(true);
    }
 
    /*
@@ -209,20 +207,16 @@ namespace Rp {
          UTIL_THROW("Partner propagator is not solved");
       }
       UTIL_CHECK(isHeadEnd() == partner().isTailEnd());
-      //int nx = meshPtr_->size();
 
       Q = 0.0;
       if (PolymerModel::isBead() && isHeadEnd()) {
          // Compute average of q for last bead of partner
-         FieldT const& qt = partner().q(ns_-2);
-         Q = Reduce::sum(qt); 
+         Q = Reduce::sum(partner().q(ns_-2)); 
       } else {
          // Compute average product of head slice and partner tail slice
-         FieldT const& qh = head();
-         FieldT const& qt = partner().tail();
-         Q = Reduce::innerProduct(qh, qt); 
+         Q = Reduce::innerProduct(head(), partner().tail()); 
       }
-      Q /= double(meshPtr_->size());
+      Q /= double(mesh().size());
    }
 
 } // namespace Rp
