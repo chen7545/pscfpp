@@ -58,12 +58,13 @@ namespace Rp {
    }
 
    /*
-   * Compute initial head q-field for the thread model.
+   * Compute initial head q-field as a product of tail slices of sources.
    */
    template <int D, class T>
    void Propagator<D,T>::computeHead()
    {
       UTIL_CHECK(meshPtr_);
+      UTIL_CHECK(isAllocated_);
 
       // Reference to head slice of this propagator
       typename T::RField& qh = qFields_[0];
@@ -71,9 +72,9 @@ namespace Rp {
       // Initialize head slice qh to 1.0 at all grid points
       VecOp::eqS(qh, 1.0);
 
-      // Pointwise multiply tail q-fields of all sources
-      if (!isHeadEnd()) {
-         const int ns = nSource();
+      // Pointwise multiply tail q-fields of all source propagators
+      if (!PropagatorTmplT::isHeadEnd()) {
+         const int ns = PropagatorTmplT::nSource();
          UTIL_CHECK(ns > 0);
          for (int is = 0; is < ns; ++is) {
             if (!source(is).isSolved()) {
@@ -87,15 +88,40 @@ namespace Rp {
 
    /*
    * Solve the modified diffusion equation for this block.
+   * 
+   * This function calls computeHead to compute the head slice as
+   * a product of tail slices from source propagators.
    */
    template <int D, class T>
    void Propagator<D,T>::solve()
    {
+      computeHead();
+      solveMde();
+   }
+
+   /*
+   * Solve the MDE with a specified initial condition at the head.
+   */
+   template <int D, class T>
+   void Propagator<D,T>::solve(typename T::RField const & head)
+   {
+      UTIL_CHECK(meshPtr_);
+      UTIL_CHECK(head.capacity() == mesh().size());
+
+      // Initialize initial (head) slice
+      VecOp::eqV(qFields_[0], head);
+
+      solveMde();
+   }
+
+   /*
+   * Solve the MDE, using stored precomputed head slice (private).
+   */
+   template <int D, class T>
+   void Propagator<D,T>::solveMde()
+   {
       UTIL_CHECK(blockPtr_);
       UTIL_CHECK(isAllocated());
-
-      // Initialize head as pointwise product of source propagators
-      computeHead();
 
       if (PolymerModel::isThread()) {
 
@@ -108,7 +134,7 @@ namespace Rp {
       if (PolymerModel::isBead()) {
 
          // Half-bond and bead weight for first bead
-         if (isHeadEnd()) {
+         if (PropagatorTmplT::isHeadEnd()) {
             VecOp::eqV(qFields_[1], qFields_[0]);
          } else {
             block().stepHalfBondBead(qFields_[0], qFields_[1]);
@@ -121,62 +147,12 @@ namespace Rp {
             block().stepBead(qFields_[iStep], qFields_[iStep + 1]);
          }
 
-         // Half-bond for tail slice
-         if (isTailEnd()) {
+         // Half-bond for tail slice, applied to slice for the last bead
+         if (PropagatorTmplT::isTailEnd()) {
+            // Don't compute tail for chain end, since it won't be needed
             VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
          } else {
-            block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
-         }
-
-      } else {
-         // This should be impossible
-         UTIL_THROW("Unexpected PolymerModel type");
-      }
-
-      PropagatorTmplT::setIsSolved(true);
-   }
-
-   /*
-   * Solve the MDE with a specified initial condition at the head.
-   */
-   template <int D, class T>
-   void Propagator<D,T>::solve(typename T::RField const & head)
-   {
-      UTIL_CHECK(blockPtr_);
-      UTIL_CHECK(meshPtr_);
-      UTIL_CHECK(head.capacity() == mesh().size());
-
-      // Initialize initial (head) slice
-      VecOp::eqV(qFields_[0], head);
-
-      if (PolymerModel::isThread()) {
-
-         // MDE integration loop for thread model
-         for (int iStep = 0; iStep < ns_ - 1; ++iStep) {
-            block().stepThread(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-      } else 
-      if (PolymerModel::isBead()) {
-
-         // Half-bond and bead weight for first bead
-         if (isHeadEnd()) {
-            VecOp::eqV(qFields_[1], qFields_[0]);
-         } else {
-            block().stepHalfBondBead(qFields_[0], qFields_[1]);
-         }
-         block().stepFieldBead(qFields_[1]);
-
-         // MDE step loop for bead model (stop before tail vertex)
-         int iStep;
-         for (iStep = 1; iStep < ns_ - 2; ++iStep) {
-            block().stepBead(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-         // Half-bond for tail
-         if (isTailEnd()) {
-            VecOp::eqV(qFields_[ns_-1], qFields_[ns_-2]);
-         } else {
+            // If not a chain end, apply a half-bond after the last bead
             block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
          }
 
@@ -197,19 +173,19 @@ namespace Rp {
       // Preconditions
       UTIL_CHECK(meshPtr_);
       UTIL_CHECK(isAllocated_);
-      if (!isSolved()) {
+      if (!PropagatorTmplT::isSolved()) {
          UTIL_THROW("Propagator is not solved.");
       }
-      if (!hasPartner()) {
+      if (!PropagatorTmplT::hasPartner()) {
          UTIL_THROW("Propagator has no partner set.");
       }
       if (!partner().isSolved()) {
          UTIL_THROW("Partner propagator is not solved");
       }
-      UTIL_CHECK(isHeadEnd() == partner().isTailEnd());
+      UTIL_CHECK(PropagatorTmplT::isHeadEnd() == partner().isTailEnd());
 
       Q = 0.0;
-      if (PolymerModel::isBead() && isHeadEnd()) {
+      if (PolymerModel::isBead() && PropagatorTmplT::isHeadEnd()) {
          // Compute average of q for last bead of partner
          Q = Reduce::sum(partner().q(ns_-2)); 
       } else {

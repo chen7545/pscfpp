@@ -184,15 +184,9 @@ namespace Rp {
       /// Direct (parent) base class.
       using PropagatorTmplT = PropagatorTmpl<typename T::Propagator>;
 
-      // Inherited public members with non-dependent names
-      using PropagatorTmplT::nSource;
+      // Inherited non-dependent members (selected, for convenience)
       using PropagatorTmplT::source;
       using PropagatorTmplT::partner;
-      using PropagatorTmplT::setIsSolved;
-      using PropagatorTmplT::isSolved;
-      using PropagatorTmplT::hasPartner;
-      using PropagatorTmplT::isHeadEnd;
-      using PropagatorTmplT::isTailEnd;
 
    protected:
 
@@ -214,6 +208,14 @@ namespace Rp {
       * chain end.
       */
       void computeHead();
+
+      /**
+      * Compute solution of modified diffusion equation (MDE).
+      *
+      * This function accesses a precomputed head slice qFields_[0]
+      * and computes the rest of the propagator.
+      */
+      void solveMde();
 
       /**
       * Get the associated Block object by non-const reference.
@@ -249,7 +251,7 @@ namespace Rp {
    typename T::RField const& Propagator<D,T>::tail() const
    {
       UTIL_CHECK(PropagatorTmplT::isSolved());
-      UTIL_CHECK(PolymerModel::isThread() || !isTailEnd());
+      UTIL_CHECK(PolymerModel::isThread() || !PropagatorTmplT::isTailEnd());
       return qFields_[ns_-1];
    }
 
