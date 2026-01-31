@@ -8,21 +8,31 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rpg/fts/simulator/Simulator.h>           // base class
-#include <rpg/fts/analyzer/AnalyzerManager.h>      // member
-#include <util/param/Factory.h>                    // member template
+#include <rpg/fts/simulator/Simulator.h>         // base class
+#include <rpg/fts/analyzer/AnalyzerManager.h>    // member
+//#include <util/param/Factory.h>                  // member template
+
+// Forward declarations
+namespace Util {
+   template <class T> class Factory;
+}
+namespace Pscf {
+   namespace Rpg {
+      template <int D> class System;
+      template <int D> class BdStep;
+      template <int D> class TrajectoryReader;
+   }
+}
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cuda;
-
-   template <int D> class BdStep;
-   template <int D> class TrajectoryReader;
 
    /**
-   * Brownian dynamics simulator.
+   * Brownian dynamics simulator for PS-FTS.
+   *
+   * \see \ref rp_BdSimulator_page (manual page)
    *
    * \ingroup Rpg_Fts_Brownian_Module
    */
@@ -45,7 +55,7 @@ namespace Rpg {
       ~BdSimulator();
 
       /**
-      * Read parameters for a MC simulation.
+      * Read parameter file block.
       *
       * \param in input parameter stream
       */
@@ -55,59 +65,55 @@ namespace Rpg {
       ///@{
 
       /**
-      * Perform a field theoretic Monte-Carlo simulation.
+      * Perform a field theoretic Brownian dynamics (BD) simulation.
       *
-      * Perform a field theoretic Monte-Carlo simulation using the
-      * partial saddle-point approximation.
+      * Perform a field theoretic BD simulation using the partial
+      * saddle-point approximation.
       *
-      * \param nStep  number of Monte-Carlo steps
+      * \param nStep  number of BD steps
       */
       void simulate(int nStep);
 
       /**
       * Read and analyze a trajectory file.
       *
-      * This function uses an instance of the TrajectoryReader class
-      * specified by the "classname" argument to read a trajectory
-      * file.
+      * This function creates an instance of the TrajectoryReader subclass
+      * specified by the "classname" argument, and uses it to read and
+      * analyze a section of a trajectory file, starting at frame number
+      * "min" and ending at frame number "max".
       *
       * \param min  start at this frame number
       * \param max  end at this frame number
-      * \param classname  name of the TrajectoryReader class to use
+      * \param classname  name of the TrajectoryReader subclass to use
       * \param filename  name of the trajectory file
       */
       virtual void analyze(int min, int max,
                            std::string classname,
                            std::string filename);
 
-      /**
-      * Output timing results
-      */
-      virtual void outputTimers(std::ostream& out) const;
-
       ///@}
       /// \name Miscellaneous
       ///@{
-      
+
       /**
-      * Does this BdSimulator have an associated BdStep?
+      * Does this BdSimulator have a BdStep object?
       */
       bool hasBdStep() const;
 
       /**
-      * Get BdStep.
+      * Get the BdStep by reference.
       */
       BdStep<D>& stepper();
 
       /**
-      * Get AnalyzerManger
+      * Get the AnalyzerManger by reference.
       */
       AnalyzerManager<D>& analyzerManager();
 
       /**
       * Get the trajectory reader factory by reference.
       */
-      Factory<TrajectoryReader<D>>& trajectoryReaderFactory();
+      Factory< TrajectoryReader<D> >& trajectoryReaderFactory();
 
       ///@}
 
@@ -143,27 +149,26 @@ namespace Rpg {
       using Simulator<D>::vecRandom;
       using Simulator<D>::hasCompressor;
       using Simulator<D>::compressor;
-      using Simulator<D>::hasRamp;
-      using Simulator<D>::ramp;
       using Simulator<D>::hasPerturbation;
       using Simulator<D>::perturbation;
+      using Simulator<D>::hasRamp;
+      using Simulator<D>::ramp;
 
    protected:
 
       // Inherited protected functions
 
-      using ParamComposite::setClassName;
       using ParamComposite::readParamComposite;
-      using ParamComposite::readParamCompositeOptional;
       using ParamComposite::readOptional;
 
       using Simulator<D>::readRandomSeed;
+      using Simulator<D>::compressorFactory;
       using Simulator<D>::readCompressor;
       using Simulator<D>::perturbationFactory;
       using Simulator<D>::readPerturbation;
       using Simulator<D>::setPerturbation;
-      using Simulator<D>::readRamp;
       using Simulator<D>::rampFactory;
+      using Simulator<D>::readRamp;
       using Simulator<D>::setRamp;
 
       // Inherited protected data members
@@ -191,24 +196,21 @@ namespace Rpg {
       BdStep<D>* bdStepPtr_;
 
       /**
-      * Pointer to a trajectory reader/writer factory.
+      * Pointer to a BdStep factory.
       */
       Factory< BdStep<D> >* bdStepFactoryPtr_;
 
       /**
-      * Pointer to a trajectory reader/writer factory.
+      * Pointer to a trajectory reader factory.
       */
       Factory< TrajectoryReader<D> >* trajectoryReaderFactoryPtr_;
-      
-      /**
-      * Seed value of random generator. 
-      */
-      long seed_;
 
-      // Private member functions
+      // Private member function
 
       /**
       * Called at the beginning of the simulation.
+      *
+      * \param nStep  number of steps planned for the simulation
       */
       void setup(int nStep);
 
@@ -217,25 +219,28 @@ namespace Rpg {
    // Inline member functions
 
    // Does this BdSimulator have a BdStep?
-   template <int D> inline 
+   template <int D> inline
    bool BdSimulator<D>::hasBdStep() const
    {  return (bool)bdStepPtr_; }
 
-   // Get the BdStep (Brownian dynamics stepper) by reference.
-   template <int D> inline 
+   // Get the BdStep.
+   template <int D> inline
    BdStep<D>& BdSimulator<D>::stepper()
-   {  return *bdStepPtr_; }
+   {
+      UTIL_CHECK(bdStepPtr_);
+      return *bdStepPtr_;
+   }
 
    // Get the analyzer manager.
-   template <int D> inline 
+   template <int D> inline
    AnalyzerManager<D>& BdSimulator<D>::analyzerManager()
    {  return analyzerManager_; }
 
-   // Get the TrajectoryReaderfactory
-   template <int D> inline 
+   // Get the TrajectoryReader factory.
+   template <int D> inline
    Factory<TrajectoryReader<D> >& BdSimulator<D>::trajectoryReaderFactory()
    {
-      UTIL_ASSERT(trajectoryReaderFactoryPtr_);
+      UTIL_CHECK(trajectoryReaderFactoryPtr_);
       return *trajectoryReaderFactoryPtr_;
    }
 

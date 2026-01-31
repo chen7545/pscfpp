@@ -10,7 +10,7 @@ linear with the simulation step counter. This is the default ramp algorithm
 for both pscf_rpc and pscf_rpg, and so may be selected by including a 
 parameter file block with either the specific label "LinearRamp" or the 
 generic label "Ramp" in the appropriate location within a
-\ref rpc_BdSimulator_page "BdSimulator" or 
+\ref rp_BdSimulator_page "BdSimulator" or 
 \ref rpc_McSimulator_page "McSimulator" parameter file block.
 
 \see 

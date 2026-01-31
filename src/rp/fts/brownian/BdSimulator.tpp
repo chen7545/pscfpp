@@ -1,5 +1,5 @@
-#ifndef RPG_BD_SIMULATOR_TPP
-#define RPG_BD_SIMULATOR_TPP
+#ifndef RP_BD_SIMULATOR_TPP
+#define RP_BD_SIMULATOR_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,51 +10,38 @@
 
 #include "BdSimulator.h"
 
-#include <rpg/fts/brownian/BdStep.h>
-#include <rpg/fts/brownian/BdStepFactory.h>
-#include <rpg/fts/compressor/Compressor.h>
-#include <rpg/fts/analyzer/AnalyzerFactory.h>
-#include <rpg/fts/trajectory/TrajectoryReader.h>
-#include <rpg/fts/trajectory/TrajectoryReaderFactory.h>
-#include <rpg/fts/perturbation/PerturbationFactory.h>
-#include <rpg/fts/perturbation/Perturbation.h>
-#include <rpg/fts/ramp/RampFactory.h>
-#include <rpg/fts/ramp/Ramp.h>
-#include <rpg/system/System.h>
-
-#include <pscf/cuda/CudaVecRandom.h>
 #include <util/param/Factory.h>
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   BdSimulator<D>::BdSimulator(System<D>& system)
-    : Simulator<D>(system),
+   template <int D, class T>
+   BdSimulator<D,T>::BdSimulator(typename T::System& system)
+    : SimulatorT(system),
       analyzerManager_(*this, system),
       bdStepPtr_(nullptr),
       bdStepFactoryPtr_(nullptr),
       trajectoryReaderFactoryPtr_(nullptr)
    {
       ParamComposite::setClassName("BdSimulator");
-      bdStepFactoryPtr_ = new BdStepFactory<D>(*this);
+      bdStepFactoryPtr_ = new typename T::BdStepFactory(*this);
       trajectoryReaderFactoryPtr_
-             = new TrajectoryReaderFactory<D>(system);
+             = new typename T::TrajectoryReaderFactory(system);
    }
 
    /*
    * Destructor.
    */
-   template <int D>
-   BdSimulator<D>::~BdSimulator()
+   template <int D, class T>
+   BdSimulator<D,T>::~BdSimulator()
    {
       if (bdStepFactoryPtr_) {
          delete bdStepFactoryPtr_;
@@ -70,8 +57,8 @@ namespace Rpg {
    /*
    * Read parameter file block for a BD simulator.
    */
-   template <int D>
-   void BdSimulator<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void BdSimulator<D,T>::readParameters(std::istream &in)
    {
       // Optionally read random seed, initialize random number generators
       readRandomSeed(in);
@@ -85,7 +72,8 @@ namespace Rpg {
          bdStepFactoryPtr_->readObjectOptional(in, *this,
                                                className, isEnd);
       if (!hasBdStep() && ParamComponent::echo()) {
-         Log::file() << ParamComponent::indent() << "  BdStep{ [absent] }\n";
+         Log::file() << ParamComponent::indent() 
+                     << "  BdStep{ [absent] }\n";
       }
 
       // Compressor is required if a BdStep exists
@@ -106,7 +94,7 @@ namespace Rpg {
       }
 
       // Optionally read an AnalyzerManager block
-      Analyzer<D>::baseInterval = 0; // default value
+      typename T::Analyzer::baseInterval = 0; // default value
       ParamComposite::readParamCompositeOptional(in, analyzerManager_);
 
       // Figure out what variables need to be saved in stored state_
@@ -114,23 +102,23 @@ namespace Rpg {
       state_.needsDc = false;
       state_.needsHamiltonian = false;
       if (hasBdStep()) {
-         if (stepper().needsCc()){
+         if (bdStep().needsCc()){
             state_.needsCc = true;
          }
-         if (stepper().needsDc()){
+         if (bdStep().needsDc()){
             state_.needsDc = true;
          }
       }
 
-      // Allocate memory for Simulator<D> base class
-      Simulator<D>::allocate();
+      // Allocate memory for SimulatorT base class
+      SimulatorT::allocate();
    }
 
    /*
    * Setup before main loop of a simulate or analyze command.
    */
-   template <int D>
-   void BdSimulator<D>::setup(int nStep)
+   template <int D, class T>
+   void BdSimulator<D,T>::setup(int nStep)
    {
       UTIL_CHECK(system().w().hasData());
 
@@ -161,7 +149,7 @@ namespace Rpg {
       computeHamiltonian();
 
       if (hasBdStep()) {
-         stepper().setup();
+         bdStep().setup();
       }
 
       if (analyzerManager_.size() > 0){
@@ -173,8 +161,8 @@ namespace Rpg {
    /*
    * Perform a field theoretic MC simulation of nStep steps.
    */
-   template <int D>
-   void BdSimulator<D>::simulate(int nStep)
+   template <int D, class T>
+   void BdSimulator<D,T>::simulate(int nStep)
    {
       UTIL_CHECK(hasBdStep());
       UTIL_CHECK(hasCompressor());
@@ -186,6 +174,7 @@ namespace Rpg {
       if (hasRamp()) {
          ramp().setParameters(iStep_);
       }
+      int analyzerBaseInterval = typename T::Analyzer::baseInterval;
 
       // Start timer
       Timer timer;
@@ -204,7 +193,7 @@ namespace Rpg {
 
          // Take a step (modifies W fields, then applies compressor)
          bool converged;
-         converged = stepper().step();
+         converged = bdStep().step();
 
          // Accept step iff compressor converged
          if (converged){
@@ -216,9 +205,9 @@ namespace Rpg {
 
             // Analysis (if any)
             analyzerTimer.start();
-            if (Analyzer<D>::baseInterval != 0) {
+            if (analyzerBaseInterval != 0) {
                if (analyzerManager_.size() > 0) {
-                  if (iStep_ % Analyzer<D>::baseInterval == 0) {
+                  if (iStep_ % analyzerBaseInterval == 0) {
                      analyzerManager_.sample(iStep_);
                   }
                }
@@ -236,7 +225,7 @@ namespace Rpg {
       double analyzerTime = analyzerTimer.time();
 
       // Output final analyzer results
-      if (Analyzer<D>::baseInterval > 0){
+      if (analyzerBaseInterval != 0){
          analyzerManager_.output();
       }
 
@@ -272,20 +261,20 @@ namespace Rpg {
    /*
    * Open, read and analyze a trajectory file
    */
-   template <int D>
-   void BdSimulator<D>::analyze(int min,
-                                int max,
-                                std::string classname,
-                                std::string filename)
+   template <int D, class T>
+   void BdSimulator<D,T>::analyze(int min,
+                                  int max,
+                                  std::string classname,
+                                  std::string filename)
    {
       // Preconditions
       UTIL_CHECK(min >= 0);
       UTIL_CHECK(max >= min);
-      UTIL_CHECK(Analyzer<D>::baseInterval > 0);
+      UTIL_CHECK(typename T::Analyzer::baseInterval > 0);
       UTIL_CHECK(analyzerManager_.size() > 0);
 
       // Construct TrajectoryReader
-      TrajectoryReader<D>* trajectoryReaderPtr;
+      typename T::TrajectoryReader* trajectoryReaderPtr;
       trajectoryReaderPtr = trajectoryReaderFactory().factory(classname);
       if (!trajectoryReaderPtr) {
          std::string message;

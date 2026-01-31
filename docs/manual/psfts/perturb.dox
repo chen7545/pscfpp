@@ -33,7 +33,7 @@ added by including a Perturbation subblock of the BdSimulator or
 McSimulator block of a parameter file. If present, the Perturbation
 block must appear immediately after the Compressor block (if any).
 Full descriptions of formats of for the BdSimulator and McSimulator
-parameter file blocks are given \ref rpc_BdSimulator_page "here"
+parameter file blocks are given \ref rp_BdSimulator_page "here"
 and \ref rpc_McSimulator_page "here", respectively.
 
 The PerturbationDerivative analyzer class is designed to enable

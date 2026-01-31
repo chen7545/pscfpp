@@ -29,7 +29,7 @@ McSimulator{
 Here, as elsewhere in this manual, the suffixes # and * after a parameter
 file sub-block name denote selectable and optional elements, respectively. 
 The only difference between the format of an McSimulator block and that
-of a \ref rpc_BdSimulator_page "BdSimulator" block is the presence of an 
+of a \ref rp_BdSimulator_page "BdSimulator" block is the presence of an 
 McMoveManager sub-block for an McSimulator where a BdStep sub-block would 
 appear for a BdSimulator.
 

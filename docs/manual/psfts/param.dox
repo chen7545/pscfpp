@@ -293,7 +293,7 @@ part of the development of PS-FTS in PSCF, which can also be selected
 using the specific class label LrAmCompressor.  We recommend these two
 algorithms as the current methods of choice for almost all BD simulations.
 
-See also: \ref rpc_BdSimulator_page "BdSimulator parameter file format"
+See also: \ref rp_BdSimulator_page "BdSimulator parameter file format"
 
 <b> BD Step Algorithms: </b>
 
@@ -527,7 +527,7 @@ documentation, was given in earlier the discussion of
 \section psfts_param_seealso_sec See Also:
 
 <ul>
-<li> \subpage rpc_BdSimulator_page "BdSimulator"  </li>
+<li> \subpage rp_BdSimulator_page "BdSimulator"  </li>
 <li> \subpage rpc_McSimulator_page "McSimulator" </li>
 <li> \subpage rpc_AnalyzerManager_page "AnalyzerManager" </li>
 </ul>

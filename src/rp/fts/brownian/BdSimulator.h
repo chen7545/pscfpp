@@ -1,5 +1,5 @@
-#ifndef RPC_BD_SIMULATOR_H
-#define RPC_BD_SIMULATOR_H
+#ifndef RP_BD_SIMULATOR_H
+#define RP_BD_SIMULATOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,24 +8,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rpc/fts/simulator/Simulator.h>         // base class
-#include <rpc/fts/analyzer/AnalyzerManager.h>    // member
-//#include <util/param/Factory.h>                // member template
+#include <rp/fts/simulator/Simulator.h>          // base class
 
 // Forward declarations
 namespace Util {
    template <class T> class Factory;
 }
-namespace Pscf {
-   namespace Rpc {
-      template <int D> class System;
-      template <int D> class BdStep;
-      template <int D> class TrajectoryReader;
-   }
-}
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
@@ -34,10 +25,10 @@ namespace Rpc {
    *
    * \see \ref rp_BdSimulator_page (manual page)
    *
-   * \ingroup Rpc_Fts_Brownian_Module
+   * \ingroup Rp_Fts_Brownian_Module
    */
-   template <int D>
-   class BdSimulator : public Simulator<D>
+   template <int D, class T>
+   class BdSimulator : public Simulator<D, T>
    {
 
    public:
@@ -47,7 +38,7 @@ namespace Rpc {
       *
       * \param system parent System
       */
-      BdSimulator(System<D>& system);
+      BdSimulator(typename T::System& system);
 
       /**
       * Destructor.
@@ -103,56 +94,58 @@ namespace Rpc {
       /**
       * Get the BdStep by reference.
       */
-      BdStep<D>& bdStep();
+      typename T::BdStep& bdStep();
 
       /**
       * Get the AnalyzerManager by reference.
       */
-      AnalyzerManager<D>& analyzerManager();
+      typename T::AnalyzerManager& analyzerManager();
 
       /**
       * Get the trajectory reader factory by reference.
       */
-      Factory< TrajectoryReader<D> >& trajectoryReaderFactory();
+      Factory< typename T::TrajectoryReader >& trajectoryReaderFactory();
 
       ///@}
 
+      using SimulatorT = Simulator<D,T>;
+
       // Inherited public functions
 
-      using Simulator<D>::analyzeChi;
-      using Simulator<D>::chiEval;
-      using Simulator<D>::chiEvecs;
-      using Simulator<D>::computeWc;
-      using Simulator<D>::computeCc;
-      using Simulator<D>::computeDc;
-      using Simulator<D>::wc;
-      using Simulator<D>::cc;
-      using Simulator<D>::dc;
-      using Simulator<D>::hasWc;
-      using Simulator<D>::hasCc;
-      using Simulator<D>::hasDc;
+      using SimulatorT::analyzeChi;
+      using SimulatorT::chiEval;
+      using SimulatorT::chiEvecs;
+      using SimulatorT::computeWc;
+      using SimulatorT::computeCc;
+      using SimulatorT::computeDc;
+      using SimulatorT::wc;
+      using SimulatorT::cc;
+      using SimulatorT::dc;
+      using SimulatorT::hasWc;
+      using SimulatorT::hasCc;
+      using SimulatorT::hasDc;
 
-      using Simulator<D>::clearData;
-      using Simulator<D>::computeHamiltonian;
-      using Simulator<D>::hasHamiltonian;
-      using Simulator<D>::hamiltonian;
-      using Simulator<D>::idealHamiltonian;
-      using Simulator<D>::fieldHamiltonian;
-      using Simulator<D>::perturbationHamiltonian;
+      using SimulatorT::clearData;
+      using SimulatorT::computeHamiltonian;
+      using SimulatorT::hasHamiltonian;
+      using SimulatorT::hamiltonian;
+      using SimulatorT::idealHamiltonian;
+      using SimulatorT::fieldHamiltonian;
+      using SimulatorT::perturbationHamiltonian;
 
-      using Simulator<D>::saveState;
-      using Simulator<D>::restoreState;
-      using Simulator<D>::clearState;
-      using Simulator<D>::clearTimers;
+      using SimulatorT::saveState;
+      using SimulatorT::restoreState;
+      using SimulatorT::clearState;
+      using SimulatorT::clearTimers;
 
-      using Simulator<D>::system;
-      using Simulator<D>::random;
-      using Simulator<D>::hasCompressor;
-      using Simulator<D>::compressor;
-      using Simulator<D>::hasPerturbation;
-      using Simulator<D>::perturbation;
-      using Simulator<D>::hasRamp;
-      using Simulator<D>::ramp;
+      using SimulatorT::system;
+      using SimulatorT::random;
+      using SimulatorT::hasCompressor;
+      using SimulatorT::compressor;
+      using SimulatorT::hasPerturbation;
+      using SimulatorT::perturbation;
+      using SimulatorT::hasRamp;
+      using SimulatorT::ramp;
 
    protected:
 
@@ -161,49 +154,49 @@ namespace Rpc {
       using ParamComposite::readParamComposite;
       using ParamComposite::readOptional;
 
-      using Simulator<D>::readRandomSeed;
-      using Simulator<D>::compressorFactory;
-      using Simulator<D>::readCompressor;
-      using Simulator<D>::perturbationFactory;
-      using Simulator<D>::readPerturbation;
-      using Simulator<D>::setPerturbation;
-      using Simulator<D>::rampFactory;
-      using Simulator<D>::readRamp;
-      using Simulator<D>::setRamp;
+      using SimulatorT::readRandomSeed;
+      using SimulatorT::compressorFactory;
+      using SimulatorT::readCompressor;
+      using SimulatorT::perturbationFactory;
+      using SimulatorT::readPerturbation;
+      using SimulatorT::setPerturbation;
+      using SimulatorT::rampFactory;
+      using SimulatorT::readRamp;
+      using SimulatorT::setRamp;
 
       // Inherited protected data members
 
-      using Simulator<D>::wc_;
-      using Simulator<D>::hasWc_;
-      using Simulator<D>::hamiltonian_;
-      using Simulator<D>::idealHamiltonian_;
-      using Simulator<D>::fieldHamiltonian_;
-      using Simulator<D>::hasHamiltonian_;
-      using Simulator<D>::iStep_;
-      using Simulator<D>::iTotalStep_;
-      using Simulator<D>::state_;
+      using SimulatorT::wc_;
+      using SimulatorT::hasWc_;
+      using SimulatorT::hamiltonian_;
+      using SimulatorT::idealHamiltonian_;
+      using SimulatorT::fieldHamiltonian_;
+      using SimulatorT::hasHamiltonian_;
+      using SimulatorT::iStep_;
+      using SimulatorT::iTotalStep_;
+      using SimulatorT::state_;
 
    private:
 
       /**
       * Manager for Analyzer.
       */
-      AnalyzerManager<D> analyzerManager_;
+      typename T::AnalyzerManager analyzerManager_;
 
       /**
       * Pointer to Brownian dynamics step algorithm.
       */
-      BdStep<D>* bdStepPtr_;
+      typename T::BdStep* bdStepPtr_;
 
       /**
       * Pointer to a BdStep factory.
       */
-      Factory< BdStep<D> >* bdStepFactoryPtr_;
+      Factory< typename T::BdStep >* bdStepFactoryPtr_;
 
       /**
       * Pointer to a trajectory reader factory.
       */
-      Factory< TrajectoryReader<D> >* trajectoryReaderFactoryPtr_;
+      Factory< typename T::TrajectoryReader >* trajectoryReaderFactoryPtr_;
 
       // Private member function
 
@@ -219,35 +212,31 @@ namespace Rpc {
    // Inline member functions
 
    // Does this BdSimulator have a BdStep?
-   template <int D> inline
-   bool BdSimulator<D>::hasBdStep() const
+   template <int D, class T> inline
+   bool BdSimulator<D,T>::hasBdStep() const
    {  return (bool)bdStepPtr_; }
 
    // Get the BdStep.
-   template <int D> inline
-   BdStep<D>& BdSimulator<D>::bdStep()
+   template <int D, class T> inline
+   typename T::BdStep& BdSimulator<D,T>::bdStep()
    {
       UTIL_CHECK(bdStepPtr_);
       return *bdStepPtr_;
    }
 
    // Get the analyzer manager.
-   template <int D> inline
-   AnalyzerManager<D>& BdSimulator<D>::analyzerManager()
+   template <int D, class T> inline
+   typename T::AnalyzerManager& BdSimulator<D,T>::analyzerManager()
    {  return analyzerManager_; }
 
    // Get the TrajectoryReader factory.
-   template <int D> inline
-   Factory<TrajectoryReader<D> >& BdSimulator<D>::trajectoryReaderFactory()
+   template <int D, class T> inline
+   Factory< typename T::TrajectoryReader >& 
+   BdSimulator<D,T>::trajectoryReaderFactory()
    {
       UTIL_CHECK(trajectoryReaderFactoryPtr_);
       return *trajectoryReaderFactoryPtr_;
    }
-
-   // Explicit instantiation declarations
-   extern template class BdSimulator<1>;
-   extern template class BdSimulator<2>;
-   extern template class BdSimulator<3>;
 
 }
 }

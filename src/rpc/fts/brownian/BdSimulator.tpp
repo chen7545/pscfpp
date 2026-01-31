@@ -22,6 +22,8 @@
 #include <rpc/fts/ramp/Ramp.h>
 #include <rpc/system/System.h>
 
+#include <pscf/cpu/CpuVecRandom.h>
+#include <util/param/Factory.h>
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
 #include <util/global.h>
@@ -42,7 +44,7 @@ namespace Rpc {
       bdStepFactoryPtr_(nullptr),
       trajectoryReaderFactoryPtr_(nullptr)
    {
-      setClassName("BdSimulator");
+      ParamComposite::setClassName("BdSimulator");
       bdStepFactoryPtr_ = new BdStepFactory<D>(*this);
       trajectoryReaderFactoryPtr_
              = new TrajectoryReaderFactory<D>(system);
@@ -71,37 +73,43 @@ namespace Rpc {
    template <int D>
    void BdSimulator<D>::readParameters(std::istream &in)
    {
-      // Optionally read a random seed value
+      // Optionally read random seed, initialize random number generators
       readRandomSeed(in);
-   
+
       // Optionally read a BdStep block
       bool isEnd = false;
       std::string className;
+      UTIL_CHECK(!hasBdStep());
+      UTIL_CHECK(bdStepFactoryPtr_);
       bdStepPtr_ =
-         bdStepFactoryPtr_->readObjectOptional(in, *this, 
-                                               className, 
-                                               isEnd);
+         bdStepFactoryPtr_->readObjectOptional(in, *this,
+                                               className, isEnd);
       if (!hasBdStep() && ParamComponent::echo()) {
-         Log::file() << indent() << "  BdStep{ [absent] }\n";
+         Log::file() << ParamComponent::indent() << "  BdStep{ [absent] }\n";
       }
 
-      // Optionally read Compressor block
+      // Compressor is required if a BdStep exists
+      // A Ramp is allowed only if a BdStep exists
+
+      // Optionally read a Compressor block
       readCompressor(in, isEnd);
       if (hasBdStep()) {
          UTIL_CHECK(hasCompressor());
       }
 
-      // Optionally read Perturbation and/or Ramp blocks
+      // Optionally read a Perturbation block
       readPerturbation(in, isEnd);
+
+      // Optionally read a Ramp block
       if (hasBdStep()) {
          readRamp(in, isEnd);
       }
 
-      // Optionally read an AnalyzerManager
+      // Optionally read an AnalyzerManager block
       Analyzer<D>::baseInterval = 0; // default value
-      readParamCompositeOptional(in, analyzerManager_);
+      ParamComposite::readParamCompositeOptional(in, analyzerManager_);
 
-      // Figure out what variables need to be saved
+      // Figure out what variables need to be saved in stored state_
       state_.needsCc = false;
       state_.needsDc = false;
       state_.needsHamiltonian = false;
@@ -116,11 +124,10 @@ namespace Rpc {
 
       // Allocate memory for Simulator<D> base class
       Simulator<D>::allocate();
-
    }
 
    /*
-   * Setup before main loop of a BD simulation.
+   * Setup before main loop of a simulate or analyze command.
    */
    template <int D>
    void BdSimulator<D>::setup(int nStep)
@@ -153,7 +160,10 @@ namespace Rpc {
       computeDc();
       computeHamiltonian();
 
-      bdStep().setup();
+      if (hasBdStep()) {
+         bdStep().setup();
+      }
+
       if (analyzerManager_.size() > 0){
          analyzerManager_.setup();
       }
@@ -172,29 +182,31 @@ namespace Rpc {
 
       // Initial setup
       setup(nStep);
-
-      // Main simulation loop
-      Timer timer;
-      Timer analyzerTimer;
-      timer.start();
       iStep_ = 0;
       if (hasRamp()) {
          ramp().setParameters(iStep_);
       }
 
+      // Start timer
+      Timer timer;
+      Timer analyzerTimer;
+      timer.start();
+
       // Analysis for initial state (if any)
       analyzerTimer.start();
-      if (analyzerManager_.size() > 0){
+      if (analyzerManager_.size() > 0) {
          analyzerManager_.sample(iStep_);
       }
       analyzerTimer.stop();
 
+      // Main simulation loop
       for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
 
-         // Take a step (modifies W fields)
+         // Take a step (modifies W fields, then applies compressor)
          bool converged;
          converged = bdStep().step();
 
+         // Accept step iff compressor converged
          if (converged){
             iStep_++;
 
@@ -219,12 +231,11 @@ namespace Rpc {
          }
 
       }
-
       timer.stop();
       double time = timer.time();
       double analyzerTime = analyzerTimer.time();
 
-      // Output results analyzers to files
+      // Output final analyzer results
       if (Analyzer<D>::baseInterval > 0){
          analyzerManager_.output();
       }
@@ -239,7 +250,8 @@ namespace Rpc {
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;
       if (iStep_ != nStep){
-         Log::file() << "nFail Step          " << (nStep - iStep_) << std::endl;
+         Log::file() << "nFail Step          " << (nStep - iStep_)
+                     << std::endl;
       }
       Log::file() << "Total run time      " << time
                   << " sec" << std::endl;
@@ -255,15 +267,14 @@ namespace Rpc {
                   << compressor().mdeCounter() << std::endl;
       Log::file() << std::endl;
 
-      // Output compressor timer results
-      // compressor().outputTimers(Log::file());
    }
 
    /*
    * Open, read and analyze a trajectory file
    */
    template <int D>
-   void BdSimulator<D>::analyze(int min, int max,
+   void BdSimulator<D>::analyze(int min,
+                                int max,
                                 std::string classname,
                                 std::string filename)
    {
@@ -288,17 +299,15 @@ namespace Rpc {
 
       // Main loop over trajectory frames
       Timer timer;
-      bool hasFrame;
       timer.start();
-      hasFrame = trajectoryReaderPtr->readFrame();
-      
+      bool hasFrame = trajectoryReaderPtr->readFrame();
+
       for (iStep_ = 0; iStep_ <= max && hasFrame; ++iStep_) {
          if (hasFrame) {
             clearData();
 
             // Initialize analyzers
             if (iStep_ == min) {
-               //analyzerManager_.setup();
                setup(iStep_);
             }
 
@@ -307,7 +316,7 @@ namespace Rpc {
                analyzerManager_.sample(iStep_);
             }
          }
-         
+
          hasFrame = trajectoryReaderPtr->readFrame();
       }
       timer.stop();

@@ -115,7 +115,7 @@ parameters and enclosed blocks are described below:
     parameters for all of the algorithms that used to perform and
     analyze a partial saddle-point field theoretic simulation (PS-FTS), 
     but that are not used for SCFT.  Users may currently select either 
-    a \ref rpc_BdSimulator_page "BdSimulator" block (which creates 
+    a \ref rp_BdSimulator_page "BdSimulator" block (which creates 
     an instance of a class named BdSimulator \<D\>) to perform a 
     Brownian dynamics PS-FTS or a \ref rpc_McSimulator_page McSimulator 
     block (which creates an instance of a class named McSimulator \<D\>) 
@@ -139,7 +139,7 @@ parameters and enclosed blocks are described below:
      <ul> <li> \ref scft_sweep_linear_sec "LinearSweep" </li></ul>
   <li> \ref psfts_param_page "Simulator" </li>
   <ul>
-     <li> \ref rpc_BdSimulator_page "BdSimulator" </li>
+     <li> \ref rp_BdSimulator_page "BdSimulator" </li>
      <li> \ref rpc_McSimulator_page "McSimulator" </li>
   </ul>
 </ul>
