@@ -423,7 +423,7 @@ to generate a proposed MC move. The parameter of a RealMove named "A"
 specifies the root-mean-squared change in the proposed value of the
 exchange field at each grid point.
 
-See also: \ref rpc_McSimulator_page "McSimulator parameter file format"
+See also: \ref rp_McSimulator_page "McSimulator parameter file format"
 
 <b> MC Move Algorithms: </b>
 The MC move algorithms that are available for use with pscf_rpc or
@@ -528,7 +528,7 @@ documentation, was given in earlier the discussion of
 
 <ul>
 <li> \subpage rp_BdSimulator_page "BdSimulator"  </li>
-<li> \subpage rpc_McSimulator_page "McSimulator" </li>
+<li> \subpage rp_McSimulator_page "McSimulator" </li>
 <li> \subpage rpc_AnalyzerManager_page "AnalyzerManager" </li>
 </ul>
 

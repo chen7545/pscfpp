@@ -34,7 +34,7 @@ McSimulator block of a parameter file. If present, the Perturbation
 block must appear immediately after the Compressor block (if any).
 Full descriptions of formats of for the BdSimulator and McSimulator
 parameter file blocks are given \ref rp_BdSimulator_page "here"
-and \ref rpc_McSimulator_page "here", respectively.
+and \ref rp_McSimulator_page "here", respectively.
 
 The PerturbationDerivative analyzer class is designed to enable
 thermodynamic integration with respect to the \f$ \lambda \f$ parameter

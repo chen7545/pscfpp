@@ -27,7 +27,7 @@ namespace Rp {
    * conditions. Accessor functions return the system and its components 
    * as const references.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_System_Module
    */
    template <class ST>
    class SystemConstRef 

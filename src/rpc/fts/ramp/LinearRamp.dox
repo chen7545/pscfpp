@@ -11,7 +11,7 @@ for both pscf_rpc and pscf_rpg, and so may be selected by including a
 parameter file block with either the specific label "LinearRamp" or the 
 generic label "Ramp" in the appropriate location within a
 \ref rp_BdSimulator_page "BdSimulator" or 
-\ref rpc_McSimulator_page "McSimulator" parameter file block.
+\ref rp_McSimulator_page "McSimulator" parameter file block.
 
 \see 
 <ul>

@@ -1,7 +1,7 @@
 namespace Pscf{
-namespace Rpc{
+namespace Rp{
 /*! 
-\page rpc_System_page System
+\page rp_System_page System
 
 The main object in a pscf_rpc or pscf_rpg program is an instance of a class
 named System<D>, in which the integer template parameter D is the dimension 
@@ -15,11 +15,12 @@ that is used by both classes.
 
 Class API Documentation:
 <ul> 
+    <li> Pscf::Rp::System </li>
     <li> Pscf::Rpc::System </li>
     <li> Pscf::Rpg::System </li>
 </ul>
 
-\section rpc_System_param_sec Parameter File format
+\section rp_System_param_sec Parameter File format
 The outermost block of the parameter file for pscf_rpc or pscf_rpg, which 
 encloses all of the data in the file, is a block labelled "System". The 
 format for this parameter file block (and thus for the entire parameter 
@@ -117,7 +118,7 @@ parameters and enclosed blocks are described below:
     but that are not used for SCFT.  Users may currently select either 
     a \ref rp_BdSimulator_page "BdSimulator" block (which creates 
     an instance of a class named BdSimulator \<D\>) to perform a 
-    Brownian dynamics PS-FTS or a \ref rpc_McSimulator_page McSimulator 
+    Brownian dynamics PS-FTS or a \ref rp_McSimulator_page McSimulator 
     block (which creates an instance of a class named McSimulator \<D\>) 
     to perform a field theoretic Monte-Carlo simulation.
     (optional and selectable).
@@ -125,7 +126,7 @@ parameters and enclosed blocks are described below:
   </tr>
 </table>
 
-\section rpc_System_seealso_sec See also:
+\section rp_System_seealso_sec See also:
 
 <ul>
   <li> \ref user_param_mixture_page "Mixture" </li>
@@ -140,7 +141,7 @@ parameters and enclosed blocks are described below:
   <li> \ref psfts_param_page "Simulator" </li>
   <ul>
      <li> \ref rp_BdSimulator_page "BdSimulator" </li>
-     <li> \ref rpc_McSimulator_page "McSimulator" </li>
+     <li> \ref rp_McSimulator_page "McSimulator" </li>
   </ul>
 </ul>
 

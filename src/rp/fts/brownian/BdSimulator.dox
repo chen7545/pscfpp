@@ -1,5 +1,5 @@
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 /*!
 \page rp_BdSimulator_page BdSimulator
 
@@ -10,7 +10,7 @@ simulation (PS-FTS) using Brownian dynamic sampling, but that are not needed
 for a self-consistent field (SCFT) calculation. The associated parameter
 file block is one of two possible options (BdSimulator or McSimulator) for
 the optional, selectable "Simulator" subblock of the main
-\ref rpc_System_page "System" block of the parameter file.
+\ref rp_System_page "System" block of the parameter file.
 
 \section rp_BdSimulator_parameter_page Parameter File
 

@@ -1,8 +1,8 @@
-namespace Pscf{
-namespace Rpc{
+namespace Pscf {
+namespace Rp {
 
 /*! 
-\page rpc_McSimulator_page McSimulator
+\page rp_McSimulator_page McSimulator
 
 An instance of a class McSimulator<D> in namespace Pscf::Rpc (for pscf_rpc)
 or Pscf::Rpg (for pscf_rpg) provides a variety of data structures and 
@@ -13,7 +13,7 @@ file block is one of two possible option (McSimulator or BdSimulator) for
 the optional, selectable "Simulator" subblock of the main System block of 
 the parameter file. 
 
-\section rpc_McSimulator_parameter_sec Parameter File
+\section rp_McSimulator_parameter_sec Parameter File
 
 The format of this parameter file block is given below in skeleton form:
 \code
@@ -107,7 +107,7 @@ Required relationships among subblocks:
     is only used during a simulation, and not during postprocessing
     of a trajectory file.
 
-\section rpc_McSimulator_seealso_sec See Also:
+\section rp_McSimulator_seealso_sec See Also:
 
 <ul>
   <li> \ref rpc_McMoveManager_page </li>

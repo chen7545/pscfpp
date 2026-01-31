@@ -11,7 +11,7 @@ or postprocessing operation.
 
 \see AnalyzerManager (class API)
 \see \ref rp_BdSimulator_page  (manual page)
-\see \ref rpc_McSimulator_page  (manual page)
+\see \ref rp_McSimulator_page  (manual page)
 
 \section rpc_AnalyzerManager_parameter_sec Parameter File
 

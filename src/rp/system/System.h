@@ -93,11 +93,11 @@ namespace Rp {
    * <ul>
    *  <li> \ref scft_param_pc_page   "Parameter File: SCFT" </li>
    *  <li> \ref psfts_param_page     "Parameter File: PS-FTS" </li>
-   *  <li> \ref rpc_System_page      "Parameter File: Full Format" </li>
+   *  <li> \ref rp_System_page       "Parameter File: Full Format" </li>
    *  <li> \ref scft_command_pc_page "Command File Format" </li>
    * </ul>
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_System_Module
    */
    template <int D, class T>
    class System : public ParamComposite
