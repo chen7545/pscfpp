@@ -27,13 +27,12 @@ namespace Rpc {
 
    using namespace Util;
 
-   template <int D> 
-   class System;
+   template <int D> class System;
 
    /**
-   * Class defining mask & external fields for thin-film systems
+   * Class defining mask & external fields for thin-film systems.
    * 
-   * \ingroup Rpc_Field_Module
+   * \ingroup Rpc_Environment_Module
    */
    template <int D>
    class FilmEnvironment : public MixAndMatchEnv

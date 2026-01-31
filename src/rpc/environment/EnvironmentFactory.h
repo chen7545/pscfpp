@@ -24,7 +24,7 @@ namespace Rpc {
    /**
    * Factory for subclasses of Environment.
    *
-   * \ingroup Rpc_Field_Module
+   * \ingroup Rpc_Environment_Module
    */
 
    template <int D>
