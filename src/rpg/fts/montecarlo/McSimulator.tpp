@@ -20,9 +20,9 @@
 #include <rpg/fts/perturbation/PerturbationFactory.h>
 #include <rpg/fts/ramp/RampFactory.h>
 #include <rpg/fts/ramp/Ramp.h>
+#include <pscf/cuda/CudaVecRandom.h>
 
 #include <util/random/Random.h>
-#include <pscf/cuda/CudaVecRandom.h>
 #include <util/misc/Timer.h>
 #include <util/global.h>
 
@@ -32,7 +32,6 @@ namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cuda;
 
    /*
    * Constructor.
@@ -42,9 +41,9 @@ namespace Rpg {
     : Simulator<D>(system),
       mcMoveManager_(*this, system),
       analyzerManager_(*this, system),
-      trajectoryReaderFactoryPtr_(0)
+      trajectoryReaderFactoryPtr_(nullptr)
    {
-      setClassName("McSimulator");
+      ParamComposite::setClassName("McSimulator");
       trajectoryReaderFactoryPtr_
              = new TrajectoryReaderFactory<D>(system);
    }
@@ -61,27 +60,32 @@ namespace Rpg {
    }
 
    /*
-   * Read instructions for creating objects from file.
+   * Read parameter file block.
    */
    template <int D>
    void McSimulator<D>::readParameters(std::istream &in)
    {
-      // Optionally read random seed, initialize random number generators
+      // Optionally read random seed. Initialize random number generators
       readRandomSeed(in);
 
-      // Attempt to read optional McMoveManager block 
+      // Optionally read McMoveManager block
       readParamCompositeOptional(in, mcMoveManager_);
 
-      // Attempt to read optional Compressor, Perturbation and Ramp blocks
+      // Optionally read Compressor block
       bool isEnd = false;
       readCompressor(in, isEnd);
-      readPerturbation(in, isEnd);
       if (hasMcMoves()) {
          UTIL_CHECK(hasCompressor());
+      }
+
+      // A Compressor is required if MC moves are declared.
+      // A Ramp is allowed only if MC moves are declared.
+
+      // Optionally read Perturbation and/or Ramp blocks
+      readPerturbation(in, isEnd);
+      if (hasMcMoves()) {
          readRamp(in, isEnd);
       }
-      // Tthe Compressor is required if McMoves are declared
-      // Ramp is allowed only if McMoves are declared
 
       // Optionally read AnalyzerManager block
       Analyzer<D>::baseInterval = 0; // default value
@@ -98,8 +102,8 @@ namespace Rpg {
          state_.needsDc = true;
       }
 
-      // Initialize Simulator<D> base class
-      allocate();
+      // Allocate memory for Simulator<D> base class
+      Simulator<D>::allocate();
    }
 
    /*
@@ -116,15 +120,15 @@ namespace Rpg {
       if (hasPerturbation()) {
          perturbation().setup();
       }
-      
+
       if (hasRamp()) {
          ramp().setup(nStep);
       }
 
-      // Solve the MDE for the initial state
+      // Solve the MDE and compute c-fields for the initial state
       system().compute();
 
-      // Compress the initial field before entering simulate loop. 
+      // Compress the initial state (adjust pressure-like field)
       if (hasCompressor()) {
          compressor().compress();
          compressor().clearTimers();
@@ -149,7 +153,7 @@ namespace Rpg {
       if (analyzerManager_.size() > 0){
          analyzerManager_.setup();
       }
-      
+
    }
 
    /*
@@ -160,36 +164,38 @@ namespace Rpg {
    {
       UTIL_CHECK(hasMcMoves());
       UTIL_CHECK(hasCompressor());
-      
+
       // Initial setup
       setup(nStep);
-      
-      Log::file() << std::endl;
-
-      // Main Monte Carlo loop
-      Timer timer;
-      Timer analyzerTimer;
-      timer.start();
       iStep_ = 0;
       if (hasRamp()) {
          ramp().setParameters(iStep_);
       }
 
-      // Analysis initial step (if any)
+      Log::file() << std::endl;
+
+      // Start timers
+      Timer timer;
+      Timer analyzerTimer;
+      timer.start();
+
+      // Analyze initial step
       analyzerTimer.start();
       analyzerManager_.sample(iStep_);
       analyzerTimer.stop();
 
+      // Main Monte Carlo loop
       for (iTotalStep_ = 0; iTotalStep_ < nStep; ++iTotalStep_) {
+
          // Choose and attempt an McMove
          bool converged;
          converged = mcMoveManager_.chooseMove().move();
 
          if (converged){
             iStep_++;
-            
+
             if (hasRamp()) {
-               ramp().setParameters(iStep_);               
+               ramp().setParameters(iStep_);
             }
 
             // Analysis (if any)
@@ -204,25 +210,25 @@ namespace Rpg {
             analyzerTimer.stop();
 
          } else{
-            Log::file() << "Step: "<< iTotalStep_<< " fail to converge" << "\n";
+            Log::file() << "Step: "<< iTotalStep_
+                        << " failed to converge" << "\n";
          }
       }
-
       timer.stop();
       double time = timer.time();
       double analyzerTime = analyzerTimer.time();
 
-      // Output results of move statistics to files
+      // Output move statistics and final analysis results
       mcMoveManager_.output();
       if (Analyzer<D>::baseInterval > 0){
          analyzerManager_.output();
       }
-      
-      // Output results of ramp
+
+      // Final output from ramp (if any)
       if (hasRamp()){
          ramp().output();
       }
-      
+
       // Output times for the simulation run
       Log::file() << std::endl;
       Log::file() << "nStep               " << nStep << std::endl;
@@ -240,7 +246,7 @@ namespace Rpg {
 
       // Output number of times MDE has been solved for the simulation run
       outputMdeCounter(Log::file());
-      
+
       // Print McMove acceptance statistics
       long attempt;
       long accept;
@@ -304,16 +310,14 @@ namespace Rpg {
       // Main loop over trajectory frames
       Timer timer;
       timer.start();
-      bool hasFrame;
-      hasFrame = trajectoryReaderPtr->readFrame();
-      
+      bool hasFrame = trajectoryReaderPtr->readFrame();
+
       for (iStep_ = 0; iStep_ <= max && hasFrame; ++iStep_) {
          if (hasFrame) {
             clearData();
 
             // Initialize analyzers
             if (iStep_ == min) {
-               //analyzerManager_.setup();
                setup(iStep_);
             }
 
@@ -322,7 +326,7 @@ namespace Rpg {
                analyzerManager_.sample(iStep_);
             }
          }
-         
+
          hasFrame = trajectoryReaderPtr->readFrame();
       }
       timer.stop();
@@ -333,7 +337,7 @@ namespace Rpg {
 
       // Output results of all analyzers to output files
       analyzerManager_.output();
-   
+
       // Output number of frames and times
       Log::file() << std::endl;
       Log::file() << "# of frames   " << nFrames << std::endl;

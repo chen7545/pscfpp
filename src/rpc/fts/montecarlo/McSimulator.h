@@ -8,15 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rpc/fts/simulator/Simulator.h>                   // member
-#include <rpc/fts/montecarlo/McMoveManager.h>        // member
+#include <rpc/fts/simulator/Simulator.h>         // base class
+#include <rpc/fts/montecarlo/McMoveManager.h>    // member
 #include <rpc/fts/analyzer/AnalyzerManager.h>    // member
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Prdc::Cpu;
 
    template <int D> class McMove;
    template <int D> class TrajectoryReader;
@@ -47,7 +46,7 @@ namespace Rpc {
       ~McSimulator();
 
       /**
-      * Read parameters file block for an MC simulation.
+      * Read parameter file block.
       *
       * \param in input parameter stream
       */
@@ -62,20 +61,20 @@ namespace Rpc {
       * Perform a field theoretic Monte-Carlo simulation using the
       * partial saddle-point approximation.
       *
-      * \param nStep  number of Monte-Carlo steps
+      * \param nStep  number of attempted Monte-Carlo steps
       */
       void simulate(int nStep);
 
       /**
       * Read and analyze a trajectory file.
       *
-      * This function uses an instance of the TrajectoryReader class
+      * This function uses an instance of the TrajectoryReader subclass
       * specified by the "classname" argument to read a trajectory
       * file.
       *
       * \param min  start at this frame number
       * \param max  end at this frame number
-      * \param classname  name of the TrajectoryReader class to use
+      * \param classname  name of the TrajectoryReader subclass to use
       * \param filename  name of the trajectory file
       */
       virtual void analyze(int min, int max,
@@ -91,28 +90,28 @@ namespace Rpc {
       * Clear timers
       */
       virtual void clearTimers();
-      
+
       /**
-      * Return the simulations whether needs to store cc fields
+      * Does the stored state need to include Cc fields?
       */
       bool needsCc();
-      
+
       /**
-      * Return the simulations whether needs to store Dc fields
+      * Does the stored state need to include Dc fields?
       */
       bool needsDc();
-      
+
       ///@}
       /// \name Miscellaneous
       ///@{
 
       /**
-      * Get the McMoveManger.
+      * Get the McMoveManager.
       */
       McMoveManager<D>& mcMoveManager();
 
       /**
-      * Get the AnalyzerManger.
+      * Get the AnalyzerManager.
       */
       AnalyzerManager<D>& analyzerManager();
 
@@ -122,7 +121,9 @@ namespace Rpc {
       Factory<TrajectoryReader<D>>& trajectoryReaderFactory();
 
       /**
-      * Have any McMove algorithms been defined?
+      * Have any MC moves been defined?
+      *
+      * Equivalent to a test for mcMoveManager().size() > 0.
       */
       bool hasMcMoves() const;
 
@@ -130,19 +131,20 @@ namespace Rpc {
 
       // Inherited public functions
 
-      using Simulator<D>::system;
+      using Simulator<D>::allocate;
       using Simulator<D>::analyzeChi;
       using Simulator<D>::chiEval;
       using Simulator<D>::chiEvecs;
       using Simulator<D>::computeWc;
       using Simulator<D>::computeCc;
       using Simulator<D>::computeDc;
-      using Simulator<D>::wc;
-      using Simulator<D>::cc;
-      using Simulator<D>::dc;
       using Simulator<D>::hasWc;
+      using Simulator<D>::wc;
       using Simulator<D>::hasCc;
+      using Simulator<D>::cc;
       using Simulator<D>::hasDc;
+      using Simulator<D>::dc;
+
       using Simulator<D>::clearData;
       using Simulator<D>::computeHamiltonian;
       using Simulator<D>::hasHamiltonian;
@@ -150,13 +152,17 @@ namespace Rpc {
       using Simulator<D>::idealHamiltonian;
       using Simulator<D>::fieldHamiltonian;
       using Simulator<D>::perturbationHamiltonian;
+
+      using Simulator<D>::system;
       using Simulator<D>::random;
+      using Simulator<D>::vecRandom;
       using Simulator<D>::hasCompressor;
       using Simulator<D>::compressor;
       using Simulator<D>::hasPerturbation;
       using Simulator<D>::perturbation;
       using Simulator<D>::hasRamp;
       using Simulator<D>::ramp;
+
       using Simulator<D>::saveState;
       using Simulator<D>::restoreState;
       using Simulator<D>::clearState;
@@ -167,18 +173,19 @@ namespace Rpc {
       // Inherited protected functions
 
       using ParamComposite::setClassName;
+      using ParamComposite::read;
+      using ParamComposite::readOptional;
       using ParamComposite::readParamComposite;
       using ParamComposite::readParamCompositeOptional;
-      using ParamComposite::readOptional;
 
       using Simulator<D>::readRandomSeed;
-      using Simulator<D>::readCompressor;
-      using Simulator<D>::readPerturbation;
-      using Simulator<D>::readRamp;
       using Simulator<D>::compressorFactory;
+      using Simulator<D>::readCompressor;
       using Simulator<D>::perturbationFactory;
+      using Simulator<D>::readPerturbation;
       using Simulator<D>::setPerturbation;
       using Simulator<D>::rampFactory;
+      using Simulator<D>::readRamp;
       using Simulator<D>::setRamp;
 
       // Inherited protected data members
@@ -192,68 +199,68 @@ namespace Rpc {
       using Simulator<D>::iStep_;
       using Simulator<D>::iTotalStep_;
       using Simulator<D>::state_;
-      using Simulator<D>::seed_;
 
    private:
 
       /**
-      * Manger for Monte Carlo Move.
+      * Manager for Monte Carlo moves.
       */
       McMoveManager<D> mcMoveManager_;
 
       /**
-      * Manger for Monte Carlo Analyzer.
+      * Manager for analyzers.
       */
       AnalyzerManager<D> analyzerManager_;
-      
+
       /**
-      * Pointer to a trajectory reader/writer factory.
+      * Pointer to a trajectory reader factory.
       */
       Factory< TrajectoryReader<D> >* trajectoryReaderFactoryPtr_;
 
-      // Private member functions
+      // Private member function
 
       /**
-      * Called at the beginning of the simulation member function.
+      * Setup before the main loop of a simulate or analyze command.
+      *
+      * \param nStep  number of MC steps to attempt
       */
       void setup(int nStep);
 
    };
 
    // Get the Monte-Carlo move manager.
-   template <int D>
-   inline McMoveManager<D>& McSimulator<D>::mcMoveManager()
+   template <int D> inline
+   McMoveManager<D>& McSimulator<D>::mcMoveManager()
    {  return mcMoveManager_; }
 
    // Get the analyzer manager.
-   template <int D>
-   inline AnalyzerManager<D>& McSimulator<D>::analyzerManager()
+   template <int D> inline
+   AnalyzerManager<D>& McSimulator<D>::analyzerManager()
    {  return analyzerManager_; }
 
-   // Get the TrajectoryReaderfactory
-   template <int D>
-   inline 
+   // Get the TrajectoryReader factory.
+   template <int D> inline
    Factory<TrajectoryReader<D> >& McSimulator<D>::trajectoryReaderFactory()
    {
       UTIL_ASSERT(trajectoryReaderFactoryPtr_);
       return *trajectoryReaderFactoryPtr_;
    }
-   
+
    // Have any MC moves been defined?
-   template <int D>
-   inline bool McSimulator<D>::hasMcMoves() const
+   template <int D> inline
+   bool McSimulator<D>::hasMcMoves() const
    {  return (bool)(mcMoveManager_.size() > 0); }
 
-   // Does the stored state need to include Cc fields ?
-   template <int D>
-   inline bool McSimulator<D>::needsCc()
+   // Does the stored state need to include Cc fields?
+   template <int D> inline
+   bool McSimulator<D>::needsCc()
    {  return state_.needsCc; }
-   
-   // Does the stored state need to include Dc fields ?
-   template <int D>
-   inline bool McSimulator<D>::needsDc()
+
+   // Does the stored state need to include Dc fields?
+   template <int D> inline
+   bool McSimulator<D>::needsDc()
    {  return state_.needsDc; }
-      
+
    // Explicit instantiation declarations
    extern template class McSimulator<1>;
    extern template class McSimulator<2>;

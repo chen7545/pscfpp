@@ -20,6 +20,7 @@
 #include <rpc/fts/perturbation/Perturbation.h>
 #include <rpc/fts/ramp/RampFactory.h>
 #include <rpc/fts/ramp/Ramp.h>
+#include <pscf/cpu/CpuVecRandom.h>
 
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
@@ -42,7 +43,7 @@ namespace Rpc {
       analyzerManager_(*this, system),
       trajectoryReaderFactoryPtr_(nullptr)
    {
-      setClassName("McSimulator");
+      ParamComposite::setClassName("McSimulator");
       trajectoryReaderFactoryPtr_
              = new TrajectoryReaderFactory<D>(system);
    }
@@ -64,31 +65,33 @@ namespace Rpc {
    template <int D>
    void McSimulator<D>::readParameters(std::istream &in)
    {
-      // Read optional random seed value
+      // Optionally read random seed. Initialize random number generators
       readRandomSeed(in);
 
-      // Read optional McMoveManager block
+      // Optionally read McMoveManager block
       readParamCompositeOptional(in, mcMoveManager_);
 
+      // Optionally read Compressor block
       bool isEnd = false;
-
-      // Read optionally Compressor block
       readCompressor(in, isEnd);
       if (hasMcMoves()) {
          UTIL_CHECK(hasCompressor());
       }
 
-      // Read optional Perturbation and/or Ramp blocks
+      // A Compressor is required if MC moves are declared.
+      // A Ramp is allowed only if MC moves are declared.
+
+      // Optionally read Perturbation and/or Ramp blocks
       readPerturbation(in, isEnd);
       if (hasMcMoves()) {
          readRamp(in, isEnd);
       }
 
-      // Read optional AnalyzerManager block
+      // Optionally read AnalyzerManager block
       Analyzer<D>::baseInterval = 0; // default value
       readParamCompositeOptional(in, analyzerManager_);
 
-      // Figure out what needs to be saved
+      // Figure out what needs to be saved in stored state
       state_.needsCc = false;
       state_.needsDc = false;
       state_.needsHamiltonian = true;
@@ -99,9 +102,8 @@ namespace Rpc {
          state_.needsDc = true;
       }
 
-      // Initialize Simulator<D> base class
+      // Allocate memory for Simulator<D> base class
       Simulator<D>::allocate();
-
    }
 
    /*
@@ -114,24 +116,24 @@ namespace Rpc {
 
       // Eigenanalysis of the projected chi matrix.
       analyzeChi();
-      
+
       if (hasPerturbation()) {
          perturbation().setup();
       }
-      
+
       if (hasRamp()) {
          ramp().setup(nStep);
       }
-   
-      // Solve MDE and compute c-fields for the intial state
+
+      // Solve the MDE and compute c-fields for the initial state
       system().compute();
-      
+
       // Compress the initial state (adjust pressure-like field)
       if (hasCompressor()) {
          compressor().compress();
          compressor().clearTimers();
       }
-      
+
       // Compute field components and Hamiltonian
       computeWc();
       if (state_.needsCc || state_.needsDc) {
@@ -142,11 +144,16 @@ namespace Rpc {
       }
       computeHamiltonian();
 
-      mcMoveManager_.setup();
+      // Setup MC moves (if any)
+      if (hasMcMoves()) {
+         mcMoveManager_.setup();
+      }
+
+      // Setup analyzers (if any)
       if (analyzerManager_.size() > 0){
          analyzerManager_.setup();
       }
-   
+
    }
 
    /*
@@ -157,22 +164,22 @@ namespace Rpc {
    {
       UTIL_CHECK(hasMcMoves());
       UTIL_CHECK(hasCompressor());
-      
+
       // Initial setup
       setup(nStep);
-   
-      Log::file() << std::endl;
-
-      // Initialize timer, iStep_, and ramp (if any)
-      Timer timer;
-      Timer analyzerTimer;
-      timer.start();
       iStep_ = 0;
       if (hasRamp()) {
          ramp().setParameters(iStep_);
       }
 
-      // Analysis initial step (if any)
+      Log::file() << std::endl;
+
+      // Start timers
+      Timer timer;
+      Timer analyzerTimer;
+      timer.start();
+
+      // Analyze initial step
       analyzerTimer.start();
       analyzerManager_.sample(iStep_);
       analyzerTimer.stop();
@@ -186,9 +193,9 @@ namespace Rpc {
 
          if (converged){
             iStep_++;
-            
+
             if (hasRamp()) {
-               ramp().setParameters(iStep_);               
+               ramp().setParameters(iStep_);
             }
 
             // Analysis (if any)
@@ -203,22 +210,21 @@ namespace Rpc {
             analyzerTimer.stop();
 
          } else{
-            Log::file() << "Step: "<< iTotalStep_ 
+            Log::file() << "Step: "<< iTotalStep_
                         << " failed to converge" << "\n";
          }
       }
-
       timer.stop();
       double time = timer.time();
       double analyzerTime = analyzerTimer.time();
 
-      // Output results of move statistics to files
+      // Output move statistics and final analysis results
       mcMoveManager_.output();
       if (Analyzer<D>::baseInterval > 0){
          analyzerManager_.output();
       }
-      
-      // Output results of ramp
+
+      // Final output from ramp (if any)
       if (hasRamp()){
          ramp().output();
       }
@@ -240,7 +246,7 @@ namespace Rpc {
 
       // Output number of times MDE has been solved for the simulation run
       outputMdeCounter(Log::file());
-      
+
       // Print McMove acceptance statistics
       long attempt;
       long accept;
@@ -303,10 +309,9 @@ namespace Rpc {
 
       // Main loop over trajectory frames
       Timer timer;
-      bool hasFrame;
       timer.start();
-      hasFrame = trajectoryReaderPtr->readFrame();
-      
+      bool hasFrame = trajectoryReaderPtr->readFrame();
+
       for (iStep_ = 0; iStep_ <= max && hasFrame; ++iStep_) {
          if (hasFrame) {
             clearData();
@@ -321,7 +326,7 @@ namespace Rpc {
                analyzerManager_.sample(iStep_);
             }
          }
-         
+
          hasFrame = trajectoryReaderPtr->readFrame();
       }
       timer.stop();
@@ -354,7 +359,6 @@ namespace Rpc {
       out << "\n";
       out << "MC move time contributions:\n";
       mcMoveManager_.outputTimers(out);
-      out << "\n";
    }
 
    /*
