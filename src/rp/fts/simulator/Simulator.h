@@ -79,6 +79,9 @@ namespace Rp {
       // Public type name aliases
       using RFieldT = typename T::RField;
 
+      Simulator() = delete;
+      Simulator(Simulator<D,T> const &) = delete;
+
       /**
       * Constructor.
       *

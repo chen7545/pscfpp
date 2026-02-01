@@ -44,6 +44,9 @@ namespace Rp {
       /// Alias for specialized simulator subclass.
       using BdSimulatorT = typename T::BdSimulator;
 
+      BdSimulator() = delete;
+      BdSimulator(BdSimulator<D,T> const &) = delete;
+
       /**
       * Constructor.
       *

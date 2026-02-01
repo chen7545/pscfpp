@@ -44,6 +44,9 @@ namespace Rp {
       /// Alias for McSimulator class in program-level namespace.
       using McSimulatorT = typename T::McSimulator;
 
+      McSimulator() = delete;
+      McSimulator(McSimulator<D,T> const &) = delete;
+
       /**
       * Constructor.
       *
@@ -51,9 +54,6 @@ namespace Rp {
       * \param mcSimulator  instance of enclosing McSimulator subclass
       */
       McSimulator(SystemT& system, McSimulatorT& mcSimulator);
-
-      McSimulator() = delete;
-      McSimulator(McSimulator<D,T> const &) = delete;
 
       /**
       * Destructor.
