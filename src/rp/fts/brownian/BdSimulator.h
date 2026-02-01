@@ -28,17 +28,27 @@ namespace Rp {
    * \ingroup Rp_Fts_Brownian_Module
    */
    template <int D, class T>
-   class BdSimulator : public Simulator<D, T>
+   class BdSimulator : public T::Simulator
    {
 
    public:
 
+      /// Alias for specialized system class.
+      using SystemT = typename T::System;
+
+      /// Alias for Simulator subclass.
+      using SimulatorT = typename T::Simulator;
+
+      /// Alias for specialized simulator subclass.
+      using BdSimulatorT = typename T::BdSimulator;
+
       /**
       * Constructor.
       *
-      * \param system parent System
+      * \param system  parent System
+      * \param system  pointer to instance of a subclass
       */
-      BdSimulator(typename T::System& system);
+      BdSimulator(SystemT& system, BdSimulatorT& bdSimulator);
 
       /**
       * Destructor.
@@ -108,8 +118,6 @@ namespace Rp {
 
       ///@}
 
-      using SimulatorT = Simulator<D,T>;
-
       // Inherited public functions
 
       using SimulatorT::analyzeChi;
@@ -178,6 +186,9 @@ namespace Rp {
 
    private:
 
+      /// Private alias for analyzer class
+      using AnalyzerT = typename T::Analyzer;
+
       /**
       * Manager for Analyzer.
       */
@@ -197,6 +208,11 @@ namespace Rp {
       * Pointer to a trajectory reader factory.
       */
       Factory< typename T::TrajectoryReader >* trajectoryReaderFactoryPtr_;
+
+      /**
+      * Pointer to object of the enclosing subclass.
+      */
+      BdSimulatorT* bdSimulatorPtr_;
 
       // Private member function
 

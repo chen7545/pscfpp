@@ -25,10 +25,10 @@ namespace Rp {
    * Constructor.
    */
    template <int D, class T>
-   McSimulator<D,T>::McSimulator(typename T::System& system)
+   McSimulator<D,T>::McSimulator(SystemT& system, McSimulatorT& mcSimulator)
     : SimulatorT(system),
-      mcMoveManager_(*this, system),
-      analyzerManager_(*this, system),
+      mcMoveManager_(mcSimulator, system),
+      analyzerManager_(mcSimulator, system),
       trajectoryReaderFactoryPtr_(nullptr)
    {
       ParamComposite::setClassName("McSimulator");
@@ -76,7 +76,7 @@ namespace Rp {
       }
 
       // Optionally read AnalyzerManager block
-      typename T::Analyzer::baseInterval = 0; // default value
+      AnalyzerT::baseInterval = 0; // default value
       ParamComposite::readParamCompositeOptional(in, analyzerManager_);
 
       // Figure out what needs to be saved in stored state
@@ -159,7 +159,7 @@ namespace Rp {
       if (hasRamp()) {
          SimulatorT::ramp().setParameters(iStep_);
       }
-      int analyzerBaseInterval = typename T::Analyzer::baseInterval;
+      int analyzerBaseInterval = AnalyzerT::baseInterval;
       Log::file() << std::endl;
 
       // Start timers
@@ -280,7 +280,7 @@ namespace Rp {
       // Preconditions
       UTIL_CHECK(min >= 0);
       UTIL_CHECK(max >= min);
-      UTIL_CHECK(typename T::Analyzer::baseInterval > 0);
+      UTIL_CHECK(AnalyzerT::baseInterval > 0);
       UTIL_CHECK(analyzerManager_.size() > 0);
 
       // Construct TrajectoryReader

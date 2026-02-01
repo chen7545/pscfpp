@@ -24,15 +24,16 @@ namespace Rp {
    * Constructor.
    */
    template <int D, class T>
-   BdSimulator<D,T>::BdSimulator(typename T::System& system)
+   BdSimulator<D,T>::BdSimulator(SystemT& system, BdSimulatorT& bdSimulator)
     : SimulatorT(system),
-      analyzerManager_(*this, system),
+      analyzerManager_(bdSimulator, system),
       bdStepPtr_(nullptr),
       bdStepFactoryPtr_(nullptr),
-      trajectoryReaderFactoryPtr_(nullptr)
+      trajectoryReaderFactoryPtr_(nullptr),
+      bdSimulatorPtr_(&bdSimulator)
    {
       ParamComposite::setClassName("BdSimulator");
-      bdStepFactoryPtr_ = new typename T::BdStepFactory(*this);
+      bdStepFactoryPtr_ = new typename T::BdStepFactory(bdSimulator);
       trajectoryReaderFactoryPtr_
              = new typename T::TrajectoryReaderFactory(system);
    }
@@ -94,7 +95,7 @@ namespace Rp {
       }
 
       // Optionally read an AnalyzerManager block
-      typename T::Analyzer::baseInterval = 0; // default value
+      AnalyzerT::baseInterval = 0; // default value
       ParamComposite::readParamCompositeOptional(in, analyzerManager_);
 
       // Figure out what variables need to be saved in stored state_
@@ -174,7 +175,7 @@ namespace Rp {
       if (hasRamp()) {
          ramp().setParameters(iStep_);
       }
-      int analyzerBaseInterval = typename T::Analyzer::baseInterval;
+      int analyzerBaseInterval = AnalyzerT::baseInterval;
 
       // Start timer
       Timer timer;
@@ -270,7 +271,7 @@ namespace Rp {
       // Preconditions
       UTIL_CHECK(min >= 0);
       UTIL_CHECK(max >= min);
-      UTIL_CHECK(typename T::Analyzer::baseInterval > 0);
+      UTIL_CHECK(AnalyzerT::baseInterval > 0);
       UTIL_CHECK(analyzerManager_.size() > 0);
 
       // Construct TrajectoryReader

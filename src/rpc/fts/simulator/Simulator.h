@@ -18,7 +18,6 @@ namespace Rpc {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
    * Field theoretic simulator (base class).
@@ -35,7 +34,7 @@ namespace Rpc {
    public:
 
       /// Alias for direct base class.
-      using Base = Pscf::Rp::Simulator<D, Types<D> >;
+      using RpSimulator = Pscf::Rp::Simulator<D, Types<D> >;
 
       /**
       * Constructor.
@@ -50,20 +49,21 @@ namespace Rpc {
 
    };
 
-   // Explicit instantiation declarations
-   extern template class Simulator<1>;
-   extern template class Simulator<2>;
-   extern template class Simulator<3>;
 
 } // namespace Rpc
 } // namespace Pscf
 
+// Explicit instantiation declarations
 namespace Pscf {
-namespace Rp {
-   // Explicit instantiation declarations for base class template
-   extern template class Simulator<1, Rpc::Types<1> >;
-   extern template class Simulator<2, Rpc::Types<2> >;
-   extern template class Simulator<3, Rpc::Types<3> >;
-}
+   namespace Rp {
+      extern template class Simulator<1, Rpc::Types<1> >;
+      extern template class Simulator<2, Rpc::Types<2> >;
+      extern template class Simulator<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class Simulator<1>;
+      extern template class Simulator<2>;
+      extern template class Simulator<3>;
+   }
 }
 #endif

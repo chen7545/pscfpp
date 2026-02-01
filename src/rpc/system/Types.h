@@ -60,6 +60,17 @@ namespace Pscf {
       template <int D> class PerturbationFactory;
       template <int D> class Ramp;
       template <int D> class RampFactory;
+      template <int D> class Analyzer;
+      template <int D> class AnalyzerManager;
+      template <int D> class TrajectoryReader; 
+      template <int D> class TrajectoryReaderFactory; 
+      template <int D> class BdSimulator;
+      template <int D> class BdStep;
+      template <int D> class BdStepFactory;
+      template <int D> class McSimulator;
+      template <int D> class McMove;
+      template <int D> class McMoveFactory;
+      template <int D> class McMoveManager; 
    }
 }
 
@@ -120,6 +131,19 @@ namespace Rpc {
       using PerturbationFactory = Rpc::PerturbationFactory<D>;
       using Ramp = Rpc::Ramp<D>;
       using RampFactory = Rpc::RampFactory<D>;
+      using TrajectoryReader = Rpc::TrajectoryReader<D>;
+      using TrajectoryReaderFactory = Rpc::TrajectoryReaderFactory<D>;
+      using Analyzer = Rpc::Analyzer<D>;
+      using AnalyzerManager = Rpc::AnalyzerManager<D>;
+
+      using BdSimulator = Rpc::BdSimulator<D>;
+      using BdStep = Rpc::BdStep<D>;
+      using BdStepFactory = Rpc::BdStepFactory<D>;
+
+      using McSimulator = Rpc::McSimulator<D>;
+      using McMove = Rpc::McMove<D>;
+      using McMoveFactory = Rpc::McMoveFactory<D>;
+      using McMoveManager = Rpc::McMoveManager<D>;
 
       using RField = Prdc::Cpu::RField<D>;
       using RFieldDft = Prdc::Cpu::RFieldDft<D>;

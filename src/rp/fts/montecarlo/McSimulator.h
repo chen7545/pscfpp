@@ -23,17 +23,27 @@ namespace Rp {
    * \ingroup Rp_Fts_MonteCarlo_Module
    */
    template <int D, class T>
-   class McSimulator : public Simulator<D,T>
+   class McSimulator : public T::Simulator
    {
 
    public:
 
+      /// Alias for System class in program-level namespace.
+      using SystemT = typename T::System;
+
+      /// Alias for Simulator class in program-level namespace.
+      using SimulatorT = typename T::Simulator;
+
+      /// Alias for McSimulator class in program-level namespace.
+      using McSimulatorT = typename T::McSimulator;
+
       /**
       * Constructor.
       *
-      * \param system parent System
+      * \param system  parent System
+      * \param mcSimulator  instance of enclosing McSimulator subclass
       */
-      McSimulator(typename T::System& system);
+      McSimulator(SystemT& system, McSimulatorT mcSimulator);
 
       /**
       * Destructor.
@@ -124,8 +134,6 @@ namespace Rp {
 
       ///@}
 
-      using SimulatorT = Simulator<T,D>;
-
       // Inherited public functions
 
       using SimulatorT::allocate;
@@ -198,6 +206,9 @@ namespace Rp {
       using SimulatorT::state_;
 
    private:
+
+      /// Alias for Analyzer class in program-level namespace.
+      using AnalyzerT = typename T::Analyzer;
 
       /**
       * Manager for Monte Carlo moves.

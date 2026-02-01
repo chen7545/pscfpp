@@ -48,8 +48,8 @@ namespace Rpc {
    */
    template <int D>
    Simulator<D>::Simulator(typename Types<D>::System& system)
-    : Base(system, *this)
-   {  Base::vecRandom().associate(Base::random()); }
+    : RpSimulator(system, *this)
+   {  RpSimulator::vecRandom().associate(RpSimulator::random()); }
 
 }
 }
