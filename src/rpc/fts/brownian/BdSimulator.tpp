@@ -14,25 +14,15 @@
 #include <rpc/fts/brownian/BdStepFactory.h>
 #include <rpc/fts/analyzer/AnalyzerManager.h>
 #include <rpc/fts/analyzer/AnalyzerFactory.h>
-#include <rpc/fts/simulator/Simulator.h>
-#include <rpc/fts/compressor/Compressor.h>
-#include <rpc/fts/analyzer/AnalyzerFactory.h>
 #include <rpc/fts/trajectory/TrajectoryReader.h>
 #include <rpc/fts/trajectory/TrajectoryReaderFactory.h>
-#include <rpc/fts/perturbation/PerturbationFactory.h>
-#include <rpc/fts/perturbation/Perturbation.h>
-#include <rpc/fts/ramp/RampFactory.h>
-#include <rpc/fts/ramp/Ramp.h>
-#include <rpc/fts/simulator/SimState.h>
 #include <rpc/fts/simulator/Simulator.h>
+#include <rpc/fts/compressor/Compressor.h>
+#include <rpc/fts/perturbation/Perturbation.h>
+#include <rpc/fts/ramp/Ramp.h>
 #include <rpc/system/System.h>
 #include <prdc/cpu/RField.h>
 #include <pscf/cpu/CpuVecRandom.h>
-
-#include <util/param/Factory.h>
-#include <util/random/Random.h>
-#include <util/misc/Timer.h>
-#include <util/global.h>
 
 #include <rp/fts/brownian/BdSimulator.tpp>
 

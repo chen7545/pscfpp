@@ -11,9 +11,9 @@
 #include "BdSimulator.h"
 
 #include <util/param/Factory.h>
+#include <util/param/ParamComposite.h>
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
-#include <util/global.h>
 
 namespace Pscf {
 namespace Rp {
@@ -29,8 +29,7 @@ namespace Rp {
       analyzerManager_(bdSimulator, system),
       bdStepPtr_(nullptr),
       bdStepFactoryPtr_(nullptr),
-      trajectoryReaderFactoryPtr_(nullptr),
-      bdSimulatorPtr_(&bdSimulator)
+      trajectoryReaderFactoryPtr_(nullptr)
    {
       ParamComposite::setClassName("BdSimulator");
       bdStepFactoryPtr_ = new typename T::BdStepFactory(bdSimulator);

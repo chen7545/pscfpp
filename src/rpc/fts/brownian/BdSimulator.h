@@ -12,17 +12,9 @@
 #include <rpc/system/Types.h>                  // template argument
 #include <rpc/fts/simulator/Simulator.h>       // indirect base class
 #include <rpc/fts/analyzer/AnalyzerManager.h>  // member of base class
-#include <prdc/cpu/RField.h>                   // member of base class
-
-// Forward declarations
-namespace Util {
-   template <class T> class Factory;
-}
 
 namespace Pscf {
 namespace Rpc {
-
-   using namespace Util;
 
    /**
    * Brownian dynamics simulator for PS-FTS.

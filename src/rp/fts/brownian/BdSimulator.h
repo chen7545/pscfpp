@@ -8,9 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/fts/simulator/Simulator.h>          // base class
+#include <util/global.h>
+#include <iostream>
+#include <string>
 
-// Forward declarations
+// Forward declaration
 namespace Util {
    template <class T> class Factory;
 }
@@ -159,8 +161,8 @@ namespace Rp {
 
       // Inherited protected functions
 
-      using ParamComposite::readParamComposite;
-      using ParamComposite::readOptional;
+      //using ParamComposite::readParamComposite;
+      //using ParamComposite::readOptional;
 
       using SimulatorT::readRandomSeed;
       using SimulatorT::compressorFactory;
@@ -209,15 +211,10 @@ namespace Rp {
       */
       Factory< typename T::TrajectoryReader >* trajectoryReaderFactoryPtr_;
 
-      /**
-      * Pointer to object of the enclosing subclass.
-      */
-      BdSimulatorT* bdSimulatorPtr_;
-
       // Private member function
 
       /**
-      * Called at the beginning of the simulation.
+      * Setup before the main loop.
       *
       * \param nStep  number of steps planned for the simulation
       */
@@ -240,7 +237,7 @@ namespace Rp {
       return *bdStepPtr_;
    }
 
-   // Get the analyzer manager.
+   // Get the AnalyzerManager.
    template <int D, class T> inline
    typename T::AnalyzerManager& BdSimulator<D,T>::analyzerManager()
    {  return analyzerManager_; }

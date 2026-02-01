@@ -8,7 +8,14 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/fts/simulator/Simulator.h>         // base class
+#include <util/global.h>
+#include <iostream>
+#include <string>
+
+// Forward declaration
+namespace Util {
+   template <class T> class Factory;
+}
 
 namespace Pscf {
 namespace Rp {
@@ -43,7 +50,10 @@ namespace Rp {
       * \param system  parent System
       * \param mcSimulator  instance of enclosing McSimulator subclass
       */
-      McSimulator(SystemT& system, McSimulatorT mcSimulator);
+      McSimulator(SystemT& system, McSimulatorT& mcSimulator);
+
+      McSimulator() = delete;
+      McSimulator(McSimulator<D,T> const &) = delete;
 
       /**
       * Destructor.
@@ -123,7 +133,7 @@ namespace Rp {
       /**
       * Get the trajectory reader factory by reference.
       */
-      Factory<TrajectoryReader<D>>& trajectoryReaderFactory();
+      Factory<typename T::TrajectoryReader>& trajectoryReaderFactory();
 
       /**
       * Have any MC moves been defined?
@@ -176,13 +186,6 @@ namespace Rp {
    protected:
 
       // Inherited protected functions
-
-      using ParamComposite::setClassName;
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
-      using ParamComposite::readParamComposite;
-      using ParamComposite::readParamCompositeOptional;
-
       using SimulatorT::readRandomSeed;
       using SimulatorT::compressorFactory;
       using SimulatorT::readCompressor;
@@ -194,7 +197,6 @@ namespace Rp {
       using SimulatorT::setRamp;
 
       // Inherited protected data members
-
       using SimulatorT::wc_;
       using SimulatorT::hasWc_;
       using SimulatorT::hamiltonian_;
@@ -223,7 +225,7 @@ namespace Rp {
       /**
       * Pointer to a trajectory reader factory.
       */
-      Factory< TrajectoryReader<D> >* trajectoryReaderFactoryPtr_;
+      Factory<typename T::TrajectoryReader>* trajectoryReaderFactoryPtr_;
 
       // Private member function
 
@@ -248,7 +250,8 @@ namespace Rp {
 
    // Get the TrajectoryReader factory.
    template <int D, class T> inline
-   Factory<TrajectoryReader<D> >& McSimulator<D,T>::trajectoryReaderFactory()
+   Factory<typename T::TrajectoryReader>& 
+   McSimulator<D,T>::trajectoryReaderFactory()
    {
       UTIL_ASSERT(trajectoryReaderFactoryPtr_);
       return *trajectoryReaderFactoryPtr_;

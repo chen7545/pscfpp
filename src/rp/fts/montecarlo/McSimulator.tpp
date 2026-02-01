@@ -10,9 +10,10 @@
 
 #include "McSimulator.h"
 
+#include <util/param/Factory.h>
+#include <util/param/ParamComposite.h>
 #include <util/random/Random.h>
 #include <util/misc/Timer.h>
-#include <util/global.h>
 
 #include <gsl/gsl_eigen.h>
 
@@ -341,7 +342,7 @@ namespace Rp {
    /*
    * Output McMoveManager timer results.
    */
-   template<int D>
+   template <int D, class T>
    void McSimulator<D,T>::outputTimers(std::ostream& out) const
    {
       SimulatorT::compressor().outputTimers(out);
@@ -353,7 +354,7 @@ namespace Rp {
    /*
    * Clear all McMoveManager timers.
    */
-   template<int D>
+   template <int D, class T>
    void McSimulator<D,T>::clearTimers()
    {  mcMoveManager_.clearTimers(); }
 
