@@ -45,8 +45,8 @@ namespace Pscf {
       template <int D> class WFields;
       template <int D> class CFields;
       template <int D> class Mask;
-      template <int D> class ScftThermo;
       template <int D> class EnvironmentFactory;
+      template <int D> class ScftThermo;
       template <int D> class Iterator;
       template <int D> class IteratorFactory;
       template <int D> class Sweep;
@@ -82,7 +82,7 @@ namespace Rpc {
    using namespace Prdc;
 
    /**
-   * List of aliases for types used the in Rpc namespace.
+   * Aliases for types used the in Rpc program-level namespace.
    *
    * \ingroup Rpc_System_Module
    */
@@ -105,18 +105,18 @@ namespace Rpc {
       using PolymerSpecies = Pscf::PolymerSpecies<double>;
       using SolventSpecies = Pscf::SolventSpecies<double>;
       using MixtureBase = Pscf::MixtureBase<double>;
-
       using Interaction = Pscf::Interaction;
+
       using Domain = Rpc::Domain<D>;
       using FieldIo = Rpc::FieldIo<D>;
-      using ScftThermo = Rpc::ScftThermo<D>;
-
       using WFields = Rpc::WFields<D>;
       using CFields = Rpc::CFields<D>;
       using Mask = Rpc::Mask<D>;
 
       using Environment = Prdc::Environment;
       using EnvironmentFactory = Rpc::EnvironmentFactory<D>;
+
+      using ScftThermo = Rpc::ScftThermo<D>;
       using Iterator = Rpc::Iterator<D>;
       using IteratorFactory = Rpc::IteratorFactory<D>;
       using Sweep = Rpc::Sweep<D>;

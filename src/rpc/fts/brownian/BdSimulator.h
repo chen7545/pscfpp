@@ -19,6 +19,10 @@ namespace Rpc {
    /**
    * Brownian dynamics simulator for PS-FTS.
    *
+   * This class is basically a named instantiation of the base class
+   * template Rp::BdSimulator. See the documentation for this base class
+   * for details.
+   * 
    * \see \ref rp_BdSimulator_page (manual page)
    *
    * \ingroup Rpc_Fts_Brownian_Module
@@ -32,9 +36,12 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param system parent System
+      * \param system  parent System
       */
       BdSimulator(System<D>& system);
+
+      BdSimulator() = delete;
+      BdSimulator(BdSimulator<D> const &) = delete;
 
    };
 

@@ -20,6 +20,10 @@ namespace Rpc {
    /**
    * Monte Carlo simulator for PS-FTS.
    *
+   * This class is basically a named instantiation of the base class
+   * template Rp::McSimulator. See documetation of this base class for
+   * details. 
+   *
    * \see \ref rp_McSimulator_page (manual page)
    *
    * \ingroup Rpc_Fts_MonteCarlo_Module
