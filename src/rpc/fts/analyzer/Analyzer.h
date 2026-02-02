@@ -2,9 +2,10 @@
 #define RPC_ANALYZER_H
 
 #include <util/param/ParamComposite.h>      // base class
-
 #include <string>
+#include <iostream>
 
+// Forward declaration
 namespace Util {
    class FileMaster;
 }
@@ -17,16 +18,16 @@ namespace Rpc {
    /**
    * Abstract base for periodic output and/or analysis actions.
    *
-   * The periodic action associated with an Analyzer can involve retrieval
-   * or computation of a physical property value, adding it to statistical 
-   * accumulator, and/or outputting it to file. This periodic action must 
-   * be implemented by the pure virtual sample() method.
+   * The periodic action associated with an Analyzer may involve retrieval
+   * or computation of a physical property value, adding it to a statistical
+   * accumulator, and/or outputting it to file. This periodic action must
+   * be implemented by the pure virtual sample() function.
    *
-   * The sample() method should take the desired action only when the
+   * The sample() function should take the desired action only when the
    * simulation step index is an integer multiple of the associated interval
-   * parameter, and should return immediately otherwise. The interval of 
-   * each Analyzer must be a positive integer that is a multiple of the 
-   * static member Analyzer::baseInterval, which is set to 1 by default. 
+   * parameter. The interval of each Analyzer must be a positive integer
+   * that is a multiple of the static member Analyzer::baseInterval, which
+   * is set to 1 by default.
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
@@ -35,8 +36,6 @@ namespace Rpc {
    {
 
    public:
-
-      // Non-static Methods
 
       /**
       * Default constructor.
@@ -53,18 +52,18 @@ namespace Rpc {
       *
       * Default implementation, reads interval and outputFileName.
       *
-      * \param in input parameter stream
+      * \param in  input parameter stream
       */
       virtual void readParameters(std::istream& in);
 
       /**
       * Complete any required initialization.
       *
-      * This method must be called just before the beginning of
-      * the main simulation loop, after an initial configuration 
-      * is known. It may be used to complete any initialization
-      * that cannot be completed in the readParam method, because
-      * knowledge of the configuration is needed. 
+      * This function must be called just before the beginning of the main
+      * simulation loop, after an initial field configuration is known.
+      * It may be used to complete any initialization that cannot be
+      * completed in the readParameters function, because knowledge of the
+      * configuration is required.
       *
       * The default implementation is an empty function.
       */
@@ -74,11 +73,11 @@ namespace Rpc {
       /**
       * Calculate, analyze and/or output a physical quantity.
       *
-      * Take an action if iStep is a multiple of interval.
-      * If iStep is not a multiple of interval, this method
-      * should do nothing and return immediately.
+      * Take an action if iStep is a multiple of the analyzer interval.
+      * If iStep is not a multiple of interval, this function should do
+      * nothing and return immediately.
       *
-      * \param iStep current simulation step index.
+      * \param iStep  current simulation step index
       */
       virtual void sample(long iStep) = 0;
 
@@ -98,19 +97,19 @@ namespace Rpc {
       /**
       * Return true iff counter is a multiple of the interval.
       *
-      * \param counter simulation step counter
+      * \param counter  simulation step counter
       */
       bool isAtInterval(long counter) const;
 
       // Static members
 
       /**
-      * The interval for an Analyzer must be a multiple of baseInterval.
+      * The interval for every Analyzer must be a multiple of baseInterval.
       */
       static long baseInterval;
 
       /**
-      * Define and initialize baseInterval.
+      * Define and initialize baseInterval (initialized to 1).
       */
       static void initStatic();
 
@@ -118,6 +117,8 @@ namespace Rpc {
 
       /**
       * Set the FileMaster to use to open files.
+      *
+      * \param fileMaster  associated FileMaster object
       */
       void setFileMaster(FileMaster& fileMaster);
 
@@ -125,19 +126,18 @@ namespace Rpc {
       * Optionally read interval from file, with error checking.
       *
       * If no interval parameter is present, the interval is set to 1
-      * by default. The default thus calls the sample function after 
-      * every simulation step.
+      * by default.
       *
-      * \param in input parameter file stream
+      * \param in  input parameter file stream
       */
-      void readInterval(std::istream &in);
+      void readInterval(std::istream& in);
 
       /**
       * Read outputFileName from file.
       *
-      * \param in input parameter file stream.
+      * \param in  input parameter file stream
       */
-      void readOutputFileName(std::istream &in);
+      void readOutputFileName(std::istream& in);
 
       /**
       * Get the FileMaster by reference.
@@ -149,17 +149,14 @@ namespace Rpc {
       /**
       * Return outputFileName string.
       */
-      const std::string& outputFileName() const;
+      std::string const & outputFileName() const;
 
       /**
       * Return outputFileName string with added suffix.
-      * 
+      *
       * \param suffix  suffix that is appended to base outputFileName
       */
-      std::string outputFileName(std::string suffix) const;
-
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
+      std::string outputFileName(std::string const & suffix) const;
 
    private:
 
@@ -174,29 +171,28 @@ namespace Rpc {
 
    };
 
-   // Inline methods
+   // Inline member functions
 
    /*
    * Return interval value.
    */
-   template <int D>
-   inline int Analyzer<D>::interval() const
+   template <int D> inline
+   int Analyzer<D>::interval() const
    {  return interval_; }
 
    /*
    * Return true iff the counter parameter is a multiple of the interval.
    */
-   template <int D>
-   inline bool Analyzer<D>::isAtInterval(long counter) const
+   template <int D> inline
+   bool Analyzer<D>::isAtInterval(long counter) const
    {  return (counter%interval_ == 0); }
 
    /*
    * Get the outputFileName string.
    */
-   template <int D>
-   inline const std::string& Analyzer<D>::outputFileName() const
+   template <int D> inline
+   std::string const & Analyzer<D>::outputFileName() const
    {  return outputFileName_; }
-
 
    #ifndef RPC_ANALYZER_TPP
    // Explicit instantiation declarations
@@ -205,6 +201,6 @@ namespace Rpc {
    extern template class Analyzer<3>;
    #endif
 
-}
-}
+} // namespace Rpc
+} // namespace Pscf
 #endif
