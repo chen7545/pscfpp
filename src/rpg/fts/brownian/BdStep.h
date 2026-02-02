@@ -19,7 +19,12 @@ namespace Rpg {
    /**
    * BdStep is an abstract base class for Brownian dynamics steps.
    *
-   * The virtual step() method must generate a single step.
+   * The virtual step() function must generate a single step.
+   *
+   * This class is basically a named instantiation of the base class 
+   * template Rp::BdStep, using aliases defined in Rpg::Types<D> to 
+   * specialize to types used in the Rpg namespace. See documentation 
+   * of the base class for details.
    *
    * \ingroup Rpg_Fts_Brownian_Module
    */
@@ -32,7 +37,7 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param simulator  parent BdSimulator<D> object
+      * \param simulator  parent Rpg::BdSimulator<D> object
       */
       BdStep(BdSimulator<D>& simulator);
 

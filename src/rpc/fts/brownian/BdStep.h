@@ -21,6 +21,11 @@ namespace Rpc {
    *
    * The virtual step() method must generate a single step.
    *
+   * This class is basically a named instantiation of the base class 
+   * template Rp::BdStep, using aliases defined in Rpc::Types<D> to 
+   * specialize to types used in the Rpc namespace. See documentation 
+   * of the base class for details.
+   *
    * \ingroup Rpc_Fts_Brownian_Module
    */
    template <int D>

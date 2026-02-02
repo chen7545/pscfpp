@@ -20,6 +20,11 @@ namespace Rpg {
    /**
    * Monte Carlo simulator for PS-FTS.
    *
+   * This class is basically a named instantiation of the base class 
+   * template Rp::McSimulator, using aliases defined in Rpg::Types<D> to 
+   * specialize to types used in the Rpg namespace. See documentation 
+   * of the base class for details.
+   *
    * \see \ref rp_McSimulator_page (manual page)
    *
    * \ingroup Rpg_Fts_MonteCarlo_Module
@@ -33,9 +38,12 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param system parent System
+      * \param system  parent Rpg::System<D> object
       */
       McSimulator(System<D>& system);
+
+      McSimulator() = delete;
+      McSimulator(McSimulator<D> const & ) = delete;
 
    };
 

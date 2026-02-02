@@ -17,9 +17,14 @@ namespace Rpg {
    /**
    * McMove is an abstract base class for Monte Carlo moves.
    *
-   * The virtual move() method must generate a trial move, decide whether
-   * to accept or reject it, and update the associated System fields
-   * if it is accepted.
+   * The virtual move() function must generate a trial move, decide whether
+   * to accept or reject it, and update the associated System fields if
+   * it is accepted.
+   *
+   * This class is basically a named instantiation of the base class 
+   * template Rp::McMove, using aliases defined in Rpg::Types<D> to 
+   * specialize to types used in the Rpg namespace. See documentation 
+   * of the base class for details.
    *
    * \ingroup Rpg_Fts_MonteCarlo_Module
    */
@@ -32,7 +37,7 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param simulator  parent McSimulator object
+      * \param simulator  parent Rpg::McSimulator<D> object
       */
       McMove(McSimulator<D>& simulator);
 

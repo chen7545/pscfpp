@@ -20,9 +20,10 @@ namespace Rpc {
    /**
    * Monte Carlo simulator for PS-FTS.
    *
-   * This class is basically a named instantiation of the base class
-   * template Rp::McSimulator. See documetation of this base class for
-   * details. 
+   * This class is basically a named instantiation of the base class 
+   * template Rp::McSimulator, using aliases defined in Rpc::Types<D> to 
+   * specialize to types used in the Rpc namespace. See documentation 
+   * of the base class for details.
    *
    * \see \ref rp_McSimulator_page (manual page)
    *
@@ -40,6 +41,9 @@ namespace Rpc {
       * \param system parent System
       */
       McSimulator(System<D>& system);
+
+      McSimulator() = delete;
+      McSimulator(McSimulator<D> const & ) = delete;
 
    };
 

@@ -22,9 +22,9 @@ namespace Rpg {
    /**
    * Field theoretic simulator (base class).
    *
-   * This class is little more than a named instantiation of the base class
-   * template Rp::Simulator. It has the same public interface as the base
-   * class. See the documentation of Rp::Simulator for details. 
+   * This class basically a named instantiation of the base class
+   * template Rp::Simulator, and has the same public interface as the
+   * base class. See the documentation of Rp::Simulator for details. 
    *
    * \ingroup Rpg_Fts_Module
    */

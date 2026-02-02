@@ -22,9 +22,12 @@ namespace Rpc {
    /**
    * Field theoretic simulator (base class).
    *
-   * This class is basically a named instantiation of the base class
-   * template Rp::Simulator. See the documentation of this base class
-   * for details. 
+   * This class is basically a named instantiation of the base class 
+   * template Rp::Simulator, using aliases defined in Rpc::Types<D> to 
+   * specialize to types used in the Rpc namespace. See documentation 
+   * of the base class for details.
+   *
+   * \see \ref rp_Simulator_page (manual page)
    *
    * \ingroup Rpc_Fts_Module
    */
@@ -32,9 +35,6 @@ namespace Rpc {
    class Simulator : public Pscf::Rp::Simulator<D, Types<D> >
    {
    public:
-
-      /// Alias for direct base class.
-      using RpSimulator = Pscf::Rp::Simulator<D, Types<D> >;
 
       /**
       * Constructor.
@@ -46,6 +46,11 @@ namespace Rpc {
       Simulator(Simulator<D> const &) = delete;
 
       Simulator<D>& operator=(Simulator<D> const &) = delete;
+
+   private:
+
+      /// Alias for direct base class.
+      using RpSimulator = Pscf::Rp::Simulator<D, Types<D> >;
 
    };
 
