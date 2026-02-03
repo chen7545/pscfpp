@@ -2,11 +2,13 @@
 #define RPG_ANALYZER_H
 
 #include <util/param/ParamComposite.h>      // base class
-#include <util/misc/FileMaster.h>           // member variable
-
 #include <string>
 #include <iostream>
-#include <fstream>
+
+// Forward declaration
+namespace Util {
+   class FileMaster;
+}
 
 namespace Pscf {
 namespace Rpg {
@@ -17,15 +19,15 @@ namespace Rpg {
    * Abstract base for periodic output and/or analysis actions.
    *
    * The periodic action associated with an Analyzer may involve retrieval
-   * or computation of a physical property, adding it to a statistical 
+   * or computation of a physical property value, adding it to a statistical
    * accumulator, and/or outputting it to file. This periodic action must
-   * be implemented by the pure virtual sample() method.
+   * be implemented by the pure virtual sample() function.
    *
-   * The sample() method should take the desired action only when the
+   * The sample() function should take the desired action only when the
    * simulation step index is an integer multiple of the associated interval
-   * parameter.  The interval must be a positive integer that is a multiple 
-   * of the static member Analyzer::baseInterval, which is set equal to 1 
-   * by default.
+   * parameter. The interval of each Analyzer must be a positive integer
+   * that is a multiple of the static member Analyzer::baseInterval, which
+   * is set to 1 by default.
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -50,17 +52,18 @@ namespace Rpg {
       *
       * Default implementation, reads interval and outputFileName.
       *
-      * \param in input parameter stream
+      * \param in  input parameter stream
       */
       virtual void readParameters(std::istream& in);
 
       /**
       * Complete any required initialization.
       *
-      * This method will be called just before the beginning of the
-      * main simulation loop, after an initial field configuration 
-      * is known. It may be used to complete any initialization that
-      * cannot be completed in the readParameters method.
+      * This function must be called just before the beginning of the main
+      * simulation loop, after an initial field configuration is known.
+      * It may be used to complete any initialization that cannot be
+      * completed in the readParameters function, because knowledge of the
+      * configuration is required.
       *
       * The default implementation is an empty function.
       */
@@ -70,11 +73,11 @@ namespace Rpg {
       /**
       * Calculate, analyze and/or output a physical quantity.
       *
-      * Take an action if iStep is a multiple of interval.
-      * If iStep is not a multiple of interval, this method
-      * should do nothing and return immediately.
+      * Take an action if iStep is a multiple of the analyzer interval.
+      * If iStep is not a multiple of interval, this function should do
+      * nothing and return immediately.
       *
-      * \param iStep current simulation step index.
+      * \param iStep  current simulation step index
       */
       virtual void sample(long iStep) = 0;
 
@@ -94,7 +97,7 @@ namespace Rpg {
       /**
       * Return true iff counter is a multiple of the interval.
       *
-      * \param counter simulation step counter
+      * \param counter  simulation step counter
       */
       bool isAtInterval(long counter) const;
 
@@ -106,7 +109,7 @@ namespace Rpg {
       static long baseInterval;
 
       /**
-      * Define and initialize baseInterval.
+      * Define and initialize baseInterval (initialized to 1).
       */
       static void initStatic();
 
@@ -114,22 +117,27 @@ namespace Rpg {
 
       /**
       * Set the FileMaster to use to open files.
+      *
+      * \param fileMaster  associated FileMaster object
       */
       void setFileMaster(FileMaster& fileMaster);
 
       /**
-      * Read interval from file, with error checking.
+      * Optionally read interval from file, with error checking.
       *
-      * \param in input parameter file stream
+      * If no interval parameter is present, the interval is set to 1
+      * by default.
+      *
+      * \param in  input parameter file stream
       */
-      void readInterval(std::istream &in);
+      void readInterval(std::istream& in);
 
       /**
       * Read outputFileName from file.
       *
-      * \param in input parameter file stream.
+      * \param in  input parameter file stream
       */
-      void readOutputFileName(std::istream &in);
+      void readOutputFileName(std::istream& in);
 
       /**
       * Get the FileMaster by reference.
@@ -141,12 +149,14 @@ namespace Rpg {
       /**
       * Return outputFileName string.
       */
-      const std::string& outputFileName() const;
+      std::string const & outputFileName() const;
 
       /**
       * Return outputFileName string with added suffix.
+      *
+      * \param suffix  suffix that is appended to base outputFileName
       */
-      std::string outputFileName(const std::string& suffix) const;
+      std::string outputFileName(std::string const & suffix) const;
 
    private:
 
@@ -155,54 +165,42 @@ namespace Rpg {
 
       /// Base name of output file(s).
       std::string outputFileName_;
-      
+
       /// Pointer to fileMaster for opening output file(s).
       FileMaster* fileMasterPtr_;
 
    };
 
-   // Inline methods
+   // Inline member functions
 
    /*
    * Return interval value.
    */
-   template <int D>
-   inline int Analyzer<D>::interval() const
+   template <int D> inline
+   int Analyzer<D>::interval() const
    {  return interval_; }
 
    /*
    * Return true iff the counter parameter is a multiple of the interval.
    */
-   template <int D>
-   inline bool Analyzer<D>::isAtInterval(long counter) const
+   template <int D> inline
+   bool Analyzer<D>::isAtInterval(long counter) const
    {  return (counter%interval_ == 0); }
 
    /*
    * Get the outputFileName string.
    */
-   template <int D>
-   inline const std::string& Analyzer<D>::outputFileName() const
+   template <int D> inline
+   std::string const & Analyzer<D>::outputFileName() const
    {  return outputFileName_; }
 
-   // Method template
-
-   #if 0
-   /*
-   * Serialize to/from an archive. 
-   */
-   template <class Archive>
-   void Analyzer<D>::serialize(Archive& ar, const unsigned int version)
-   {
-      ar & interval_;
-      ar & outputFileName_;
-   }
-   #endif
-
+   #ifndef RPG_ANALYZER_TPP
    // Explicit instantiation declarations
    extern template class Analyzer<1>;
    extern template class Analyzer<2>;
    extern template class Analyzer<3>;
+   #endif
 
-}
-}
+} // namespace Rpg
+} // namespace Pscf
 #endif

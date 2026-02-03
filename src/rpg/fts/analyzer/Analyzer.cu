@@ -17,5 +17,6 @@ namespace Rpg {
    template class Analyzer<1>;
    template class Analyzer<2>;
    template class Analyzer<3>;
+
 }
 }
