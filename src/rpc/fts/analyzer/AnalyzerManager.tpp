@@ -1,7 +1,7 @@
 #ifndef RPC_ANALYZER_MANAGER_TPP
 #define RPC_ANALYZER_MANAGER_TPP
 
-#include "AnalyzerManager.h" 
+#include "AnalyzerManager.h"
 #include "AnalyzerFactory.h"
 #include <util/param/ParamComposite.h>
 
@@ -18,15 +18,15 @@ namespace Rpc {
    : Manager< Analyzer<D> >(),
      simulatorPtr_(&simulator),
      systemPtr_(&system)
-   {  setClassName("AnalyzerManager"); }
+   {  ParamComposite::setClassName("AnalyzerManager"); }
 
    /*
    * Destructor.
    */
    template <int D>
    AnalyzerManager<D>::~AnalyzerManager()
-   {} 
-   
+   {}
+
    /*
    * Return a pointer to a new AnalyzerFactory object.
    */
@@ -35,7 +35,7 @@ namespace Rpc {
    {  return new AnalyzerFactory<D>(*simulatorPtr_, *systemPtr_); }
 
    /*
-   * Read parameter file. 
+   * Read parameter file.
    *
    * \param in input parameter file stream.
    */
@@ -51,31 +51,32 @@ namespace Rpc {
    * Call initialize method of each analyzer.
    */
    template <int D>
-   void AnalyzerManager<D>::setup() 
+   void AnalyzerManager<D>::setup()
    {
       for (int i = 0; i < size(); ++i) {
          (*this)[i].setup();
       }
    }
- 
+
    /*
    * Call sample method of each analyzer.
    */
    template <int D>
-   void AnalyzerManager<D>::sample(long iStep) 
+   void AnalyzerManager<D>::sample(long iStep)
    {
-      UTIL_CHECK(Analyzer<D>::baseInterval > 0);
-      UTIL_CHECK(iStep % Analyzer<D>::baseInterval == 0);
+      int baseInterval = Analyzer<D>::baseInterval;
+      UTIL_CHECK(baseInterval > 0);
+      UTIL_CHECK(iStep % baseInterval == 0);
       for (int i = 0; i < size(); ++i) {
          (*this)[i].sample(iStep);
       }
    }
- 
+
    /*
    * Call output method of each analyzer.
    */
    template <int D>
-   void AnalyzerManager<D>::output() 
+   void AnalyzerManager<D>::output()
    {
       for (int i = 0; i < size(); ++i) {
          (*this)[i].output();

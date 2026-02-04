@@ -23,7 +23,7 @@ namespace Rpc {
    * Analyze averages and block averages of several real variables.
    *
    * This class evaluates the average of a single sampled real variables,
-   * and optionally writes values or block averages to a data file during a 
+   * and optionally writes values or block averages to a data file during a
    * simulation.  It is intended for use as a base class for any Analyzer
    * that computes and evaluates an average for a single physical variable.
    *
@@ -38,8 +38,8 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param simulator parent Simulator object
-      * \param system parent System object
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       AverageAnalyzer(Simulator<D>& simulator, System<D>& system);
 
@@ -51,17 +51,17 @@ namespace Rpc {
       /**
       * Read interval, outputFileName and (optionally) nSamplePerOutput.
       *
-      * The optional variable nSamplePerOutput defaults to 1, which 
-      * causes every sampled value to be written to file.  Setting 
+      * The optional variable nSamplePerOutput defaults to 1, which
+      * causes every sampled value to be written to file.  Setting
       * nSamplePerOutput = 0 suppresses output of block averages to
-      * file. 
+      * file.
       *
       * \param in  input parameter file
       */
       virtual void readParameters(std::istream& in);
 
       /**
-      * Setup before loop. 
+      * Setup before loop.
       *
       * Opens an output file, if nSamplePerOutput > 0.
       */
@@ -78,10 +78,10 @@ namespace Rpc {
       * Write final results to file after a simulation.
       *
       * Write an average value. If the simulation does not have a ramp,
-      * it also writes an estimate of the error on the average and 
+      * it also writes an estimate of the error on the average and
       * information estimates from hierarchichal block averages about
       * how that estimate was obtained. Information about error analysis
-      * is suppressed when a ramp exists. 
+      * is suppressed when a ramp exists.
       */
       virtual void output();
 
@@ -89,16 +89,18 @@ namespace Rpc {
       * Get value of nSamplePerOutput.
       *
       * If nSamplePerOutput == 0, output of block averages is disabled.
-      * For nSamplePerOutput > 0, nSamplePerOutput is the number of 
+      * For nSamplePerOutput > 0, nSamplePerOutput is the number of
       * sampled values averaged in each block average.
       */
       int nSamplePerOutput() const;
 
-      using Analyzer<D>::interval;
-      using Analyzer<D>::isAtInterval;
-      using Analyzer<D>::outputFileName;
-
    protected:
+
+      /// Output file stream.
+      std::ofstream outputFile_;
+
+      /// Average object.
+      Average accumulator_;
 
       /**
       * Compute value of sampled quantity.
@@ -113,14 +115,6 @@ namespace Rpc {
       */
       virtual void outputValue(int step, double value);
 
-      // Output file stream
-      std::ofstream outputFile_;
-
-      /// Average object
-      Average accumulator_;
-
-      using Analyzer<D>::readInterval;
-      using Analyzer<D>::readOutputFileName;
       using Analyzer<D>::simulator;
       using Analyzer<D>::system;
 
@@ -138,12 +132,10 @@ namespace Rpc {
    inline int AverageAnalyzer<D>::nSamplePerOutput() const
    {  return nSamplePerOutput_; }
 
-   #ifndef RPC_AVERAGE_ANALYZER_TPP
    // Explicit instantiation declarations
    extern template class AverageAnalyzer<1>;
    extern template class AverageAnalyzer<2>;
    extern template class AverageAnalyzer<3>;
-   #endif
 
 }
 }

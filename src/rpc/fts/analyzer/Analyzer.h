@@ -39,7 +39,7 @@ namespace Rpc {
    {
 
    public:
-     
+
       /**
       * Constructor.
       *
@@ -96,7 +96,7 @@ namespace Rpc {
       {}
 
       /**
-      * Get interval value.
+      * Get the interval value.
       */
       int interval() const;
 
@@ -146,12 +146,12 @@ namespace Rpc {
       void readOutputFileName(std::istream& in);
 
       /**
-      * Return parent simulator by reference.
+      * Get the parent Simulator by reference.
       */
       Simulator<D>& simulator();
 
       /**
-      * Return parent system by reference.
+      * Get the parent System by reference.
       */
       System<D>& system();
 
@@ -163,12 +163,12 @@ namespace Rpc {
       FileMaster& fileMaster();
 
       /**
-      * Return outputFileName string.
+      * Get the outputFileName string.
       */
       std::string const & outputFileName() const;
 
       /**
-      * Return outputFileName string with added suffix.
+      * Return the outputFileName string with an added suffix.
       *
       * \param suffix  suffix that is appended to base outputFileName
       */
@@ -182,10 +182,10 @@ namespace Rpc {
       /// Base name of output file(s).
       std::string outputFileName_;
 
-      /// Pointer to the parent simulator.
+      /// Pointer to the parent Simulator.
       Simulator<D>* simulatorPtr_;
 
-      /// Pointer to the parent system.
+      /// Pointer to the parent System.
       System<D>* systemPtr_;
 
       /// Pointer to fileMaster for opening output file(s).
@@ -196,34 +196,14 @@ namespace Rpc {
    // Inline member functions
 
    /*
-   * Get the parent Simulator.
-   */
-   template <int D> inline 
-   Simulator<D>& Analyzer<D>::simulator()
-   {
-      UTIL_ASSERT(simulatorPtr_);
-      return *simulatorPtr_; 
-   }
-
-   /*
-   * Get the parent System.
-   */
-   template <int D> inline 
-   System<D>& Analyzer<D>::system()
-   {  
-      UTIL_ASSERT(systemPtr_);
-      return *systemPtr_; 
-   }
-
-   /*
-   * Return interval value.
+   * Get the interval value.
    */
    template <int D> inline
    int Analyzer<D>::interval() const
    {  return interval_; }
 
    /*
-   * Return true iff the counter parameter is a multiple of the interval.
+   * Return true iff counter is a multiple of the interval.
    */
    template <int D> inline
    bool Analyzer<D>::isAtInterval(long counter) const
@@ -236,12 +216,30 @@ namespace Rpc {
    std::string const & Analyzer<D>::outputFileName() const
    {  return outputFileName_; }
 
-   #ifndef RPC_ANALYZER_TPP
+   /*
+   * Get the parent Simulator by reference.
+   */
+   template <int D> inline
+   Simulator<D>& Analyzer<D>::simulator()
+   {
+      UTIL_ASSERT(simulatorPtr_);
+      return *simulatorPtr_;
+   }
+
+   /*
+   * Get the parent System by reference.
+   */
+   template <int D> inline
+   System<D>& Analyzer<D>::system()
+   {
+      UTIL_ASSERT(systemPtr_);
+      return *systemPtr_;
+   }
+
    // Explicit instantiation declarations
    extern template class Analyzer<1>;
    extern template class Analyzer<2>;
    extern template class Analyzer<3>;
-   #endif
 
 } // namespace Rpc
 } // namespace Pscf

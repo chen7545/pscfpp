@@ -31,7 +31,7 @@ namespace Rpg
       nSamplePerOutput_(1),
       nValue_(0),
       hasAccumulators_(false)
-   {}
+   {  Analyzer<D>::setFileMaster(system.fileMaster()); }
 
    /*
    * Destructor.

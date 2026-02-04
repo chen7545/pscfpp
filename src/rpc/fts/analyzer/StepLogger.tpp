@@ -24,7 +24,7 @@ namespace Rpc {
    template <int D>
    StepLogger<D>::StepLogger(Simulator<D>& simulator, System<D>& system)
     : Analyzer<D>(simulator, system)
-   {  setClassName("StepLogger"); }
+   {  ParamComposite::setClassName("StepLogger"); }
 
    /*
    * Read interval and outputFileName. 
@@ -39,7 +39,7 @@ namespace Rpc {
    template <int D>
    void StepLogger<D>::sample(long iStep) 
    {
-      if (isAtInterval(iStep))  {
+      if (Analyzer<D>::isAtInterval(iStep))  {
          Log::file() << "iStep  " << Int(iStep,10) << std::endl;
       }
    }

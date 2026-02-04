@@ -15,7 +15,7 @@ namespace Rpg {
    {  Analyzer<D>::baseInterval = 1; }
 
    /*
-   * Default constructor.
+   * Constructor.
    */
    template <int D>
    Analyzer<D>::Analyzer(Simulator<D>& simulator, System<D>& system)
@@ -94,7 +94,7 @@ namespace Rpg {
    template <int D>
    FileMaster& Analyzer<D>::fileMaster()
    {
-      assert(fileMasterPtr_);
+      UTIL_CHECK(fileMasterPtr_);
       return (*fileMasterPtr_);
    }
 

@@ -115,13 +115,6 @@ namespace Rpc
 
    protected:
 
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
-      using Analyzer<D>::setClassName;
-      using Analyzer<D>::readInterval;
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
       /**
       * Set name of variable.
       *
@@ -185,6 +178,13 @@ namespace Rpc
 
       /// Output file stream
       std::ofstream outputFile_;
+
+      using ParamComposite::read;
+      using ParamComposite::readOptional;
+      using Analyzer<D>::setClassName;
+      using Analyzer<D>::readInterval;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
    private:
 

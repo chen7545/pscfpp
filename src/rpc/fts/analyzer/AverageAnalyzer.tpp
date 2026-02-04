@@ -27,11 +27,11 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   AverageAnalyzer<D>::AverageAnalyzer(Simulator<D>& simulator, 
+   AverageAnalyzer<D>::AverageAnalyzer(Simulator<D>& simulator,
                                        System<D>& system)
     : Analyzer<D>(simulator, system),
       nSamplePerOutput_(1)
-   {}
+   {  Analyzer<D>::setFileMaster(system.fileMaster()); }
 
    /*
    * Destructor.
@@ -53,11 +53,11 @@ namespace Rpc {
       nSamplePerOutput_ = 1;
       ParamComposite::readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
       if (nSamplePerOutput_ > 0) {
-         std::string fileName = outputFileName(".dat");
+         std::string fileName = Analyzer<D>::outputFileName(".dat");
          system().fileMaster().openOutputFile(fileName, outputFile_);
       }
 
-      // Set the Average accumulator to compute block averages 
+      // Set the Average accumulator to compute block averages
       // for blocks containing nSamplePerOutput_ sampled values
       accumulator_.setNSamplePerBlock(nSamplePerOutput_);
    }
@@ -83,7 +83,8 @@ namespace Rpc {
       // Output block averages
       if (nSamplePerOutput_ > 0) {
          if (accumulator_.isBlockComplete()) {
-            int beginStep = iStep - (nSamplePerOutput_ - 1)*interval();
+            int interval = Analyzer<D>::interval();
+            int beginStep = iStep - (nSamplePerOutput_ - 1)*interval;
             value = accumulator_.blockAverage();
             outputValue(beginStep, value);
          }
@@ -95,7 +96,7 @@ namespace Rpc {
    * Write a sampled or block average value to file.
    */
    template <int D>
-   void AverageAnalyzer<D>::outputValue(int step, double value) 
+   void AverageAnalyzer<D>::outputValue(int step, double value)
    {
       UTIL_CHECK(outputFile_.is_open());
       outputFile_ << Int(step);
@@ -117,14 +118,14 @@ namespace Rpc {
 
       #if 0
       // Write parameter (*.prm) file
-      fileName = outputFileName(".prm");
+      fileName = Analyzer<D>::outputFileName(".prm");
       system().fileMaster().openOutputFile(fileName, outputFile_);
       ParamComposite::writeParam(outputFile_);
       outputFile_.close();
       #endif
 
       // Write average (*.ave) file
-      fileName = outputFileName(".ave");
+      fileName = Analyzer<D>::outputFileName(".ave");
       system().fileMaster().openOutputFile(fileName, outputFile_);
       double ave = accumulator_.average();
       outputFile_ << "Average = ";
@@ -145,9 +146,8 @@ namespace Rpc {
          accumulator_.output(outputFile_);
          outputFile_ << std::endl;
       }
-      
-      outputFile_.close();
 
+      outputFile_.close();
    }
 
 }
