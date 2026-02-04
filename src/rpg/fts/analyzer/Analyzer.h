@@ -236,10 +236,12 @@ namespace Rpg {
       return *systemPtr_;
    }
 
+   #ifndef RPG_ANALYZER_TPP
    // Explicit instantiation declarations
    extern template class Analyzer<1>;
    extern template class Analyzer<2>;
    extern template class Analyzer<3>;
+   #endif
 
 } // namespace Rpg
 } // namespace Pscf

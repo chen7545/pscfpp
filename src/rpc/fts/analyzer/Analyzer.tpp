@@ -10,9 +10,19 @@ namespace Rpc {
 
    using namespace Util;
 
+   // Static members
+
+   template <int D>
+   long Analyzer<D>::baseInterval = 1;
+
+   /*
+   * Static initialization function.
+   */
    template <int D>
    void Analyzer<D>::initStatic()
    {  Analyzer<D>::baseInterval = 1; }
+
+   // Non-static member functions
 
    /*
    * Constructor.
