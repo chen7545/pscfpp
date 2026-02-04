@@ -25,8 +25,8 @@ namespace Rpg {
    */
    template <int D>
    AnalyzerFactory<D>::AnalyzerFactory(Simulator<D>& simulator, System<D>& system)
-    : sysPtr_(&system),
-      simulatorPtr_(&simulator)
+    : simPtr_(&simulator),
+      sysPtr_(&system)
    {}
 
    /* 
@@ -41,34 +41,33 @@ namespace Rpg {
       ptr = trySubfactories(className);
       if (ptr) return ptr;
 
-      
       // Try to match classname
       if (className == "TrajectoryWriter") {
-         ptr = new TrajectoryWriter<D>(*simulatorPtr_, *sysPtr_);
+         ptr = new TrajectoryWriter<D>(*simPtr_, *sysPtr_);
       } else if (className == "ConcentrationWriter") {
          ptr = 
-           new ConcentrationWriter<D>(*simulatorPtr_, *sysPtr_);
+           new ConcentrationWriter<D>(*simPtr_, *sysPtr_);
       } else if (className == "HamiltonianAnalyzer") {
          ptr = 
-           new HamiltonianAnalyzer<D>(*simulatorPtr_, *sysPtr_);
+           new HamiltonianAnalyzer<D>(*simPtr_, *sysPtr_);
       } else if (className == "BinaryStructureFactorGrid") {
          ptr = 
-           new BinaryStructureFactorGrid<D>(*simulatorPtr_, 
+           new BinaryStructureFactorGrid<D>(*simPtr_, 
                                             *sysPtr_);
       } else if (className == "StepLogger") {
-         ptr = new StepLogger<D>();
+         ptr = new StepLogger<D>(*simPtr_, *sysPtr_);
       } else if (className == "PerturbationDerivative") {
-         ptr = new PerturbationDerivative<D>(*simulatorPtr_, 
+         ptr = new PerturbationDerivative<D>(*simPtr_, 
                                              *sysPtr_);
       } else if (className == "ChiDerivative") {
-         ptr = new ChiDerivative<D>(*simulatorPtr_, *sysPtr_);
+         ptr = new ChiDerivative<D>(*simPtr_, *sysPtr_);
       } else if (className == "ConcentrationDerivative") {
-         ptr = new ConcentrationDerivative<D>(*simulatorPtr_, 
+         ptr = new ConcentrationDerivative<D>(*simPtr_, 
                                               *sysPtr_);
       } else if (className == "MaxOrderParameter") {
-         ptr = new MaxOrderParameter<D>(*simulatorPtr_, *sysPtr_);
+         ptr = new MaxOrderParameter<D>(*simPtr_, *sysPtr_);
       } else if (className == "FourthOrderParameter") {
-         ptr = new FourthOrderParameter<D>(*simulatorPtr_, *sysPtr_);
+         ptr = new FourthOrderParameter<D>(*simPtr_, *sysPtr_);
       }
 
       return ptr;

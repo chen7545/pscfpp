@@ -14,6 +14,9 @@
 namespace Pscf {
 namespace Rpc {
 
+   template <int D> class Simulator;
+   template <int D> class System;
+
    using namespace Util;
 
    /**
@@ -32,7 +35,7 @@ namespace Rpc {
       /**
       * Constructor.
       */
-      StepLogger();
+      StepLogger(Simulator<D>& simulator, System<D>& system);
 
       /**
       * Destructor.
@@ -45,14 +48,14 @@ namespace Rpc {
       *
       * \param in input parameter file
       */
-      virtual void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
       * Write a frame/snapshot to trajectory file.
       *
       * \param iStep step index
       */
-      virtual void sample(long iStep);
+      void sample(long iStep) override;
 
       using ParamComposite::setClassName;
       using Analyzer<D>::isAtInterval;

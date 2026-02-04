@@ -13,6 +13,9 @@ namespace Util {
 namespace Pscf {
 namespace Rpg {
 
+   template <int D> class Simulator;
+   template <int D> class System;
+
    using namespace Util;
 
    /**
@@ -38,9 +41,12 @@ namespace Rpg {
    public:
 
       /**
-      * Default constructor.
+      * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
-      Analyzer();
+      Analyzer(Simulator<D>& simulator, System<D>& system);
 
       /**
       * Destructor.
@@ -140,6 +146,16 @@ namespace Rpg {
       void readOutputFileName(std::istream& in);
 
       /**
+      * Return reference to parent simulator.
+      */
+      Simulator<D>& simulator();
+
+      /**
+      * Return reference to parent system.
+      */
+      System<D>& system();
+
+      /**
       * Get the FileMaster by reference.
       *
       * This can be used to open multiple output files.
@@ -165,6 +181,12 @@ namespace Rpg {
 
       /// Base name of output file(s).
       std::string outputFileName_;
+
+      /// Pointer to the parent simulator.
+      Simulator<D>* simulatorPtr_;
+
+      /// Pointer to the parent system.
+      System<D>* systemPtr_;
 
       /// Pointer to fileMaster for opening output file(s).
       FileMaster* fileMasterPtr_;
@@ -193,6 +215,16 @@ namespace Rpg {
    template <int D> inline
    std::string const & Analyzer<D>::outputFileName() const
    {  return outputFileName_; }
+
+   // Get the parent Simulator.
+   template <int D> inline 
+   Simulator<D>& Analyzer<D>::simulator()
+   {  return *simulatorPtr_; }
+
+   // Get the parent System.
+   template <int D> inline 
+   System<D>& Analyzer<D>::system()
+   {  return *systemPtr_; }
 
    #ifndef RPG_ANALYZER_TPP
    // Explicit instantiation declarations

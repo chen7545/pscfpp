@@ -73,6 +73,8 @@ namespace Rpc {
       using ParamComposite::setClassName;
       using Analyzer<D>::outputFileName;
       using Analyzer<D>::isAtInterval;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
       /**
       * Write data that should appear once, at beginning of the file.
@@ -92,16 +94,6 @@ namespace Rpc {
       */
       void writeFrame(std::ofstream& out, long iStep);
 
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
-      /**
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-
    private:
 
       // Output file stream
@@ -116,28 +108,7 @@ namespace Rpc {
       /// Has readParam been called?
       long isInitialized_;
 
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
-
-
    };
-
-   // Get the parent system.
-   template <int D>
-   inline System<D>& TrajectoryWriter<D>::system()
-   {  return *systemPtr_; }
-
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& TrajectoryWriter<D>::simulator()
-   {  return *simulatorPtr_; }
 
    // Explicit instantiation declarations
    extern template class TrajectoryWriter<1>;

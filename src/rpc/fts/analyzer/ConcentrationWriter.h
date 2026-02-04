@@ -34,6 +34,9 @@ namespace Rpc {
 
       /**
       * Constructor.
+      *  
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       ConcentrationWriter(Simulator<D>& simulator, System<D>& system);
 
@@ -71,6 +74,8 @@ namespace Rpc {
       using ParamComposite::setClassName;
       using Analyzer<D>::outputFileName;
       using Analyzer<D>::isAtInterval;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
    protected:
 
@@ -85,16 +90,6 @@ namespace Rpc {
 
       /// Has readParam been called?
       long isInitialized_;
-
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
 
    protected:
 
@@ -115,29 +110,8 @@ namespace Rpc {
       */
       void writeFrame(std::ofstream& out, long iStep);
 
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
-      /**
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-
-
    };
    
-   // Get the parent system.
-   template <int D>
-   inline System<D>& ConcentrationWriter<D>::system()
-   {  return *systemPtr_; }
-
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& ConcentrationWriter<D>::simulator()
-   {  return *simulatorPtr_; }
-
    // Explicit instantiation declarations
    extern template class ConcentrationWriter<1>;
    extern template class ConcentrationWriter<2>;

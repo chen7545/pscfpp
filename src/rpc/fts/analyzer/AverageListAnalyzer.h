@@ -119,6 +119,8 @@ namespace Rpc
       using ParamComposite::readOptional;
       using Analyzer<D>::setClassName;
       using Analyzer<D>::readInterval;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
       /**
       * Set name of variable.
@@ -180,16 +182,6 @@ namespace Rpc
       * Write results of statistical analysis to files.
       */
       void outputAccumulators();
-
-      /** 
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
 
       /// Output file stream
       std::ofstream outputFile_;
@@ -284,16 +276,6 @@ namespace Rpc
       UTIL_CHECK(i >= 0 && i < nValue_);
       values_[i] = value;
    }
-
-   // Get the parent system.
-   template <int D>
-   inline System<D>& AverageListAnalyzer<D>::system()
-   {  return *systemPtr_; }
-   
-   // Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& AverageListAnalyzer<D>::simulator()
-   {  return *simulatorPtr_; }
 
    // Explicit instantiation declarations
    extern template class AverageListAnalyzer<1>;

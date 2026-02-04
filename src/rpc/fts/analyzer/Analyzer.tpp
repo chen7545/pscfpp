@@ -14,6 +14,7 @@ namespace Rpc {
    void Analyzer<D>::initStatic()
    {  Analyzer<D>::baseInterval = 1; }
 
+   #if 0
    /*
    * Default constructor.
    */
@@ -22,7 +23,23 @@ namespace Rpc {
     : ParamComposite(),
       interval_(1),
       outputFileName_(""),
-      fileMasterPtr_(0)
+      simulatorPtr_(nullptr),
+      systemPtr_(nullptr),
+      fileMasterPtr_(nullptr)
+   {}
+   #endif
+
+   /*
+   * Constructor.
+   */
+   template <int D>
+   Analyzer<D>::Analyzer(Simulator<D>& simulator, System<D>& system)
+    : ParamComposite(),
+      interval_(1),
+      outputFileName_(""),
+      simulatorPtr_(&simulator),
+      systemPtr_(&system),
+      fileMasterPtr_(nullptr)
    {}
 
    /*

@@ -119,29 +119,16 @@ namespace Rpg {
       */
       virtual void outputValue(int step, double value);
 
-      /**
-      * Return reference to parent simulator.
-      */
-      Simulator<D>& simulator();
-
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
       // Output file stream
       std::ofstream outputFile_;
 
       /// Average object
       Average accumulator_;
 
+      Analyzer<D>::simulator;
+      Analyzer<D>::system;
+
    private:
-
-      /// Pointer to the parent simulator.
-      Simulator<D>* simulatorPtr_;
-
-      /// Pointer to the parent system.
-      System<D>* systemPtr_;
 
       /// Number of samples per block average output.
       int nSamplePerOutput_;
@@ -149,16 +136,6 @@ namespace Rpg {
    };
 
    // Inline functions
-
-   // Get the parent Simulator.
-   template <int D>
-   inline Simulator<D>& AverageAnalyzer<D>::simulator()
-   {  return *simulatorPtr_; }
-
-   // Get the parent System.
-   template <int D>
-   inline System<D>& AverageAnalyzer<D>::system()
-   {  return *systemPtr_; }
 
    // Get nSamplePerOutput.
    template <int D>

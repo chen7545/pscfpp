@@ -26,9 +26,8 @@ namespace Rpg
    * Constructor.
    */
    template <int D>
-   AverageListAnalyzer<D>::AverageListAnalyzer(System<D>& system)
-    : Analyzer<D>(),
-      systemPtr_(&system),
+   AverageListAnalyzer<D>::AverageListAnalyzer(Simulator<D>& simulator, System<D>& system)
+    : Analyzer<D>(simulator, system),
       nSamplePerOutput_(1),
       nValue_(0),
       hasAccumulators_(false)
@@ -49,7 +48,7 @@ namespace Rpg
    {
       Analyzer<D>::readParameters(in);
       nSamplePerOutput_ = 1;
-      readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
+      ParamComposite::readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
       if (nSamplePerOutput() > 0) {
          std::string fileName = outputFileName(".dat");
          system().fileMaster().openOutputFile(fileName, outputFile_);

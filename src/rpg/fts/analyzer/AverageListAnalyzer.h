@@ -15,6 +15,7 @@ namespace Pscf {
 namespace Rpg
 {
 
+   template <int D> class Simulator;
    template <int D> class System;
 
    using namespace Util;
@@ -38,9 +39,10 @@ namespace Rpg
       /**
       * Constructor.
       *
-      * \param system parent SystemType object.
+      * \param simulator parent Simualator object.
+      * \param system parent System object.
       */
-      AverageListAnalyzer(System<D>& system);
+      AverageListAnalyzer(Simulator<D>& simulator, System<D>& system);
 
       /**
       * Destructor.
@@ -56,23 +58,7 @@ namespace Rpg
       *
       * \param in  input parameter file
       */
-      virtual void readParameters(std::istream& in);
-
-      #if 0
-      /**
-      * Load internal state from an input archive.
-      *
-      * \param ar  input/loading archive
-      */
-      virtual void loadParameters(Serializable::IArchive &ar);
-
-      /**
-      * Save internal state to an output archive.
-      *
-      * \param ar  output/saving archive
-      */
-      virtual void save(Serializable::OArchive &ar);
-      #endif
+      void readParameters(std::istream& in) override;
 
       /**
       * Clear accumulators.
@@ -128,21 +114,14 @@ namespace Rpg
       */
       const Average& accumulator(int i) const;
 
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
-
       using Analyzer<D>::interval;
       using Analyzer<D>::isAtInterval;
       using Analyzer<D>::outputFileName;
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
 
    protected:
 
-      using Analyzer<D>::setClassName;
-      using Analyzer<D>::readInterval;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
       /**
       * Instantiate Average accumulators and set nSamplePerOutput set nValue.
@@ -204,11 +183,6 @@ namespace Rpg
       * Write results of statistical analysis to files.
       */
       void outputAccumulators();
-
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
 
       // Output file stream
       std::ofstream outputFile_;
@@ -297,11 +271,6 @@ namespace Rpg
       UTIL_CHECK(i >= 0 && i < nValue_);
       values_[i] = value;
    }
-
-   // Get the parent system.
-   template <int D>
-   inline System<D>& AverageListAnalyzer<D>::system()
-   {  return *systemPtr_; }
 
    // Explicit instantiation declarations
    extern template class AverageListAnalyzer<1>;

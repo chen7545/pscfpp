@@ -22,14 +22,12 @@ namespace Rpg
    */
    template <int D>
    HamiltonianAnalyzer<D>::HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system)
-    : AverageListAnalyzer<D>(system),
-      simulatorPtr_(&simulator),
-      systemPtr_(&(simulator.system())),
+    : AverageListAnalyzer<D>(simulator, system),
       hasAnalyzeChi_(false),
       idealId_(-1),
       fieldId_(-1),
       totalId_(-1)
-   {  setClassName("HamiltonianAnalyzer"); }
+   {  ParamComposite::setClassName("HamiltonianAnalyzer"); }
 
    /*
    * Read interval and outputFileName. 

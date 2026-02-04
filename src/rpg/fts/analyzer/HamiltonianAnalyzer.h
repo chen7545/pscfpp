@@ -36,6 +36,9 @@ namespace Rpg {
    
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system);
    
@@ -52,36 +55,6 @@ namespace Rpg {
       */
       virtual void readParameters(std::istream& in);
 
-      #if 0
-      /**
-      * Load parameters from archive when restarting. 
-      *
-      * \param ar loading/input archive
-      */
-      virtual void loadParameters(Serializable::IArchive& ar); 
-   
-      /**
-      * Save internal state to archive.
-      *
-      * \param ar saving/output archive
-      */
-      virtual void save(Serializable::OArchive& ar);
-      #endif
-
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;     
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_; 
-      
-      using ParamComposite::setClassName;
-      using AverageListAnalyzer<D>::setName;
-      using AverageListAnalyzer<D>::setValue;
-      
    protected:
 
       /**
@@ -89,17 +62,13 @@ namespace Rpg {
       */  
       void compute();
       
-      /** 
-      * Return reference to parent system.
-      */      
-      System<D>& system();
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
+      using AverageListAnalyzer<D>::setName;
+      using AverageListAnalyzer<D>::setValue;
       
-      /** 
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
- 
    private: 
+
       /// Has eigenvalue analysis of projected chi matrix been performed?
       bool hasAnalyzeChi_;
       
@@ -114,22 +83,10 @@ namespace Rpg {
 
    };
    
-   // Get the parent system.
-   template <int D>
-   inline System<D>& HamiltonianAnalyzer<D>::system()
-   {  return *systemPtr_; }
-   
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& HamiltonianAnalyzer<D>::simulator()
-   {  return *simulatorPtr_; }
-
-   #ifndef RPG_HAMILTONIAN_ANALYZER_TPP
    // Explicit instantiation declarations
    extern template class HamiltonianAnalyzer<1>;
    extern template class HamiltonianAnalyzer<2>;
    extern template class HamiltonianAnalyzer<3>;
-   #endif
 
 }
 }

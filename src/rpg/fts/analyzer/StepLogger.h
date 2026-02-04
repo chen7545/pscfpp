@@ -13,6 +13,9 @@
 namespace Pscf {
 namespace Rpg {
 
+   template <int D> class Simulator;
+   template <int D> class System;
+
    using namespace Util;
 
    /**
@@ -28,8 +31,11 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
-      StepLogger();
+      StepLogger(Simulator<D>& simulator, System<D>& system);
 
       /**
       * Destructor.
@@ -50,9 +56,6 @@ namespace Rpg {
       * \param iStep step index
       */
       virtual void sample(long iStep);
-
-      using ParamComposite::setClassName;
-      using Analyzer<D>::isAtInterval;
 
    };
 

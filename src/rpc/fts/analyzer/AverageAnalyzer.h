@@ -38,8 +38,8 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param simulator parent Simulator object.
-      * \param system parent System object.
+      * \param simulator parent Simulator object
+      * \param system parent System object
       */
       AverageAnalyzer(Simulator<D>& simulator, System<D>& system);
 
@@ -94,17 +94,11 @@ namespace Rpc {
       */
       int nSamplePerOutput() const;
 
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
       using Analyzer<D>::interval;
       using Analyzer<D>::isAtInterval;
       using Analyzer<D>::outputFileName;
 
    protected:
-
-      using Analyzer<D>::setClassName;
-      using Analyzer<D>::readInterval;
-      using Analyzer<D>::readOutputFileName;
 
       /**
       * Compute value of sampled quantity.
@@ -119,29 +113,18 @@ namespace Rpc {
       */
       virtual void outputValue(int step, double value);
 
-      /**
-      * Return reference to parent simulator.
-      */
-      Simulator<D>& simulator();
-
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
       // Output file stream
       std::ofstream outputFile_;
 
       /// Average object
       Average accumulator_;
 
+      using Analyzer<D>::readInterval;
+      using Analyzer<D>::readOutputFileName;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
+
    private:
-
-      /// Pointer to the parent simulator.
-      Simulator<D>* simulatorPtr_;
-
-      /// Pointer to the parent system.
-      System<D>* systemPtr_;
 
       /// Number of samples per block average output.
       int nSamplePerOutput_;
@@ -149,16 +132,6 @@ namespace Rpc {
    };
 
    // Inline functions
-
-   // Get the parent Simulator.
-   template <int D>
-   inline Simulator<D>& AverageAnalyzer<D>::simulator()
-   {  return *simulatorPtr_; }
-
-   // Get the parent System.
-   template <int D>
-   inline System<D>& AverageAnalyzer<D>::system()
-   {  return *systemPtr_; }
 
    // Get nSamplePerOutput.
    template <int D>

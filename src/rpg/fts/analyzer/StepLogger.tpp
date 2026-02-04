@@ -22,9 +22,9 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   StepLogger<D>::StepLogger()
-    : Analyzer<D>()
-   {  setClassName("StepLogger"); }
+   StepLogger<D>::StepLogger(Simulator<D>& simulator, System<D>& system)
+    : Analyzer<D>(simulator, system)
+   {  ParamComposite::setClassName("StepLogger"); }
 
    /*
    * Read interval and outputFileName. 
@@ -39,7 +39,7 @@ namespace Rpg {
    template <int D>
    void StepLogger<D>::sample(long iStep) 
    {
-      if (isAtInterval(iStep))  {
+      if (Analyzer<D>::isAtInterval(iStep))  {
          Log::file() << "iStep  " << Int(iStep,10) << std::endl;
       }
    }

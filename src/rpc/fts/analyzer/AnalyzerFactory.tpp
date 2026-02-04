@@ -54,7 +54,7 @@ namespace Rpc {
          ptr 
            = new BinaryStructureFactorGrid<D>(*simulatorPtr_, *sysPtr_);
       } else if (className == "StepLogger") {
-         ptr = new StepLogger<D>();
+         ptr = new StepLogger<D>(*simulatorPtr_, *sysPtr_);
       } else if (className == "PerturbationDerivative") {
          ptr = new PerturbationDerivative<D>(*simulatorPtr_, *sysPtr_);
       } else if (className == "ChiDerivative") {

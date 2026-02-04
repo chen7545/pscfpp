@@ -29,9 +29,7 @@ namespace Rpc {
    template <int D>
    AverageAnalyzer<D>::AverageAnalyzer(Simulator<D>& simulator, 
                                        System<D>& system)
-    : Analyzer<D>(),
-      simulatorPtr_(&simulator),
-      systemPtr_(&system),
+    : Analyzer<D>(simulator, system),
       nSamplePerOutput_(1)
    {}
 
@@ -53,7 +51,7 @@ namespace Rpc {
 
       // Read nSamplePerOutput_
       nSamplePerOutput_ = 1;
-      readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
+      ParamComposite::readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
       if (nSamplePerOutput_ > 0) {
          std::string fileName = outputFileName(".dat");
          system().fileMaster().openOutputFile(fileName, outputFile_);
@@ -77,7 +75,7 @@ namespace Rpc {
    template <int D>
    void AverageAnalyzer<D>::sample(long iStep)
    {
-      if (!isAtInterval(iStep)) return;
+      if (!Analyzer<D>::isAtInterval(iStep)) return;
 
       double value = compute();
       accumulator_.sample(value);

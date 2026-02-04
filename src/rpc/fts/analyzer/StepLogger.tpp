@@ -22,8 +22,8 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   StepLogger<D>::StepLogger()
-    : Analyzer<D>()
+   StepLogger<D>::StepLogger(Simulator<D>& simulator, System<D>& system)
+    : Analyzer<D>(simulator, system)
    {  setClassName("StepLogger"); }
 
    /*
@@ -31,7 +31,7 @@ namespace Rpc {
    */
    template <int D>
    void StepLogger<D>::readParameters(std::istream& in) 
-   { Analyzer<D>::readInterval(in); }
+   {  Analyzer<D>::readInterval(in); }
 
    /*
    * Periodically write a frame to file

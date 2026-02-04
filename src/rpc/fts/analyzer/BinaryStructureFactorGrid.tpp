@@ -41,9 +41,7 @@ namespace Rpc {
    BinaryStructureFactorGrid<D>::BinaryStructureFactorGrid(
                                           Simulator<D>& simulator,
                                           System<D>& system)
-    : Analyzer<D>(),
-      simulatorPtr_(&simulator),
-      systemPtr_(&(simulator.system())),
+    : Analyzer<D>(simulator, system),
       isInitialized_(false),
       nSamplePerBlock_(1),
       kMeshDimensions_(0),

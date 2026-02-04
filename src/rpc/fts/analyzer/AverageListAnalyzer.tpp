@@ -28,9 +28,7 @@ namespace Rpc
    template <int D>
    AverageListAnalyzer<D>::AverageListAnalyzer(Simulator<D>& simulator,
                                                System<D>& system)
-    : Analyzer<D>(),
-      simulatorPtr_(&simulator),
-      systemPtr_(&system),
+    : Analyzer<D>(simulator, system),
       nSamplePerOutput_(1),
       nValue_(0),
       hasAccumulators_(false)
@@ -85,9 +83,10 @@ namespace Rpc
    void AverageListAnalyzer<D>::sample(long iStep)
    {
       UTIL_CHECK(hasAccumulators_);
-      if (!isAtInterval(iStep)) return;
-      compute();
-      updateAccumulators(iStep);
+      if (Analyzer<D>::isAtInterval(iStep)) {
+         compute();
+         updateAccumulators(iStep);
+      }
    }
 
    /*
@@ -174,7 +173,8 @@ namespace Rpc
       if (nSamplePerOutput_ > 0) {
          if (accumulators_[0].isBlockComplete()) {
             UTIL_CHECK(outputFile_.is_open());
-            int beginStep = iStep - (nSamplePerOutput_ - 1)*interval();
+            int interval = Analyzer<D>::interval();
+            int beginStep = iStep - (nSamplePerOutput_ - 1) * interval;
             outputFile_ << Int(beginStep);
             for (int i = 0; i < nValue(); ++i) {
                UTIL_CHECK(accumulators_[i].isBlockComplete());

@@ -13,6 +13,9 @@ namespace Util {
 namespace Pscf {
 namespace Rpc {
 
+   template <int D> class System;
+   template <int D> class Simulator;
+
    using namespace Util;
 
    /**
@@ -36,11 +39,14 @@ namespace Rpc {
    {
 
    public:
-
+     
       /**
-      * Default constructor.
+      * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
-      Analyzer();
+      Analyzer(Simulator<D>& simulator, System<D>& system);
 
       /**
       * Destructor.
@@ -140,6 +146,16 @@ namespace Rpc {
       void readOutputFileName(std::istream& in);
 
       /**
+      * Return parent simulator by reference.
+      */
+      Simulator<D>& simulator();
+
+      /**
+      * Return parent system by reference.
+      */
+      System<D>& system();
+
+      /**
       * Get the FileMaster by reference.
       *
       * This can be used to open multiple output files.
@@ -166,12 +182,38 @@ namespace Rpc {
       /// Base name of output file(s).
       std::string outputFileName_;
 
+      /// Pointer to the parent simulator.
+      Simulator<D>* simulatorPtr_;
+
+      /// Pointer to the parent system.
+      System<D>* systemPtr_;
+
       /// Pointer to fileMaster for opening output file(s).
       FileMaster* fileMasterPtr_;
 
    };
 
    // Inline member functions
+
+   /*
+   * Get the parent Simulator.
+   */
+   template <int D> inline 
+   Simulator<D>& Analyzer<D>::simulator()
+   {
+      UTIL_ASSERT(simulatorPtr_);
+      return *simulatorPtr_; 
+   }
+
+   /*
+   * Get the parent System.
+   */
+   template <int D> inline 
+   System<D>& Analyzer<D>::system()
+   {  
+      UTIL_ASSERT(systemPtr_);
+      return *systemPtr_; 
+   }
 
    /*
    * Return interval value.
