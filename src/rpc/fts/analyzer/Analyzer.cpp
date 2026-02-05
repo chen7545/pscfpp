@@ -5,20 +5,34 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.tpp"
+#include "Analyzer.h"
+#include <rp/fts/analyzer/Analyzer.tpp>
 
+// Subclass constructor definition
 namespace Pscf {
-namespace Rpc {
+   namespace Rpc {
 
-   #if 0
-   template<> long Analyzer<1>::baseInterval = 1;
-   template<> long Analyzer<2>::baseInterval = 1;
-   template<> long Analyzer<3>::baseInterval = 1;
-   #endif
+      /*
+      * Constructor.
+      */
+      template <int D>
+      Analyzer<D>::Analyzer(Simulator<D>& simulator, System<D>& system)
+       : Rp::Analyzer<D, Simulator<D>, System<D> >(simulator, system)
+      {}
 
-   template class Analyzer<1>;
-   template class Analyzer<2>;
-   template class Analyzer<3>;
-
+   }
 }
-}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      template class Analyzer<1, Rpc::Simulator<1>, Rpc::System<1> >;
+      template class Analyzer<2, Rpc::Simulator<2>, Rpc::System<2> >;
+      template class Analyzer<3, Rpc::Simulator<3>, Rpc::System<3> >;
+   } 
+   namespace Rpc {
+      template class Analyzer<1>;
+      template class Analyzer<2>;
+      template class Analyzer<3>;
+   } 
+} 

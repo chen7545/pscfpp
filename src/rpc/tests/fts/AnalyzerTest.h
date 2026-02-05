@@ -25,7 +25,9 @@ class AnalyzerTest : public LogFileUnitTest
 public:
 
    void setUp()
-   {  setVerbose(0); }
+   {  
+      setVerbose(0); 
+   }
 
    template <int D>
    void initSystem(System<D>& system, std::string filename)
@@ -42,6 +44,8 @@ public:
    template <int D>
    void initSimulator(BdSimulator<D>& simulator, std::string filename)
    {
+      Analyzer<D>::initStatic();
+      TEST_ASSERT(Analyzer<D>::baseInterval == 1);
       std::ifstream in;
       openInputFile(filename, in);
       simulator.readParam(in);
