@@ -10,12 +10,6 @@
 namespace Pscf {
 namespace Rpg {
 
-   #if 0
-   template<> long Analyzer<1>::baseInterval = 1;
-   template<> long Analyzer<2>::baseInterval = 1;
-   template<> long Analyzer<3>::baseInterval = 1;
-   #endif
-
    template class Analyzer<1>;
    template class Analyzer<2>;
    template class Analyzer<3>;

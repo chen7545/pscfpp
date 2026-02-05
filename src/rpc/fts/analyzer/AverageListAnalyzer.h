@@ -12,8 +12,7 @@
 #include <util/accumulators/Average.h>           // member
 
 namespace Pscf {
-namespace Rpc
-{
+namespace Rpc {
 
    template <int D> class System;
    template <int D> class Simulator;
@@ -26,7 +25,8 @@ namespace Rpc
    * This class evaluates the average of several sampled real variables, and
    * optionally writes block averages to a data file during a simulation.
    * It is intended for use as a base class for Analyzers that evaluate
-   * averages and (optionally) block averages for several physical variables.
+   * averages and (optionally) block averages for several physical
+   * variables.
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
@@ -39,8 +39,8 @@ namespace Rpc
       /**
       * Constructor.
       *
-      * \param simulator  parent simulator object.
-      * \param system  parent system object.
+      * \param simulator  parent simulator object
+      * \param system  parent system object
       */
       AverageListAnalyzer(Simulator<D>& simulator, System<D>& system);
 
@@ -52,8 +52,8 @@ namespace Rpc
       /**
       * Read interval, outputFileName and (optionally) nSamplePerOutput.
       *
-      * The optional variable nSamplePerOutput defaults to 0, which 
-      * disables computation and output of block averages. Setting 
+      * The optional variable nSamplePerOutput defaults to 0, which
+      * disables computation and output of block averages. Setting
       * nSamplePerOutput = 1 outputs every sampled value.
       *
       * \param in  input parameter file
@@ -83,8 +83,8 @@ namespace Rpc
       * Get value of nSamplePerOutput.
       *
       * If nSamplePerOutput == 0, output of block averages is disabled.
-      * For nSamplePerOutput > 0, the value is the number of sampled values
-      * averaged in each block.
+      * For nSamplePerOutput > 0, the value is the number of sampled
+      * values averaged in each block.
       */
       int nSamplePerOutput() const;
 
@@ -98,30 +98,27 @@ namespace Rpc
       *
       * Call only on processors that have accumulators.
       *
-      * \param i integer index of name/value pair.
+      * \param i  integer index of name/value pair
       */
       const std::string& name(int i) const;
 
       /**
       * Get Average accumulator for a specific value.
       *
-      * \param i integer index of value.
+      * \param i  integer index of value
       */
       const Average& accumulator(int i) const;
 
-      using Analyzer<D>::interval;
-      using Analyzer<D>::isAtInterval;
-      using Analyzer<D>::outputFileName;
-
    protected:
+
+      /// Output file stream
+      std::ofstream outputFile_;
 
       /**
       * Set name of variable.
       *
-      * Call only on master.
-      *
-      * \param i integer index of variable
-      * \param name name of variable number i
+      * \param i  integer index of variable
+      * \param name  name of variable number i
       */
       void setName(int i, std::string name);
 
@@ -130,6 +127,8 @@ namespace Rpc
       *
       * \pre hasAccumulator == false
       * \pre nSamplePerOutput >= 0
+      *
+      * \param nValue  number of values
       */
       void initializeAccumulators(int nValue);
 
@@ -142,32 +141,28 @@ namespace Rpc
 
       /**
       * Compute value of sampled quantities.
-      *
-      * Call on all processors.
       */
       virtual void compute() = 0;
 
       /**
       * Set current value, used by compute function.
       *
-      * \param i integer index of variable
-      * \param value current value of variable
+      * \param i  integer index of variable
+      * \param value  current value of variable
       */
       void setValue(int i, double value);
 
       /**
       * Get current value of a specific variable.
       *
-      * Call only on master.
-      *
-      * \param i integer index of variable.
+      * \param i  integer index of variable
       */
       double value(int i) const;
 
       /**
       * Add current value to accumulator, output block average if needed.
       *
-      * \param iStep simulation step counter
+      * \param iStep  simulation step counter
       */
       void updateAccumulators(long iStep);
 
@@ -176,13 +171,6 @@ namespace Rpc
       */
       void outputAccumulators();
 
-      /// Output file stream
-      std::ofstream outputFile_;
-
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
-      using Analyzer<D>::setClassName;
-      using Analyzer<D>::readInterval;
       using Analyzer<D>::simulator;
       using Analyzer<D>::system;
 
@@ -197,12 +185,6 @@ namespace Rpc
       /// Array of value names (only allocated on master processor)
       DArray<std::string> names_;
 
-      /// Pointer to parent Simulator
-      Simulator<D>* simulatorPtr_;     
-
-      /// Pointer to the parent system.
-      System<D>* systemPtr_;
- 
       /// Number of samples per block average output.
       int nSamplePerOutput_;
 
@@ -219,15 +201,15 @@ namespace Rpc
    /*
    * Get nSamplePerOutput.
    */
-   template <int D>
-   inline int AverageListAnalyzer<D>::nSamplePerOutput() const
+   template <int D> inline
+   int AverageListAnalyzer<D>::nSamplePerOutput() const
    {  return nSamplePerOutput_; }
 
    /*
    * Get nValue (number of variables).
    */
-   template <int D>
-   inline int AverageListAnalyzer<D>::nValue() const
+   template <int D> inline
+   int AverageListAnalyzer<D>::nValue() const
    {
       UTIL_CHECK(hasAccumulators_);
       return nValue_;
@@ -236,8 +218,8 @@ namespace Rpc
    /*
    * Get current value of a variable, set by compute function.
    */
-   template <int D>
-   inline double AverageListAnalyzer<D>::value(int i) const
+   template <int D> inline
+   double AverageListAnalyzer<D>::value(int i) const
    {
       UTIL_CHECK(hasAccumulators_);
       UTIL_CHECK(i >= 0 && i < nValue_);
@@ -247,8 +229,8 @@ namespace Rpc
    /*
    * Get name of specific variable.
    */
-   template <int D>
-   inline const std::string& AverageListAnalyzer<D>::name(int i) const
+   template <int D> inline
+   const std::string& AverageListAnalyzer<D>::name(int i) const
    {
       UTIL_CHECK(hasAccumulators_);
       UTIL_CHECK(i >= 0 && i < nValue_);
@@ -258,8 +240,8 @@ namespace Rpc
    /*
    * Get accumulator associated with a variable.
    */
-   template <int D>
-   inline const Average& AverageListAnalyzer<D>::accumulator(int i) const
+   template <int D> inline
+   const Average& AverageListAnalyzer<D>::accumulator(int i) const
    {
       UTIL_CHECK(hasAccumulators_);
       UTIL_CHECK(i >= 0 && i < nValue_);
@@ -269,8 +251,8 @@ namespace Rpc
    /*
    * Set current value of a variable.
    */
-   template <int D>
-   inline void AverageListAnalyzer<D>::setValue(int i, double value)
+   template <int D> inline
+   void AverageListAnalyzer<D>::setValue(int i, double value)
    {
       UTIL_CHECK(hasAccumulators_);
       UTIL_CHECK(i >= 0 && i < nValue_);

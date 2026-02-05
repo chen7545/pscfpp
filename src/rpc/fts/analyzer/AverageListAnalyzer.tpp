@@ -17,8 +17,7 @@
 #include <util/misc/ioUtil.h>
 
 namespace Pscf {
-namespace Rpc
-{
+namespace Rpc {
 
    using namespace Util;
 
@@ -49,9 +48,10 @@ namespace Rpc
    {
       Analyzer<D>::readParameters(in);
       nSamplePerOutput_ = 1;
-      readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
+      ParamComposite::readOptional(in,"nSamplePerOutput", 
+                                   nSamplePerOutput_);
       if (nSamplePerOutput() > 0) {
-         std::string fileName = outputFileName(".dat");
+         std::string fileName = Analyzer<D>::outputFileName(".dat");
          system().fileMaster().openOutputFile(fileName, outputFile_);
       }
       // Note: ReadParameters method of derived classes should call this,
@@ -104,7 +104,7 @@ namespace Rpc
 
       #if 0
       // Write parameter (*.prm) file
-      std::string filename = outputFileName(".prm");
+      std::string filename = Analyzer<D>::outputFileName(".prm");
       system().fileMaster().openOutputFile(filename, outputFile_);
       ParamComposite::writeParam(outputFile_);
       outputFile_.close();
@@ -112,7 +112,6 @@ namespace Rpc
 
       // Write average (*.ave) and error analysis (*.aer) files
       outputAccumulators();
-
    }
 
    /**
@@ -212,7 +211,7 @@ namespace Rpc
       nameWidth += 2;
 
       // Write average (*.ave) file
-      std::string fileName = outputFileName(".ave");
+      std::string fileName = Analyzer<D>::outputFileName(".ave");
       system().fileMaster().openOutputFile(fileName, outputFile_);
       double ave, err;
       for (int i = 0; i < nValue_; ++i) {
@@ -225,11 +224,11 @@ namespace Rpc
       outputFile_.close();
 
       // Write error analysis (*.aer) file
-      fileName = outputFileName(".aer");
+      fileName = Analyzer<D>::outputFileName(".aer");
       system().fileMaster().openOutputFile(fileName, outputFile_);
       std::string line;
       line =
-      "---------------------------------------------------------------------";
+      "------------------------------------------------------------------";
       for (int i = 0; i < nValue_; ++i) {
          outputFile_ << line << std::endl;
          outputFile_ << names_[i] << " :" << std::endl;
@@ -240,7 +239,7 @@ namespace Rpc
 
       #if 0
       // Write data format file (*.dfm) file
-      fileName = outputFileName();
+      fileName = Analyzer<D>::outputFileName();
       fileName += ".dfm";
       system().fileMaster().openOutputFile(fileName, outputFile_);
       outputFile_ << "Value = " << nValue() << std::endl;

@@ -17,8 +17,7 @@
 #include <util/misc/ioUtil.h>
 
 namespace Pscf {
-namespace Rpg
-{
+namespace Rpg {
 
    using namespace Util;
 
@@ -26,7 +25,8 @@ namespace Rpg
    * Constructor.
    */
    template <int D>
-   AverageListAnalyzer<D>::AverageListAnalyzer(Simulator<D>& simulator, System<D>& system)
+   AverageListAnalyzer<D>::AverageListAnalyzer(Simulator<D>& simulator,
+                                               System<D>& system)
     : Analyzer<D>(simulator, system),
       nSamplePerOutput_(1),
       nValue_(0),
@@ -48,9 +48,10 @@ namespace Rpg
    {
       Analyzer<D>::readParameters(in);
       nSamplePerOutput_ = 1;
-      ParamComposite::readOptional(in,"nSamplePerOutput", nSamplePerOutput_);
+      ParamComposite::readOptional(in,"nSamplePerOutput",
+                                   nSamplePerOutput_);
       if (nSamplePerOutput() > 0) {
-         std::string fileName = outputFileName(".dat");
+         std::string fileName = Analyzer<D>::outputFileName(".dat");
          system().fileMaster().openOutputFile(fileName, outputFile_);
       }
       // Note: ReadParameters method of derived classes should call this,
@@ -58,7 +59,7 @@ namespace Rpg
    }
 
    /*
-   * Clear accumulators (do nothing on slave processors).
+   * Clear accumulators.
    */
    template <int D>
    void AverageListAnalyzer<D>::clear()
@@ -84,13 +85,13 @@ namespace Rpg
    void AverageListAnalyzer<D>::sample(long iStep)
    {
       UTIL_CHECK(hasAccumulators_);
-      if (!isAtInterval(iStep)) return;
+      if (!Analyzer<D>::isAtInterval(iStep)) return;
       compute();
       updateAccumulators(iStep);
    }
 
    /*
-   * Output results after a system is completed.
+   * Output results after a simulation is completed.
    */
    template <int D>
    void AverageListAnalyzer<D>::output()
@@ -104,14 +105,14 @@ namespace Rpg
 
       #if 0
       // Write parameter (*.prm) file
-      system().fileMaster().openOutputFile(outputFileName(".prm"), outputFile_);
+      std::string filename = Analyzer<D>::outputFileName(".prm");
+      system().fileMaster().openOutputFile(filename, outputFile_);
       ParamComposite::writeParam(outputFile_);
       outputFile_.close();
       #endif
 
       // Write average (*.ave) and error analysis (*.aer) files
       outputAccumulators();
-
    }
 
    /**
@@ -180,7 +181,8 @@ namespace Rpg
       if (nSamplePerOutput_ > 0) {
          if (accumulators_[0].isBlockComplete()) {
             UTIL_CHECK(outputFile_.is_open());
-            int beginStep = iStep - (nSamplePerOutput_ - 1)*interval();
+            int interval = Analyzer<D>::interval();
+            int beginStep = iStep - (nSamplePerOutput_ - 1)*interval;
             outputFile_ << Int(beginStep);
             for (int i = 0; i < nValue(); ++i) {
                UTIL_CHECK(accumulators_[i].isBlockComplete());
@@ -218,7 +220,7 @@ namespace Rpg
       nameWidth += 2;
 
       // Write average (*.ave) file
-      std::string fileName = outputFileName(".ave");
+      std::string fileName = Analyzer<D>::outputFileName(".ave");
       system().fileMaster().openOutputFile(fileName, outputFile_);
       double ave, err;
       for (int i = 0; i < nValue_; ++i) {
@@ -231,11 +233,11 @@ namespace Rpg
       outputFile_.close();
 
       // Write error analysis (*.aer) file
-      fileName = outputFileName(".aer");
+      fileName = Analyzer<D>::outputFileName(".aer");
       system().fileMaster().openOutputFile(fileName, outputFile_);
       std::string line;
       line =
-      "---------------------------------------------------------------------";
+      "------------------------------------------------------------------";
       for (int i = 0; i < nValue_; ++i) {
          outputFile_ << line << std::endl;
          outputFile_ << names_[i] << " :" << std::endl;
@@ -246,7 +248,7 @@ namespace Rpg
 
       #if 0
       // Write data format file (*.dfm) file
-      fileName = outputFileName();
+      fileName = Analyzer<D>::outputFileName();
       fileName += ".dfm";
       system().fileMaster().openOutputFile(fileName, outputFile_);
       outputFile_ << "Value = " << nValue() << std::endl;
