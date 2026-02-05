@@ -22,11 +22,11 @@ namespace Rpc {
    /**
    * Analyze averages and block averages of several real variables.
    *
-   * This class evaluates the average of several sampled real variables, and
-   * optionally writes block averages to a data file during a simulation.
-   * It is intended for use as a base class for Analyzers that evaluate
-   * averages and (optionally) block averages for several physical
-   * variables.
+   * This class evaluates averages of several sampled real variables,
+   * and optionally writes block averages to a data file during a
+   * simulation. It is intended for use as a base class for Analyzers
+   * that evaluate averages and (optionally) block averages for several
+   * physical variables.
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
@@ -39,15 +39,15 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param simulator  parent simulator object
-      * \param system  parent system object
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       AverageListAnalyzer(Simulator<D>& simulator, System<D>& system);
 
       /**
       * Destructor.
       */
-      virtual ~AverageListAnalyzer();
+      ~AverageListAnalyzer() override;
 
       /**
       * Read interval, outputFileName and (optionally) nSamplePerOutput.
@@ -56,28 +56,28 @@ namespace Rpc {
       * disables computation and output of block averages. Setting
       * nSamplePerOutput = 1 outputs every sampled value.
       *
-      * \param in  input parameter file
+      * \param in  input parameter stream
       */
-      virtual void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
       * Setup before loop.
       *
       * Opens an output file, if nSamplePerOutput > 0.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
-      * Compute a sampled value and update the accumulator.
+      * Compute sampled values and update the accumulators.
       *
-      * \param iStep  MD time step index
+      * \param iStep  simulation step index
       */
-      virtual void sample(long iStep);
+      void sample(long iStep) override;
 
       /**
       * Write final results to file after a simulation.
       */
-      virtual void output();
+      void output() override;
 
       /**
       * Get value of nSamplePerOutput.
@@ -89,21 +89,19 @@ namespace Rpc {
       int nSamplePerOutput() const;
 
       /**
-      * Get number of variables.
+      * Get the number of variables.
       */
       int nValue() const;
 
       /**
-      * Get name associated with value.
-      *
-      * Call only on processors that have accumulators.
+      * Get name associated with a variable.
       *
       * \param i  integer index of name/value pair
       */
       const std::string& name(int i) const;
 
       /**
-      * Get Average accumulator for a specific value.
+      * Get Average accumulator for a specific variable.
       *
       * \param i  integer index of value
       */
@@ -111,19 +109,11 @@ namespace Rpc {
 
    protected:
 
-      /// Output file stream
+      /// Output file stream.
       std::ofstream outputFile_;
 
       /**
-      * Set name of variable.
-      *
-      * \param i  integer index of variable
-      * \param name  name of variable number i
-      */
-      void setName(int i, std::string name);
-
-      /**
-      * Instantiate Average accumulators and set nValue.
+      * Initialize Average accumulators and set nValue.
       *
       * \pre hasAccumulator == false
       * \pre nSamplePerOutput >= 0
@@ -140,9 +130,12 @@ namespace Rpc {
       void clearAccumulators();
 
       /**
-      * Compute value of sampled quantities.
+      * Set name of variable.
+      *
+      * \param i  integer index of variable
+      * \param name  name of variable number i
       */
-      virtual void compute() = 0;
+      void setName(int i, std::string name);
 
       /**
       * Set current value, used by compute function.
@@ -151,6 +144,11 @@ namespace Rpc {
       * \param value  current value of variable
       */
       void setValue(int i, double value);
+
+      /**
+      * Compute values of sampled quantities.
+      */
+      virtual void compute() = 0;
 
       /**
       * Get current value of a specific variable.
@@ -176,19 +174,19 @@ namespace Rpc {
 
    private:
 
-      /// Array of Average objects (only allocated on master processor)
+      /// Array of Average accumulator objects.
       DArray<Average> accumulators_;
 
-      /// Array of current values (only allocated on master processor)
+      /// Array of current values.
       DArray<double> values_;
 
-      /// Array of value names (only allocated on master processor)
+      /// Array of variable names.
       DArray<std::string> names_;
 
       /// Number of samples per block average output.
       int nSamplePerOutput_;
 
-      /// Number of values.
+      /// Number of variables.
       int nValue_;
 
       /// Does this processor have accumulators ?

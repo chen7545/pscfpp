@@ -59,23 +59,13 @@ namespace Rpg {
    }
 
    /*
-   * Clear accumulators.
-   */
-   template <int D>
-   void AverageListAnalyzer<D>::clear()
-   {
-      UTIL_CHECK(hasAccumulators_);
-      clearAccumulators();
-   }
-
-   /*
-   * Setup before system.
+   * Setup before simulation.
    */
    template <int D>
    void AverageListAnalyzer<D>::setup()
    {
       UTIL_CHECK(hasAccumulators_);
-      clear();
+      clearAccumulators();
    }
 
    /*
@@ -85,9 +75,10 @@ namespace Rpg {
    void AverageListAnalyzer<D>::sample(long iStep)
    {
       UTIL_CHECK(hasAccumulators_);
-      if (!Analyzer<D>::isAtInterval(iStep)) return;
-      compute();
-      updateAccumulators(iStep);
+      if (Analyzer<D>::isAtInterval(iStep)) {
+         compute();
+         updateAccumulators(iStep);
+      }
    }
 
    /*
@@ -154,6 +145,9 @@ namespace Rpg {
       }
    }
 
+   /*
+   * Set the name string for variable with index i.
+   */
    template <int D>
    void AverageListAnalyzer<D>::setName(int i, std::string name)
    {
@@ -182,7 +176,7 @@ namespace Rpg {
          if (accumulators_[0].isBlockComplete()) {
             UTIL_CHECK(outputFile_.is_open());
             int interval = Analyzer<D>::interval();
-            int beginStep = iStep - (nSamplePerOutput_ - 1)*interval;
+            int beginStep = iStep - (nSamplePerOutput_ - 1) * interval;
             outputFile_ << Int(beginStep);
             for (int i = 0; i < nValue(); ++i) {
                UTIL_CHECK(accumulators_[i].isBlockComplete());

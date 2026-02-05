@@ -550,7 +550,7 @@ namespace Pscf {
       void sqAbsV(Array<double> & a, Array<fftw_complex> const & b);
 
       /**
-      * Fourth power of absolute magnitude, a[i] = |b[i]|^2 (complex).
+      * Fourth power of absolute magnitude, a[i] = |b[i]|^4 (complex).
       *
       * \ingroup Pscf_Cpu_VecOp_Module
       *

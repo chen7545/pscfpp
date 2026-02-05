@@ -48,7 +48,7 @@ namespace Rpc {
    {
       Analyzer<D>::readParameters(in);
       nSamplePerOutput_ = 1;
-      ParamComposite::readOptional(in,"nSamplePerOutput", 
+      ParamComposite::readOptional(in,"nSamplePerOutput",
                                    nSamplePerOutput_);
       if (nSamplePerOutput() > 0) {
          std::string fileName = Analyzer<D>::outputFileName(".dat");
@@ -58,16 +58,8 @@ namespace Rpc {
       // determine nValue and then call initializeAccumulators(nValue).
    }
 
-   template <int D>
-   void AverageListAnalyzer<D>::setName(int i, std::string name)
-   {
-      UTIL_CHECK(hasAccumulators_);
-      UTIL_CHECK(i >= 0 && i < nValue_);
-      names_[i] = name;
-   }
-
    /*
-   * Setup before system.
+   * Setup before simulation.
    */
    template <int D>
    void AverageListAnalyzer<D>::setup()
@@ -151,6 +143,17 @@ namespace Rpc {
       for (int i = 0; i < nValue_; ++i) {
          accumulators_[i].clear();
       }
+   }
+
+   /*
+   * Set the name string for variable with index i.
+   */
+   template <int D>
+   void AverageListAnalyzer<D>::setName(int i, std::string name)
+   {
+      UTIL_CHECK(hasAccumulators_);
+      UTIL_CHECK(i >= 0 && i < nValue_);
+      names_[i] = name;
    }
 
    /*
