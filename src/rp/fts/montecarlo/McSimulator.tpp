@@ -35,6 +35,7 @@ namespace Rp {
       ParamComposite::setClassName("McSimulator");
       trajectoryReaderFactoryPtr_
              = new typename T::TrajectoryReaderFactory(system);
+      AnalyzerT::initStatic();
    }
 
    /*

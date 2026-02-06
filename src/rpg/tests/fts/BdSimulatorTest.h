@@ -26,7 +26,7 @@ public:
 
    void setUp()
    {  setVerbose(0); }
-   
+
    template <int D>
    void initSystem(System<D>& system, std::string filename)
    {
@@ -39,27 +39,29 @@ public:
       in.close();
 
    }
-   
+
    template <int D>
    void initSimulator(BdSimulator<D>& simulator, std::string filename)
    {
+      Analyzer<D>::initStatic();
+
       std::ifstream in;
       openInputFile(filename, in);
       simulator.readParam(in);
       in.close();
    }
-   
+
    void testLMBdSimulateDiblocks()
    {
       printMethod(TEST_FUNC);
       openLogFile("out/testLMBdSimulateDiblocks.log");
-      
+
       System<3> system;
       initSystem(system, "in/param_system_disordered");
-      
+
       BdSimulator<3> simulator(system);
       initSimulator(simulator, "in/param_BdSimulator");
-      
+
       system.w().readRGrid("in/w_dis.rf");
       simulator.compressor().compress();
       simulator.simulate(50);
@@ -69,13 +71,13 @@ public:
    {
       printMethod(TEST_FUNC);
       openLogFile("out/testLMBdSimulateTriblocks.log");
-      
+
       System<3> system;
       initSystem(system, "in/param_system_triblock");
-      
+
       BdSimulator<3> simulator(system);
       initSimulator(simulator, "in/param_BdSimulator");
-      
+
       system.w().readRGrid("in/w_triblock.rf");
       simulator.compressor().compress();
       simulator.simulate(50);

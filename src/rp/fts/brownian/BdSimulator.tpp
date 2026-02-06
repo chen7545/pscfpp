@@ -35,6 +35,7 @@ namespace Rp {
       bdStepFactoryPtr_ = new typename T::BdStepFactory(bdSimulator);
       trajectoryReaderFactoryPtr_
              = new typename T::TrajectoryReaderFactory(system);
+      AnalyzerT::initStatic();
    }
 
    /*
