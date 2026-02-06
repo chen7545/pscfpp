@@ -120,9 +120,9 @@ namespace Rp {
       // Allocate memory for r-field used as workspace
       tmpField_.allocate(dimensions);
 
-      // Allocate state_, if necessary.
-      if (!state_.isAllocated) {
-         state_.allocate(nMonomer, dimensions);
+      // Allocate state, if necessary.
+      if (!state().isAllocated) {
+         state().allocate(nMonomer, dimensions);
       }
 
       isAllocated_ = true;
@@ -542,49 +542,49 @@ namespace Rp {
    {
       UTIL_CHECK(system().w().hasData());
       UTIL_CHECK(hasWc());
-      UTIL_CHECK(state_.isAllocated);
-      UTIL_CHECK(!state_.hasData);
+      UTIL_CHECK(state().isAllocated);
+      UTIL_CHECK(!state().hasData);
 
       int nMonomer = system().mixture().nMonomer();
 
       // Set field components
       for (int i = 0; i < nMonomer; ++i) {
-         state_.w[i] = system().w().rgrid(i);
-         state_.wc[i] = wc_[i];
+         state().w[i] = system().w().rgrid(i);
+         state().wc[i] = wc_[i];
       }
 
       // Save cc based on ccSavePolicy
-      if (state_.needsCc) {
+      if (state().needsCc) {
          UTIL_CHECK(hasCc());
-         UTIL_CHECK(state_.cc.isAllocated());
+         UTIL_CHECK(state().cc.isAllocated());
          for (int i = 0; i < nMonomer; ++i) {
-            state_.cc[i] = cc_[i];
+            state().cc[i] = cc_[i];
          }
       }
 
       // Save dc based on dcSavePolicy
-      if (state_.needsDc) {
+      if (state().needsDc) {
          UTIL_CHECK(hasDc());
-         UTIL_CHECK(state_.dc.isAllocated());
+         UTIL_CHECK(state().dc.isAllocated());
          for (int i = 0; i < nMonomer - 1; ++i) {
-            state_.dc[i] = dc_[i];
+            state().dc[i] = dc_[i];
          }
       }
 
       // Save Hamiltonian based on hamiltonianSavePolicy
-      if (state_.needsHamiltonian){
+      if (state().needsHamiltonian){
          UTIL_CHECK(hasHamiltonian());
-         state_.hamiltonian  = hamiltonian();
-         state_.idealHamiltonian  = idealHamiltonian();
-         state_.fieldHamiltonian  = fieldHamiltonian();
-         state_.perturbationHamiltonian  = perturbationHamiltonian();
+         state().hamiltonian  = hamiltonian();
+         state().idealHamiltonian  = idealHamiltonian();
+         state().fieldHamiltonian  = fieldHamiltonian();
+         state().perturbationHamiltonian  = perturbationHamiltonian();
       }
 
       if (hasPerturbation()) {
          perturbation().saveState();
       }
 
-      state_.hasData = true;
+      state().hasData = true;
    }
 
    /*
@@ -596,37 +596,37 @@ namespace Rp {
    template <int D, class T>
    void Simulator<D,T>::restoreState()
    {
-      UTIL_CHECK(state_.isAllocated);
-      UTIL_CHECK(state_.hasData);
+      UTIL_CHECK(state().isAllocated);
+      UTIL_CHECK(state().hasData);
       const int nMonomer = system().mixture().nMonomer();
 
       // Restore fields
-      system().w().setRGrid(state_.w);
+      system().w().setRGrid(state().w);
 
       // Restore Hamiltonian and components
-      if (state_.needsHamiltonian){
-         hamiltonian_ = state_.hamiltonian;
-         idealHamiltonian_ = state_.idealHamiltonian;
-         fieldHamiltonian_ = state_.fieldHamiltonian;
-         perturbationHamiltonian_ = state_.perturbationHamiltonian;
+      if (state().needsHamiltonian){
+         hamiltonian_ = state().hamiltonian;
+         idealHamiltonian_ = state().idealHamiltonian;
+         fieldHamiltonian_ = state().fieldHamiltonian;
+         perturbationHamiltonian_ = state().perturbationHamiltonian;
          hasHamiltonian_ = true;
       }
 
       for (int i = 0; i < nMonomer; ++i) {
-         wc_[i] = state_.wc[i];
+         wc_[i] = state().wc[i];
       }
       hasWc_ = true;
 
-      if (state_.needsCc) {
+      if (state().needsCc) {
          for (int i = 0; i < nMonomer; ++i) {
-            cc_[i] = state_.cc[i];
+            cc_[i] = state().cc[i];
          }
          hasCc_ = true;
       }
 
-      if (state_.needsDc) {
+      if (state().needsDc) {
          for (int i = 0; i < nMonomer - 1; ++i) {
-            dc_[i] = state_.dc[i];
+            dc_[i] = state().dc[i];
          }
          hasDc_ = true;
       }
@@ -635,7 +635,7 @@ namespace Rp {
          perturbation().restoreState();
       }
 
-      state_.hasData = false;
+      state().hasData = false;
    }
 
    /*
@@ -645,7 +645,7 @@ namespace Rp {
    */
    template <int D, class T>
    void Simulator<D,T>::clearState()
-   {  state_.hasData = false; }
+   {  state().hasData = false; }
 
    /*
    * Output all timer results.

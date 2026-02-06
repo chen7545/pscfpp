@@ -27,32 +27,19 @@ namespace Rp {
    /**
    * Base class for field theoretic PS-FTS simulator.
    *
-   * <b> Template parameters and typename aliases </b>:
-   *
-   *    D - integer dimensionality of space (D=1, 2, or 3)
-   *    T - "Types" class, collection of aliases for related classes.
-   *
-   * <b> Usage </b>: An instantiation of Rp::Simulator\<D, T\> is used as 
-   * a base class for for each Simulation\<D\> class defined in namespaces
-   * Rpc and Rpg, for D=1, 2 or 3. In this usage, template parameter T is
-   * is taken to be an isntance of a template \<int D\> class Types that
-   * is defined in each of these namespaces. For each such instantiation,
-   * the Types\<D\> class defines a set of typename aliases for classes
-   * used in the relevant program level namespace. 
-   *
    * <b> Purpose </b>: A Simulator base class provides tools needed in 
    * field-theoretic simulations that are based on a partial saddle-point 
-   * approximation. In each of the program-level namespaces Rpc and Rpg,
-   * subclasses designed for field theoretic Monte Carlo (MC) and Brownian
-   * dynamics (BD) simulations, named McSimulator and BdSimulator, provide
-   * more specialized algorithms and data structures needed by these two
+   * approximation. In the Rpc and Rpg program-level namespaces, subclasses
+   * designed for field theoretic Monte Carlo (MC) and Brownian dynamics
+   * (BD) simulations, named McSimulator and BdSimulator, provide more
+   * specialized algorithms and data structures needed by these two
    * sampling methods.
    *
    * The Simulator class provides functions to compute and diagonalze a
    * projected chi matrix, functions to access components of several
    * types of fields in a basis of eigenvectors of the projected chi
    * matrix, and functions to compute and return contributions to the
-   * field theoretic Hamiltonian.
+   * field theoretic Hamiltonian and its components.
    *
    * The analyzeChi function constructs and diagonalizes the projected
    * chi matrix. This is a singular nMonomer x nMonomer matrix defined
@@ -68,6 +55,19 @@ namespace Rp {
    * a suffix "c" refer to components of multi-component fields that are
    * defined using this eigenvector basis.
    *
+   * <b> Usage </b>: An instantiation of Rp::Simulator\<D, T\> is used 
+   * as a base class for for each Simulation\<D\> class defined in 
+   * namespaces Rpc and Rpg, for D=1, 2 or 3. In this usage, template 
+   * parameter T is an instance of a template \<int D\> class Types 
+   * that is defined in each of these namespaces, and that defines a 
+   * set of typename aliases for classes used in the relevant program 
+   * level namespace, for the relevant value of D.
+   *
+   * <b> Template parameters and typename aliases </b>:
+   *
+   *    D - integer dimensionality of space (D=1, 2, or 3)
+   *    T - "Types" class, collection of aliases for related classes.
+   *
    * \ingroup Rp_Fts_Module
    */
    template <int D, class T>
@@ -76,11 +76,15 @@ namespace Rp {
 
    public:
 
-      // Public type name aliases
+      /// Container for a real-valued periodic field
       using RFieldT = typename T::RField;
 
+      // Suppress automatically generated constructors
       Simulator() = delete;
       Simulator(Simulator<D,T> const &) = delete;
+
+      /// \name Construction, Destruction and Initialization
+      ///@{
 
       /**
       * Constructor.
@@ -118,6 +122,7 @@ namespace Rp {
       */
       virtual void readParameters(std::istream &in);
 
+      ///@}
       /// \name Primary Actions: Simulation and Analysis
       ///@{
 
@@ -651,6 +656,16 @@ namespace Rp {
       */
       void setRamp(typename T::Ramp* ptr);
 
+      /**
+      * Get the SimState stored internal state by reference.
+      *
+      * The T::SimState object is used to store the previous internal
+      * state of the system. This allows restoration after a rejected 
+      * MC move or failure of the Compressor to converge during either
+      * a BD or MC move.
+      */
+      typename T::SimState& state();
+
       // Protected data members
 
       /**
@@ -953,6 +968,11 @@ namespace Rp {
       UTIL_CHECK(rampPtr_);
       return *rampPtr_;
    }
+
+   // Get the stored internal state by reference.
+   template <int D, class T> inline 
+   typename T::SimState& Simulator<D,T>::state()
+   {  return state_; }
 
    // Projected Chi Matrix
 

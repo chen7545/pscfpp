@@ -17,12 +17,22 @@ namespace Rpc {
    using namespace Util;
 
    /**
-   * Analyze averages and block averages of several real variables.
+   * Analyze averages and block averages of a single real variable.
    *
    * This class evaluates the average of a single sampled real variables,
    * and optionally writes values or block averages to a data file during a
    * simulation.  It is intended for use as a base class for any Analyzer
    * that computes and evaluates an average for a single physical variable.
+   *
+   * Instantiations of this template are used as base classes for two
+   * closely analogous class templates, also named AverageAnalyzer, that
+   * are defined in Rpc and Rpg namespaces for use in the pscf_rpc and
+   * pscf_rpg programs.
+   *
+   * Template parameters:
+   *
+   *    - D : dimension
+   *    - T : collection of type aliases, e.g., Rpc::Types<D>
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */

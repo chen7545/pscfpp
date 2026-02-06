@@ -19,11 +19,21 @@ namespace Rp {
    /**
    * Analyze averages and block averages of several real variables.
    *
-   * This class evaluates averages of several sampled real variables,
-   * and optionally writes block averages to a data file during a
-   * simulation. It is intended for use as a base class for Analyzers
+   * This class template evaluates averages of several sampled real 
+   * variables, and optionally writes block averages to a data file during 
+   * a simulation. It is intended for use as a base class for Analyzers
    * that evaluate averages and (optionally) block averages for several
    * physical variables.
+   *
+   * Instantiations of this template are used as base classes for two
+   * closely analogous class templates, also named AverageListAnalyzer, that
+   * that are defined in Rpc and Rpg namespaces for used in the pscf_rpc 
+   * and pscf_rpg programs.
+   *
+   * Template parameters:
+   *
+   *    - D : dimension of space
+   *    - T : collection of type aliases, e.g., Rpc::Types<D>
    *
    * \ingroup Rp_Fts_Analyzer_Module
    */
