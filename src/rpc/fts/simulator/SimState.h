@@ -25,7 +25,7 @@ namespace Rpc {
    * Rp::SimState base class template. See documentation of that base 
    * class for further details. 
    *
-   * \ingroup Rpc_Fts_Module
+   * \ingroup Rpc_Fts_Simulator_Module
    */
    template <int D>
    struct SimState : Rp::SimState< D, Prdc::Cpu::RField<D> >

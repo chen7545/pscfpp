@@ -35,23 +35,28 @@ namespace Rp {
 
    public:
 
-      /// Alias for specialized system class.
+      /// Alias for System class in program-level namespace.
       using SystemT = typename T::System;
 
-      /// Alias for Simulator subclass.
+      /// Alias for Simulator class in program-level namespace.
       using SimulatorT = typename T::Simulator;
 
-      /// Alias for specialized simulator subclass.
+      /// Alias for BdSimulator class in program-level namespace.
       using BdSimulatorT = typename T::BdSimulator;
 
+      // Suprress automatically generated functions
       BdSimulator() = delete;
       BdSimulator(BdSimulator<D,T> const &) = delete;
+      BdSimulator<D,T>& operator = (BdSimulator<D,T> const &) = delete;
+
+      /// \name Lifetime: Construction, Destruction and Initialization
+      ///@{
 
       /**
       * Constructor.
       *
       * \param system  parent System
-      * \param system  pointer to instance of a subclass
+      * \param bdSimulator  instance of enclosing subclass
       */
       BdSimulator(SystemT& system, BdSimulatorT& bdSimulator);
 
@@ -67,6 +72,7 @@ namespace Rp {
       */
       virtual void readParameters(std::istream &in);
 
+      ///@}
       /// \name Primary Actions: Simulation and Analysis
       ///@{
 
@@ -107,12 +113,12 @@ namespace Rp {
       bool hasBdStep() const;
 
       /**
-      * Get the BdStep by reference.
+      * Get the BdStep by non-const reference.
       */
       typename T::BdStep& bdStep();
 
       /**
-      * Get the AnalyzerManager by reference.
+      * Get the AnalyzerManager by non-const reference.
       */
       typename T::AnalyzerManager& analyzerManager();
 
@@ -123,71 +129,14 @@ namespace Rp {
 
       ///@}
 
-      // Inherited public functions
-
-      using SimulatorT::analyzeChi;
-      using SimulatorT::chiEval;
-      using SimulatorT::chiEvecs;
-      using SimulatorT::computeWc;
-      using SimulatorT::computeCc;
-      using SimulatorT::computeDc;
-      using SimulatorT::wc;
-      using SimulatorT::cc;
-      using SimulatorT::dc;
-      using SimulatorT::hasWc;
-      using SimulatorT::hasCc;
-      using SimulatorT::hasDc;
-
-      using SimulatorT::clearData;
-      using SimulatorT::computeHamiltonian;
-      using SimulatorT::hasHamiltonian;
-      using SimulatorT::hamiltonian;
-      using SimulatorT::idealHamiltonian;
-      using SimulatorT::fieldHamiltonian;
-      using SimulatorT::perturbationHamiltonian;
-
-      using SimulatorT::saveState;
-      using SimulatorT::restoreState;
-      using SimulatorT::clearState;
-      using SimulatorT::clearTimers;
-
-      using SimulatorT::system;
-      using SimulatorT::random;
-      using SimulatorT::hasCompressor;
-      using SimulatorT::compressor;
-      using SimulatorT::hasPerturbation;
-      using SimulatorT::perturbation;
-      using SimulatorT::hasRamp;
-      using SimulatorT::ramp;
-
    protected:
 
-      // Inherited protected functions
+      // Inherited protected function (selected)
+      using SimulatorT::state;
 
-      //using ParamComposite::readParamComposite;
-      //using ParamComposite::readOptional;
-
-      using SimulatorT::readRandomSeed;
-      using SimulatorT::compressorFactory;
-      using SimulatorT::readCompressor;
-      using SimulatorT::perturbationFactory;
-      using SimulatorT::readPerturbation;
-      using SimulatorT::setPerturbation;
-      using SimulatorT::rampFactory;
-      using SimulatorT::readRamp;
-      using SimulatorT::setRamp;
-
-      // Inherited protected data members
-
-      using SimulatorT::wc_;
-      using SimulatorT::hasWc_;
-      using SimulatorT::hamiltonian_;
-      using SimulatorT::idealHamiltonian_;
-      using SimulatorT::fieldHamiltonian_;
-      using SimulatorT::hasHamiltonian_;
+      // Inherited protected data members (selected)
       using SimulatorT::iStep_;
       using SimulatorT::iTotalStep_;
-      using SimulatorT::state_;
 
    private:
 
@@ -244,15 +193,6 @@ namespace Rp {
    template <int D, class T> inline
    typename T::AnalyzerManager& BdSimulator<D,T>::analyzerManager()
    {  return analyzerManager_; }
-
-   // Get the TrajectoryReader factory.
-   template <int D, class T> inline
-   Factory< typename T::TrajectoryReader >& 
-   BdSimulator<D,T>::trajectoryReaderFactory()
-   {
-      UTIL_CHECK(trajectoryReaderFactoryPtr_);
-      return *trajectoryReaderFactoryPtr_;
-   }
 
 }
 }

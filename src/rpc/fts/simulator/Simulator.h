@@ -27,9 +27,14 @@ namespace Rpc {
    * specialize to types used in the Rpc namespace. See documentation 
    * of the base class for details.
    *
-   * \see \ref rp_Simulator_page (manual page)
+   * Instantiations of this template serve as as base classes for 
+   * Rpc::BdSimulation<D> and Rpc::McSimulation<D>, for D=1, 2, and 3. 
+   * For information about parameter file formats for subclasses, see:
    *
-   * \ingroup Rpc_Fts_Module
+   * \see \ref rp_BdSimulator_page (manual page)
+   * \see \ref rp_McSimulator_page (manual page)
+   *
+   * \ingroup Rpc_Fts_Simulator_Module
    */
    template <int D>
    class Simulator : public Pscf::Rp::Simulator<D, Types<D> >
@@ -41,10 +46,11 @@ namespace Rpc {
       *
       * \param system  parent System object
       */
-      Simulator(typename Types<D>::System& system);
+      Simulator(System<D>& system);
 
+      // Suppress automatically generated functions
+      Simulator() = delete;
       Simulator(Simulator<D> const &) = delete;
-
       Simulator<D>& operator=(Simulator<D> const &) = delete;
 
    private:

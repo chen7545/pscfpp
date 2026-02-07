@@ -30,9 +30,9 @@ namespace Rp {
    * 
    * Template parameters:
    *   - D  : dimension of space
-   *   - FT : field container (i.e., Rpc::RField<D> or Rpg::RField<D> )
+   *   - FT : field type (i.e., Rpc::RField<D> or Rpg::RField<D> )
    *
-   * \ingroup Rp_Fts_Module
+   * \ingroup Rp_Fts_Simulator_Module
    */
    template <int D, class FT>
    struct SimState 
@@ -40,26 +40,6 @@ namespace Rp {
 
    public:
 
-      // Public member functions
-
-      /**
-      * Constructor.
-      */
-      SimState();
-
-      /**
-      * Destructor.
-      */
-      ~SimState();
-
-      /**
-      * Allocate memory for stored fields.
-      *
-      * \param nMonomer  number of monomer types
-      * \param dimensions  dimensions of discretization grid
-      */ 
-      void allocate(int nMonomer, IntVec<D> const & dimensions);
- 
       // Public data members
 
       /**
@@ -123,6 +103,26 @@ namespace Rp {
       /// Has memory been allocated for the fields?
       bool isAllocated;
 
+      // Public member functions
+
+      /**
+      * Constructor.
+      */
+      SimState();
+
+      /**
+      * Destructor.
+      */
+      ~SimState();
+
+      /**
+      * Allocate memory for stored fields.
+      *
+      * \param nMonomer  number of monomer types
+      * \param dimensions  dimensions of discretization grid
+      */ 
+      void allocate(int nMonomer, IntVec<D> const & dimensions);
+ 
    };
 
 }

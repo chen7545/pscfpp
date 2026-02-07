@@ -19,13 +19,21 @@ namespace Rp {
    using namespace Util;
 
    /**
-   * Template for abstract base class for Brownian dynamics steps.
+   * Template for abstract base class for Brownian dynamics (BD) steps.
    *
-   * The virtual step() method must generate a single step.
+   * The virtual step() method must generate a single BD step. The step
+   * generally includes a random change in field components other than
+   * the pressure-like field, followed by use of a Compressor to adjust
+   * the pressure-like field to re-establish a homogeneous total monomer
+   * concentration.
+   *
+   * Instantiations of this template serve as base classes for BdStep<D>
+   * base classes defined in the program-level Rpc and Rpg namespace, for 
+   * all D = 1, 2, and 3. 
    *
    * Template parameters:
-   *   - D  dimension of space
-   *   - T  Types class
+   *   - D  dimension of space (1, 2, or 3)
+   *   - T  Types class (i.e., Rpc::Types<D> or Rpg::Types<D>)
    *
    * \ingroup Rp_Fts_Brownian_Module
    */

@@ -23,7 +23,7 @@ namespace Rpg {
    /**
    * Factory for subclasses of Simulator.
    *
-   * \ingroup Rpg_Fts_Module
+   * \ingroup Rpg_Fts_Simulator_Module
    */
    template <int D>
    class SimulatorFactory : public Factory< Simulator<D> > 
