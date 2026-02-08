@@ -8,13 +8,10 @@
 #include "Analyzer.h"
 #include <rp/fts/analyzer/Analyzer.tpp>
 
-// Subclass constructor definition
 namespace Pscf {
    namespace Rpc {
 
-      /*
-      * Constructor.
-      */
+      /// Constructor.
       template <int D>
       Analyzer<D>::Analyzer(Simulator<D>& simulator, System<D>& system)
        : Rp::Analyzer<D, Simulator<D>, System<D> >(simulator, system)
@@ -23,7 +20,7 @@ namespace Pscf {
    }
 }
 
-// Explicit instantiation declarations
+// Explicit instantiation definitions
 namespace Pscf {
    namespace Rp {
       template class Analyzer<1, Rpc::Simulator<1>, Rpc::System<1> >;

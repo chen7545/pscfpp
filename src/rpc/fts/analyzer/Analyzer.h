@@ -40,6 +40,9 @@ namespace Rpc {
       */
       Analyzer(Simulator<D>& simulator, System<D>& system);
 
+      Analyzer() = delete;
+      Analyzer(Analyzer<D> const &) = delete;
+
    };
 
 } // namespace Rpc

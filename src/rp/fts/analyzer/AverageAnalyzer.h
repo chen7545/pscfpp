@@ -1,5 +1,5 @@
-#ifndef RPC_AVERAGE_ANALYZER_H
-#define RPC_AVERAGE_ANALYZER_H
+#ifndef RP_AVERAGE_ANALYZER_H
+#define RP_AVERAGE_ANALYZER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -12,7 +12,7 @@
 #include <iostream>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
@@ -26,18 +26,18 @@ namespace Rpc {
    *
    * Instantiations of this template are used as base classes for two
    * closely analogous class templates, also named AverageAnalyzer, that
-   * are defined in Rpc and Rpg namespaces for use in the pscf_rpc and
+   * are defined in Rp and Rpg namespaces for use in the pscf_rpc and
    * pscf_rpg programs.
    *
    * Template parameters:
    *
-   *    - D : dimension
-   *    - T : collection of type aliases, e.g., Rpc::Types<D>
+   *    - D : dimension of space
+   *    - T : collection of type aliases, e.g., Rp::Types<D>
    *
-   * \ingroup Rpc_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>
-   class AverageAnalyzer : public typename T::Analyzer
+   class AverageAnalyzer : public T::Analyzer
    {
 
    public:
@@ -123,14 +123,12 @@ namespace Rpc {
       */
       virtual void outputValue(int step, double value);
 
-      using typename AnalyzerT = typename T::Analyzer;
-      using AnalyzerT::simulator;
-      using AnalyzerT::system;
-
    private:
 
       /// Number of samples per block average output.
       int nSamplePerOutput_;
+
+      using AnalyzerT = typename T::Analyzer;
 
    };
 

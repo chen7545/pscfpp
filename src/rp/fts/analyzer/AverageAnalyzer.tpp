@@ -52,7 +52,7 @@ namespace Rp {
                                    nSamplePerOutput_);
       if (nSamplePerOutput_ > 0) {
          std::string fileName = AnalyzerT::outputFileName(".dat");
-         system().fileMaster().openOutputFile(fileName, outputFile_);
+         AnalyzerT::system().fileMaster().openOutputFile(fileName, outputFile_);
       }
 
       // Set the Average accumulator to compute block averages
@@ -117,25 +117,27 @@ namespace Rp {
       #if 0
       // Write parameter (*.prm) file
       fileName = AnalyzerT::outputFileName(".prm");
-      system().fileMaster().openOutputFile(fileName, outputFile_);
+      AnalyzerT::system().fileMaster().openOutputFile(fileName, 
+                                                      outputFile_);
       ParamComposite::writeParam(outputFile_);
       outputFile_.close();
       #endif
 
       // Write average (*.ave) file
       fileName = AnalyzerT::outputFileName(".ave");
-      system().fileMaster().openOutputFile(fileName, outputFile_);
+      AnalyzerT::system().fileMaster().openOutputFile(fileName, 
+                                                      outputFile_);
       double ave = accumulator_.average();
       outputFile_ << "Average = ";
       outputFile_ << Dbl(ave);
-      if (!simulator().hasRamp()) {
+      if (!AnalyzerT::simulator().hasRamp()) {
          double err = accumulator_.blockingError();
          outputFile_ << " +- " << Dbl(err, 10, 3);
       }
       outputFile_ << "\n";
 
       // Write error analysis to file
-      if (!simulator().hasRamp()) {
+      if (!AnalyzerT::simulator().hasRamp()) {
          outputFile_ << "\n";
          std::string line;
          line =
@@ -148,6 +150,6 @@ namespace Rp {
       outputFile_.close();
    }
 
-}
-}
+} // namespace Rp
+} // namespace Rpc
 #endif
