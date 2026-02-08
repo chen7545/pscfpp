@@ -1,5 +1,5 @@
-#ifndef RPG_CHI_DERIVATIVE_H
-#define RPG_CHI_DERIVATIVE_H
+#ifndef RP_CHI_DERIVATIVE_H
+#define RP_CHI_DERIVATIVE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,15 +9,9 @@
 */
 
 #include "AverageAnalyzer.h"
-#include <rpg/system/System.h>
-#include <rpg/fts/simulator/Simulator.h>
 
 namespace Pscf {
-namespace Rpg
-{
-
-   template <int D> class System;
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
 
@@ -26,10 +20,10 @@ namespace Rpg
    *
    * \see \ref rp_ChiDerivative_page "Manual Page"
    *
-   * \ingroup Rpg_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class ChiDerivative : public AverageAnalyzer<D>
+   template <int D, class T>
+   class ChiDerivative : public AverageAnalyzer<D, T>
    {
 
    public:
@@ -40,7 +34,8 @@ namespace Rpg
       * \param simulator  parent Simulator object
       * \param system  parent System object
       */
-      ChiDerivative(Simulator<D>& simulator, System<D>& system);
+      ChiDerivative(typename T::Simulator& simulator, 
+                    typename T::System& system);
 
       /**
       * Destructor.
@@ -62,16 +57,13 @@ namespace Rpg
       */
       void outputValue(int step, double value) override;
 
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-      using AverageAnalyzer<D>::outputFile_;
+      using AnalyzerT = typename T::Analyzer;
+      using AverageAnalyzerT = typename T::AverageAnalyzer;
+      using AverageAnalyzerT::simulator;
+      using AverageAnalyzerT::system;
+      //using AverageAnalyzerT::outputFile_;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class ChiDerivative<1>;
-   extern template class ChiDerivative<2>;
-   extern template class ChiDerivative<3>;
 
 }
 }
