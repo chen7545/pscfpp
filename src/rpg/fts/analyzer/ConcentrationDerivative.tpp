@@ -9,7 +9,6 @@
 */
 
 #include "ConcentrationDerivative.h"
-#include <rpg/fts/perturbation/Perturbation.h>
 #include <rpg/fts/simulator/Simulator.h>
 #include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
@@ -24,31 +23,25 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   ConcentrationDerivative<D>::ConcentrationDerivative(Simulator<D>& simulator, 
-                                                       System<D>& system) 
+   ConcentrationDerivative<D>::ConcentrationDerivative(
+                                  Simulator<D>& simulator,
+                                  System<D>& system)
     : AverageAnalyzer<D>(simulator, system)
-   {  setClassName("ConcentrationDerivative"); }
-
-   /*
-   * Destructor.
-   */
-   template <int D>
-   ConcentrationDerivative<D>::~ConcentrationDerivative() 
-   {}
+   {  ParamComposite::setClassName("ConcentrationDerivative"); }
 
    template <int D>
    double ConcentrationDerivative<D>::compute()
-   { 
+   {
       UTIL_CHECK(system().w().hasData());
-      
+
       // For AB diblock
       const int nMonomer = system().mixture().nMonomer();
-      UTIL_CHECK(nMonomer == 2); 
-      
+      UTIL_CHECK(nMonomer == 2);
+
       double vMonomer = system().mixture().vMonomer();
       const int meshSize = system().domain().mesh().size();
-      
-      // Compute hamiltonian, if necessary
+
+      // Compute and retrieve Hamiltonian
       if (!system().c().hasData()) {
          system().compute();
       }
@@ -58,31 +51,30 @@ namespace Rpg {
       if (!simulator().hasHamiltonian()) {
          simulator().computeHamiltonian();
       }
-      
-      // Obtain Hamiltonian
       double h = simulator().hamiltonian();
-      
+
       // Calculate derivative with respect to concentration
       double dfdc = h * vMonomer;
-      
+
       // With N term
       double Hh = double(meshSize)/2.0 * vMonomer;
       dfdc -= Hh;
-      
+
       return dfdc;
    }
-   
+
    template <int D>
    void ConcentrationDerivative<D>::outputValue(int step, double value)
    {
-      if (simulator().hasRamp() && nSamplePerOutput() == 1) {
+      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      if (simulator().hasRamp() && nSamplePerOutput == 1) {
+         std::ofstream& outputFile = AverageAnalyzer<D>::outputFile_;
+         UTIL_CHECK(outputFile.is_open());
          double vMonomer = system().mixture().vMonomer();
-         
-         UTIL_CHECK(outputFile_.is_open());
-         outputFile_ << Int(step);
-         outputFile_ << Dbl(vMonomer);
-         outputFile_ << Dbl(value);
-         outputFile_ << "\n";
+         outputFile << Int(step);
+         outputFile << Dbl(vMonomer);
+         outputFile << Dbl(value);
+         outputFile << "\n";
        } else {
          AverageAnalyzer<D>::outputValue(step, value);
        }

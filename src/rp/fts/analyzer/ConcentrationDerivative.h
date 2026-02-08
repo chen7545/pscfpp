@@ -1,5 +1,5 @@
-#ifndef RPC_CONCENTRATION_DERIVATIVE_H
-#define RPC_CONCENTRATION_DERIVATIVE_H
+#ifndef RP_CONCENTRATION_DERIVATIVE_H
+#define RP_CONCENTRATION_DERIVATIVE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,13 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.h"         // base class template
-
 namespace Pscf {
-namespace Rpc {
-
-   template <int D> class System;
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
 
@@ -23,18 +18,22 @@ namespace Rpc {
    *
    * \see \ref rp_ConcentrationDerivative_page "Manual Page"
    *
-   * \ingroup Rpc_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class ConcentrationDerivative : public AverageAnalyzer<D>
+   template <int D, class T>
+   class ConcentrationDerivative : public T::AverageAnalyzer
    {
 
    public:
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
-      ConcentrationDerivative(Simulator<D>& simulator, System<D>& system);
+      ConcentrationDerivative(typename T::Simulator& simulator,
+                              typename T::System& system);
 
    protected:
 
@@ -51,16 +50,12 @@ namespace Rpc {
       */
       virtual void outputValue(int step, double value);
 
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
+      using AverageAnayzerT = typename T::AverageAnalyzer;
+      using AverageAnalyzerT::simulator;
+      using AverageAnalyzerT::system;
 
    };
 
-   // Explicit instantiation declarations
-   extern template class ConcentrationDerivative<1>;
-   extern template class ConcentrationDerivative<2>;
-   extern template class ConcentrationDerivative<3>;
-
-}
-}
+} // namespace Rp
+} // namespace Pscf
 #endif

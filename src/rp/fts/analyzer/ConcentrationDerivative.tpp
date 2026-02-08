@@ -1,5 +1,5 @@
-#ifndef RPC_CONCENTRATION_DERIVATIVE_TPP
-#define RPC_CONCENTRATION_DERIVATIVE_TPP
+#ifndef RP_CONCENTRATION_DERIVATIVE_TPP
+#define RP_CONCENTRATION_DERIVATIVE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,28 +9,27 @@
 */
 
 #include "ConcentrationDerivative.h"
-#include <rpc/fts/simulator/Simulator.h>
-#include <rpc/system/System.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/field/Domain.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   ConcentrationDerivative<D>::ConcentrationDerivative(
-                                  Simulator<D>& simulator,
-                                  System<D>& system)
-    : AverageAnalyzer<D>(simulator, system)
+   template <int D, class T>
+   ConcentrationDerivative<D,T>::ConcentrationDerivative(
+                                  typename T::Simulator& simulator,
+                                  typename T::System& system)
+    : AverageAnalyzerT(simulator, system)
    {  ParamComposite::setClassName("ConcentrationDerivative"); }
 
-   template <int D>
-   double ConcentrationDerivative<D>::compute()
+   /*
+   * Compute and return the derivative of interest.
+   */
+   template <int D, class T>
+   double ConcentrationDerivative<D,T>::compute()
    {
       UTIL_CHECK(system().w().hasData());
 
@@ -63,12 +62,15 @@ namespace Rpc {
       return dfdc;
    }
 
-   template <int D>
-   void ConcentrationDerivative<D>::outputValue(int step, double value)
+   /*
+   * Output the current value to the output file. 
+   */
+   template <int D, class T>
+   void ConcentrationDerivative<D,T>::outputValue(int step, double value)
    {
-      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      int nSamplePerOutput = AverageAnalyzerT::nSamplePerOutput();
       if (simulator().hasRamp() && nSamplePerOutput == 1) {
-         std::ofstream& outputFile = AverageAnalyzer<D>::outputFile_;
+         std::ofstream& outputFile = AverageAnalyzerT::outputFile_;
          UTIL_CHECK(outputFile.is_open());
          double vMonomer = system().mixture().vMonomer();
          outputFile << Int(step);
@@ -76,7 +78,7 @@ namespace Rpc {
          outputFile << Dbl(value);
          outputFile << "\n";
        } else {
-         AverageAnalyzer<D>::outputValue(step, value);
+         AverageAnalyzerT::outputValue(step, value);
        }
    }
 

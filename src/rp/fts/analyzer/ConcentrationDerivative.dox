@@ -1,47 +1,43 @@
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
 /*! 
-\page rpc_ChiDerivative_page ChiDerivative
+\page rp_ConcentrationDerivative_page ConcentrationDerivative
 
 This analyzer calculates the derivative of free energy with 
-respect to parameter \f$\chi_b N \f$ at fixed united cell, fixed
-polymer volume fraction, and fixed invariant degree of polymerization
-for AB diblock copolymer system. 
+respect to parameter \f$c_0 = 1/v \f$ at fixed united cell, fixed
+polymer volume fraction, and fixed \f$ \chi_b \f$ for AB diblock copolymer 
+system. 
 
-\see ChiDerivative (class API)
+\see ConcentrationDerivative (Class API)
 
-\section rpc_ChiDerivative_algorithm_sec Mathematical Formula
+\section rp_ConcentrationDerivative_algorithm_sec Mathematical Formula
 
 \f[
-  \frac{\partial F}{\partial \chi_b} 
-  = -\frac{\partial \ln Z}{\partial \chi_b}
+  \frac{\partial F}{\partial c_0} 
+  = -\frac{\partial \ln Z}{\partial c_0}
   = \left\langle \frac{\partial H}{\partial \chi_b} \right\rangle
-  + \frac{\partial \ln N}{\partial \chi_b}
+  + \frac{\partial \ln N}{\partial c_0}
 \f]
 
 \f[
-  \frac{\partial H}{\partial \chi_b} 
-  = \frac{1}{v} \int \mathrm{d} \mathbf{r}
-  \left\langle
-  - \frac{W_{-}(\mathbf{r})^2}{\chi_b^2} 
-  + \frac{1}{4}
-  \right\rangle
+  \frac{\partial H}{\partial c_0} 
+  = \left\langle \frac{H}{c_0} \right\rangle
 \f]
 
 \f[
   \frac{\partial \ln N}{\partial \chi_b}
-  = \frac{\text{MeshSize}}{2\chi_b}
+  = - \frac{\text{MeshSize}}{2 c_0}
 \f]
 where \f$ v \f$ denote the monomer reference volume and 
 \f$\text{MeshSize} \f$ denotes the total number of mesh size. 
 
-\section rpc_ChiDerivative_parameter_sec Parameter File
+\section rp_ConcentrationDerivative_parameter_sec Parameter File
 
-The full parameter file format, including all optional parameters, 
-is shown below:
+The full parameter file format, including all optional parameters, is 
+shown below:
 \code
-ChiDerivative{
+ConcentrationDerivative{
   interval           int
   outputFileName     string
   hasAverage*        bool     (default true)
@@ -67,9 +63,9 @@ Meanings of the parameters are described briefly below:
   </tr>
 </table>
 
-\section rpc_ChiDerivative_output_sec Output
-During the simulation, \f$\chi_b N \f$ and corresponding
-\f$  \frac{\partial F}{\partial \chi_b}  \f$
+\section rp_ConcentrationDerivative_output_sec Output
+During the simulation, \f$ c_0 \f$ and corresponding
+\f$  \frac{\partial F}{\partial c_0}  \f$
 are output to the file {outputFileName} every interval
 simulation steps.
 
