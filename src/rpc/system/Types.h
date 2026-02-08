@@ -61,6 +61,7 @@ namespace Pscf {
       template <int D> class Ramp;
       template <int D> class RampFactory;
       template <int D> class Analyzer;
+      template <int D> class AverageAnalyzer;
       template <int D> class AnalyzerManager;
       template <int D> class TrajectoryReader; 
       template <int D> class TrajectoryReaderFactory; 
@@ -133,7 +134,9 @@ namespace Rpc {
       using RampFactory = Rpc::RampFactory<D>;
       using TrajectoryReader = Rpc::TrajectoryReader<D>;
       using TrajectoryReaderFactory = Rpc::TrajectoryReaderFactory<D>;
+
       using Analyzer = Rpc::Analyzer<D>;
+      using AverageAnalyzer = Rpc::AverageAnalyzer<D>;
       using AnalyzerManager = Rpc::AnalyzerManager<D>;
 
       using BdSimulator = Rpc::BdSimulator<D>;

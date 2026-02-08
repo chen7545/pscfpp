@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.h"               // Base class template
+#include "AverageAnalyzer.h"         // base class template
 
 namespace Pscf {
 namespace Rpg {
@@ -20,6 +20,8 @@ namespace Rpg {
 
    /**
    * Evaluate the derivative of H with respect to concentration.
+   *
+   * \see \ref \rp_ConcentrationDerivative_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -34,16 +36,13 @@ namespace Rpg {
       */
       ConcentrationDerivative(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~ConcentrationDerivative();
+   protected:
 
       /**
       * Compute and return the derivative of H w/ respect to concentration.
       */
       virtual double compute();
-      
+
       /**
       * Output a sampled or block average value.
       *
@@ -52,18 +51,8 @@ namespace Rpg {
       */
       virtual void outputValue(int step, double value);
 
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;  
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output;
-
-   protected:
-
       using AverageAnalyzer<D>::simulator;
       using AverageAnalyzer<D>::system;
-      using AverageAnalyzer<D>::outputFile_;
-      using ParamComposite::setClassName;
 
    };
 

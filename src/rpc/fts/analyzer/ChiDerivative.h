@@ -24,7 +24,7 @@ namespace Rpc
    /**
    * Evaluate the derivative of H with respect to chi.
    *
-   * \see \ref rpc_ChiDerivative_page "Manual Page"
+   * \see \ref rp_ChiDerivative_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
@@ -36,6 +36,9 @@ namespace Rpc
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       ChiDerivative(Simulator<D>& simulator, System<D>& system);
 
@@ -44,31 +47,24 @@ namespace Rpc
       */
       virtual ~ChiDerivative();
 
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output;
-
    protected:
-
-      using ParamComposite::setClassName;
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-      using AverageAnalyzer<D>::outputFile_;
 
       /**
       * Compute and return the derivative of H w/ respect to chi.
       */
-      virtual double compute();
-      
+      double compute() override;
+
       /**
       * Output a sampled or block average value.
       *
       * \param step  value for step counter
       * \param value  value of physical observable
       */
-      virtual void outputValue(int step, double value);
+      void outputValue(int step, double value) override;
+
+      using AverageAnalyzer<D>::simulator;
+      using AverageAnalyzer<D>::system;
+      using AverageAnalyzer<D>::outputFile_;
 
    };
 

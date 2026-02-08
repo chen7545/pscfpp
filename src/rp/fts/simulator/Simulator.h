@@ -35,8 +35,8 @@ namespace Rp {
    * specialized algorithms and data structures needed by these two
    * sampling methods.
    *
-   * The Simulator class provides functions to compute and diagonalze a
-   * projected chi matrix, functions to access components of several
+   * The Simulator class provides functions to compute and diagonalize
+   * a projected chi matrix, functions to access components of several
    * types of fields in a basis of eigenvectors of the projected chi
    * matrix, and functions to compute and return contributions to the
    * field theoretic Hamiltonian and its components.
@@ -55,20 +55,23 @@ namespace Rp {
    * a suffix "c" refer to components of multi-component fields that are
    * defined using this eigenvector basis.
    *
-   * <b> Usage </b>: An instantiation of Rp::Simulator\<D, T\> is used 
+   * <b> Usage </b>: An instantiation of Rp::Simulator\<D, T\> serves 
    * as a base class for for each Simulation\<D\> class defined in 
-   * namespaces Rpc and Rpg, for D=1, 2 or 3. In this usage, template 
-   * parameter T is an instance of a template \<int D\> class Types 
-   * that is defined in each of these namespaces, and that defines a 
-   * set of typename aliases for classes used in the relevant program 
-   * level namespace, for the relevant value of D.
+   * namespaces Rpc and Rpg, for D=1, 2 and 3. In this usage, template 
+   * parameter T is an instance of a template \<int D\> class Types that
+   * is defined in each of these two program-level namespaces, and that 
+   * defines a set of typename aliases for classes used in each such
+   * namespace, for the relevant value of D.
    *
    * <b> Template parameters and typename aliases </b>:
    *
    *    D - integer dimensionality of space (D=1, 2, or 3)
-   *    T - "Types" class, collection of aliases for related classes.
+   *    T - "Types" class (i.e., Rpc::Types<D> or Rpg::Types<D>)
    *
-   * \ingroup Rp_Fts_Module
+   * \see \ref rp_BdSimulator_page  (manual page)
+   * \see \ref rp_McSimulator_page  (manual page)
+   *
+   * \ingroup Rp_Fts_Simulator_Module
    */
    template <int D, class T>
    class Simulator : public ParamComposite
@@ -82,6 +85,7 @@ namespace Rp {
       // Suppress automatically generated constructors
       Simulator() = delete;
       Simulator(Simulator<D,T> const &) = delete;
+      Simulator<D,T>& operator = (Simulator<D,T> const &) = delete;
 
       /// \name Construction, Destruction and Initialization
       ///@{
@@ -101,16 +105,6 @@ namespace Rp {
       ~Simulator();
 
       /**
-      * Allocate required memory.
-      *
-      * Values of nMonomer and the mesh dimensions must be defined in
-      * Mixture and Domain members of the parent System on entry. This
-      * function should be called by the readParameters method of any
-      * subclass.
-      */
-      void allocate();
-
-      /**
       * Read parameters for a simulation.
       *
       * The default implementation reads an optional random seed, an
@@ -121,6 +115,16 @@ namespace Rp {
       * \param in input parameter stream
       */
       virtual void readParameters(std::istream &in);
+
+      /**
+      * Allocate required memory during initialization.
+      *
+      * Values of nMonomer and the mesh dimensions must be defined in
+      * Mixture and Domain members of the parent System on entry. This
+      * function should be called by the readParameters method of any
+      * subclass. Made public to allow use in unit tests.
+      */
+      void allocate();
 
       ///@}
       /// \name Primary Actions: Simulation and Analysis

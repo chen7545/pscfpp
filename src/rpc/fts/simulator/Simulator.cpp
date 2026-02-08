@@ -35,15 +35,12 @@
 
 #include <rp/fts/simulator/Simulator.tpp>  // base class implementation
 
-// Subclass constructor definition
 namespace Pscf {
    namespace Rpc {
    
-      /*
-      * Constructor.
-      */
+      // Constructor.
       template <int D>
-      Simulator<D>::Simulator(typename Types<D>::System& system)
+      Simulator<D>::Simulator(System<D>& system)
        : RpSimulator(system, *this)
       {  RpSimulator::vecRandom().associate(RpSimulator::random()); }
    

@@ -78,15 +78,15 @@ namespace Rp {
       * Implementations of this by subclasses should:
       *
       *    - Generate a proposed move
-      *    - Decide to accept or reject (use random::metropolis)
-      *    - Restore the old system state if rejected, and update
+      *    - Decide to accept or reject (using Random::metropolis)
+      *    - Restore the old system state if rejected, or update
       *      the system state if accepted.
       *
       * The default implementation provides a skeleton that calls
       * the virtual attemptMove() function, calls the compressor
       * after attemptMove(), and uses a Metropolis test based on
-      * the change of Hamiltonian for acceptance or rejection. MC
-      * moves for which this skeleton is appropriate can be
+      * the change of Hamiltonian for acceptance or rejection. 
+      * MC moves for which this skeleton is appropriate can be
       * implemented by redefining the attemptMove() function and
       * using it in this default implementation of move(). MC moves
       * for which this skeleton is inappropriate or inadequate can

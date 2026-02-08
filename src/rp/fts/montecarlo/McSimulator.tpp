@@ -65,7 +65,7 @@ namespace Rp {
       bool isEnd = false;
       SimulatorT::readCompressor(in, isEnd);
       if (hasMcMoves()) {
-         UTIL_CHECK(hasCompressor());
+         UTIL_CHECK(SimulatorT::hasCompressor());
       }
 
       // A Compressor is required if MC moves are declared.
@@ -82,14 +82,14 @@ namespace Rp {
       ParamComposite::readParamCompositeOptional(in, analyzerManager_);
 
       // Figure out what needs to be saved in stored state
-      state_.needsCc = false;
-      state_.needsDc = false;
-      state_.needsHamiltonian = true;
+      state().needsCc = false;
+      state().needsDc = false;
+      state().needsHamiltonian = true;
       if (mcMoveManager_.needsCc()){
-         state_.needsCc = true;
+         state().needsCc = true;
       }
       if (mcMoveManager_.needsDc()){
-         state_.needsDc = true;
+         state().needsDc = true;
       }
 
       // Allocate memory for SimulatorT base class
@@ -107,11 +107,11 @@ namespace Rp {
       // Eigenanalysis of the projected chi matrix.
       SimulatorT::analyzeChi();
 
-      if (hasPerturbation()) {
+      if (SimulatorT::hasPerturbation()) {
          SimulatorT::perturbation().setup();
       }
 
-      if (hasRamp()) {
+      if (SimulatorT::hasRamp()) {
          SimulatorT::ramp().setup(nStep);
       }
 
@@ -119,17 +119,17 @@ namespace Rp {
       SimulatorT::system().compute();
 
       // Compress the initial state (adjust pressure-like field)
-      if (hasCompressor()) {
+      if (SimulatorT::hasCompressor()) {
          SimulatorT::compressor().compress();
          SimulatorT::compressor().clearTimers();
       }
 
       // Compute field components and Hamiltonian
       SimulatorT::computeWc();
-      if (state_.needsCc || state_.needsDc) {
+      if (state().needsCc || state().needsDc) {
          SimulatorT::computeCc();
       }
-      if (state_.needsDc) {
+      if (state().needsDc) {
          SimulatorT::computeDc();
       }
       SimulatorT::computeHamiltonian();
@@ -153,12 +153,12 @@ namespace Rp {
    void McSimulator<D,T>::simulate(int nStep)
    {
       UTIL_CHECK(hasMcMoves());
-      UTIL_CHECK(hasCompressor());
+      UTIL_CHECK(SimulatorT::hasCompressor());
 
       // Initial setup
       setup(nStep);
       iStep_ = 0;
-      if (hasRamp()) {
+      if (SimulatorT::hasRamp()) {
          SimulatorT::ramp().setParameters(iStep_);
       }
       int analyzerBaseInterval = AnalyzerT::baseInterval;
@@ -184,7 +184,7 @@ namespace Rp {
          if (converged){
             iStep_++;
 
-            if (hasRamp()) {
+            if (SimulatorT::hasRamp()) {
                SimulatorT::ramp().setParameters(iStep_);
             }
 
@@ -236,7 +236,7 @@ namespace Rp {
       Log::file() << std::endl;
 
       // Output number of times MDE has been solved for the simulation run
-      outputMdeCounter(Log::file());
+      SimulatorT::outputMdeCounter(Log::file());
 
       // Print McMove acceptance statistics
       long attempt;

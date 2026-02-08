@@ -1,5 +1,5 @@
-#ifndef RPG_CHI_DERIVATIVE_TPP
-#define RPG_CHI_DERIVATIVE_TPP
+#ifndef RPC_CHI_DERIVATIVE_TPP
+#define RPC_CHI_DERIVATIVE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,35 +10,29 @@
 
 #include "ChiDerivative.h"
 
-#include <rpg/fts/simulator/Simulator.h>
-#include <rpg/system/System.h>
-#include <rpg/solvers/Mixture.h>
-#include <rpg/field/Domain.h>
-#include <pscf/interaction/Interaction.h>
-
 namespace Pscf {
-namespace Rpg {
+namespace Rpc {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   ChiDerivative<D>::ChiDerivative(Simulator<D>& simulator,
-                                   System<D>& system)
-    : AverageAnalyzer<D>(simulator, system)
+   template <int D, class T>
+   ChiDerivative<D,T>::ChiDerivative(typename T::Simulator& simulator,
+                                   typename T::System& system)
+    : AverageAnalyzerT(simulator, system)
    {  ParamComposite::setClassName("ChiDerivative"); }
 
    /*
    * Destructor.
    */
-   template <int D>
-   ChiDerivative<D>::~ChiDerivative()
+   template <int D, class T>
+   ChiDerivative<D,T>::~ChiDerivative()
    {}
 
-   template <int D>
-   double ChiDerivative<D>::compute()
+   template <int D, class T>
+   double ChiDerivative<D,T>::compute()
    {
       // Preconditions
       UTIL_CHECK(system().w().hasData());
@@ -80,19 +74,20 @@ namespace Rpg {
       return dfdchi;
    }
 
-   template <int D>
-   void ChiDerivative<D>::outputValue(int step, double value)
+   template <int D, class T>
+   void ChiDerivative<D,T>::outputValue(int step, double value)
    {
-      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      int nSamplePerOutput = AverageAnalyzerT::nSamplePerOutput();
       if (simulator().hasRamp() && nSamplePerOutput == 1) {
-         UTIL_CHECK(outputFile_.is_open());
+         std::ofstream& outputFile = AverageAnalyzerT::outputFile_;
+         UTIL_CHECK(outputFile.is_open());
          double chi = system().interaction().chi(0,1);
-         outputFile_ << Int(step);
-         outputFile_ << Dbl(chi);
-         outputFile_ << Dbl(value) << "\n";
-       } else {
-         AverageAnalyzer<D>::outputValue(step, value);
-       }
+         outputFile << Int(step);
+         outputFile << Dbl(chi);
+         outputFile << Dbl(value) << "\n";
+      } else {
+         AverageAnalyzerT::outputValue(step, value);
+      }
    }
 
 }

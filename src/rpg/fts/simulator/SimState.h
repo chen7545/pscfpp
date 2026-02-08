@@ -25,7 +25,7 @@ namespace Rpg {
    * Rp::SimState base class template. See documentation of that base 
    * class for further details. 
    *
-   * \ingroup Rpg_Fts_Module
+   * \ingroup Rpg_Fts_Simulator_Module
    */
    template <int D>
    struct SimState : Rp::SimState< D, Prdc::Cuda::RField<D> >

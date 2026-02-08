@@ -26,7 +26,7 @@ namespace Rpg {
    * template Rp::Simulator, and has the same public interface as the
    * base class. See the documentation of Rp::Simulator for details. 
    *
-   * \ingroup Rpg_Fts_Module
+   * \ingroup Rpg_Fts_Simulator_Module
    */
    template <int D>
    class Simulator : public Pscf::Rp::Simulator<D, Types<D> >

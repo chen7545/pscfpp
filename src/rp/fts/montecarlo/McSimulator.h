@@ -24,6 +24,11 @@ namespace Rp {
 
    /**
    * Monte-Carlo simulation coordinator.
+   * 
+   * An McSimulator provides tools that are specific to MC simulation, 
+   * in addition to those inherited from the Simulator base class. An
+   * McSimulator has an McMoveManager and an AnalyzerManager, in addition
+   * data members inherited from the Simulator class.
    *
    * \see \ref rp_McSimulator_page (Manual Page)
    *
@@ -44,8 +49,13 @@ namespace Rp {
       /// Alias for McSimulator class in program-level namespace.
       using McSimulatorT = typename T::McSimulator;
 
+      // Suppressing implicitly generated functions
       McSimulator() = delete;
       McSimulator(McSimulator<D,T> const &) = delete;
+      McSimulator<D,T>& operator = (McSimulator<D,T> const &) = delete;
+
+      /// \name Lifetime: Construction, Destruction and Initialization
+      ///@{
 
       /**
       * Constructor.
@@ -67,6 +77,7 @@ namespace Rp {
       */
       virtual void readParameters(std::istream &in);
 
+      ///@}
       /// \name Primary Actions: Simulation and Analysis
       ///@{
 
@@ -106,16 +117,6 @@ namespace Rp {
       */
       virtual void clearTimers();
 
-      /**
-      * Does the stored state need to include Cc fields?
-      */
-      bool needsCc();
-
-      /**
-      * Does the stored state need to include Dc fields?
-      */
-      bool needsDc();
-
       ///@}
       /// \name Miscellaneous
       ///@{
@@ -142,70 +143,35 @@ namespace Rp {
       */
       bool hasMcMoves() const;
 
+      /**
+      * Does the stored state need to include Cc fields?
+      *
+      * This returns if McMove::needsCc returns true for one or more
+      * MC moves ih the McMoveManager. Most MC moves require storage
+      * of components of the c fields.
+      */
+      bool needsCc();
+
+      /**
+      * Does the stored state need to include Dc fields?
+      *
+      * This returns if McMove::needsDc returns true for one or more MC
+      * moves in the McMoveManager. Only moves that uses forces to 
+      * generate a proposed change in the fields, such as a "smart" MC 
+      * force bias move, will require storage of these fields.
+      */
+      bool needsDc();
+
       ///@}
-
-      // Inherited public functions
-
-      using SimulatorT::allocate;
-      using SimulatorT::analyzeChi;
-      using SimulatorT::chiEval;
-      using SimulatorT::chiEvecs;
-      using SimulatorT::computeWc;
-      using SimulatorT::computeCc;
-      using SimulatorT::computeDc;
-      using SimulatorT::hasWc;
-      using SimulatorT::wc;
-      using SimulatorT::hasCc;
-      using SimulatorT::cc;
-      using SimulatorT::hasDc;
-      using SimulatorT::dc;
-
-      using SimulatorT::clearData;
-      using SimulatorT::computeHamiltonian;
-      using SimulatorT::hasHamiltonian;
-      using SimulatorT::hamiltonian;
-      using SimulatorT::idealHamiltonian;
-      using SimulatorT::fieldHamiltonian;
-      using SimulatorT::perturbationHamiltonian;
-
-      using SimulatorT::system;
-      using SimulatorT::random;
-      using SimulatorT::vecRandom;
-      using SimulatorT::hasCompressor;
-      using SimulatorT::compressor;
-      using SimulatorT::hasPerturbation;
-      using SimulatorT::perturbation;
-      using SimulatorT::hasRamp;
-      using SimulatorT::ramp;
-
-      using SimulatorT::saveState;
-      using SimulatorT::restoreState;
-      using SimulatorT::clearState;
-      using SimulatorT::outputMdeCounter;
 
    protected:
 
-      // Inherited protected functions
-      using SimulatorT::readRandomSeed;
-      using SimulatorT::compressorFactory;
-      using SimulatorT::readCompressor;
-      using SimulatorT::perturbationFactory;
-      using SimulatorT::readPerturbation;
-      using SimulatorT::setPerturbation;
-      using SimulatorT::rampFactory;
-      using SimulatorT::readRamp;
-      using SimulatorT::setRamp;
+      // Inherited protected function (selected)
+      using SimulatorT::state;
 
-      // Inherited protected data members
-      using SimulatorT::wc_;
-      using SimulatorT::hasWc_;
-      using SimulatorT::hamiltonian_;
-      using SimulatorT::idealHamiltonian_;
-      using SimulatorT::fieldHamiltonian_;
-      using SimulatorT::hasHamiltonian_;
+      // Inherited protected data members (selected)
       using SimulatorT::iStep_;
       using SimulatorT::iTotalStep_;
-      using SimulatorT::state_;
 
    private:
 
@@ -243,7 +209,7 @@ namespace Rp {
    typename T::McMoveManager& McSimulator<D,T>::mcMoveManager()
    {  return mcMoveManager_; }
 
-   // Get the analyzer manager.
+   // Get the Analyzer manager.
    template <int D, class T> inline
    typename T::AnalyzerManager& McSimulator<D,T>::analyzerManager()
    {  return analyzerManager_; }
@@ -265,12 +231,12 @@ namespace Rp {
    // Does the stored state need to include Cc fields?
    template <int D, class T> inline
    bool McSimulator<D,T>::needsCc()
-   {  return state_.needsCc; }
+   {  return state().needsCc; }
 
    // Does the stored state need to include Dc fields?
    template <int D, class T> inline
    bool McSimulator<D,T>::needsDc()
-   {  return state_.needsDc; }
+   {  return state().needsDc; }
 
 }
 }
