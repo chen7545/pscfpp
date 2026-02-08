@@ -8,14 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"
-#include <util/accumulators/Average.h>           // member
+#include "Analyzer.h"                         // grandparent base class
+#include <rp/fts/analyzer/AverageAnalyzer.h>  // base class template
+#include <rpg/system/Types.h>                 // class template argument
 
 namespace Pscf {
 namespace Rpg {
-
-   template <int D> class System;
-   template <int D> class Simulator;
 
    using namespace Util;
 
@@ -27,12 +25,16 @@ namespace Rpg {
    * simulation.  It is intended for use as a base class for any Analyzer
    * that computes and evaluates an average for a single physical variable.
    *
+   * This class is basically a named instantiation of the base class
+   * template Rp::AverageAnalyzer, using aliases defined in Rpg::Types<D>
+   * to specialize to types used in the Rpg namespace. See documentation
+   * of the base class for details.
+   *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>
-   class AverageAnalyzer : public Analyzer<D>
+   class AverageAnalyzer : public Rp::AverageAnalyzer<D, Types<D> >
    {
-
    public:
 
       /**
@@ -43,100 +45,27 @@ namespace Rpg {
       */
       AverageAnalyzer(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~AverageAnalyzer();
-
-      /**
-      * Read interval, outputFileName and (optionally) nSamplePerOutput.
-      *
-      * The optional variable nSamplePerOutput defaults to 1, which
-      * causes every sampled value to be written to file.  Setting
-      * nSamplePerOutput = 0 suppresses output of block averages to
-      * file.
-      *
-      * \param in  input parameter file
-      */
-      virtual void readParameters(std::istream& in);
-
-      /**
-      * Setup before loop.
-      *
-      * Opens an output file, if nSamplePerOutput > 0.
-      */
-      virtual void setup();
-
-      /**
-      * Compute a sampled value and update the accumulator.
-      *
-      * \param iStep  MD time step index
-      */
-      virtual void sample(long iStep);
-
-      /**
-      * Write final results to file after a simulation.
-      *
-      * Write an average value. If the simulation does not have a ramp,
-      * it also writes an estimate of the error on the average and
-      * information estimates from hierarchichal block averages about
-      * how that estimate was obtained. Information about error analysis
-      * is suppressed when a ramp exists.
-      */
-      virtual void output();
-
-      /**
-      * Get value of nSamplePerOutput.
-      *
-      * If nSamplePerOutput == 0, output of block averages is disabled.
-      * For nSamplePerOutput > 0, nSamplePerOutput is the number of
-      * sampled values averaged in each block average.
-      */
-      int nSamplePerOutput() const;
-
-   protected:
-
-      /// Output file stream.
-      std::ofstream outputFile_;
-
-      /// Average object.
-      Average accumulator_;
-
-      /**
-      * Compute value of sampled quantity.
-      */
-      virtual double compute() = 0;
-
-      /**
-      * Output a sampled or block average value.
-      *
-      * \param step  value for step counter
-      * \param value  value of physical observable
-      */
-      virtual void outputValue(int step, double value);
-
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
-   private:
-
-      /// Number of samples per block average output.
-      int nSamplePerOutput_;
+      /// Alias for base class
+      using AnalyzerT = typename Types<D>::Analyzer;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
 
    };
 
-   // Inline functions
+} // namespace Rpg
+} // namespace Pscf
 
-   // Get nSamplePerOutput.
-   template <int D>
-   inline int AverageAnalyzer<D>::nSamplePerOutput() const
-   {  return nSamplePerOutput_; }
-
-   // Explicit instantiation declarations
-   extern template class AverageAnalyzer<1>;
-   extern template class AverageAnalyzer<2>;
-   extern template class AverageAnalyzer<3>;
-
-}
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class AverageAnalyzer<1, Rpg::Types<1> >;
+      extern template class AverageAnalyzer<2, Rpg::Types<2> >;
+      extern template class AverageAnalyzer<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class AverageAnalyzer<1>;
+      extern template class AverageAnalyzer<2>;
+      extern template class AverageAnalyzer<3>;
+   }
 }
 #endif
