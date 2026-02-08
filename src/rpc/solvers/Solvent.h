@@ -19,8 +19,8 @@ namespace Pscf {
       * Solver and descriptor for a solvent species.
       *
       * Class Rpc::Solvent<D> is simply a named instantiaton of the class
-      * template Rp::Solvent designed for use with CPU hardware.  See the 
-      * documentation of this base class template for details.
+      * template Rp::Solvent, designed for use with CPU hardware.  See
+      * the documentation of this base class template for details.
       *
       * \ref user_param_solvent_sec "Manual Page"
       * \ingroup Rpc_Solver_Module
