@@ -161,7 +161,7 @@ namespace R1d {
 } // namespace R1d
 } // namespace Pscf
 
-// Explicit instantiation declaration for base class
+// Explicit instantiation declaration
 namespace Pscf { 
    extern template 
    class BlockTmpl<R1d::Propagator, Util::DArray<double> >;

@@ -23,16 +23,16 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   PerturbationDerivative<D>::PerturbationDerivative(Simulator<D>& simulator, 
-                                                     System<D>& system) 
+   PerturbationDerivative<D>::PerturbationDerivative(Simulator<D>& simulator,
+                                                     System<D>& system)
     : AverageAnalyzer<D>(simulator, system)
-   {  setClassName("PerturbationDerivative"); }
+   {  ParamComposite::setClassName("PerturbationDerivative"); }
 
    /*
    * Destructor.
    */
    template <int D>
-   PerturbationDerivative<D>::~PerturbationDerivative() 
+   PerturbationDerivative<D>::~PerturbationDerivative()
    {}
 
    template <int D>
@@ -50,26 +50,26 @@ namespace Rpc {
       if (!simulator().hasHamiltonian()) {
          simulator().computeHamiltonian();
       }
-      
-      return simulator().perturbation().df(); 
+
+      return simulator().perturbation().df();
    }
-   
+
    template <int D>
    void PerturbationDerivative<D>::outputValue(int step, double value)
    {
       if (simulator().hasRamp() && nSamplePerOutput() == 1) {
-         double lambda = simulator().perturbation().lambda(); 
-         
-         UTIL_CHECK(outputFile_.is_open());
-         outputFile_ << Int(step);
-         outputFile_ << Dbl(lambda);
-         outputFile_ << Dbl(value);
-         outputFile_ << "\n";
+         std::ofstream& outputFile = AverageAnalyzer<D>::outputFile_;
+         UTIL_CHECK(outputFile.is_open());
+         double lambda = simulator().perturbation().lambda();
+         outputFile << Int(step);
+         outputFile << Dbl(lambda);
+         outputFile << Dbl(value);
+         outputFile << "\n";
        } else {
          AverageAnalyzer<D>::outputValue(step, value);
        }
    }
-   
-}
-}
+
+} // namespace Rpg
+} // namespace Pscf
 #endif

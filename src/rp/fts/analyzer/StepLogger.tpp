@@ -1,5 +1,5 @@
-#ifndef RPC_STEP_LOGGER_TPP
-#define RPC_STEP_LOGGER_TPP
+#ifndef RP_STEP_LOGGER_TPP
+#define RP_STEP_LOGGER_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,38 +8,37 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "StepLogger.h"
-#include "Analyzer.h"
 #include <util/format/Int.h>
 #include <util/misc/Log.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   StepLogger<D>::StepLogger(Simulator<D>& simulator, System<D>& system)
-    : Analyzer<D>(simulator, system)
+   template <int D, class T>
+   StepLogger<D,T>::StepLogger(typename T::Simulator& simulator, 
+                             typename T::System& system)
+    : AnalyzerT(simulator, system)
    {  ParamComposite::setClassName("StepLogger"); }
 
    /*
    * Read interval.
    */
-   template <int D>
-   void StepLogger<D>::readParameters(std::istream& in)
-   {  Analyzer<D>::readInterval(in); }
+   template <int D, class T>
+   void StepLogger<D,T>::readParameters(std::istream& in)
+   {  AnalyzerT::readInterval(in); }
 
    /*
    * Periodically write the step index to a log file.
    */
-   template <int D>
-   void StepLogger<D>::sample(long iStep)
+   template <int D, class T>
+   void StepLogger<D,T>::sample(long iStep)
    {
-      if (Analyzer<D>::isAtInterval(iStep)) {
+      if (AnalyzerT::isAtInterval(iStep)) {
          Log::file() << "iStep  " << Int(iStep,10) << std::endl;
       }
    }

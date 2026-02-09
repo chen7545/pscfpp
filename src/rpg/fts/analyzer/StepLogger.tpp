@@ -27,19 +27,19 @@ namespace Rpg {
    {  ParamComposite::setClassName("StepLogger"); }
 
    /*
-   * Read interval and outputFileName. 
+   * Read interval.
    */
    template <int D>
-   void StepLogger<D>::readParameters(std::istream& in) 
+   void StepLogger<D>::readParameters(std::istream& in)
    {  Analyzer<D>::readInterval(in); }
 
    /*
-   * Periodically write a frame to file
+   * Periodically write the step index to a log file.
    */
    template <int D>
-   void StepLogger<D>::sample(long iStep) 
+   void StepLogger<D>::sample(long iStep)
    {
-      if (Analyzer<D>::isAtInterval(iStep))  {
+      if (Analyzer<D>::isAtInterval(iStep)) {
          Log::file() << "iStep  " << Int(iStep,10) << std::endl;
       }
    }

@@ -9,7 +9,6 @@
 */
 
 #include "Analyzer.h"
-#include <util/global.h>
 
 namespace Pscf {
 namespace Rpc {
@@ -20,9 +19,9 @@ namespace Rpc {
    using namespace Util;
 
    /**
-   * Periodically write snapshots to a trajectory file.
+   * Periodically write field frames (snapshots) to a trajectory file.
    *
-   * \see rpc_TrajectoryWriter_page "Manual Page"
+   * \see \ref rp_TrajectoryWriter_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
@@ -48,39 +47,29 @@ namespace Rpc {
       *
       * \param in input parameter file
       */
-      virtual void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
       * Clear nSample counter.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
-      * Write a frame/snapshot to trajectory file.
+      * Write a frame/snapshot to the trajectory file.
       *
-      * \param iStep step index
+      * \param iStep  step index
       */
-      virtual void sample(long iStep);
+      void sample(long iStep) override;
 
       /**
       * Close trajectory file after run.
       */
-      virtual void output();
+      void output() override;
 
    protected:
 
-      using ParamComposite::read;
-      using ParamComposite::setClassName;
-      using Analyzer<D>::outputFileName;
-      using Analyzer<D>::isAtInterval;
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
       /**
       * Write data that should appear once, at beginning of the file.
-      *
-      * Called by sample on first invocation. Default implementation is 
-      * empty.
       *
       * \param out output file stream
       */
@@ -94,13 +83,13 @@ namespace Rpc {
       */
       void writeFrame(std::ofstream& out, long iStep);
 
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
+
    private:
 
-      // Output file stream
+      /// Output file stream.
       std::ofstream outputFile_;
-
-      // Output filename
-      std::string filename_;
 
       /// Number of configurations dumped thus far (first dump is zero).
       long nSample_;

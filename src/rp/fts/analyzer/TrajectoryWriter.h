@@ -1,5 +1,5 @@
-#ifndef RPG_TRAJECTORY_WRITER_H
-#define RPG_TRAJECTORY_WRITER_H
+#ifndef RP_TRAJECTORY_WRITER_H
+#define RP_TRAJECTORY_WRITER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,13 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"
-
 namespace Pscf {
-namespace Rpg {
-
-   template <int D> class System;
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
 
@@ -23,10 +18,10 @@ namespace Rpg {
    *
    * \see \ref rp_TrajectoryWriter_page "Manual Page"
    *
-   * \ingroup Rpg_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class TrajectoryWriter : public Analyzer<D>
+   template <int D, class T>
+   class TrajectoryWriter : public T::Analyzer
    {
 
    public:
@@ -34,7 +29,8 @@ namespace Rpg {
       /**
       * Constructor.
       */
-      TrajectoryWriter(Simulator<D>& simulator, System<D>& system);
+      TrajectoryWriter(typename T::Simulator& simulator, 
+                       typename T::System& system);
 
       /**
       * Destructor.
@@ -50,7 +46,7 @@ namespace Rpg {
       void readParameters(std::istream& in) override;
 
       /**
-      * Clear nSample counter.
+      * Setup before main simulation loop. 
       */
       void setup() override;
 
@@ -83,6 +79,7 @@ namespace Rpg {
       */
       void writeFrame(std::ofstream& out, long iStep);
 
+      using AnalyzerT = typename T::Analyzer;
       using Analyzer<D>::simulator;
       using Analyzer<D>::system;
 
@@ -98,11 +95,6 @@ namespace Rpg {
       long isInitialized_;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class TrajectoryWriter<1>;
-   extern template class TrajectoryWriter<2>;
-   extern template class TrajectoryWriter<3>;
 
 }
 }

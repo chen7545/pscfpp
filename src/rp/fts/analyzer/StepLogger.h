@@ -1,5 +1,5 @@
-#ifndef RPC_STEP_LOGGER_H
-#define RPC_STEP_LOGGER_H
+#ifndef RP_STEP_LOGGER_H
+#define RP_STEP_LOGGER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,13 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"       // base class template
-
 namespace Pscf {
-namespace Rpc {
-
-   template <int D> class Simulator;
-   template <int D> class System;
+namespace Rp {
 
    using namespace Util;
 
@@ -23,10 +18,10 @@ namespace Rpc {
    *
    * \see \ref rp_StepLogger_page "Manual Page"
    *
-   * \ingroup Rpc_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class StepLogger : public Analyzer<D>
+   template <int D, class T>
+   class StepLogger : public T::Analyzer
    {
 
    public:
@@ -37,7 +32,8 @@ namespace Rpc {
       * \param simulator  parent Simulator object
       * \param system  parent System object
       */
-      StepLogger(Simulator<D>& simulator, System<D>& system);
+      StepLogger(typename T::Simulator& simulator, 
+                 typename T::System& system);
 
       /**
       * Destructor.
@@ -59,12 +55,11 @@ namespace Rpc {
       */
       void sample(long iStep) override;
 
-   };
+   private:
 
-   // Explicit instantiation declarations
-   extern template class StepLogger<1>;
-   extern template class StepLogger<2>;
-   extern template class StepLogger<3>;
+      using AnalyzerT = typename T::Analyzer;
+
+   };
 
 }
 }

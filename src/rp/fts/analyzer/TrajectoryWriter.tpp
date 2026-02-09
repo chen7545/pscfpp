@@ -1,5 +1,5 @@
-#ifndef RPG_TRAJECTORY_WRITER_TPP
-#define RPG_TRAJECTORY_WRITER_TPP
+#ifndef RP_TRAJECTORY_WRITER_TPP
+#define RP_TRAJECTORY_WRITER_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,27 +9,21 @@
 */
 
 #include "TrajectoryWriter.h"
-#include "Analyzer.h"
-#include <rpg/fts/simulator/Simulator.h>
-#include <rpg/system/System.h>
-#include <rpg/solvers/Mixture.h>
-#include <rpg/field/Domain.h>
 #include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>
-//#include <sstream>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   TrajectoryWriter<D>::TrajectoryWriter(Simulator<D>& simulator,
-                                         System<D>& system)
-    : Analyzer<D>(simulator, system),
+   template <int D, class T>
+   TrajectoryWriter<D,T>::TrajectoryWriter(typename T::Simulator& simulator,
+                                         typename T::System& system)
+    : AnalyzerT(simulator, system),
       nSample_(0),
       isInitialized_(false)
    {  ParamComposite::setClassName("TrajectoryWriter"); }
@@ -37,21 +31,21 @@ namespace Rpg {
    /*
    * Read interval and outputFileName.
    */
-   template <int D>
-   void TrajectoryWriter<D>::readParameters(std::istream& in)
+   template <int D, class T>
+   void TrajectoryWriter<D,T>::readParameters(std::istream& in)
    {
-      Analyzer<D>::readParameters(in);
+      AnalyzerT::readParameters(in);
       isInitialized_ = true;
    }
 
    /*
    * Setup before the main loop.
    */
-   template <int D>
-   void TrajectoryWriter<D>::setup()
+   template <int D, class T>
+   void TrajectoryWriter<D,T>::setup()
    {
       nSample_ = 0;
-      std::string filename = Analyzer<D>::outputFileName();
+      std::string filename = AnalyzerT::outputFileName();
       system().fileMaster().openOutputFile(filename, outputFile_);
       writeHeader(outputFile_);
    }
@@ -59,10 +53,10 @@ namespace Rpg {
    /*
    * Periodically write a frame to file.
    */
-   template <int D>
-   void TrajectoryWriter<D>::sample(long iStep)
+   template <int D, class T>
+   void TrajectoryWriter<D,T>::sample(long iStep)
    {
-      if (Analyzer<D>::isAtInterval(iStep))  {
+      if (AnalyzerT::isAtInterval(iStep))  {
          writeFrame(outputFile_, iStep);
          ++nSample_;
       }
@@ -71,20 +65,20 @@ namespace Rpg {
    /*
    * Close the output file at end of simulation.
    */
-   template <int D>
-   void TrajectoryWriter<D>::output()
+   template <int D, class T>
+   void TrajectoryWriter<D,T>::output()
    {  outputFile_.close(); }
 
    /*
    * Write the trajectory file header.
    */
-   template <int D>
-   void TrajectoryWriter<D>::writeHeader(std::ofstream& out)
+   template <int D, class T>
+   void TrajectoryWriter<D,T>::writeHeader(std::ofstream& out)
    {
       int nMonomer = system().mixture().nMonomer();
       bool isSymmetric = false;
-      Domain<D> const & domain = system().domain();
-      FieldIo<D> const & fieldIo = domain.fieldIo();
+      typename T::Domain const & domain = system().domain();
+      typename T::FieldIo const & fieldIo = domain.fieldIo();
       fieldIo.writeFieldHeader(out, nMonomer, domain.unitCell(),
                                isSymmetric);
       out << "\n";
@@ -93,14 +87,14 @@ namespace Rpg {
    /*
    * Write a frame in r-grid file format.
    */
-   template <int D>
-   void TrajectoryWriter<D>::writeFrame(std::ofstream& out, long iStep)
+   template <int D, class T>
+   void TrajectoryWriter<D,T>::writeFrame(std::ofstream& out, long iStep)
    {
       out << "i = " << iStep << "\n";
       bool writeHeader = false;
       bool isSymmetric = false;
-      Domain<D> const & domain = system().domain();
-      FieldIo<D> const & fieldIo = domain.fieldIo();
+      typename T::Domain const & domain = system().domain();
+      typename T::FieldIo const & fieldIo = domain.fieldIo();
       fieldIo.writeFieldsRGrid(out, system().w().rgrid(),
                                domain.unitCell(),
                                writeHeader, isSymmetric);

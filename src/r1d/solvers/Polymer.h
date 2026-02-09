@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/solvers/PolymerTmpl.h>   // Base class template
+#include <pscf/solvers/PolymerTmpl.h>   // base class template
 
 // Forward declarations
 namespace Pscf {
@@ -16,7 +16,6 @@ namespace Pscf {
       class Block;
       class Propagator;
    }
-   extern template class PolymerTmpl<R1d::Block, R1d::Propagator, double>;
 }
 
 namespace Pscf {
@@ -72,6 +71,11 @@ namespace R1d {
 
    };
 
-}
+} // namespace R1d
+} // namespace Pscf
+
+// Explicit instantiation declaration
+namespace Pscf {
+   extern template class PolymerTmpl<R1d::Block, R1d::Propagator, double>;
 }
 #endif

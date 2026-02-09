@@ -1,5 +1,5 @@
-#ifndef RPG_PERTURBATION_DERIVATIVE_TPP
-#define RPG_PERTURBATION_DERIVATIVE_TPP
+#ifndef RP_PERTURBATION_DERIVATIVE_TPP
+#define RP_PERTURBATION_DERIVATIVE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,33 +10,30 @@
 
 #include "PerturbationDerivative.h"
 
-#include <rpg/system/System.h>
-#include <rpg/fts/simulator/Simulator.h>
-#include <rpg/fts/perturbation/Perturbation.h>
-
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   PerturbationDerivative<D>::PerturbationDerivative(Simulator<D>& simulator,
-                                                     System<D>& system)
-    : AverageAnalyzer<D>(simulator, system)
+   template <int D, class T>
+   PerturbationDerivative<D,T>::PerturbationDerivative(
+                                        typename T::Simulator& simulator,
+                                        typename T::System& system)
+    : AverageAnalyzerT(simulator, system)
    {  ParamComposite::setClassName("PerturbationDerivative"); }
 
    /*
    * Destructor.
    */
-   template <int D>
-   PerturbationDerivative<D>::~PerturbationDerivative()
+   template <int D, class T>
+   PerturbationDerivative<D,T>::~PerturbationDerivative()
    {}
 
-   template <int D>
-   double PerturbationDerivative<D>::compute()
+   template <int D, class T>
+   double PerturbationDerivative<D,T>::compute()
    {
       UTIL_CHECK(system().w().hasData());
       UTIL_CHECK(simulator().hasPerturbation());
@@ -54,22 +51,22 @@ namespace Rpg {
       return simulator().perturbation().df();
    }
 
-   template <int D>
-   void PerturbationDerivative<D>::outputValue(int step, double value)
+   template <int D, class T>
+   void PerturbationDerivative<D,T>::outputValue(int step, double value)
    {
       if (simulator().hasRamp() && nSamplePerOutput() == 1) {
-         std::ofstream& ouputFile = AverageAnalyzer<D>::outputFile_;
+         std::ofstream& outputFile = AverageAnalyzerT::outputFile_;
          UTIL_CHECK(outputFile.is_open());
          double lambda = simulator().perturbation().lambda();
          outputFile << Int(step);
          outputFile << Dbl(lambda);
          outputFile << Dbl(value);
          outputFile << "\n";
-       } else {
-         AverageAnalyzer<D>::outputValue(step, value);
-       }
+      } else {
+         AverageAnalyzerT::outputValue(step, value);
+      }
    }
 
-} // namespace Rpg
+} // namespace Rp
 } // namespace Pscf
 #endif

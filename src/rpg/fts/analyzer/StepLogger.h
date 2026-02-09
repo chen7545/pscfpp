@@ -19,7 +19,9 @@ namespace Rpg {
    using namespace Util;
 
    /**
-   * Periodically write snapshots to a trajectory file.
+   * Periodically write the step index to a log file.
+   *
+   * \see \ref rp_StepLogger_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -44,18 +46,18 @@ namespace Rpg {
       {}
 
       /**
-      * Read interval and output file name.
+      * Read interval.
       *
       * \param in input parameter file
       */
-      virtual void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
-      * Write a frame/snapshot to trajectory file.
+      * Write the step index to a log file.
       *
-      * \param iStep step index
+      * \param iStep  step index
       */
-      virtual void sample(long iStep);
+      void sample(long iStep) override;
 
    };
 
