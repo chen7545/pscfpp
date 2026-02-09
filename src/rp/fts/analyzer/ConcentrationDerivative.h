@@ -50,9 +50,10 @@ namespace Rp {
       */
       virtual void outputValue(int step, double value);
 
+      using AnayzerT = typename T::Analyzer;
       using AverageAnayzerT = typename T::AverageAnalyzer;
-      using AverageAnalyzerT::simulator;
-      using AverageAnalyzerT::system;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
 
    };
 

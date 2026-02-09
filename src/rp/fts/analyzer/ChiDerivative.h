@@ -23,7 +23,7 @@ namespace Rp {
    * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>
-   class ChiDerivative : public AverageAnalyzer<D, T>
+   class ChiDerivative : public T::AverageAnalyzer
    {
 
    public:
@@ -59,8 +59,8 @@ namespace Rp {
 
       using AnalyzerT = typename T::Analyzer;
       using AverageAnalyzerT = typename T::AverageAnalyzer;
-      using AverageAnalyzerT::simulator;
-      using AverageAnalyzerT::system;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
       //using AverageAnalyzerT::outputFile_;
 
    };

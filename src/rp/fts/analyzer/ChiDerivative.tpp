@@ -1,5 +1,5 @@
-#ifndef RPC_CHI_DERIVATIVE_TPP
-#define RPC_CHI_DERIVATIVE_TPP
+#ifndef RP_CHI_DERIVATIVE_TPP
+#define RP_CHI_DERIVATIVE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,9 +9,10 @@
 */
 
 #include "ChiDerivative.h"
+#include <pscf/interaction/Interaction.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
@@ -20,7 +21,7 @@ namespace Rpc {
    */
    template <int D, class T>
    ChiDerivative<D,T>::ChiDerivative(typename T::Simulator& simulator,
-                                   typename T::System& system)
+                                     typename T::System& system)
     : AverageAnalyzerT(simulator, system)
    {  ParamComposite::setClassName("ChiDerivative"); }
 
