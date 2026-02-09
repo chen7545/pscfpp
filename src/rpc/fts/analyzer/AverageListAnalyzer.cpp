@@ -5,13 +5,33 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageListAnalyzer.tpp"
+#include "AverageListAnalyzer.h"                    // header
+#include <rpc/system/System.h>
+#include <rp/fts/analyzer/AverageListAnalyzer.tpp>  // implementation
 
 namespace Pscf {
 namespace Rpc {
-   template class AverageListAnalyzer<1>;
-   template class AverageListAnalyzer<2>;
-   template class AverageListAnalyzer<3>;
+
+   // Constructor.
+   template <int D>
+   AverageListAnalyzer<D>::AverageListAnalyzer(Simulator<D>& simulator,
+                                   System<D>& system)
+    : Rp::AverageListAnalyzer< D, Types<D> >(simulator, system)
+   {}
+
 }
 }
 
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class AverageListAnalyzer<1, Rpc::Types<1> >;
+      template class AverageListAnalyzer<2, Rpc::Types<2> >;
+      template class AverageListAnalyzer<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      template class AverageListAnalyzer<1>;
+      template class AverageListAnalyzer<2>;
+      template class AverageListAnalyzer<3>;
+   }
+}
