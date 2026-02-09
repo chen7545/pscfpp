@@ -54,7 +54,8 @@ namespace Rp {
    template <int D, class T>
    void PerturbationDerivative<D,T>::outputValue(int step, double value)
    {
-      if (simulator().hasRamp() && nSamplePerOutput() == 1) {
+      int nSamplePerOutput = AverageAnalyzerT::nSamplePerOutput();
+      if (simulator().hasRamp() && nSamplePerOutput == 1) {
          std::ofstream& outputFile = AverageAnalyzerT::outputFile_;
          UTIL_CHECK(outputFile.is_open());
          double lambda = simulator().perturbation().lambda();

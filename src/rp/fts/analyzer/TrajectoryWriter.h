@@ -80,8 +80,8 @@ namespace Rp {
       void writeFrame(std::ofstream& out, long iStep);
 
       using AnalyzerT = typename T::Analyzer;
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
 
    private:
 

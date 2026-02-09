@@ -20,7 +20,7 @@ namespace Rp {
    *
    * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
+   template <int D, class T>
    class PerturbationDerivative : public T::AverageAnalyzer
    {
 
@@ -57,8 +57,8 @@ namespace Rp {
 
       using AnalyzerT = typename T::Analyzer;
       using AverageAnalyzerT = typename T::AverageAnalyzer;
-      using AverageT::simulator;
-      using AverageT::system;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
 
    };
 

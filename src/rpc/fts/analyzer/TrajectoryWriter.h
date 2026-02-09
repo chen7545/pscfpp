@@ -9,6 +9,8 @@
 */
 
 #include "Analyzer.h"
+#include <rp/fts/analyzer/TrajectoryWriter.h>
+#include <rpc/system/Types.h>
 
 namespace Pscf {
 namespace Rpc {
@@ -19,91 +21,47 @@ namespace Rpc {
    using namespace Util;
 
    /**
-   * Periodically write field frames (snapshots) to a trajectory file.
+   * Evaluate the derivative of H with respect to chi.
+   *
+   * Instantiations of this class are basically named instantiations
+   * of the base class template Rp::TrajectoryWriter, with type aliases
+   * defined using the Types<D> class for use on CPU hardware. See
+   * the documentation for this base class template for details.
    *
    * \see \ref rp_TrajectoryWriter_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
-   class TrajectoryWriter : public Analyzer<D>
+   class TrajectoryWriter : public Rp::TrajectoryWriter< D, Types<D> >
    {
 
    public:
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       TrajectoryWriter(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~TrajectoryWriter()
-      {}
-
-      /**
-      * Read interval and output file name.
-      *
-      * \param in input parameter file
-      */
-      void readParameters(std::istream& in) override;
-
-      /**
-      * Clear nSample counter.
-      */
-      void setup() override;
-
-      /**
-      * Write a frame/snapshot to the trajectory file.
-      *
-      * \param iStep  step index
-      */
-      void sample(long iStep) override;
-
-      /**
-      * Close trajectory file after run.
-      */
-      void output() override;
-
-   protected:
-
-      /**
-      * Write data that should appear once, at beginning of the file.
-      *
-      * \param out output file stream
-      */
-      void writeHeader(std::ofstream& out);
-
-      /**
-      * Write data that should appear in every frame.
-      *
-      * \param out output file stream
-      * \param iStep MC time step index
-      */
-      void writeFrame(std::ofstream& out, long iStep);
-
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
-   private:
-
-      /// Output file stream.
-      std::ofstream outputFile_;
-
-      /// Number of configurations dumped thus far (first dump is zero).
-      long nSample_;
-
-      /// Has readParam been called?
-      long isInitialized_;
-
    };
 
-   // Explicit instantiation declarations
-   extern template class TrajectoryWriter<1>;
-   extern template class TrajectoryWriter<2>;
-   extern template class TrajectoryWriter<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class TrajectoryWriter<1, Rpc::Types<1> >;
+      extern template class TrajectoryWriter<2, Rpc::Types<2> >;
+      extern template class TrajectoryWriter<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class TrajectoryWriter<1>;
+      extern template class TrajectoryWriter<2>;
+      extern template class TrajectoryWriter<3>;
+   }
 }
 #endif
