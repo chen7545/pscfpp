@@ -10,19 +10,4 @@ BdSimulator{
       verbose		0
       errorType		rms
    }
-   AnalyzerManager{
-      baseInterval	1
-      TrajectoryWriter{
-         interval		1
-         outputFileName  	out/trajectory
-      }
-      HamiltonianAnalyzer{
-         interval        	1
-         outputFileName  	out/hamiltonian
-         nSamplePerOutput 	1
-      }
-      StepLogger{
-         interval        	5
-      }
-   }
 }
