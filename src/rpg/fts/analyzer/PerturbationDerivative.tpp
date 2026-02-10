@@ -58,7 +58,7 @@ namespace Rpg {
    void PerturbationDerivative<D>::outputValue(int step, double value)
    {
       if (simulator().hasRamp() && nSamplePerOutput() == 1) {
-         std::ofstream& ouputFile = AverageAnalyzer<D>::outputFile_;
+         std::ofstream& outputFile = AverageAnalyzer<D>::outputFile_;
          UTIL_CHECK(outputFile.is_open());
          double lambda = simulator().perturbation().lambda();
          outputFile << Int(step);
