@@ -8,23 +8,25 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageListAnalyzer.h"     // base class template
+#include "AverageListAnalyzer.h"
 
 namespace Pscf {
 namespace Rpg {
 
    template <int D> class System;
    template <int D> class Simulator;
-   
+
    using namespace Util;
 
    /**
    * Compute averages and output block averages of Hamiltonian components.
    *
    * This class computes separate averages for each component of the
-   * total simulation Hamiltonian (ideal gas contributions (lnQ) and 
-   * Field contribution (HW)) as well as for the total, and 
+   * total simulation Hamiltonian (ideal gas contributions (lnQ) and
+   * Field contribution (HW)) as well as for the total, and
    * periodically outputs block averages of each to a file.
+   *
+   * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -33,7 +35,7 @@ namespace Rpg {
    {
 
    public:
-   
+
       /**
       * Constructor.
       *
@@ -41,13 +43,13 @@ namespace Rpg {
       * \param system  parent System object
       */
       HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system);
-   
+
       /**
       * Destructor.
       */
       virtual ~HamiltonianAnalyzer()
-      {} 
-      
+      {}
+
       /**
       * Read interval and output file name.
       *
@@ -59,19 +61,14 @@ namespace Rpg {
 
       /**
       * Compute and store values of Hamiltonian components.
-      */  
+      */
       void compute();
-      
+
       using Analyzer<D>::simulator;
       using Analyzer<D>::system;
-      using AverageListAnalyzer<D>::setName;
-      using AverageListAnalyzer<D>::setValue;
-      
-   private: 
 
-      /// Has eigenvalue analysis of projected chi matrix been performed?
-      bool hasAnalyzeChi_;
-      
+   private:
+
       /// Array index for ideal gas contributions (lnQ) accumulator.
       int idealId_;
 
@@ -82,7 +79,7 @@ namespace Rpg {
       int totalId_;
 
    };
-   
+
    // Explicit instantiation declarations
    extern template class HamiltonianAnalyzer<1>;
    extern template class HamiltonianAnalyzer<2>;
@@ -90,4 +87,4 @@ namespace Rpg {
 
 }
 }
-#endif 
+#endif
