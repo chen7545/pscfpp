@@ -9,12 +9,10 @@
 
 #include "ConcentrationWriter.h"
 #include "Analyzer.h"
-
-#include <rpc/system/System.h>
 #include <rpc/fts/simulator/Simulator.h>
+#include <rpc/system/System.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
-
 #include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>
 
@@ -23,8 +21,7 @@
 //#include <sstream>
 
 namespace Pscf {
-namespace Rpc 
-{
+namespace Rpc {
 
    using namespace Util;
 
@@ -32,39 +29,38 @@ namespace Rpc
    * Constructor.
    */
    template <int D>
-   ConcentrationWriter<D>::ConcentrationWriter(Simulator<D>& simulator, 
-                                         System<D>& system) 
+   ConcentrationWriter<D>::ConcentrationWriter(Simulator<D>& simulator,
+                                               System<D>& system)
     : Analyzer<D>(simulator, system),
       nSample_(0),
       isInitialized_(false)
    {  ParamComposite::setClassName("ConcentrationWriter"); }
 
    /*
-   * Read interval and outputFileName. 
+   * Read interval and outputFileName.
    */
    template <int D>
-   void ConcentrationWriter<D>::readParameters(std::istream& in) 
+   void ConcentrationWriter<D>::readParameters(std::istream& in)
    {
       Analyzer<D>::readParameters(in);
       isInitialized_ = true;
    }
-   
+
    /*
-   * Read interval and outputFileName. 
+   * Initialize before main simulation loop.
    */
    template <int D>
-   void ConcentrationWriter<D>::setup() 
-   {  
-      nSample_ = 0; 
-      std::string filename;
-      filename_  = outputFileName();
-      system().fileMaster().openOutputFile(filename_ , outputFile_);
+   void ConcentrationWriter<D>::setup()
+   {
+      nSample_ = 0;
+      std::string filename = Analyzer<D>::outputFileName();
+      system().fileMaster().openOutputFile(filename, outputFile_);
       writeHeader(outputFile_);
    }
 
-    template <int D>
-    void ConcentrationWriter<D>::writeFrame(std::ofstream& out, long iStep)
-   {  
+   template <int D>
+   void ConcentrationWriter<D>::writeFrame(std::ofstream& out, long iStep)
+   {
       UTIL_CHECK(system().w().hasData());
       if (!system().c().hasData()){
          system().compute();
@@ -73,44 +69,43 @@ namespace Rpc
       bool writeHeader = false;
       bool isSymmetric = false;
       Domain<D> const & domain = system().domain();
-      FieldIo<D> const & fieldIo = domain.fieldIo();      
-      fieldIo.writeFieldsRGrid(out, system().c().rgrid(), 
-                               domain.unitCell(), 
+      FieldIo<D> const & fieldIo = domain.fieldIo();
+      fieldIo.writeFieldsRGrid(out, system().c().rgrid(),
+                               domain.unitCell(),
                                writeHeader, isSymmetric);
       out << "\n";
-   }  
-   
-   
-    template <int D>
-    void ConcentrationWriter<D>::writeHeader(std::ofstream& out)
-   {  
+   }
+
+   template <int D>
+   void ConcentrationWriter<D>::writeHeader(std::ofstream& out)
+   {
       int nMonomer = system().mixture().nMonomer();
       bool isSymmetric = false;
       Domain<D> const & domain = system().domain();
       FieldIo<D> const & fieldIo = domain.fieldIo();
-      fieldIo.writeFieldHeader(out, nMonomer, 
+      fieldIo.writeFieldHeader(out, nMonomer,
                                domain.unitCell(), isSymmetric);
       out << "\n";
-   } 
-   
-   
+   }
+
+
    /*
    * Periodically write a frame to file
    */
    template <int D>
-   void ConcentrationWriter<D>::sample(long iStep) 
-   {  
-      if (isAtInterval(iStep))  {
+   void ConcentrationWriter<D>::sample(long iStep)
+   {
+      if (Analyzer<D>::isAtInterval(iStep))  {
          writeFrame(outputFile_, iStep);
          ++nSample_;
       }
    }
-  
+
    /*
    * Close output file at end of simulation.
    */
    template <int D>
-   void ConcentrationWriter<D>::output() 
+   void ConcentrationWriter<D>::output()
    {  outputFile_.close(); }
 
 }

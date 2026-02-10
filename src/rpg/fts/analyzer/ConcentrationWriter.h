@@ -8,19 +8,20 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"        // Base class template
+#include "Analyzer.h"
 
 namespace Pscf {
 namespace Rpg {
 
-   // Forward declarations
    template <int D> class System;
    template <int D> class Simulator;
 
    using namespace Util;
 
    /**
-   * Periodically write snapshots to a trajectory file.
+   * Periodically write c-field snapshots to a trajectory file.
+   *
+   * \see \ref rpc_ConcentrationWriter_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -32,6 +33,9 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       ConcentrationWriter(Simulator<D>& simulator, System<D>& system);
 
@@ -44,19 +48,19 @@ namespace Rpg {
       /**
       * Read interval and output file name.
       *
-      * \param in input parameter file
+      * \param in  input parameter file
       */
       virtual void readParameters(std::istream& in);
 
       /**
-      * Clear nSample counter.
+      * Initialize before main simulation loop.
       */
       virtual void setup();
 
       /**
       * Write a frame/snapshot to trajectory file.
       *
-      * \param iStep step index
+      * \param iStep  step index
       */
       virtual void sample(long iStep);
 
@@ -69,9 +73,10 @@ namespace Rpg {
       using ParamComposite::read;
       using Analyzer<D>::outputFileName;
       using Analyzer<D>::isAtInterval;
+      using Analyzer<D>::simulator;
       using Analyzer<D>::system;
 
-   protected:
+   private:
 
       // Output file stream
       std::ofstream outputFile_;
@@ -85,22 +90,18 @@ namespace Rpg {
       /// Has readParam been called?
       long isInitialized_;
 
-   protected:
-
       /**
       * Write data that should appear once, at beginning of the file.
       *
-      * Called by sample on first invocation. Default implementation is empty.
-      *
-      * \param out output file stream
+      * \param out  output file stream
       */
       void writeHeader(std::ofstream& out);
 
       /**
       * Write data that should appear in every frame.
       *
-      * \param out output file stream
-      * \param iStep MC time step index
+      * \param out  output file stream
+      * \param iStep  step index
       */
       void writeFrame(std::ofstream& out, long iStep);
 

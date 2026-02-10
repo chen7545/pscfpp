@@ -19,7 +19,7 @@ namespace Rpc {
    using namespace Util;
 
    /**
-   * Periodically write snapshots to a trajectory file.
+   * Periodically write c-field snapshots to a trajectory file.
    *
    * \see \ref rpc_ConcentrationWriter_page "Manual Page"
    *
@@ -33,7 +33,7 @@ namespace Rpc {
 
       /**
       * Constructor.
-      *  
+      *
       * \param simulator  parent Simulator object
       * \param system  parent System object
       */
@@ -48,19 +48,19 @@ namespace Rpc {
       /**
       * Read interval and output file name.
       *
-      * \param in input parameter file
+      * \param in  input parameter file
       */
       virtual void readParameters(std::istream& in);
 
       /**
-      * Clear nSample counter.
+      * Initialize before main simulation loop.
       */
       virtual void setup();
 
       /**
       * Write a frame/snapshot to trajectory file.
       *
-      * \param iStep step index
+      * \param iStep  step index
       */
       virtual void sample(long iStep);
 
@@ -69,14 +69,14 @@ namespace Rpc {
       */
       virtual void output();
 
-      using ParamComposite::read;
       using ParamComposite::setClassName;
+      using ParamComposite::read;
       using Analyzer<D>::outputFileName;
       using Analyzer<D>::isAtInterval;
       using Analyzer<D>::simulator;
       using Analyzer<D>::system;
 
-   protected:
+   private:
 
       // Output file stream
       std::ofstream outputFile_;
@@ -90,27 +90,23 @@ namespace Rpc {
       /// Has readParam been called?
       long isInitialized_;
 
-   protected:
-
       /**
       * Write data that should appear once, at beginning of the file.
       *
-      * Called by sample on first invocation. Default implementation is empty.
-      *
-      * \param out output file stream
+      * \param out  output file stream
       */
       void writeHeader(std::ofstream& out);
 
       /**
       * Write data that should appear in every frame.
       *
-      * \param out output file stream
-      * \param iStep MC time step index
+      * \param out  output file stream
+      * \param iStep  step index
       */
       void writeFrame(std::ofstream& out, long iStep);
 
    };
-   
+
    // Explicit instantiation declarations
    extern template class ConcentrationWriter<1>;
    extern template class ConcentrationWriter<2>;
