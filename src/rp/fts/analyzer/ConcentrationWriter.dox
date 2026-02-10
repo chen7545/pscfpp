@@ -2,7 +2,7 @@ namespace Pscf {
 namespace Rpc {
 
 /*! 
-\page rpc_ConcentrationWriter_page ConcentrationWriter
+\page rp_ConcentrationWriter_page ConcentrationWriter
 
 This analyzer periodically writes the composition configuration 
 for each component to file. The output is analogous to that of a 
@@ -13,7 +13,7 @@ potential fields (w-fields).
 
 \see ConcentrationWriter (class API)
 
-\section rpc_ConcentrationWriter_parameter_sec Parameter File
+\section rp_ConcentrationWriter_parameter_sec Parameter File
 
 The full parameter file format is shown below:
 \code
@@ -38,7 +38,7 @@ Meanings of the parameters are described briefly below:
   </tr>
 </table>
 
-\section rpc_ConcentrationWriter_output_sec Output
+\section rp_ConcentrationWriter_output_sec Output
 
 During the simulation, frames containing the monomer concentration
 fields (c-fields0 for all monomer types are output the to file 

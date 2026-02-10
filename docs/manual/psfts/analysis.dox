@@ -66,7 +66,7 @@ the parameter and command file are, however, designed to make it
 relatively simple for users to define other formats in the future
 if needed.
 
-\see \ref rpc_TrajectoryWriter_page (manual page)
+\see \ref rp_TrajectoryWriter_page (manual page)
 
 \section psfts_analysis_postprocess_sec Postprocess Analysis
 

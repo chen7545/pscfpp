@@ -21,7 +21,7 @@ namespace Rpg {
    /**
    * Periodically write c-field snapshots to a trajectory file.
    *
-   * \see \ref rpc_ConcentrationWriter_page "Manual Page"
+   * \see \ref rp_ConcentrationWriter_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
