@@ -8,7 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"       // base class template
+#include "Analyzer.h"                    // indirect base 
+#include <rp/fts/analyzer/StepLogger.h>  // base class template
+#include <rpg/system/Types.h>            // base class argument
 
 namespace Pscf {
 namespace Rpg {
@@ -26,7 +28,7 @@ namespace Rpg {
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>
-   class StepLogger : public Analyzer<D>
+   class StepLogger : public Rp::StepLogger< D, Types<D> >
    {
 
    public:
@@ -39,33 +41,22 @@ namespace Rpg {
       */
       StepLogger(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~StepLogger()
-      {}
-
-      /**
-      * Read interval.
-      *
-      * \param in input parameter file
-      */
-      void readParameters(std::istream& in) override;
-
-      /**
-      * Write the step index to a log file.
-      *
-      * \param iStep  step index
-      */
-      void sample(long iStep) override;
-
    };
 
-   // Explicit instantiation declarations
-   extern template class StepLogger<1>;
-   extern template class StepLogger<2>;
-   extern template class StepLogger<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class StepLogger< 1, Rpg::Types<1> >;
+      extern template class StepLogger< 2, Rpg::Types<2> >;
+      extern template class StepLogger< 3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class StepLogger<1>;
+      extern template class StepLogger<2>;
+      extern template class StepLogger<3>;
+   }
 }
 #endif

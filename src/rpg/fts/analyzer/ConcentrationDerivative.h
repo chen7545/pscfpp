@@ -24,9 +24,9 @@ namespace Rpg {
    * Evaluate the derivative of H with respect to chi.
    *
    * Instantiations of this class are basically named instantiations
-   * of the base class template Rp::ConcentrationDerivative, with type aliases
-   * defined using the Types<D> class for use on CPU hardware. See
-   * the documentation for this base class template for details.
+   * of the base class template Rp::ConcentrationDerivative, with type 
+   * aliases defined using the Types<D> class for use on CPU hardware.
+   * See the documentation for this base class template for details.
    *
    * \see \ref rp_ConcentrationDerivative_page "Manual Page"
    *
