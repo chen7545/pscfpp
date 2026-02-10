@@ -9,10 +9,8 @@
 */
 
 #include "HamiltonianAnalyzer.h"
-
 #include <rpc/system/System.h>
 #include <rpc/fts/simulator/Simulator.h>
-
 #include <iostream>
 
 namespace Pscf {
@@ -24,40 +22,38 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   HamiltonianAnalyzer<D>::HamiltonianAnalyzer(Simulator<D>& simulator, 
+   HamiltonianAnalyzer<D>::HamiltonianAnalyzer(Simulator<D>& simulator,
                                                System<D>& system)
     : AverageListAnalyzer<D>(simulator, system),
       idealId_(-1),
       fieldId_(-1),
       totalId_(-1)
-   {  setClassName("HamiltonianAnalyzer"); }
+   {  ParamComposite::setClassName("HamiltonianAnalyzer"); }
 
    /*
-   * Read interval and outputFileName. 
+   * Read interval and outputFileName.
    */
    template <int D>
-   void HamiltonianAnalyzer<D>::readParameters(std::istream& in) 
+   void HamiltonianAnalyzer<D>::readParameters(std::istream& in)
    {
       AverageListAnalyzer<D>::readParameters(in);
-
       AverageListAnalyzer<D>::initializeAccumulators(3);
- 
+
       idealId_ = 0;
-      setName(idealId_, "ideal");
+      AverageListAnalyzer<D>::setName(idealId_, "ideal");
       fieldId_ = 1;
-      setName(fieldId_, "field");
+      AverageListAnalyzer<D>::setName(fieldId_, "field");
       totalId_ = 2;
-      setName(totalId_, "total");
+      AverageListAnalyzer<D>::setName(totalId_, "total");
    }
 
    /*
-   * Output energy to file
+   * Output energy to file.
    */
    template <int D>
-   void HamiltonianAnalyzer<D>::compute() 
+   void HamiltonianAnalyzer<D>::compute()
    {
       UTIL_CHECK(system().w().hasData());
-
       if (!system().c().hasData()) {
          system().compute();
       }
@@ -72,15 +68,15 @@ namespace Rpc {
       UTIL_CHECK(simulator().hasHamiltonian());
 
       double ideal = simulator().idealHamiltonian();
-      setValue(idealId_, ideal);
-   
+      AverageListAnalyzer<D>::setValue(idealId_, ideal);
+
       double field = simulator().fieldHamiltonian();
-      setValue(fieldId_, field);
-   
+      AverageListAnalyzer<D>::setValue(fieldId_, field);
+
       double total = simulator().hamiltonian();
-      setValue(totalId_, total);
+      AverageListAnalyzer<D>::setValue(totalId_, total);
    }
-   
+
 }
 }
 #endif
