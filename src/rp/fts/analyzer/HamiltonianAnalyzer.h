@@ -1,5 +1,5 @@
-#ifndef RPC_HAMILTONIAN_ANALYZER_H
-#define RPC_HAMILTONIAN_ANALYZER_H
+#ifndef RP_HAMILTONIAN_ANALYZER_H
+#define RP_HAMILTONIAN_ANALYZER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,13 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageListAnalyzer.h"
+#include <iostream>
 
 namespace Pscf {
-namespace Rpc {
-
-   template <int D> class System;
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
 
@@ -28,10 +25,10 @@ namespace Rpc {
    *
    * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
    *
-   * \ingroup Rpc_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class HamiltonianAnalyzer : public AverageListAnalyzer<D>
+   template <int D, class T>
+   class HamiltonianAnalyzer : public T::AverageListAnalyzer
    {
 
    public:
@@ -42,7 +39,8 @@ namespace Rpc {
       * \param simulator  parent Simulator object
       * \param system  parent System object
       */
-      HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system);
+      HamiltonianAnalyzer(typename T::Simulator& simulator, 
+                          typename T::System& system);
 
       /**
       * Destructor.
@@ -64,8 +62,10 @@ namespace Rpc {
       */
       void compute();
 
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
+      using AverageListAnalyzerT = typename T::AverageListAnalyzer;
+      using AnalyzerT = typename T::Analyzer;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
 
    private:
 
@@ -79,11 +79,6 @@ namespace Rpc {
       int totalId_;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class HamiltonianAnalyzer<1>;
-   extern template class HamiltonianAnalyzer<2>;
-   extern template class HamiltonianAnalyzer<3>;
 
 }
 }
