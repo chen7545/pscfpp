@@ -27,8 +27,8 @@ namespace Rp {
    *
    * Instantiations of this template are used as base classes for two
    * closely analogous class templates, also named AverageListAnalyzer, that
-   * that are defined in Rpc and Rpg namespaces for used in the pscf_rpc 
-   * and pscf_rpg programs.
+   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc 
+   * and pscf_rpg programs, respectively.
    *
    * Template parameters:
    *
@@ -38,7 +38,7 @@ namespace Rp {
    * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>
-   class AverageListAnalyzer : public typename T::Analyzer
+   class AverageListAnalyzer : public T::Analyzer
    {
 
    public:
@@ -177,7 +177,7 @@ namespace Rp {
       */
       void outputAccumulators();
 
-      using AnalzyerT = typename T::Analyzer;
+      using AnalyzerT = typename T::Analyzer;
       using AnalyzerT::simulator;
       using AnalyzerT::system;
 

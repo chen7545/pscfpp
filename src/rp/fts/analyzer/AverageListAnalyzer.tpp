@@ -10,14 +10,13 @@
 
 #include "AverageListAnalyzer.h"
 
-#include <rpc/system/System.h>
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
 #include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 

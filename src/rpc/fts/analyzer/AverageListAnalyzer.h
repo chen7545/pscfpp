@@ -9,7 +9,8 @@
 */
 
 #include "Analyzer.h"
-#include <util/accumulators/Average.h>           // member
+#include <rp/fts/analyzer/AverageListAnalyzer.h>
+#include <rpc/system/Types.h>
 
 namespace Pscf {
 namespace Rpc {
@@ -31,7 +32,8 @@ namespace Rpc {
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
-   class AverageListAnalyzer : public Analyzer<D>
+   class AverageListAnalyzer 
+     : public Rp::AverageListAnalyzer< D, Types<D> >
    {
 
    public:
@@ -44,224 +46,22 @@ namespace Rpc {
       */
       AverageListAnalyzer(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      ~AverageListAnalyzer() override;
-
-      /**
-      * Read interval, outputFileName and (optionally) nSamplePerOutput.
-      *
-      * The optional variable nSamplePerOutput defaults to 0, which
-      * disables computation and output of block averages. Setting
-      * nSamplePerOutput = 1 outputs every sampled value.
-      *
-      * \param in  input parameter stream
-      */
-      void readParameters(std::istream& in) override;
-
-      /**
-      * Setup before loop.
-      *
-      * Opens an output file, if nSamplePerOutput > 0.
-      */
-      void setup() override;
-
-      /**
-      * Compute sampled values and update the accumulators.
-      *
-      * \param iStep  simulation step index
-      */
-      void sample(long iStep) override;
-
-      /**
-      * Write final results to file after a simulation.
-      */
-      void output() override;
-
-      /**
-      * Get value of nSamplePerOutput.
-      *
-      * If nSamplePerOutput == 0, output of block averages is disabled.
-      * For nSamplePerOutput > 0, the value is the number of sampled
-      * values averaged in each block.
-      */
-      int nSamplePerOutput() const;
-
-      /**
-      * Get the number of variables.
-      */
-      int nValue() const;
-
-      /**
-      * Get name associated with a variable.
-      *
-      * \param i  integer index of name/value pair
-      */
-      const std::string& name(int i) const;
-
-      /**
-      * Get Average accumulator for a specific variable.
-      *
-      * \param i  integer index of value
-      */
-      const Average& accumulator(int i) const;
-
-   protected:
-
-      /// Output file stream.
-      std::ofstream outputFile_;
-
-      /**
-      * Initialize Average accumulators and set nValue.
-      *
-      * \pre hasAccumulator == false
-      * \pre nSamplePerOutput >= 0
-      *
-      * \param nValue  number of values
-      */
-      void initializeAccumulators(int nValue);
-
-      /**
-      * Clear internal state of all accumulators.
-      *
-      * \pre hasAccumulator == true
-      */
-      void clearAccumulators();
-
-      /**
-      * Set name of variable.
-      *
-      * \param i  integer index of variable
-      * \param name  name of variable number i
-      */
-      void setName(int i, std::string name);
-
-      /**
-      * Set current value, used by compute function.
-      *
-      * \param i  integer index of variable
-      * \param value  current value of variable
-      */
-      void setValue(int i, double value);
-
-      /**
-      * Compute values of sampled quantities.
-      */
-      virtual void compute() = 0;
-
-      /**
-      * Get current value of a specific variable.
-      *
-      * \param i  integer index of variable
-      */
-      double value(int i) const;
-
-      /**
-      * Add current value to accumulator, output block average if needed.
-      *
-      * \param iStep  simulation step counter
-      */
-      void updateAccumulators(long iStep);
-
-      /**
-      * Write results of statistical analysis to files.
-      */
-      void outputAccumulators();
-
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
-   private:
-
-      /// Array of Average accumulator objects.
-      DArray<Average> accumulators_;
-
-      /// Array of current values.
-      DArray<double> values_;
-
-      /// Array of variable names.
-      DArray<std::string> names_;
-
-      /// Number of samples per block average output.
-      int nSamplePerOutput_;
-
-      /// Number of variables.
-      int nValue_;
-
-      /// Does this processor have accumulators ?
-      bool hasAccumulators_;
-
    };
 
-   // Inline functions
-
-   /*
-   * Get nSamplePerOutput.
-   */
-   template <int D> inline
-   int AverageListAnalyzer<D>::nSamplePerOutput() const
-   {  return nSamplePerOutput_; }
-
-   /*
-   * Get nValue (number of variables).
-   */
-   template <int D> inline
-   int AverageListAnalyzer<D>::nValue() const
-   {
-      UTIL_CHECK(hasAccumulators_);
-      return nValue_;
-   }
-
-   /*
-   * Get current value of a variable, set by compute function.
-   */
-   template <int D> inline
-   double AverageListAnalyzer<D>::value(int i) const
-   {
-      UTIL_CHECK(hasAccumulators_);
-      UTIL_CHECK(i >= 0 && i < nValue_);
-      return values_[i];
-   }
-
-   /*
-   * Get name of specific variable.
-   */
-   template <int D> inline
-   const std::string& AverageListAnalyzer<D>::name(int i) const
-   {
-      UTIL_CHECK(hasAccumulators_);
-      UTIL_CHECK(i >= 0 && i < nValue_);
-      return names_[i];
-   }
-
-   /*
-   * Get accumulator associated with a variable.
-   */
-   template <int D> inline
-   const Average& AverageListAnalyzer<D>::accumulator(int i) const
-   {
-      UTIL_CHECK(hasAccumulators_);
-      UTIL_CHECK(i >= 0 && i < nValue_);
-      return accumulators_[i];
-   }
-
-   /*
-   * Set current value of a variable.
-   */
-   template <int D> inline
-   void AverageListAnalyzer<D>::setValue(int i, double value)
-   {
-      UTIL_CHECK(hasAccumulators_);
-      UTIL_CHECK(i >= 0 && i < nValue_);
-      values_[i] = value;
-   }
-
-   // Explicit instantiation declarations
-   extern template class AverageListAnalyzer<1>;
-   extern template class AverageListAnalyzer<2>;
-   extern template class AverageListAnalyzer<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class AverageListAnalyzer<1, Rpc::Types<1> >;
+      extern template class AverageListAnalyzer<2, Rpc::Types<2> >;
+      extern template class AverageListAnalyzer<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class AverageListAnalyzer<1>;
+      extern template class AverageListAnalyzer<2>;
+      extern template class AverageListAnalyzer<3>;
+   }
 }
 #endif

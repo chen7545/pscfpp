@@ -9,7 +9,6 @@
 */
 
 #include "Analyzer.h"
-#include <util/global.h>
 
 namespace Pscf {
 namespace Rpc {
