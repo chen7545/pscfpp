@@ -19,8 +19,8 @@ namespace Rp {
    /*
    * Constructor.
    */
-   template <int D>
-   HamiltonianAnalyzer<D>::HamiltonianAnalyzer(
+   template <int D, class T>
+   HamiltonianAnalyzer<D,T>::HamiltonianAnalyzer(
                                       typename T::Simulator& simulator,
                                       typename T::System& system)
     : AverageListAnalyzerT(simulator, system),
@@ -32,8 +32,8 @@ namespace Rp {
    /*
    * Read interval and outputFileName.
    */
-   template <int D>
-   void HamiltonianAnalyzer<D>::readParameters(std::istream& in)
+   template <int D, class T>
+   void HamiltonianAnalyzer<D,T>::readParameters(std::istream& in)
    {
       AverageListAnalyzerT::readParameters(in);
       AverageListAnalyzerT::initializeAccumulators(3);
@@ -49,8 +49,8 @@ namespace Rp {
    /*
    * Output energy to file.
    */
-   template <int D>
-   void HamiltonianAnalyzer<D>::compute()
+   template <int D, class T>
+   void HamiltonianAnalyzer<D,T>::compute()
    {
       UTIL_CHECK(system().w().hasData());
       if (!system().c().hasData()) {
