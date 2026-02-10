@@ -242,10 +242,10 @@ public:
       openLogFile("out/testBinaryStructureFactorGrid.log");
       analyzeTrajectory();
 
-      std::string filename = filePrefix() + "out/binaryStructureFactorGrid";
+      std::string filename = filePrefix() + "out/binaryStructureFactorGrid_analyzer";
       std::ifstream file(filename);
       if (!file.is_open()) {
-        std::cout << "Error: Could not open file out/binaryStructureFactorGrid" 
+        std::cout << "Error: Could not open file out/binaryStructureFactorGrid_analyzer" 
                   << std::endl;
 
       }
