@@ -26,12 +26,12 @@ namespace Rp {
    * MDE solver for one direction of one block.
    *
    * A fully initialized Propagator has an associations with a Block
-   * object that owns this propagator and its partner, and with a partner
-   * Propagator that solves the MDE within the same block in the
-   * opposite direction. It also has an association with a Mesh<D> that
-   * describes a spatial grid, and associations with zero or more source
-   * Propagator objects that are used to compute an initial condition
-   * for this propagator at the head vertex.
+   * object that owns this propagator, and with a partner Propagator
+   * that solves the MDE within the same block in the opposite direction.
+   * It also has an association with a Mesh<D> that describes a spatial 
+   * grid, and associations with zero or more source Propagator objects 
+   * that are used to compute an initial condition for this propagator 
+   * at its head vertex.
    *
    * The associated Block stores information required to numerically
    * solve the modified diffusion equation (MDE), including quantities
@@ -42,6 +42,16 @@ namespace Rp {
    * different for different blocks.  The algorithm used by a Propagator
    * to solve the MDE repeatedly calls step functions provided by the
    * parent Block.
+   *
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named Propagator, that 
+   * are defined in the Rpc and Rpg program-level name spaces for use in 
+   * the pscf_rpc and pscf_rpg programs, respectively. 
+   *
+   * <b> Template parameters </b>:
+   *
+   *   - D  dimension of space
+   *   - T  class with aliases for use in a program-level namespace.
    *
    * \ingroup Rp_Solver_Module
    */

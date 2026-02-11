@@ -24,19 +24,21 @@ namespace Rp {
    /**
    * Descriptor and MDE solver for one polymer species.
    *
-   * Instantiations of this are used as base classes for Rpc::Polymer<D> 
-   * and Rpg::Poymer<D> class templates. These subclasses are analogous
-   * classes designed for use with Cpu and Gpu hardware.
+   * \ref user_param_polymer_sec "Manual Page"
+   *
+   * This template adds functions required for periodic systems to an
+   * appropriate instantiation of the Pscf::PolymerTmpl base class 
+   * template.
+   *
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named Polymer, that are
+   * defined in the Rpc and Rpg program-level name spaces for use in the
+   * pscf_rpc and pscf_rpg programs, respectively. 
    *
    * <b> Template parameters </b>:
    *
    *   - D  dimension of space
    *   - T  class with aliases for use in a program-level namespace.
-   *
-   * This template adds functions required for periodic systems to an
-   * appropriate instantiation of the PolymerTmpl base class template.
-   *
-   * \ref user_param_polymer_sec "Manual Page"
    *
    * \ingroup Rp_Solver_Module
    */

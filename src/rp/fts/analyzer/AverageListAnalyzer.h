@@ -26,9 +26,9 @@ namespace Rp {
    * physical variables.
    *
    * Instantiations of this template are used as base classes for two
-   * closely analogous class templates, also named AverageListAnalyzer, that
-   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc 
-   * and pscf_rpg programs, respectively.
+   * closely analogous class templates, also named AverageListAnalyzer, 
+   * that are defined in the Rpc and Rpg namespaces for use in the 
+   * pscf_rpc and pscf_rpg programs, respectively.
    *
    * Template parameters:
    *

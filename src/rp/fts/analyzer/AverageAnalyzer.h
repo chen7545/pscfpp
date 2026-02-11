@@ -26,7 +26,7 @@ namespace Rp {
    *
    * Instantiations of this template are used as base classes for two
    * closely analogous class templates, also named AverageAnalyzer, that
-   * are defined in Rp and Rpg namespaces for use in the pscf_rpc and
+   * are defined in the Rpc and Rpg namespaces for use in the pscf_rpc and
    * pscf_rpg programs.
    *
    * Template parameters:
