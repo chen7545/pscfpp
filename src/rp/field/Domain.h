@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_DOMAIN_H
-#define PRDC_RL_DOMAIN_H
+#ifndef RP_DOMAIN_H
+#define RP_DOMAIN_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -64,7 +64,7 @@ namespace Rp {
    * template are used as base classes for classes Rpc::Domain \<D\> and
    * Rpg::Domain \<D\>.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Field_Module
    */
    template <int D, class FFT, class WLT, class FIT>
    class Domain : public ParamComposite

@@ -41,7 +41,7 @@ Files (maintained in the git repository):
   programs.mod - doxygen page for program command-line interfaces
   CONTENTS - this file
 
-Files (initially installed by the configure script):
+Files (installed by the configure script):
 
   config.mk - main configuration file (editable makefile fragment)
 

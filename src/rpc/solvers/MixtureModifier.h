@@ -20,48 +20,31 @@ namespace Rpc {
    /**
    * Parameter modifier for an associated Mixture.
    *
-   * A MixtureModifier<D> is derived from the template specialization
-   * Rp::MixtureModifier< Rpc::Mixture<D> > and has the same public
-   * interface as this base class. See documentation of base class.
+   * Each instantiation of this template is simply a named instantation of
+   * the base class template Rp::MixtureModifier and has the same public
+   * interface as this base class. See documentation of this base class 
+   * for details.
    *
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
    class MixtureModifier : public Rp::MixtureModifier< Mixture<D> >
-   {
-
-   public:
-
-      /// Direct (parent) base class.
-      using Base = typename Rp::MixtureModifier< Mixture<D> >;
-
-      // Inherited public member functions
-
-      using Base::associate;
-      using Base::setKuhn;
-      using Base::setPhiPolymer;
-      using Base::setMuPolymer;
-      using Base::setBlockLength;
-      using Base::setPhiSolvent;
-      using Base::setMuSolvent;
-      using Base::setSolventSize;
-      using Base::setVMonomer;
-
-   };
-
-   // Explicit instantiation declarations
-   extern template class MixtureModifier<1>;
-   extern template class MixtureModifier<2>;
-   extern template class MixtureModifier<3>;
+   {};
 
 } // namespace Rpc
-
-namespace Rp {
-   // Explicit instantiation declarations for base class
-   extern template class MixtureModifier< Rpc::Mixture<1> >;
-   extern template class MixtureModifier< Rpc::Mixture<2> >;
-   extern template class MixtureModifier< Rpc::Mixture<3> >;
-}
-
 } // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class MixtureModifier< Rpc::Mixture<1> >;
+      extern template class MixtureModifier< Rpc::Mixture<2> >;
+      extern template class MixtureModifier< Rpc::Mixture<3> >;
+   }
+   namespace Rpc {
+      extern template class MixtureModifier<1>;
+      extern template class MixtureModifier<2>;
+      extern template class MixtureModifier<3>;
+   }        
+} 
 #endif

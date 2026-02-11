@@ -48,6 +48,7 @@ namespace Rpc {
       ds_(-1.0),
       dsTarget_(-1.0),
       ns_(-1),
+      nParams_(0),
       isAllocated_(false),
       hasExpKsq_(false)
    {
@@ -69,7 +70,7 @@ namespace Rpc {
    void Block<D>::associate(Mesh<D> const & mesh,
                             FFT<D> const& fft,
                             UnitCell<D> const& cell,
-                            WaveList<D>& wavelist)
+                            WaveList<D>& waveList)
    {
       // Preconditions
       UTIL_CHECK(!isAllocated_);
@@ -78,7 +79,7 @@ namespace Rpc {
       meshPtr_ = &mesh;
       fftPtr_ = &fft;
       unitCellPtr_ = &cell;
-      waveListPtr_ = &wavelist;
+      waveListPtr_ = &waveList;
 
       hasExpKsq_ = false;
    }
@@ -123,18 +124,19 @@ namespace Rpc {
       // Compute ns_ 
       if (PolymerModel::isThread()) {
          // Set contour length discretization for this block
-         UTIL_CHECK(length() > 0.0);
+         const double length = Edge::length();
+         UTIL_CHECK(length > 0.0);
          int tempNs;
-         tempNs = floor(length() / (2.0 *ds) + 0.5);
+         tempNs = floor(length / (2.0 *ds) + 0.5);
          if (tempNs == 0) {
             tempNs = 1;                     // ensure ns_ >= 3
          }
          ns_ = 2*tempNs + 1;
-         ds_ = length()/double(ns_-1);
+         ds_ = length/double(ns_-1);
       } else 
       if (PolymerModel::isBead()) {
          ds_ = 1.0;
-         ns_ = nBead() + 2;
+         ns_ = Edge::nBead() + 2;
       }
 
       // Allocate memory for solutions to MDE (requires ns_)
@@ -160,13 +162,13 @@ namespace Rpc {
 
          // Reset contour length discretization
          UTIL_CHECK(dsTarget_ > 0);
-         int tempNs;
-         tempNs = floor( length()/(2.0 *dsTarget_) + 0.5 );
+         const double length = Edge::length();
+         int tempNs = floor( length / (2.0 *dsTarget_) + 0.5 );
          if (tempNs == 0) {
             tempNs = 1;
          }
          ns_ = 2*tempNs + 1;
-         ds_ = length()/double(ns_-1);
+         ds_ = length / double(ns_-1);
 
          // Reallocate propagators if ns_ has changed
          if (oldNs != ns_) {
@@ -184,7 +186,7 @@ namespace Rpc {
    template <int D>
    void Block<D>::setKuhn(double kuhn)
    {
-      Base::setKuhn(kuhn);
+      BlockTmplT::setKuhn(kuhn);
       hasExpKsq_ = false;
    }
 
@@ -208,16 +210,17 @@ namespace Rpc {
       UTIL_CHECK(waveListPtr_);
 
       bool isThread = PolymerModel::isThread();
-      double bSqFactor = -1.0*kuhn()*kuhn() / 6.0;
+      const double b = BlockTmplT::kuhn();
+      double bSqFactor = -1.0 * b * b / 6.0;
       if (isThread) {
          bSqFactor *= ds_;
       }
 
       // Calculate KSq if necessary
-      if (!waveListPtr_->hasKSq()) {
-         waveListPtr_->computeKSq();
+      if (!waveList().hasKSq()) {
+         waveList().computeKSq();
       }
-      RField<D> const & kSq = waveListPtr_->kSq();
+      RField<D> const & kSq = waveList().kSq();
 
       MeshIterator<D> iter;
       iter.setDimensions(kMeshDimensions_);
@@ -553,8 +556,8 @@ namespace Rpc {
 
       // If necessary, update derivatives of |k|^2 in WaveList
       UTIL_CHECK(waveListPtr_);
-      if (!waveListPtr_->hasdKSq()) {
-         waveListPtr_->computedKSq();
+      if (!waveList().hasdKSq()) {
+         waveList().computedKSq();
       }
 
       // Initialize dQ work array to zero
@@ -565,7 +568,8 @@ namespace Rpc {
       }
 
       // Work variables
-      const double bSq = kuhn()*kuhn()/6.0;
+      const double b = BlockTmplT::kuhn();
+      const double bSq = b * b / 6.0;
       double dels, prod, increment;
       int m, n;
 
@@ -590,7 +594,7 @@ namespace Rpc {
 
          // Loop over unit cell parameters
          for (n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
+            RField<D> dKSq = waveList().dKSq(n);
             increment = 0.0;
             // Loop over wavevectors
             for (m = 0; m < kSize_ ; ++m) {
@@ -635,8 +639,8 @@ namespace Rpc {
 
       // If necessary, update derivatives of |k|^2 in WaveList
       UTIL_CHECK(waveListPtr_);
-      if (!waveListPtr_->hasdKSq()) {
-         waveListPtr_->computedKSq();
+      if (!waveList().hasdKSq()) {
+         waveList().computedKSq();
       }
 
       // Initialize dQ work array to zero
@@ -646,7 +650,8 @@ namespace Rpc {
          dQ.append(0.0);
       }
 
-      const double bSq = kuhn()*kuhn()/6.0;
+      const double b = BlockTmplT::kuhn();
+      const double bSq = b * b / 6.0;
       double increment, prod;
 
       // Half-bond from head junction to first bead, if not a chain end
@@ -662,7 +667,7 @@ namespace Rpc {
 
          // Loop over unit cell parameters
          for (int n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
+            RField<D> dKSq = waveList().dKSq(n);
             increment = 0.0;
             // Loop over wavevectors
             for (int m = 0; m < kSize_ ; ++m) {
@@ -688,7 +693,7 @@ namespace Rpc {
 
          // Loop over unit cell parameters
          for (int n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
+            RField<D> dKSq = waveList().dKSq(n);
             increment = 0.0;
             // Loop over wavevectors
             for (int m = 0; m < kSize_ ; ++m) {
@@ -715,7 +720,7 @@ namespace Rpc {
 
          // Loop over unit cell parameters
          for (int n = 0; n < nParam ; ++n) {
-            RField<D> dKSq = waveListPtr_->dKSq(n);
+            RField<D> dKSq = waveList().dKSq(n);
             increment = 0.0;
             // Loop over wavevectors
             for (int m = 0; m < kSize_ ; ++m) {

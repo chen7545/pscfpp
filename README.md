@@ -2,47 +2,55 @@
 # PSCF - Polymer Self-Consistent Field (C++/CUDA)
 
 PSCF is a software package for field-theoretic analysis of inhomogeneous 
-equilibrium states of polymerc materials with constituents that tend to 
-phase separate.  PSCF can be used to perform either self-consistent field 
-theory (SCFT) calculations or some types of stochastic field-theoretic 
-simulation (FTS) calculations.
+equilibrium states of polymerc materials. It is designed to treat 
+electrically neutral polymer materials in which inhomogeneous states form 
+due to the tendency of some constituents to phase separate, and can be 
+used to describe interfaces, micelles, and periodic ordered structures.
+PSCF can be used to perform both self-consistent field theory (SCFT) 
+calculations and stochastic field-theoretic simulation (FTS) calculations
+that rely on a partial-saddle-point approximation. 
 
-The current version of PSCF is written primarily in C++, supplemented by 
-CUDA to enable the use of a graphics processing unit (GPU). PSCF is 
+This version of PSCF is written primarily in C++, supplemented by CUDA 
+to enable the use of an NVIDIA graphics processing unit (GPU). PSCF is 
 distributed only in source code form, and so must be compiled by the 
 user. 
 
-## Methods: SCFT and PS-FTS
+## Methods: SCFT and FTS
 
 PSCF was originally designed for SCFT calculations, and provides an
 extensive set of tools for this purpose .  The acronym PSCF stands for 
 Polymer Self-Consistent Field, reflecting this origin.
 
-PSCF can now also perform field theoretic simulation (FTS) calculations
-that rely on a partial saddle-point approximation (PS-FTS). Such 
-simulations can be performed using ether Brownian dynamics (BD) or 
-Monte-Carlo (MC) sampling techniques. 
+PSCF now also provides a reasonably complete set of tools for field 
+theoretic simulation calculations that rely on a partial saddle-point 
+approximation (PS-FTS). Such simulations can be performed using ether 
+Brownian dynamics (BD) or Monte-Carlo (MC) sampling techniques. 
 
-The fully-fluctuating formulation of polymer field theory (which is not 
-implemented in PSCF) requires the stochastic sampling of complex-valued 
-fields. The partial saddle-point approximation for FTS used in the current
+This current version of PSCF does not yet provide tools for
+fully-fluctuating complex Langevin field theoretic simulations 
+(CL-FTS), which is planned for a future release. The source code 
+of the current version does, however, contain some of the basic 
+building blocks that will be needed CL-FTS, on which work is ongoing.
+
+The partial saddle-point approximation for FTS used in the current 
 version of PSCF is an approximation for incompressible models in which a 
 Langrange multiplier pressure-like field that imposes a constraint on the 
 total monomer density is approximated at a mean-field (or saddle-point) 
 level, while fields that couple to composition fluctuations are allowed 
-to freely fluctuate. The resulting approximation yields a theory that 
-involves only real-valued fields.
+to fluctuate. The resulting approximation yields a theory that involves 
+only real-valued fields, and that requires many of the same computational
+building blocks as those used in SCFT.
 
 ## History
 
 The current C++/CUDA version of PSCF originated as a completely rewritten
-version of an older Fortran SCFT program of the same name. The Fortran 
-PSCF version builds a single program that was designed for SCFT analysis 
-of systems that can contain mixtures of linear block polymers and small
-molecule solvents in a domain with periodic boundary conditions.  The 
-current C++/CUDA version is intended to supersede the Fortran version, 
+version of an older Fortran SCFT program of the same name. The older
+Fortran PSCF package builds a single program that was designed for SCFT 
+analysis of systems that can contain mixtures of linear block polymers and 
+small molecule solvents in a domain with periodic boundary conditions. 
+The current C++/CUDA version is intended to supersede the Fortran version, 
 which is no longer being developed or actively maintained. The Fortran 
-PSCF program is still available in a separate github.com repository at 
+PSCF package is still available in a separate github.com repository at 
 https://github.com/dmorse/pscf.  The current C++/CUDA version provides 
 almost all of the capabilities of the Fortran PSCF program, and many
 important new capabilities, as discussed below.
@@ -69,26 +77,26 @@ PSCF provides source code for the following three executable programs:
 
    - **pscf_1d** : The pscf_1d program is is designed to perform SCFT
      calculations for one-dimensional (1D) problems in Cartesian,
-     cylindrical or spherical coordinates. A finite difference method is
-     used to solve the underlying partial differential equation, known
-     as the modified diffusion equation (MDE). This program can be used
-     to treat problems involving flat and curved interfaces, as well as
-     cylindrical and spherical micelles.
+     cylindrical or spherical coordinates. A finite difference spatial
+     discretization is used to solve the underlying partial differential 
+     equation, known as the modified diffusion equation (MDE). This 
+     program can be used to treat problems involving flat and curved 
+     interfaces, as well as cylindrical and spherical micelles.
 
    - **pscf_rpc** : The pscf_rpc program can be used to perform SCFT and
      PS-FTS calculations for systems that are periodic in 1, 2 or 3 
      spatial dimensions, using standard CPU hardware. A pseudo-spectral 
      algorithm is used to solve the MDE. This program provides capabilities
      for SCFT calculations analogous to those of the older Fortran PSCF 
-     program, as well as tools for PS-FTS calculations.  The suffix "pc" 
-     stands for "periodic CPU".
+     program, as well as tools for PS-FTS calculations.  The suffix "rpc" 
+     stands for "real periodic CPU".
 
-   - **pscf_pg** : The pscf_pg program is a GPU-accelerated version
+   - **pscf_rpg** : The pscf_rpg program is a GPU-accelerated version
      of pscf_rpc that can also perform SCFT and PS-FTS calculations for
-     periodic systems. It is based on algorithms analogous to those used 
-     in pscf_rpc and provides almost identical features, but provides 
-     higher performance for large systems. The suffix "pg" stands for 
-     "periodic GPU".
+     periodic systems. The pscf_rpc and pscf_rpg are based on analogous
+     algorithms and provide identical features, but pscf_rpg provides
+     higher performance for calculations performed on a large spatial
+     mesh. The suffix "rpg" stands for "real periodic GPU".
 
 ## Features
 
@@ -96,10 +104,10 @@ All three PSCF programs are designed to treat an incompressible mixture
 containing any number of block polymer, homopolymer and small molecule
 (point-like) solvent molecular species. Polymer species may be modelled
 using either the standard Gaussian model of polymer conformations as 
-continuous random walks or (in pscf_rpc and pscf_pg) using a discrete 
+continuous random walks or (in pscf_rpc and pscf_rpg) using a discrete 
 bead-spring model with harmonic springs.
 
-Features relevant to both SCFT and PS-FTS (all programs):
+Features applicable to both SCFT and PS-FTS (all programs):
 
   - Ability to treat acyclic branched block polymers
 
@@ -123,7 +131,7 @@ Features for SCFT (all programs):
     calculations with different parameters along a 1D path through 
     parameter space.
 
-Features for SCFT or PS-FTS for periodic systems (pscf_rpc and pscf_pg):
+Features for SCFT or PS-FTS for periodic systems (pscf_rpc and pscf_rpg):
 
   - Pseudo-spectral solution of the modified diffusion equation
 
@@ -138,7 +146,7 @@ Features for SCFT or PS-FTS for periodic systems (pscf_rpc and pscf_pg):
   - A companion Matlab package for visualization of periodic structures:
     [Polymer Visual](<https://github.com/kdorfmanUMN/polymer_visual/>)
 
-Features for SCFT on periodic systems (pscf_rpc and pscf_pg): 
+Features for SCFT on periodic systems (pscf_rpc and pscf_rpg): 
 
   - Automatic optimization of unit cell parameters so as to minimize the 
     SCFT free energy density
@@ -156,7 +164,7 @@ Features for SCFT on periodic systems (pscf_rpc and pscf_pg):
   - Tools for thin polymer films (using a mask to represent confinement 
     and external fields for selective surface interactions)
 
-Features for PS-FTS (pscf_rpc and pscf_pg):
+Features for PS-FTS (pscf_rpc and pscf_rpg):
 
   - Brownian dynamics (BD) and Monte Carlo (MC) sampling algorithms
 
@@ -257,10 +265,10 @@ libraries:
 The pscf_1d one-dimensional program pscf_1d requires only GSL, while
 the pscf_rpc program relies on both GSL and FFTW.
 
-The GPU-accelerated pscf_pg program can only be compiled and run on a
+The GPU-accelerated pscf_rpg program can only be compiled and run on a
 computer with an appropriate Nvidia GPU and an Nvidia CUDA development
-kit. Some GPU-accelerated libraries used by pscf_pg, such as the FFT
-library cuFFT, are provided as part of this kit. The pscf_pg program 
+kit. Some GPU-accelerated libraries used by pscf_rpg, such as the FFT
+library cuFFT, are provided as part of this kit. The pscf_rpg program 
 cannot be run on Mac OS X, because no Apple computer uses the required 
 type of GPU.
 
@@ -272,7 +280,7 @@ web manual.
 ## Compiling
 
 The PSCF source code is written using C++ as the primary language, with
-CUDA used in pscf_pg for GPU acceleration. PSCF is only provided in source 
+CUDA used in pscf_rpg for GPU acceleration. PSCF is only provided in source 
 code format, and so must be compiled from source.
 
 The build system used to compile and install PSCF uses the unix "make"
@@ -309,7 +317,7 @@ the pscfpp git repository and installing all of the required dependencies
      pscfpp root directory immediately after running the configure script.
 
    - Some further configuration is required to compile the GPU-enabled
-     pscf_pg program. Compilation of pscf_pg is only possible on a 
+     pscf_rpg program. Compilation of pscf_rpg is only possible on a 
      machine that has an appropriate NVIDA GPU and a CUDA development kit. 
      To enable compilation of CUDA code, first enter "./setopts -c1" from 
      the pscfpp directory.  Then use the -a option of the same setopts
@@ -338,8 +346,8 @@ executable files that have been placed in a non-standard location.
 
 ## Command line usage
 
-PSCF is a package the provides three executable programs (pscf_1d, pscf_rpc,
-and pscf_pg) with different capabilities but very similar command line 
+The PSCF package provides three executable programs (pscf_1d, pscf_rpc,
+and pscf_rpg) with different capabilities but very similar command line 
 interfaces. To perform a calculation, each PSCF program must read two files,
 which we refer to as a parameter file and a command file. The parameter 
 file, which is processed first, is a fixed format file that contains 
@@ -381,8 +389,8 @@ to standard output as this file is being processed. Use of this option
 makes it easier to debug failures that arise from syntax errors in 
 the parameter file. 
 
-**pscf_rpc and pscf_pg** : The command line interfaces for the pscf_rpc and
-pscf_pg programs take the same required and optional elements as pscf_1d, 
+**pscf_rpc and pscf_rpg** : The command line interfaces for the pscf_rpc and
+pscf_rpg programs take the same required and optional elements as pscf_1d, 
 but also require a value for the dimension of space as an additional 
 parameter.  This is an integer parameter of the -d option that must have 
 a value 1, 2 or 3, which specifies the number of coordinates along which 
@@ -397,36 +405,36 @@ Here, "param" and "command" again denote names of parameter and command
 files. The syntax for an SCFT calculation for a one-dimensionally periodic 
 lamellar phase would instead contain an option "-d 1", while an SCFT
 calculation for a 2D periodic phase of hexagonally packed cylinders would
-use an option "-d 2".  The syntax for invoking pscf_pg is the same as that 
-for pscf_rpc, except for the use of the program name pscf_pg rather than
+use an option "-d 2".  The syntax for invoking pscf_rpg is the same as that 
+for pscf_rpc, except for the use of the program name pscf_rpg rather than
 pscf_rpc.
 
-The pscf_rpc and pscf_pg programs can also both perform PS-FTS simulations. 
+The pscf_rpc and pscf_rpg programs can also perform PS-FTS calculations. 
 Such simulations usually allow field fluctuations to vary in all three 
-spatial dimensions, and so pscf_rpc and pscf_pg are normally invoked using 
-an option "-d 3" when used for this purpose.
+spatial dimensions. As a result pscf_rpc and pscf_rpg are normally invoked 
+using an option "-d 3" when used for PS-FTS calculations.
 
 **Output redirection** : Programs that are invoked as shown in the above 
 examples would write log output that is produced during execution to the 
 user's screen (i.e., to standard output).  This log output may instead be
-redirected to a file by using the unix ">" redirection operator.  For 
-example, the command
+redirected to a file by using the unix ">" output redirection operator.  
+For example, the command
 ```
 pscf_rpc -d 3 -p param -c command -e > log
 ```
-would redirect log output that is written during a calculation to a file
+would redirect log output that is created during execution to a file 
 named "log" in the current working directory. Standard output is normally 
-redirected to a file for long calculations, or whenever a program is run 
-in a queue on a shared computing cluster.
+redirected to a file for long calculations, or when a program is run in 
+a queue on a shared computing cluster.
 
 ## Examples
 
 The quickest way to become familiar with PSCF parameter and command files 
-is by studying examples.  The directory pscfpp/examples contains input 
+is by examinng examples.  The directory pscfpp/examples contains input 
 files for examples of a variety of different types of SCFT and PS-FTS 
 calculations.  Top level subdirectories of the examples directory named 
-1d, pc and pg contain examples for the three different PSCF programs,
-pscf_1d, pscf_rpc, and pscf_pg.
+r1d, rpc and rpg contain examples for the three different PSCF programs,
+pscf_1d, pscf_rpc, and pscf_rpg.
 
 Subdirectory examples/1d contains examples of SCFT calculations for the 
 1D finite-difference program pscf_1d. Top level subdirectories of the 
@@ -443,7 +451,7 @@ the directory examples/pc/scf/diblock contains SCFT examples for a diblock
 copolymer melt.  Subdirectories of examples/pc/scf/diblock contain examples
 for lamellar, hexagonal, and BCC structures, among others.
 
-Subdirectory examples/pg contains examples for the pscf_pg program for
+Subdirectory examples/pg contains examples for the pscf_rpg program for
 periodic structures. Subdirectories are organized in a manner similar to 
 that of the examples/pc directory tree.
 
@@ -501,10 +509,8 @@ Copyright 2015-2025, The Regents of the University of Minnesota.
 
 ## Support
 
-Development of PSCF has been supported by the National Science 
-Foundation (NSF) program for Cyberinfrastructure for Sustained 
-Scientific Development (CSSI) Grant No. 2103627, and by earlier
-NSF Division of Materials Research (DMR) grants DMR-1725272, 
+Development of PSCF has been supported most recently by the National 
+Science Foundation (NSF) program for Cyberinfrastructure for Sustained 
+Scientific Development (CSSI) Grant No. 2103627, and by earlier NSF 
+Division of Materials Research (DMR) grants numbers DMR-1725272, 
 DMR-1333669, and DMR-1310436.
-
-

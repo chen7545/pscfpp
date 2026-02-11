@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_MIXTURE_H
-#define PRDC_RL_MIXTURE_H
+#ifndef RP_MIXTURE_H
+#define RP_MIXTURE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -32,64 +32,67 @@ namespace Rp {
    /**
    * Solver and descriptor for a mixture of polymers and solvents.
    *
-   * A Mixture contains lists of Polymer (PT) and Solvent (ST) 
-   * objects. Each such object can solve statistical mechanics of a single 
-   * molecule of the associated species in a set of specified chemical 
-   * potential fields, and thereby compute concentrations and molecular 
-   * partition functions for all species in non-interacting reference 
-   * system. 
+   * The template Rp::Mixture is designed to be used base class for 
+   * instantiations of the Rpc::Mixture<D> and Rpg::Mixture<D> class
+   * template. The template parameters of R::Mixture<int D, class T> 
+   * are the dimension of space, D, and a class T = Rpc::Types<D> or
+   * T = Rpg::Types<D> that contains a collection of class name aliases 
+   * for classes used in the Rpc or Rpg program level namespace.
+   *
+   * A Mixture contains a list of Polymer (T::Polymer) objects and a
+   * list of Solvent (T::Solvent) objects. Each such object can solve 
+   * the statistical mechanics problem for a single molecule of the 
+   * associated species in a set of specified chemical potential 
+   * fields, and thereby compute concentrations and molecular partition
+   * functions for all species in non-interacting reference system. 
    *
    * The compute() member function computes single-molecule partition 
-   * functions and monomer concentrations all species.  This function 
+   * functions and monomer concentrations for all species.  This function 
    * takes an array of chemical potential fields (w fields) acting on
-   * different monomer types an  input and yields an array of total
-   * monomer concentration fields (c fields) as an output.
+   * different monomer types an input and yields an output array of 
+   * total monomer concentration fields (c fields).
    *
-   * Note: Most class templates defined in the Pscf::Prdc namespace for 
-   * use as base classes for classes defined in Pscf::Rpc and Pscf::Rpg 
-   * have names that end in the suffix Tmpl. This template for mixtures 
-   * in periodic systems has been named Mixture, however, because 
-   * Pscf::MixtureTmpl is the name of the more general template from 
-   * which it is derived, which can be used for systems tha are not
-   * periodic. 
-   *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Solver_Module
    * \ref user_param_mixture_page "Manual Page"
    */
-   template <int D, class PT, class ST, class TT>
-   class Mixture : public MixtureTmpl<PT, ST, double>
+   template <int D, class T>
+   class Mixture : public 
+      MixtureTmpl<typename T::Polymer, typename T::Solvent, double>
    {
 
    public:
 
       // Public type name aliases
 
-      /// MixtureTmplT class.
-      using MixtureTmplT = MixtureTmpl<PT,ST, double>;
+      /// Polymer object type
+      using PolymerT = typename T::Polymer;
 
-      /// Solvent object type: SolventT = ST (inherited).
-      using typename MixtureTmplT::SolventT;
-
-      /// Polymer object type: PolymerT = PT (inherited).
-      using typename MixtureTmplT::PolymerT;
+      /// Solvent object type
+      using SolventT = typename T::Solvent;
 
       /// Block type, for a block in a block polymer.
-      using BlockT = typename TT::Block;
+      using BlockT = typename T::Block;
 
       /// Propagator type, for one direction within a block.
-      using PropagatorT = typename TT::Propagator;
+      using PropagatorT = typename T::Propagator;
 
       /// Field type, for data defined on a real-space grid.
-      using FieldT = typename TT::RField;
+      using FieldT = typename T::RField;
 
       /// WaveList type.
-      using FFTT = typename TT::FFT;
+      using FFTT = typename T::FFT;
 
       /// WaveList type.
-      using WaveListT = typename TT::WaveList;
+      using WaveListT = typename T::WaveList;
 
       /// FieldIo type.
-      using FieldIoT = typename TT::FieldIo;
+      using FieldIoT = typename T::FieldIo;
+
+      /// MixtureTmpl direct (parent) base class.
+      using MixtureTmplT = MixtureTmpl<PolymerT, SolventT, double>;
+
+      /// MixtureBase indirect (grandparent) base class.
+      using MixtureBaseT = typename MixtureTmplT::MixtureBaseT;
 
       // Public member functions
 
@@ -379,18 +382,18 @@ namespace Rp {
 
       ///@}
 
-      // Inherited public member functions
+      // Inherited non-dependent public member functions
       using MixtureTmplT::polymer;
       using MixtureTmplT::polymerSpecies;
       using MixtureTmplT::solvent;
       using MixtureTmplT::solventSpecies;
-      using MixtureBase<double>::nMonomer;
-      using MixtureBase<double>::monomer;
-      using MixtureBase<double>::nPolymer;
-      using MixtureBase<double>::nSolvent;
-      using MixtureBase<double>::nBlock;
-      using MixtureBase<double>::vMonomer;
-      using MixtureBase<double>::isCanonical;
+      using MixtureBaseT::nMonomer;
+      using MixtureBaseT::monomer;
+      using MixtureBaseT::nPolymer;
+      using MixtureBaseT::nSolvent;
+      using MixtureBaseT::nBlock;
+      using MixtureBaseT::vMonomer;
+      using MixtureBaseT::isCanonical;
 
    protected:
 
@@ -409,11 +412,6 @@ namespace Rp {
       /// Return target value for the contour step size ds.
       double ds() const
       {  return ds_; }
-
-      // Inherited protected member functions
-      using ParamComposite::setClassName;
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
 
    private:
 
@@ -446,22 +444,6 @@ namespace Rp {
       // Private member functions (pure virtual)
 
       /**
-      * Set all elements of a field to a common scalar: A[i] = s.
-      *
-      * \param A  field (LHS)
-      * \param s  scalar (RHS)
-      */
-      virtual void eqS(FieldT& A, double s) const = 0;
-
-      /**
-      * Compound addition assignment for fields : A[i] += B[i].
-      *
-      * \param A  field (LHS)
-      * \param B  field (RHS)
-      */
-      virtual void addEqV(FieldT& A, FieldT const & B) const = 0;
-
-      /**
       * Allocate all blocks of all polymers.
       */
       virtual void allocateBlocks() = 0; 
@@ -473,15 +455,15 @@ namespace Rp {
    /*
    * Has the stress been computed for the current w fields?
    */
-   template <int D, class PT, class ST, class TT>
-   inline bool Mixture<D,PT,ST,TT>::hasStress() const
+   template <int D, class T>
+   inline bool Mixture<D,T>::hasStress() const
    {  return hasStress_; }
 
    /*
    * Get derivative of free energy w/ respect to a unit cell parameter.
    */
-   template <int D, class PT, class ST, class TT>
-   inline double Mixture<D,PT,ST,TT>::stress(int parameterId) const
+   template <int D, class T>
+   inline double Mixture<D,T>::stress(int parameterId) const
    {
       UTIL_CHECK(hasStress_);
       UTIL_CHECK(parameterId < nParam_);

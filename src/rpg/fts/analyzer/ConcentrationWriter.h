@@ -65,10 +65,11 @@ namespace Rpg {
       */
       virtual void output();
 
-      using ParamComposite::read;
       using ParamComposite::setClassName;
+      using ParamComposite::read;
       using Analyzer<D>::outputFileName;
       using Analyzer<D>::isAtInterval;
+      using Analyzer<D>::system;
 
    protected:
 
@@ -83,16 +84,6 @@ namespace Rpg {
 
       /// Has readParam been called?
       long isInitialized_;
-
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
 
    protected:
 
@@ -113,29 +104,7 @@ namespace Rpg {
       */
       void writeFrame(std::ofstream& out, long iStep);
 
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
-      /**
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-
    };
-
-   // Inline member functions
-   
-   // Get the parent system.
-   template <int D>
-   inline System<D>& ConcentrationWriter<D>::system()
-   {  return *systemPtr_; }
-
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& ConcentrationWriter<D>::simulator()
-   {  return *simulatorPtr_; }
 
    // Explicit instantiation declarations
    extern template class ConcentrationWriter<1>;

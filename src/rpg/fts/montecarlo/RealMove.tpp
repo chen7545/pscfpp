@@ -17,7 +17,7 @@
 #include <rpg/fts/VecOpFts.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <util/param/ParamComposite.h>
 
 namespace Pscf {
@@ -99,7 +99,7 @@ namespace Rpg {
       for (j = 0; j < nMonomer - 1; ++j) {
          
          // Generate Gaussian distributed random numbers 
-         cudaRandom().normal(gaussianField_, sigma_, mean);
+         vecRandom().normal(gaussianField_, sigma_, mean);
          VecOp::eqV(dwc_, gaussianField_);
          
          // Loop over monomer types

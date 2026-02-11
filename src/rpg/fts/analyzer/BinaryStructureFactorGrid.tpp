@@ -39,10 +39,9 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   BinaryStructureFactorGrid<D>::BinaryStructureFactorGrid(Simulator<D>& simulator, System<D>& system) 
-    : Analyzer<D>(),
-      simulatorPtr_(&simulator),
-      systemPtr_(&(simulator.system())),
+   BinaryStructureFactorGrid<D>::BinaryStructureFactorGrid(Simulator<D>& simulator, 
+                                                           System<D>& system) 
+    : Analyzer<D>(simulator, system),
       isInitialized_(false),
       nSamplePerBlock_(1)
    {  setClassName("BinaryStructureFactorGrid"); }

@@ -8,9 +8,14 @@
 #include "BdSimulator.tpp"
 
 namespace Pscf {
-namespace Rpg {
-   template class BdSimulator<1>;
-   template class BdSimulator<2>;
-   template class BdSimulator<3>;
-}
+   namespace Rp {
+      template class BdSimulator<1, Rpg::Types<1> >;
+      template class BdSimulator<2, Rpg::Types<2> >;
+      template class BdSimulator<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class BdSimulator<1>;
+      template class BdSimulator<2>;
+      template class BdSimulator<3>;
+   }
 }

@@ -1,0 +1,188 @@
+#ifndef RP_BD_STEP_H
+#define RP_BD_STEP_H
+
+/*
+* PSCF - Polymer Self-Consistent Field
+*
+* Copyright 2015 - 2025, The Regents of the University of Minnesota
+* Distributed under the terms of the GNU General Public License.
+*/
+
+
+#include <util/param/ParamComposite.h>
+#include <util/random/Random.h>
+#include <util/global.h>
+
+namespace Pscf {
+namespace Rp {
+
+   using namespace Util;
+
+   /**
+   * Template for abstract base class for Brownian dynamics (BD) steps.
+   *
+   * The virtual step() method must generate a single BD step. The step
+   * generally includes a random change in field components other than
+   * the pressure-like field, followed by use of a Compressor to adjust
+   * the pressure-like field to re-establish a homogeneous total monomer
+   * concentration.
+   *
+   * Instantiations of this template serve as base classes for BdStep<D>
+   * base classes defined in the program-level Rpc and Rpg namespace, for 
+   * all D = 1, 2, and 3. 
+   *
+   * Template parameters:
+   *   - D  dimension of space (1, 2, or 3)
+   *   - T  Types class (i.e., Rpc::Types<D> or Rpg::Types<D>)
+   *
+   * \ingroup Rp_Fts_Brownian_Module
+   */
+   template <int D, class T>
+   class BdStep : public ParamComposite
+   {
+
+   public:
+
+      /**
+      * Constructor.
+      *
+      * \param simulator  parent BdSimulator object
+      */
+      BdStep(typename T::BdSimulator& simulator);
+
+      /**
+      * Destructor.
+      *
+      * Empty default implementation.
+      */
+      virtual ~BdStep();
+
+      /**
+      * Read required parameters from file.
+      *
+      * Empty default implementation.
+      *
+      * \param in  input parameter stream
+      */
+      virtual void readParameters(std::istream &in);
+
+      /**
+      * Setup before the beginning of each simulation run.
+      */
+      virtual void setup();
+
+      /**
+      * Take a single Brownian dynamics step.
+      * 
+      * \return true if the compressor converged, false if it failed.
+      */
+      virtual bool step() = 0;
+      
+      /**
+      * Do cc concentration components need to be saved before a step?
+      *
+      * The default implementation returns false.
+      *
+      * \return true to save, or false otherwise
+      */
+      virtual bool needsCc()
+      {  return false; }
+      
+      /**
+      * Do dc derivative components need to be saved before a step?
+      *
+      * The default implementation returns true.
+      *
+      * \return true to save, or false otherwise
+      */
+      virtual bool needsDc()
+      {  return true; }
+      
+      /**
+      * Output timing results to ostream.
+      *
+      * \param out output stream
+      */
+      virtual void outputTimers(std::ostream& out);
+      
+      /**
+      * Clear timers. 
+      */
+      virtual void clearTimers();
+      
+      /**
+      * Output statistics for this move (at the end of simulation)
+      */
+      virtual void output();
+
+   protected:
+      
+      /**
+      * Get parent System object.
+      */
+      typename T::System& system();
+
+      /**
+      * Get parent BdSimulator object.
+      */
+      typename T::BdSimulator& simulator();
+
+      /**
+      * Get scalar random number generator of parent simulator.
+      */
+      Random& random();
+
+      /**
+      * Get vector random number generator of parent simulator.
+      */
+      typename T::VecRandom& vecRandom();
+
+   private:
+      
+      /// Pointer to parent BdSimulator object
+      typename T::BdSimulator* simulatorPtr_;
+
+      /// Pointer to parent System object
+      typename T::System* systemPtr_;
+
+      /// Pointer to the scalar random number generator
+      Random  *randomPtr_;
+
+      /// Pointer to the vector random number generator
+      typename T::VecRandom  *vecRandomPtr_;
+
+   };
+
+   // Protected inline methods
+   
+   /*
+   * Get parent System object.
+   */
+   template <int D, class T> inline 
+   typename T::System& BdStep<D,T>::system()
+   {  return *systemPtr_; }
+
+   /*
+   * Get parent BdSimulator object.
+   */
+   template <int D, class T> inline 
+   typename T::BdSimulator& BdStep<D,T>::simulator()
+   {  return *simulatorPtr_; }
+
+   /*
+   * Get the scalar random number generator.
+   */
+   template <int D, class T> inline 
+   Random& BdStep<D,T>::random()
+   {  return *randomPtr_; }
+
+   /*
+   * Get the vector random number generator.
+   */
+   template <int D, class T> inline 
+   typename T::VecRandom& BdStep<D,T>::vecRandom()
+   {  return *vecRandomPtr_; }
+
+}
+}
+#endif

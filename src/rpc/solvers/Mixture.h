@@ -26,79 +26,27 @@ namespace Rpc {
    *
    * A Mixture is derived from an instantiation of the class template
    * Rp::Mixture, and has the same public interface as this base class
-   * class template.
+   * class template. Please see documentation for this base class
+   * template for details. 
    *
    * \ref user_param_mixture_page "Manual Page"
    * \ingroup Rpc_Solver_Module
    */
    template <int D>
-   class Mixture : public Rp::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >
+   class Mixture : public Rp::Mixture< D, Types<D> >
    {
-
    public:
 
       /// Direct (parent) base class.
-      using RpMixtureT
-         = typename Rp::Mixture<D, Polymer<D>, Solvent<D>, Types<D> >;
+      using RpMixtureT = typename Rp::Mixture< D, Types<D> >;
 
-      // Inherited public type name aliases
-
+      // Inherited names
+      using typename RpMixtureT::MixtureBaseT;
       using typename RpMixtureT::MixtureTmplT;
-      using typename RpMixtureT::PolymerT;
-      using typename RpMixtureT::SolventT;
-      using typename RpMixtureT::BlockT;
-      using typename RpMixtureT::PropagatorT;
       using typename RpMixtureT::FieldT;
-      using typename RpMixtureT::FFTT;
-      using typename RpMixtureT::WaveListT;
-
-      // Inherited public member functions
-
-      using RpMixtureT::readParameters;
-      using RpMixtureT::associate;
-      using RpMixtureT::allocate;
-      using RpMixtureT::clearUnitCellData;
-      using RpMixtureT::setKuhn;
-      using RpMixtureT::compute;
-      using RpMixtureT::computeStress;
-      using RpMixtureT::hasStress;
-      using RpMixtureT::createBlockCRGrid;
-
       using MixtureTmplT::polymer;
-      using MixtureTmplT::polymerSpecies;
-      using MixtureTmplT::solvent;
-      using MixtureTmplT::solventSpecies;
-
-      using MixtureBase<double>::nMonomer;
-      using MixtureBase<double>::monomer;
-      using MixtureBase<double>::nPolymer;
-      using MixtureBase<double>::nSolvent;
-      using MixtureBase<double>::nBlock;
-      using MixtureBase<double>::vMonomer;
-      using MixtureBase<double>::isCanonical;
-
-   protected:
-
-      using RpMixtureT::mesh;
-      using RpMixtureT::ds;
 
    private:
-
-      /**
-      * Set all elements of a field to a common scalar: A[i] = s.
-      *
-      * \param A  field (LHS)
-      * \param s  scalar (RHS)
-      */
-      void eqS(FieldT& A, double s) const override;
-
-      /**
-      * Compound addition assignment for fields : A[i] += B[i].
-      *
-      * \param A  field (LHS)
-      * \param B  field (RHS)
-      */
-      void addEqV(FieldT& A, FieldT const & B) const override;
 
       /**
       * Allocate memory for all blocks
@@ -107,22 +55,23 @@ namespace Rpc {
 
    };
 
-   // Explicit instantiation declarations for derived class
-   extern template class Mixture<1>;
-   extern template class Mixture<2>;
-   extern template class Mixture<3>;
-
 } // namespace Rpc
-
-namespace Rp {
-   // Explicit instantiation declarations for base class
-   extern template 
-   class Mixture<1, Rpc::Polymer<1>, Rpc::Solvent<1>, Rpc::Types<1> >;
-   extern template 
-   class Mixture<2, Rpc::Polymer<2>, Rpc::Solvent<2>, Rpc::Types<2> >;
-   extern template 
-   class Mixture<3, Rpc::Polymer<3>, Rpc::Solvent<3>, Rpc::Types<3> >;
-} 
-
 } // namespace Pscf
+
+// Explicit instantiation declarations for derived and base classes
+namespace Pscf {
+   extern template class MixtureTmpl< Rpc::Polymer<1>, Rpc::Solvent<1> >;
+   extern template class MixtureTmpl< Rpc::Polymer<2>, Rpc::Solvent<2> >;
+   extern template class MixtureTmpl< Rpc::Polymer<3>, Rpc::Solvent<3> >;
+   namespace Rp {
+      extern template class Mixture<1, Rpc::Types<1> >;
+      extern template class Mixture<2, Rpc::Types<2> >;
+      extern template class Mixture<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class Mixture<1>;
+      extern template class Mixture<2>;
+      extern template class Mixture<3>;
+   }
+} 
 #endif

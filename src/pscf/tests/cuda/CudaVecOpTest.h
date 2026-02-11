@@ -8,6 +8,7 @@
 #include <pscf/cuda/DeviceArray.h>
 #include <pscf/cuda/complex.h>
 #include <pscf/cuda/cudaTypes.h>
+#include <pscf/cpu/VecOp.h>
 #include <pscf/math/FieldComparison.h>
 
 #include <util/math/Constants.h>
@@ -120,6 +121,30 @@ public:
 
    void tearDown()
    {}
+
+   void checkEqualReal(HostDArray<cudaReal>& a, DArray<numType>& b)
+   {
+      int n = a.capacity();
+      TEST_ASSERT(b.capacity() == n);
+      TEST_ASSERT(n > 0);
+
+      for (int i = 0; i < n; i++) {
+         TEST_ASSERT(std::abs(a[i] - b[i]) < tolerance_);
+      }
+   }
+
+   void checkEqualComplex(HostDArray<cudaComplex>& a,
+                          DArray<std::complex<numType> >& b)
+   {
+      int n = a.capacity();
+      TEST_ASSERT(b.capacity() == n);
+      TEST_ASSERT(n > 0);
+
+      for (int i = 0; i < n; i++) {
+         TEST_ASSERT(std::abs(a[i].x - b[i].real()) < tolerance_);
+         TEST_ASSERT(std::abs(a[i].y - b[i].imag()) < tolerance_);
+      }
+   }
 
    // Test VecOp::eqV and VecOp::eqS
    void testEq()
@@ -340,14 +365,17 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      // ~~~ Test subVS ~~~
+      // ~~~ Test subVS (real) ~~~
       VecOp::subVS(dOutReal, dInReal, scalarReal);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
          refOutReal[i] = refInReal[i] - refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
+      VecOp::subVS(refOutReal, hInReal, scalarReal); // cpu version
+      checkEqualReal(hOutReal, refOutReal);
 
+      // ~~~ Test subVS (complex) ~~~
       VecOp::subVS(dOutComplex, dInComplex, scalarComplex);
       hOutComplex = dOutComplex;
       for (int i = 0; i < n; i++) {
@@ -643,7 +671,7 @@ public:
       }
       checkEqualComplex(hOutComplex, refOutComplex);
 
-      // ~~~ Test addEqS ~~~
+      // ~~~ Test addEqS (real) ~~~
       VecOp::eqV(dOutReal, dInReal);
       VecOp::addEqS(dOutReal, scalarReal);
       hOutReal = dOutReal;
@@ -651,6 +679,9 @@ public:
          refOutReal[i] = refInReal[i];
          refOutReal[i] += refScalarReal;
       }
+      checkEqualReal(hOutReal, refOutReal); 
+      VecOp::eqV(refOutReal, hInReal);       // Cpu version
+      VecOp::addEqS(refOutReal, scalarReal); // Cpu Version
       checkEqualReal(hOutReal, refOutReal);
 
       VecOp::eqV(dOutComplex, dInComplex);
@@ -1168,8 +1199,30 @@ public:
       checkEqualComplex(hOutComplex, refOutComplex);
    }
 
-   // Test the other miscellaneous vector operations in Vec.h
-   void testMisc()
+   // Test VecOp::sqAbs operations for complex inputs
+   void testSqAbs()
+   {
+      printMethod(TEST_FUNC);
+
+      // ~~~ Test sqAbsV (complex) ~~~
+      VecOp::sqAbsV(dOutReal, dInComplex);
+      hOutReal = dOutReal;
+      for (int i = 0; i < n; i++) {
+         refOutReal[i] = norm(refInComplex[i]);
+      }
+      checkEqualReal(hOutReal, refOutReal);
+
+      // ~~~ Test sqSqAbsV (complex)  ~~~
+      VecOp::sqSqAbsV(dOutReal, dInComplex);
+      hOutReal = dOutReal;
+      for (int i = 0; i < n; i++) {
+         refOutReal[i] = std::pow(std::norm(refInComplex[i]), 2.0);
+      }
+      checkEqualReal(hOutReal, refOutReal);
+   }
+
+   // Test composite operations in VecOpMisc.h
+   void testComposite()
    {
       printMethod(TEST_FUNC);
 
@@ -1181,12 +1234,30 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
 
+      VecOp::addVcS(dOutReal, dInReal, scalarReal, -3.0);
+      hOutReal = dOutReal;
+      for (int i = 0; i < n; i++) {
+         refOutReal[i] = refInReal[i] * refScalarReal - 3.0;
+      }
+      checkEqualReal(hOutReal, refOutReal);
+
       // ~~~ Test addVcVcVc ~~~
       VecOp::addVcVcVc(dOutReal, dInReal, scalarReal, dInReal2, -1.0, dInReal, 1.0);
       hOutReal = dOutReal;
       for (int i = 0; i < n; i++) {
          refOutReal[i] = refInReal[i] * (refScalarReal + 1) - refInReal2[i];
       }
+      checkEqualReal(hOutReal, refOutReal);
+
+      // ~~~ Test addVcVcS ~~~
+      VecOp::addVcVcS(dOutReal, dInReal, scalarReal, dInReal2, 2.3, -3.0);
+      hOutReal = dOutReal;
+      for (int i = 0; i < n; i++) {
+         refOutReal[i] = refInReal[i]*refScalarReal + refInReal2[i]*2.3 - 3.0;
+      }
+      checkEqualReal(hOutReal, refOutReal);
+      // Compare to cpu version
+      VecOp::addVcVcS(hOutReal, hInReal, scalarReal, hInReal2, 2.3, -3.0); 
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test addEqVc ~~~
@@ -1198,13 +1269,9 @@ public:
          refOutReal[i] += refInReal2[i] * refScalarReal;
       }
       checkEqualReal(hOutReal, refOutReal);
-
-      // ~~~ Test subVVS ~~~
-      VecOp::subVVS(dOutReal, dInReal, dInReal2, scalarReal);
-      hOutReal = dOutReal;
-      for (int i = 0; i < n; i++) {
-         refOutReal[i] = refInReal[i] - refInReal2[i] - refScalarReal;
-      }
+      // Cpu version
+      VecOp::eqV(refOutReal, hInReal);                  
+      VecOp::addEqVc(refOutReal, hInReal2, scalarReal); 
       checkEqualReal(hOutReal, refOutReal);
 
       // ~~~ Test divEqVc ~~~
@@ -1224,6 +1291,15 @@ public:
          refOutReal[i] = exp(refInReal[i] * refScalarReal);
       }
       checkEqualReal(hOutReal, refOutReal);
+      // Cpu version
+      VecOp::expVc(refOutReal, hInReal, scalarReal); 
+      checkEqualReal(hOutReal, refOutReal);
+   }
+
+   // Test pair operations in VecOpMisc.h
+   void testPair()
+   {
+      printMethod(TEST_FUNC);
 
       // ~~~ Test eqVPair ~~~
       VecOp::eqVPair(dOutReal, dOutReal2, dInReal);
@@ -1233,6 +1309,10 @@ public:
          refOutReal[i] = refInReal[i];
          refOutReal2[i] = refInReal[i];
       }
+      checkEqualReal(hOutReal, refOutReal);
+      checkEqualReal(hOutReal2, refOutReal2);
+      // Cpu version
+      VecOp::eqVPair(hOutReal, hOutReal2, hInReal);
       checkEqualReal(hOutReal, refOutReal);
       checkEqualReal(hOutReal2, refOutReal2);
 
@@ -1246,6 +1326,10 @@ public:
       }
       checkEqualReal(hOutReal, refOutReal);
       checkEqualReal(hOutReal2, refOutReal2);
+      // Cpu version
+      VecOp::mulVVPair(hOutReal, hOutReal2, hInReal, hInReal2, hInReal2);
+      checkEqualReal(hOutReal, refOutReal);
+      checkEqualReal(hOutReal2, refOutReal2);
 
       // ~~~ Test mulEqVPair ~~~
       VecOp::eqV(dOutReal, dInReal);
@@ -1255,6 +1339,18 @@ public:
       hOutReal2 = dOutReal2;
       checkEqualReal(hOutReal, refOutReal);   // same ref. array as above
       checkEqualReal(hOutReal2, refOutReal2); // same ref. array as above
+      // Cpu version
+      VecOp::eqV(hOutReal, hInReal);
+      VecOp::eqV(hOutReal2, hInReal2);
+      VecOp::mulEqVPair(hOutReal, hOutReal2, hInReal2);
+      checkEqualReal(hOutReal, refOutReal);   // same ref. array as above
+      checkEqualReal(hOutReal2, refOutReal2); // same ref. array as above
+   }
+
+   // Test operations involving "many" arrays 
+   void testMany()
+   {
+      printMethod(TEST_FUNC);
 
       // ~~~ Test addVMany ~~~
       DArray<DeviceArray<cudaReal> const *> inVecs;
@@ -1292,46 +1388,6 @@ public:
       VecOp::mulVMany(dOutReal, inVecs2);
       hOutReal = dOutReal;
       checkEqualReal(hOutReal, refOutReal);
-
-      // ~~~ Test sqAbsV ~~~
-      VecOp::sqAbsV(dOutReal, dInComplex);
-      hOutReal = dOutReal;
-      for (int i = 0; i < n; i++) {
-         refOutReal[i] = norm(refInComplex[i]);
-      }
-      checkEqualReal(hOutReal, refOutReal);
-
-      // ~~~ Test sqSqAbsV ~~~
-      VecOp::sqSqAbsV(dOutReal, dInComplex);
-      hOutReal = dOutReal;
-      for (int i = 0; i < n; i++) {
-         refOutReal[i] = std::pow(std::norm(refInComplex[i]), 2.0);
-      }
-      checkEqualReal(hOutReal, refOutReal);
-   }
-
-   void checkEqualReal(HostDArray<cudaReal>& a, DArray<numType>& b)
-   {
-      int n = a.capacity();
-      TEST_ASSERT(b.capacity() == n);
-      TEST_ASSERT(n > 0);
-
-      for (int i = 0; i < n; i++) {
-         TEST_ASSERT(abs(a[i] - b[i]) < tolerance_);
-      }
-   }
-
-   void checkEqualComplex(HostDArray<cudaComplex>& a,
-                          DArray<std::complex<numType> >& b)
-   {
-      int n = a.capacity();
-      TEST_ASSERT(b.capacity() == n);
-      TEST_ASSERT(n > 0);
-
-      for (int i = 0; i < n; i++) {
-         TEST_ASSERT(abs(a[i].x - b[i].real()) < tolerance_);
-         TEST_ASSERT(abs(a[i].y - b[i].imag()) < tolerance_);
-      }
    }
 
 };
@@ -1348,7 +1404,10 @@ TEST_ADD(CudaVecOpTest, testMulEq)
 TEST_ADD(CudaVecOpTest, testDivEq)
 TEST_ADD(CudaVecOpTest, testExp)
 TEST_ADD(CudaVecOpTest, testSq)
-TEST_ADD(CudaVecOpTest, testMisc)
+TEST_ADD(CudaVecOpTest, testSqAbs)
+TEST_ADD(CudaVecOpTest, testComposite)
+TEST_ADD(CudaVecOpTest, testPair)
+TEST_ADD(CudaVecOpTest, testMany)
 TEST_END(CudaVecOpTest)
 
 #endif

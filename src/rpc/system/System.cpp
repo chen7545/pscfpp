@@ -34,25 +34,21 @@
 #include <pscf/interaction/Interaction.h>
 
 namespace Pscf {
-
    namespace Rp {
       // Explicit instantiation of base class template
       template class System< 1, Rpc::Types<1> >;
       template class System< 2, Rpc::Types<2> >;
       template class System< 3, Rpc::Types<3> >;
    }
-
    namespace Rpc {
 
-      /*
-      * Constructor.
-      */
+      // Constructor.
       template <int D>
       System<D>::System()
        : Rp::System<D, Types<D> >(*this)
       {  ParamComposite::setClassName("System"); }
 
-      // Explicit instantiation
+      // Explicit instantiation definitions
       template class System<1>;
       template class System<2>;
       template class System<3>;

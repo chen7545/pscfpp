@@ -51,12 +51,12 @@ namespace Rpg {
 
    private:
       
+      /// Pointer to the parent simulator.
+      Simulator<D>* simPtr_;
+
       /// Pointer to the parent system.
       System<D>* sysPtr_;
       
-      /// Pointer to the parent simulator.
-      Simulator<D>* simulatorPtr_;
-
    };
 
    // Explicit instantiation declarations

@@ -29,7 +29,7 @@ public:
 
    void setUp()
    {  setVerbose(0); }
-   
+
    template <int D>
    void initSystem(System<D>& system, std::string filename)
    {
@@ -42,10 +42,12 @@ public:
       in.close();
 
    }
-   
+
    template <int D>
    void initSimulator(BdSimulator<D>& simulator, std::string filename)
    {
+      Analyzer<D>::initStatic();
+
       std::ifstream in;
       openInputFile(filename, in);
       simulator.readParam(in);
@@ -79,7 +81,7 @@ public:
          UTIL_CHECK(fields[i].capacity() == meshSize);
       }
    }
-   
+
    /*
    * Read r-grid fields into an array.
    */
@@ -96,13 +98,13 @@ public:
 
    /*
    * Generic BdSimulator test function template.
-   */ 
-   void testBdSimulator(System<3>& system, 
+   */
+   void testBdSimulator(System<3>& system,
                         std::string systemfilename,
                         std::string simulatorfilename,
                         std::string infieldsfilename,
                         std::string outfieldsfilename,
-                        std::string reffieldsfilename, 
+                        std::string reffieldsfilename,
                         char const * outfilename)
    {
       openLogFile(outfilename);
@@ -136,20 +138,20 @@ public:
                      "in/param_LMBdStep",
                      "in/w_dis.rf",
                      "out/w_LMBd_diblock.rf",
-                     "in/w_LMBd_diblock_ref.rf", 
-                     "out/testLMBdStepDiblocks.log");                                                               
+                     "in/w_LMBd_diblock_ref.rf",
+                     "out/testLMBdStepDiblocks.log");
    }
-   
+
    void testLMBdStepTriblocks()
    {
       printMethod(TEST_FUNC);
       System<3> system;
-      testBdSimulator(system, "in/param_system_triblock", 
+      testBdSimulator(system, "in/param_system_triblock",
                      "in/param_LMBdStep",
-                     "in/w_triblock.rf", 
+                     "in/w_triblock.rf",
                      "out/w_LMBd_triblock.rf",
-                     "in/w_LMBd_triblock_ref.rf", 
-                     "out/testLMBdStepTriblocks.log");  
+                     "in/w_LMBd_triblock_ref.rf",
+                     "out/testLMBdStepTriblocks.log");
    }
 
    void testExplicitBdStepDiblocks()
@@ -160,20 +162,20 @@ public:
                      "in/param_explicitBdStep",
                      "in/w_dis.rf",
                      "out/w_explicitBd_diblock.rf",
-                     "in/w_explicitBd_diblock_ref.rf", 
-                     "out/testExplicitBdStepDiblocks.log");                                                               
+                     "in/w_explicitBd_diblock_ref.rf",
+                     "out/testExplicitBdStepDiblocks.log");
    }
-   
+
    void testExplicitBdStepTriblocks()
    {
       printMethod(TEST_FUNC);
       System<3> system;
-      testBdSimulator(system, "in/param_system_triblock", 
+      testBdSimulator(system, "in/param_system_triblock",
                      "in/param_explicitBdStep",
-                     "in/w_triblock.rf", 
+                     "in/w_triblock.rf",
                      "out/w_explicitBd_triblock.rf",
-                     "in/w_explicitBd_triblock_ref.rf", 
-                     "out/testExplicitBdStepTriblocks.log");  
+                     "in/w_explicitBd_triblock_ref.rf",
+                     "out/testExplicitBdStepTriblocks.log");
    }
 
    void testPredCorrBdStepDiblocks()
@@ -184,20 +186,20 @@ public:
                      "in/param_predCorrBdStep",
                      "in/w_dis.rf",
                      "out/w_predCorrBdStep_diblock.rf",
-                     "in/w_predCorrBdStep_diblock_ref.rf", 
-                     "out/testPredCorrBdStepDiblocks.log");                                                               
+                     "in/w_predCorrBdStep_diblock_ref.rf",
+                     "out/testPredCorrBdStepDiblocks.log");
    }
-   
+
    void testPredCorrBdStepTriblocks()
    {
       printMethod(TEST_FUNC);
       System<3> system;
-      testBdSimulator(system, "in/param_system_triblock", 
+      testBdSimulator(system, "in/param_system_triblock",
                      "in/param_predCorrBdStep",
-                     "in/w_triblock.rf", 
+                     "in/w_triblock.rf",
                      "out/w_predCorrBdStep_triblock.rf",
-                     "in/w_predCorrBdStep_triblock_ref.rf", 
-                     "out/testPredCorrBdStepTriblocks.log");  
+                     "in/w_predCorrBdStep_triblock_ref.rf",
+                     "out/testPredCorrBdStepTriblocks.log");
    }
 
 };

@@ -18,7 +18,7 @@
 #include <prdc/cuda/RFieldComparison.h>
 #include <prdc/cuda/resources.h>
 
-#include <pscf/cuda/CudaRandom.h> 
+#include <pscf/cuda/CudaVecRandom.h> 
 
 #include <util/tests/LogFileUnitTest.h>
 #include <util/random/Random.h> 
@@ -70,15 +70,15 @@ public:
       randomField.allocate(dimensions);
       
       double stepSize = 1e-1;
-      CudaRandom cudaRandom;
-      cudaRandom.setSeed(0);
+      CudaVecRandom vecRandom;
+      vecRandom.setSeed(0);
       DArray< RField<3> > const & w = system.w().rgrid();
       
       // For multi-component copolymer
       for (int i = 0; i < nMonomer; i++){
 
          // Generate random numbers between 0.0 and 1.0 from uniform distribution
-         cudaRandom.uniform(randomField);
+         vecRandom.uniform(randomField);
 
          // Generate random numbers between [-stepSize_,stepSize_]
          VecOpFts::mcftsScale(randomField, stepSize);
@@ -110,9 +110,9 @@ public:
       RField<D> randomField;
       randomField.allocate(dimensions);
       
-      CudaRandom cudaRandom;
-      cudaRandom.setSeed(0);
-      cudaRandom.uniform(randomField);
+      CudaVecRandom vecRandom;
+      vecRandom.setSeed(0);
+      vecRandom.uniform(randomField);
       double stepSize = 1e-1;
       VecOpFts::mcftsScale(randomField, stepSize);
       

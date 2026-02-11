@@ -34,12 +34,10 @@ namespace Rpc
    template <int D>
    ConcentrationWriter<D>::ConcentrationWriter(Simulator<D>& simulator, 
                                          System<D>& system) 
-    : Analyzer<D>(),
+    : Analyzer<D>(simulator, system),
       nSample_(0),
-      isInitialized_(false),
-      simulatorPtr_(&simulator),
-      systemPtr_(&(simulator.system()))
-   {  setClassName("ConcentrationWriter"); }
+      isInitialized_(false)
+   {  ParamComposite::setClassName("ConcentrationWriter"); }
 
    /*
    * Read interval and outputFileName. 

@@ -8,11 +8,14 @@
 #include "Iterator.tpp"
 
 namespace Pscf {
-namespace Rpg {
-
-   template class Iterator<1>;
-   template class Iterator<2>;
-   template class Iterator<3>;
-
-}
+   namespace Rp {
+      template class Iterator<1, Rpg::System<1> >;
+      template class Iterator<2, Rpg::System<2> >;
+      template class Iterator<3, Rpg::System<3> >;
+   }
+   namespace Rpg {
+      template class Iterator<1>;
+      template class Iterator<2>;
+      template class Iterator<3>;
+   }
 }

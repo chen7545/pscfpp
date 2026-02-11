@@ -78,7 +78,7 @@ namespace Rpg {
       using McMove<D>::system;
       using McMove<D>::simulator;
       using McMove<D>::random;
-      using McMove<D>::cudaRandom;
+      using McMove<D>::vecRandom;
 
       /**
       *  Attempt unconstrained move.

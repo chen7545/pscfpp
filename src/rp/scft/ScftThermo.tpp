@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_SCFT_THERMO_TPP
-#define PRDC_RL_SCFT_THERMO_TPP
+#ifndef RP_SCFT_THERMO_TPP
+#define RP_SCFT_THERMO_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -131,7 +131,7 @@ namespace Rp {
          // Use summation over grid points
          const int meshSize = domain().mesh().size();
          for (int i = 0; i < nm; ++i) {
-            temp -= innerProduct(w().rgrid(i), c().rgrid(i));
+            temp -= Reduce::innerProduct(w().rgrid(i), c().rgrid(i));
          }
          temp /= double(meshSize);
       }
@@ -155,7 +155,7 @@ namespace Rp {
             // Use summation over grid points
             const int meshSize = domain().mesh().size();
             for (int i = 0; i < nm; ++i) {
-               fExt_ += innerProduct(h().rgrid(i), c().rgrid(i));
+               fExt_ += Reduce::innerProduct(h().rgrid(i), c().rgrid(i));
             }
             fExt_ /= double(meshSize);
          }
@@ -193,7 +193,7 @@ namespace Rp {
             for (int j = i; j < nm; ++j) {
                const double chi = interaction().chi(i,j);
                if (std::abs(chi) > 1.0E-9) {
-                  temp = innerProduct(c().rgrid(i), c().rgrid(j));
+                  temp = Reduce::innerProduct(c().rgrid(i), c().rgrid(j));
                   if (i == j) {
                      fInter_ += 0.5*chi*temp;
                   } else {

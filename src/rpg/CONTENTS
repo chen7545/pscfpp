@@ -4,17 +4,18 @@ field theoretic simulation (PS-FTS) with real fields and periodic boundary
 conditions.  FTS algorithms implemented in this directory rely on a 
 partial saddle point approximation (PS-FTS).  Code in this directory is 
 generally very closely analogous to that in the src/rpc directory, which 
-is used to construct the analogous pscf_pc CPU program.
+is used to construct the analogous pscf_rpc CPU program.
 
 All classes and functions defined in this directory are in namespace 
 Pscf::Rpg.  The name Rpg stands for 'real periodic GPU'. Code in namespace
 Rpg may use classes and functions defined in namespace Util (directory 
-src/util), namespace Pscf::Prdc (directory src/prdc/), or namespace 
-Pscf::Prdc::Cuda (directory src/prdc/cuda), as well as those defined
-directly the parent namespace Pscf. Many header and source files in this
-directory contain "using namespace" expressions that allow names from 
-the Util, Pscf::Prdc and Pscf::Prdc::Cuda namespaces to be used without 
-explicit namespace qualifiers.
+src/util), namespace Pscf::Prdc (directory src/prdc), namespace 
+Pscf::Prdc::Cuda (directory src/prdc/cuda), and namespace Pscf::Rp
+(directory src/rp), as well as those defined directly the parent 
+namespace Pscf. Many header and source files in this directory contain 
+"using namespace" expressions that allow names from the Util, Pscf::Prdc 
+and Pscf::Prdc::Cuda namespaces to be used without explicit namespace 
+qualifiers.
 
 Subdirectories:
 ---------------
@@ -30,7 +31,7 @@ tests/       - unit tests for code in src/rpg
 C++/CUDA Source File:
 ---------------------
 
-pscf_rpg.cu   - Main program for real perodic systems using a GPU
+pscf_rpg.cu  - Main program for real perodic systems using a GPU
 
 Makefile and makefile fragments:
 --------------------------------

@@ -22,11 +22,11 @@ namespace Rpc {
    * Compute averages and output block averages of Hamiltonian components.
    *
    * This class computes separate averages for each component of the
-   * total simulation Hamiltonian (ideal gas contributions (lnQ) and 
-   * Field contribution (HW)) as well as for the total, and 
+   * total simulation Hamiltonian (ideal gas contributions (lnQ) and
+   * Field contribution (HW)) as well as for the total, and
    * periodically outputs block averages of each to a file.
    *
-   * \see \ref rpc_HamiltonianAnalyzer_page "Manual Page"
+   * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
@@ -35,18 +35,21 @@ namespace Rpc {
    {
 
    public:
-   
+
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system);
-   
+
       /**
       * Destructor.
       */
       virtual ~HamiltonianAnalyzer()
-      {} 
-      
+      {}
+
       /**
       * Read interval and output file name.
       *
@@ -56,18 +59,15 @@ namespace Rpc {
 
    protected:
 
-      using ParamComposite::setClassName;
-      using AverageListAnalyzer<D>::setName;
-      using AverageListAnalyzer<D>::setValue;
-      using AverageListAnalyzer<D>::simulator;
-      using AverageListAnalyzer<D>::system;
-      
       /**
       * Compute and store values of Hamiltonian components.
-      */  
+      */
       void compute();
-     
-   private: 
+
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
+
+   private:
 
       /// Array index for ideal gas contributions (lnQ) accumulator.
       int idealId_;
@@ -79,7 +79,7 @@ namespace Rpc {
       int totalId_;
 
    };
-  
+
    // Explicit instantiation declarations
    extern template class HamiltonianAnalyzer<1>;
    extern template class HamiltonianAnalyzer<2>;
@@ -87,4 +87,4 @@ namespace Rpc {
 
 }
 }
-#endif 
+#endif

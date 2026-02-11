@@ -67,6 +67,16 @@ namespace Pscf {
       */
       using PropagatorT = PT;
 
+      /**
+      * Direct (parent) base class.
+      */
+      using PolymerSpeciesT = PolymerSpecies<WT>;
+
+      /**
+      * Indirect (grandparent) base class.
+      */
+      using SpeciesT = Species<WT>;
+
       // Public member functions
 
       /**
@@ -236,32 +246,28 @@ namespace Pscf {
    /*
    * Get a specified Edge (block descriptor) by non-const reference.
    */
-   template <class BT, class PT, typename WT>
-   inline
+   template <class BT, class PT, typename WT> inline
    Edge& PolymerTmpl<BT,PT,WT>::edge(int id)
    {  return blocks_[id]; }
 
    /*
    * Get a specified Edge (block descriptor) by const reference.
    */
-   template <class BT, class PT, typename WT>
-   inline
+   template <class BT, class PT, typename WT> inline
    Edge const & PolymerTmpl<BT,PT,WT>::edge(int id) const
    {  return blocks_[id]; }
 
    /*
    * Get a specified Block solver by non-const reference.
    */
-   template <class BT, class PT, typename WT>
-   inline
+   template <class BT, class PT, typename WT> inline
    BT& PolymerTmpl<BT,PT,WT>::block(int id)
    {  return blocks_[id]; }
 
    /*
    * Get a specified Block solver by const reference.
    */
-   template <class BT, class PT, typename WT>
-   inline
+   template <class BT, class PT, typename WT> inline
    BT const & PolymerTmpl<BT,PT,WT>::block(int id) const
    {  return blocks_[id]; }
 

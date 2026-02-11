@@ -28,7 +28,7 @@ namespace Rpc {
    * contain two parallel hard surfaces ("walls"), confining the
    * polymers/solvents to a "thin film" region of the unit cell.
    *
-   * \ingroup Rpc_Field_Module
+   * \ingroup Rpc_Environment_Module
    */
    template <int D>
    class FilmFieldGenMask : public FilmFieldGenMaskBase<D>

@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_W_FIELDS_H
-#define PRDC_RL_W_FIELDS_H
+#ifndef RP_W_FIELDS_H
+#define RP_W_FIELDS_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -86,7 +86,7 @@ namespace Rp {
    * objects and indicate a zero-parameter member function of each 
    * observer that will be called whenever the fields are modified.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Field_Module
    */
    template <int D, class RFT, class FIT>
    class WFields 

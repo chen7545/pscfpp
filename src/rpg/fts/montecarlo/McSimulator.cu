@@ -8,9 +8,14 @@
 #include "McSimulator.tpp"
 
 namespace Pscf {
-namespace Rpg {
-   template class McSimulator<1>;
-   template class McSimulator<2>;
-   template class McSimulator<3>;
-}
+   namespace Rp {
+      template class McSimulator< 1, Rpg::Types<1> >;
+      template class McSimulator< 2, Rpg::Types<2> >;
+      template class McSimulator< 3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class McSimulator<1>;
+      template class McSimulator<2>;
+      template class McSimulator<3>;
+   }
 }

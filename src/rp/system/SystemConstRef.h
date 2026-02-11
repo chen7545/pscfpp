@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_SYSTEM_CONST_REF_H
-#define PRDC_RL_SYSTEM_CONST_REF_H
+#ifndef RP_SYSTEM_CONST_REF_H
+#define RP_SYSTEM_CONST_REF_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-// Forward declarations
+// Forward declaration
 namespace Util {
    class FileMaster;
 }
@@ -27,7 +27,7 @@ namespace Rp {
    * conditions. Accessor functions return the system and its components 
    * as const references.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_System_Module
    */
    template <class ST>
    class SystemConstRef 
@@ -53,7 +53,12 @@ namespace Rp {
       SystemConstRef();
 
       /**
-      * Constructor.
+      * Constructor that creates associations.
+      * 
+      * Using of this constructor is equivalent to using the default
+      * constructor and then invoking the associate() function.
+      * 
+      * \param system  parent system object
       */
       SystemConstRef(SystemT const & system);
 
@@ -64,42 +69,63 @@ namespace Rp {
 
       /**
       * Create associations with a system and its components.
+      * 
+      * \param system  parent system object
       */
       void associate(SystemT const & system);
 
-      /// Get the associated System.    
+      /**
+      * Get the associated System.
+      */
       SystemT const & system() const
       {  return *systemPtr_; }
 
-      /// Get the Mixture.
+      /**
+      * Get the Mixture.
+      */
       MixtureT const & mixture() const
       {  return *mixturePtr_; }
 
-      /// Get the Interaction.    
+      /**
+      * Get the Interaction.
+      */
       InteractionT const & interaction() const
       {  return *interactionPtr_; }
 
-      /// Get the Domain.
+      /**
+      * Get the Domain.
+      */
       DomainT const & domain() const
       {  return *domainPtr_; }
 
-      /// Get the concentration (c) field container.
+      /**
+      * Get the concentration (c) field container.
+      */
       CFieldsT const & c() const
       {  return *cPtr_; }
 
-      /// Get the chemical potential (w) field container.
+      /**
+      * Get the chemical potential (w) field container.
+      */
       WFieldsT const & w() const
       {  return *wPtr_; }
 
-      /// Get the external potential (h) field container.
+      /**
+      * Get the external potential (h) field container (if any).
+      */
       WFieldsT const & h() const
       {  return *hPtr_; }
 
-      /// Get the mask.
+     
+      /** 
+      * Get the mask (if any).
+      */
       MaskT const & mask() const
       {  return *maskPtr_; }
 
-      /// Get the FileMaster.
+      /**
+      * Get the FileMaster.
+      */
       FileMaster const & fileMaster() const
       {  return *fileMasterPtr_; }
 

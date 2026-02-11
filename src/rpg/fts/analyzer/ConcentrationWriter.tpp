@@ -29,11 +29,9 @@ namespace Rpg
    template <int D>
    ConcentrationWriter<D>::ConcentrationWriter(Simulator<D>& simulator, 
                                          System<D>& system) 
-    : Analyzer<D>(),
+    : Analyzer<D>(simulator, system),
       nSample_(0),
-      isInitialized_(false),
-      simulatorPtr_(&simulator),
-      systemPtr_(&(simulator.system()))
+      isInitialized_(false)
    {  setClassName("ConcentrationWriter"); }
 
    /*

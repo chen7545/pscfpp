@@ -7,7 +7,7 @@
 #include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/complex.h>
 #include <pscf/cuda/Reduce.h>
-#include <pscf/cuda/CudaRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/cuda/DeviceArray.h>
 #include <pscf/cuda/HostDArray.h>
 #include <pscf/math/IntVec.h>
@@ -36,7 +36,7 @@ private:
    #endif
 
    // Random number generator on the GPU
-   CudaRandom rand_;
+   CudaVecRandom rand_;
 
 public:
 
@@ -59,8 +59,7 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      //nVals[0] = 50022;     // small array
-      nVals[0] = 109857634; // large array
+      nVals[0] = 50022;     // small array
       nVals[1] = 1934896;   // medium array
       nVals[2] = 109857634; // large array
 
@@ -140,10 +139,9 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      //nVals[0] = 50022;     // small array
       nVals[0] = 109857634; // large array
       nVals[1] = 1934896;   // medium array
-      nVals[2] = 109857634; // large array
+      nVals[2] = 50022;     // small array
 
       for (int j = 0; j < 3; j++) {
 
@@ -244,8 +242,7 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      //nVals[0] = 50022;     // small array
-      nVals[0] = 109857634; // large array
+      nVals[0] = 50022;     // small array
       nVals[1] = 1934896;   // medium array
       nVals[2] = 109857634; // large array
 
@@ -340,10 +337,9 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      //nVals[0] = 50022;     // small array
       nVals[0] = 109857634; // large array
       nVals[1] = 1934896;   // medium array
-      nVals[2] = 109857634; // large array
+      nVals[2] = 50022;     // small array
 
       for (int j = 0; j < 3; j++) {
 
@@ -456,10 +452,9 @@ public:
       printMethod(TEST_FUNC);
 
       IntVec<3> nVals;
-      //nVals[2] = 50022;     // small array
       nVals[0] = 109857634; // large array
       nVals[1] = 1934896;   // medium array
-      nVals[2] = 109857634; // large array
+      nVals[2] = 50022;     // small array
 
       for (int j = 0; j < 3; j++) {
 
@@ -791,11 +786,11 @@ public:
 };
 
 TEST_BEGIN(CudaReduceTest)
+TEST_ADD(CudaReduceTest, testSumSqComplex)
+TEST_ADD(CudaReduceTest, testInnerProduct)
 TEST_ADD(CudaReduceTest, testSum)
 TEST_ADD(CudaReduceTest, testSumComplex)
 TEST_ADD(CudaReduceTest, testSumSq)
-TEST_ADD(CudaReduceTest, testSumSqComplex)
-TEST_ADD(CudaReduceTest, testInnerProduct)
 TEST_ADD(CudaReduceTest, testMax)
 TEST_ADD(CudaReduceTest, testMaxAbs)
 TEST_ADD(CudaReduceTest, testMin)

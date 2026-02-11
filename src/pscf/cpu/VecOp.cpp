@@ -22,7 +22,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i];
       }
@@ -50,8 +50,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] + c[i];
       }
@@ -64,7 +64,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
 
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] + c;
@@ -81,8 +81,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] - c[i];
       }
@@ -95,7 +95,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] - c;
       }
@@ -111,8 +111,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] * c[i];
       }
@@ -125,7 +125,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] * c;
       }
@@ -141,8 +141,8 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] / c[i];
       }
@@ -155,7 +155,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i] / c;
       }
@@ -168,7 +168,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(c.capacity() == n);
+      UTIL_CHECK(c.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b/c[i];
       }
@@ -183,7 +183,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] += b[i];
       }
@@ -201,7 +201,6 @@ namespace VecOp {
       }
    }
 
-
    // In-place subtraction
 
    /*
@@ -211,7 +210,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] -= b[i];
       }
@@ -238,7 +237,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] *= b[i];
       }
@@ -265,7 +264,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] /= b[i];
       }
@@ -292,7 +291,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = exp(b[i]);
       }
@@ -305,7 +304,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = exp(b[i]*c);
       }
@@ -320,7 +319,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i]*b[i];
       }
@@ -335,7 +334,7 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = std::abs(b[i]);
       }
@@ -368,9 +367,23 @@ namespace VecOp {
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b[i]*c + s;
+      }
+   }
+
+   /*
+   * In-place add one scaled vector, a[i] += b[i]*c (real).
+   */
+   void addEqVc(Array<double>& a, 
+                Array<double> const & b, const double c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a[i] += b[i]*c;
       }
    }
 
@@ -391,19 +404,60 @@ namespace VecOp {
       }
    }
 
-   // In-place linear combinations (result is first vector)
+   // Pair operations (two output arrays and a shared input)
 
    /*
-   * In-place add one scaled vector, a[i] += b[i]*c (real).
+   * Vector assignment in pairs, ax[i] = b[i], x = 1, 2 (real).
    */
-   void addEqVc(Array<double>& a, 
-                Array<double> const & b, const double c)
+   void eqVPair(Array<double>& a1, 
+                Array<double>& a2,
+                Array<double> const & b)
    {
-      const int n = a.capacity();
+      const int n = a1.capacity();
       UTIL_CHECK(n > 0);
-      UTIL_CHECK(b.capacity() == n);
+      UTIL_CHECK(a2.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
       for (int i = 0; i < n; ++i) {
-         a[i] += b[i]*c;
+         a1[i] = b[i];
+         a2[i] = b[i];
+      }
+   }
+
+   /*
+   * Vector multiplication in pairs, ax[i] = bx[i] * c[i], x=1,2 (real).
+   */
+   void mulVVPair(Array<double>& a1, 
+                  Array<double>& a2,
+                  Array<double> const & b1,
+                  Array<double> const & b2,
+                  Array<double> const & c)
+   {
+      const int n = a1.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(a2.capacity() == n);
+      UTIL_CHECK(b1.capacity() >= n);
+      UTIL_CHECK(b2.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a1[i] = b1[i]*c[i];
+         a2[i] = b2[i]*c[i];
+      }
+   }
+
+   /*
+   * In-place vector multiplication in pairs, ax[i] *= b[i], x=1,2 (real).
+   */
+   void mulEqVPair(Array<double>& a1, 
+                   Array<double>& a2,
+                   Array<double> const & b)
+   {
+      const int n = a1.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(a2.capacity() == n);
+      UTIL_CHECK(b.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a1[i] *= b[i];
+         a2[i] *= b[i];
       }
    }
 

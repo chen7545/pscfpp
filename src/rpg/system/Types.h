@@ -8,9 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <pscf/cuda/cudaTypes.h>
+
 // Forward declarations
 namespace Pscf {
    class Interaction;
+   class CudaVecRandom;
+   template <typename T> class DeviceArray;
    namespace Prdc {
       class Environment;
       namespace Cuda {
@@ -43,6 +47,26 @@ namespace Pscf {
       template <int D> class SweepFactory;
       template <int D> class Simulator;
       template <int D> class SimulatorFactory;
+      template <int D> struct SimState;
+      template <int D> class Compressor;
+      template <int D> class CompressorFactory;
+      template <int D> class Perturbation;
+      template <int D> class PerturbationFactory;
+      template <int D> class Ramp;
+      template <int D> class RampFactory;
+      template <int D> class Analyzer;
+      template <int D> class AverageAnalyzer;
+      template <int D> class AverageListAnalyzer;
+      template <int D> class AnalyzerManager;
+      template <int D> class TrajectoryReader; 
+      template <int D> class TrajectoryReaderFactory; 
+      template <int D> class BdSimulator;
+      template <int D> class BdStep;
+      template <int D> class BdStepFactory;
+      template <int D> class McSimulator;
+      template <int D> class McMove;
+      template <int D> class McMoveFactory;
+      template <int D> class McMoveManager; 
    }
 }
 
@@ -50,9 +74,7 @@ namespace Pscf {
 namespace Rpg {
 
    // Namespaces that may be used implicitly
-   using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * List of aliases for types used the in Rpg namespace.
@@ -60,8 +82,7 @@ namespace Rpg {
    * \ingroup Rpg_System_Module
    */
    template <int D>
-   class Types
-   {
+   class Types {
 
    public:
 
@@ -89,8 +110,31 @@ namespace Rpg {
       using IteratorFactory = Rpg::IteratorFactory<D>;
       using Sweep = Rpg::Sweep<D>;
       using SweepFactory = Rpg::SweepFactory<D>;
+
       using Simulator = Rpg::Simulator<D>;
       using SimulatorFactory = Rpg::SimulatorFactory<D>;
+      using SimState = Rpg::SimState<D>;
+      using Compressor = Rpg::Compressor<D>;
+      using CompressorFactory = Rpg::CompressorFactory<D>;
+      using Perturbation = Rpg::Perturbation<D>;
+      using PerturbationFactory = Rpg::PerturbationFactory<D>;
+      using Ramp = Rpg::Ramp<D>;
+      using RampFactory = Rpg::RampFactory<D>;
+      using Analyzer = Rpg::Analyzer<D>;
+      using AverageAnalyzer = Rpg::AverageAnalyzer<D>;
+      using AverageListAnalyzer = Rpg::AverageListAnalyzer<D>;
+      using AnalyzerManager = Rpg::AnalyzerManager<D>;
+      using TrajectoryReader = Rpg::TrajectoryReader<D>;
+      using TrajectoryReaderFactory = Rpg::TrajectoryReaderFactory<D>;
+
+      using BdSimulator = Rpg::BdSimulator<D>;
+      using BdStep = Rpg::BdStep<D>;
+      using BdStepFactory = Rpg::BdStepFactory<D>;
+
+      using McSimulator = Rpg::McSimulator<D>;
+      using McMove = Rpg::McMove<D>;
+      using McMoveFactory = Rpg::McMoveFactory<D>;
+      using McMoveManager = Rpg::McMoveManager<D>;
 
       using RField = Prdc::Cuda::RField<D>;
       using RFieldDft = Prdc::Cuda::RFieldDft<D>;
@@ -98,6 +142,11 @@ namespace Rpg {
       using RFieldComparison = Prdc::Cuda::RFieldComparison<D>;
       using RFieldDftComparison = Prdc::Cuda::RFieldDftComparison<D>;
       using WaveList = Prdc::Cuda::WaveList<D>;
+
+      using VecRandom = CudaVecRandom;
+      using RealArray = DeviceArray<cudaReal>;
+      using CmplxArray = DeviceArray<cudaComplex>;
+
 
    };
 

@@ -54,6 +54,9 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       BinaryStructureFactorGrid(Simulator<D>& simulator, System<D>& system);
 
@@ -146,26 +149,6 @@ namespace Rpg {
       /// Number of wavevectors.
       int nWave_;
 
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;   
-      
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_; 
-      
-      /** 
-      * Return reference to parent system.
-      */      
-      System<D>& system();
-      
-      /** 
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-      
       using ParamComposite::setClassName;
       using ParamComposite::readOptional;
       using ParamComposite::readDArray;
@@ -175,6 +158,8 @@ namespace Rpg {
       using Analyzer<D>::setClassName;
       using Analyzer<D>::readInterval;
       using Analyzer<D>::readOutputFileName;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
    private:
 
@@ -202,21 +187,11 @@ namespace Rpg {
       /// Bare wavenumber value q = sqrt(kSq) lists
       std::vector<double> qList_;
    
-      /// Map key to be qsquare and value to be average structure factor over k of equal magnitude
+      /// Map key is qsquare and value to be average structure factor
       std::map<double, double> averageSMap_;
+
    };
    
-   // Get the parent system.
-   template <int D>
-   inline System<D>& BinaryStructureFactorGrid<D>::system()
-   {  return *systemPtr_; }
-   
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& BinaryStructureFactorGrid<D>::simulator()
-   {  return *simulatorPtr_; }
-
-
 }
 }
 #endif

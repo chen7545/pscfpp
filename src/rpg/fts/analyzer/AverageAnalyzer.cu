@@ -5,15 +5,38 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.tpp"
+#include "AverageAnalyzer.h"
+#include <rpg/system/System.h>
+#include <rpg/fts/simulator/Simulator.h>
+
+#include <rp/fts/analyzer/AverageAnalyzer.tpp>
 
 namespace Pscf {
-namespace Rpg {
+   namespace Rpg {
 
-   template class AverageAnalyzer<1>;
-   template class AverageAnalyzer<2>;
-   template class AverageAnalyzer<3>;
+      /// Constructor.
+      template <int D>
+      AverageAnalyzer<D>::AverageAnalyzer(Simulator<D>& simulator,
+		                          System<D>& system)
+       : Rp::AverageAnalyzer< D, Types<D> >(simulator, system)
+      {}
 
+   }
 }
-}
 
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class
+      AverageAnalyzer<1, Rpg::Types<1> >;
+      template class
+      AverageAnalyzer<2, Rpg::Types<2> >;
+      template class
+      AverageAnalyzer<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class AverageAnalyzer<1>;
+      template class AverageAnalyzer<2>;
+      template class AverageAnalyzer<3>;
+   }
+}

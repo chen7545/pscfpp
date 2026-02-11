@@ -8,109 +8,43 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
-#include <prdc/cuda/RField.h>              // member 
-#include <util/containers/DArray.h>        // member
+#include <rp/fts/simulator/SimState.h>   // base class template
+#include <prdc/cuda/RField.h>            // base class template argument
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cuda;
 
    /**
-   * SimState stores the state used by an fts simulation.
+   * SimState stores the state used by an FTS simulation.
    *
-   * \ingroup Rpg_Fts_Module
+   * This class is used to restore the state of FTS simulation after 
+   * an attempted move or step that is rejected or fails to converge. 
+   * The version defined here is simply a named instantiation of the
+   * Rp::SimState base class template. See documentation of that base 
+   * class for further details. 
+   *
+   * \ingroup Rpg_Fts_Simulator_Module
    */
    template <int D>
-   struct SimState 
-   {
-      public:
-
-      /**
-      * Constructor.
-      */
-      SimState();
-
-      /**
-      * Destructor.
-      */
-      ~SimState();
-
-      /**
-      * Allocate memory for fields.
-      *
-      * \param nMonomer  number of monomer types
-      * \param dimensions  dimensions of discretization grid
-      */ 
-      void allocate(int nMonomer, IntVec<D> const & dimensions);
- 
-      /**
-      * Chemical potential fields, r-grid format, indexed by monomer.
-      */
-      DArray< RField<D> > w;
-
-      /**
-      * Chemical potential fields, r-grid format, indexed by eigenvector.
-      *
-      * Each field is a component projected on pointwise onto a
-      * eigenvector of the projected chi matrix, with indices that
-      * correspond to eigenvector indices.
-      */
-      DArray< RField<D> > wc;
-      
-      /**
-      * Eigenvector components of c fields on a real space grid.
-      *
-      * Each field component corresponds to a point-wise projection of c
-      * onto an eigenvector of the projected chi matrix.
-      */
-      DArray< RField<D> > cc;
-      
-      /**
-      * Components of functional derivatives of the Hamiltonian fields 
-      * on a real space grid.
-      *
-      * Each field component is the functional derivative of H[W]
-      * with respect to one eigenvector w-field component.
-      */
-      DArray< RField<D> > dc;
-      
-      /// Monte-Carlo Hamiltonian value.
-      double hamiltonian;
-      
-      /// Monte-Carlo ideal gas contribution to Hamiltonian value.
-      double idealHamiltonian;
-      
-      /// Monte-Carlo field part contribution to Hamiltonian value.
-      double fieldHamiltonian;
-      
-      /// Perturbation to Hamiltonian value (if any).
-      double perturbationHamiltonian;
-            
-      /// If cc fields needs to be saved.
-      bool needsCc;
-      
-      /// If dc fields needs to be saved.
-      bool needsDc;
-      
-      /// If hamiltonian needs to be saved.
-      bool needsHamiltonian;
-
-      /// Is this struct being used to store data?
-      bool hasData;
-      
-      /// Has memory be allocated for the w field?
-      bool isAllocated;
-
-   };
-
-   // Explicit instantiation declarations
-   extern template struct SimState<1>;
-   extern template struct SimState<2>;
-   extern template struct SimState<3>;
+   struct SimState : Rp::SimState< D, Prdc::Cuda::RField<D> >
+   {};
 
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template struct SimState<1, Prdc::Cuda::RField<1> >;
+      extern template struct SimState<2, Prdc::Cuda::RField<2> >;
+      extern template struct SimState<3, Prdc::Cuda::RField<3> >;
+   }
+   namespace Rpg {
+      extern template struct SimState<1>;
+      extern template struct SimState<2>;
+      extern template struct SimState<3>;
+   }
 }
 #endif
