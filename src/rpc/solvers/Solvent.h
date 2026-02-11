@@ -8,116 +8,41 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/chem/SolventSpecies.h>   // base class
-#include <prdc/cpu/RField.h>            // member
-
-// Forward declaration
-namespace Pscf {
-   template <int D> class Mesh;
-}
+#include <rp/solvers/Solvent.h>    // base class template
+#include <rpc/system/Types.h>      // base class template parameter
+#include <prdc/cpu/RField.h>       // member of base class
 
 namespace Pscf {
-namespace Rpc {
-
-   using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
-
-   /**
-   * Solver and descriptor for a solvent species.
-   *
-   * \ref user_param_solvent_sec "Manual Page"
-   * \ingroup Rpc_Solver_Module
-   */
-   template <int D>
-   class Solvent : public SolventSpecies<double>
-   {
-
-   public:
+   namespace Rpc {
 
       /**
-      * Constructor.
-      */
-      Solvent();
-
-      /**
-      * Destructor.
-      */
-      ~Solvent();
-
-      /**
-      * Create an association with the mesh.
+      * Solver and descriptor for a solvent species.
       *
-      * \param mesh associated Mesh<D> object
-      */
-      void associate(Mesh<D> const & mesh);
-
-      /**
-      * Allocate memory for concentrationf field.
-      */
-      void allocate();
-
-      /**
-      * Compute monomer concentration field, q and phi and/or mu.
+      * Class Rpc::Solvent<D> is simply a named instantiaton of the class
+      * template Rp::Solvent, designed for use with CPU hardware.  See
+      * the documentation of this base class template for details.
       *
-      * Computes monomer concentration field cField, partition function
-      * q, and either the solvent volume fraction phi or solvent chemical
-      * potential mu, depending on ensemble. The function takes the
-      * chemical potential field wField for the relevant monomer type as
-      * its only input argument.
-      *
-      * The optional parameter phiTot is only relevant to problems such
-      * as thin films in which the material is excluded from part of the
-      * unit cell by imposing an inhomogeneous constraint on the sum of
-      * monomer concentrations (i.e., a "mask").
-      *
-      * \param wField  monomer chemical potential field of relevant type.
-      * \param phiTot  volume fraction of unit cell occupied by material
+      * \ref user_param_solvent_sec "Manual Page"
+      * \ingroup Rpc_Solver_Module
       */
-      void compute(RField<D> const & wField, double phiTot = 1.0);
+      template <int D>
+      class Solvent : public Rp::Solvent<D, Rpc::Types<D> >
+      {};
 
-      /**
-      * Get the monomer concentration field for this solvent.
-      */
-      RField<D> const & cField() const;
-
-      // Inherited accessor functions
-      using Pscf::Species<double>::phi;
-      using Pscf::Species<double>::mu;
-      using Pscf::Species<double>::q;
-      using Pscf::Species<double>::ensemble;
-      using Pscf::SolventSpecies<double>::monomerId;
-      using Pscf::SolventSpecies<double>::size;
-
-   protected:
-
-      // Inherited protected functions
-      using Pscf::Species<double>::setQ;
-
-   private:
-
-      /// Concentration field for this solvent.
-      RField<D> cField_;
-
-      /// Pointer to associated mesh.
-      Mesh<D> const *  meshPtr_;
-
-   };
-
-   // Inline member function
-
-   /*
-   * Get monomer concentration field for this solvent.
-   */
-   template <int D>
-   inline RField<D> const & Solvent<D>::cField() const
-   {  return cField_;  }
-
-   // Explicit instantiation declarations
-   extern template class Solvent<1>;
-   extern template class Solvent<2>;
-   extern template class Solvent<3>;
-
+   }
 }
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class Solvent<1, Rpc::Types<1> >;
+      extern template class Solvent<2, Rpc::Types<2> >;
+      extern template class Solvent<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class Solvent<1>;
+      extern template class Solvent<2>;
+      extern template class Solvent<3>;
+   }
 }
 #endif

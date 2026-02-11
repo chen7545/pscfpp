@@ -559,7 +559,7 @@ namespace VecOp {
    /*
    * Vector-scalar in-place multiplication, a[i] *= b[i] (complex).
    */
-   void mulEqV(Array<fftw_complex>& a, fftw_complex const & b)
+   void mulEqS(Array<fftw_complex>& a, fftw_complex const & b)
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);

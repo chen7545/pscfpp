@@ -226,10 +226,10 @@ namespace Rpg {
       ds_(0.0),
       dsTarget_(0.0),
       ns_(0),
+      nParams_(0),
       isAllocated_(false),
       hasExpKsq_(false),
-      useBatchedFFT_(true),
-      nParams_(0)
+      useBatchedFFT_(true)
    {
       propagator(0).setBlock(*this);
       propagator(1).setBlock(*this);
@@ -246,7 +246,7 @@ namespace Rpg {
    void Block<D>::associate(Mesh<D> const & mesh, 
                             FFT<D> const & fft,
                             UnitCell<D> const & cell, 
-                            WaveList<D>& wavelist)
+                            WaveList<D>& waveList)
    {
       UTIL_CHECK(!isAllocated_);
       UTIL_CHECK(mesh.size() > 1);
@@ -260,7 +260,7 @@ namespace Rpg {
       meshPtr_ = &mesh;
       fftPtr_ = &fft;
       unitCellPtr_ = &cell;
-      waveListPtr_ = &wavelist;
+      waveListPtr_ = &waveList;
 
       hasExpKsq_ = false;
    }
@@ -301,20 +301,21 @@ namespace Rpg {
       if (PolymerModel::isThread()) {
 
          // Set contour length discretization for this block
-         UTIL_CHECK(length() > 0.0);
+         const double length = Edge::length();
+         UTIL_CHECK(length > 0.0);
          int tempNs;
-         tempNs = floor(length() / (2.0 * ds) + 0.5);
+         tempNs = floor(length / (2.0 * ds) + 0.5);
          if (tempNs == 0) {
             tempNs = 1;          // ensure ns_ >= 3
          }
          ns_ = 2*tempNs + 1;
-         ds_ = length()/double(ns_ - 1);
+         ds_ = length/double(ns_ - 1);
 
       } else
       if (PolymerModel::isBead()) {
 
          ds_ = ds;
-         ns_ = nBead() + 2;
+         ns_ = Edge::nBead() + 2;
 
       }
 
@@ -348,18 +349,19 @@ namespace Rpg {
       UTIL_CHECK(PolymerModel::isThread());
 
       Edge::setLength(newLength);
+      const double length = Edge::length();
 
       if (isAllocated_) { // if allocate() has already been called
          // Reset contour length discretization
          UTIL_CHECK(dsTarget_ > 0);
          int oldNs = ns_;
          int tempNs;
-         tempNs = floor(length() / (2.0 * dsTarget_) + 0.5);
+         tempNs = floor(length / (2.0 * dsTarget_) + 0.5);
          if (tempNs == 0) {
             tempNs = 1; // ensure at least 3 contour steps per chain
          }
          ns_ = 2*tempNs + 1;
-         ds_ = length()/double(ns_-1);
+         ds_ = length/double(ns_-1);
 
          if (oldNs != ns_) {
             // If propagators are already allocated and ns_ has changed,
@@ -388,7 +390,7 @@ namespace Rpg {
    template <int D>
    void Block<D>::setKuhn(double kuhn)
    {
-      Base::setKuhn(kuhn);
+      BlockTmplT::setKuhn(kuhn);
       hasExpKsq_ = false;
    }
 
@@ -414,19 +416,20 @@ namespace Rpg {
       UTIL_CHECK(waveListPtr_);
 
       // Calculate kSq if necessary
-      if (!waveListPtr_->hasKSq()) {
-         waveListPtr_->computeKSq();
+      if (!waveList().hasKSq()) {
+         waveList().computeKSq();
       }
 
       // Compute bSqFactor
-      double bSqFactor = -1.0 * kuhn() * kuhn() / 6.0;
+      const double b = BlockTmplT::kuhn();
+      double bSqFactor = -1.0 * b * b / 6.0;
       if (PolymerModel::isThread()) {
          bSqFactor *= ds_;
       }
 
       // Calculate expKsq values on device
-      VecOp::expVc(expKsq_, waveListPtr_->kSq(), bSqFactor);
-      VecOp::expVc(expKsq2_, waveListPtr_->kSq(), bSqFactor / 2.0);
+      VecOp::expVc(expKsq_, waveList().kSq(), bSqFactor);
+      VecOp::expVc(expKsq2_, waveList().kSq(), bSqFactor / 2.0);
 
       hasExpKsq_ = true;
    }
@@ -463,7 +466,7 @@ namespace Rpg {
    * Propagate solution by one step.
    */
    template <int D>
-   void Block<D>::stepThread(RField<D> const & qin, RField<D>& qout)
+   void Block<D>::stepThread(RField<D> const & qin, RField<D>& qout) const
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -511,7 +514,7 @@ namespace Rpg {
    * Apply one step of the MDE solution for the bead model. 
    */
    template <int D>
-   void Block<D>::stepBead(RField<D> const & qin, RField<D>& qout)
+   void Block<D>::stepBead(RField<D> const & qin, RField<D>& qout) const
    {
       stepBondBead(qin, qout);
       stepFieldBead(qout);
@@ -521,7 +524,7 @@ namespace Rpg {
    * Apply the field operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepFieldBead(RField<D>& q)
+   void Block<D>::stepFieldBead(RField<D>& q) const
    {
       // Preconditions
       int nx = mesh().size();
@@ -535,7 +538,7 @@ namespace Rpg {
    * Apply the bond operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepBondBead(RField<D> const & qin, RField<D>& qout)
+   void Block<D>::stepBondBead(RField<D> const & qin, RField<D>& qout) const
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -561,7 +564,7 @@ namespace Rpg {
    * Apply the half-bond operator for the bead model.
    */
    template <int D>
-   void Block<D>::stepHalfBondBead(RField<D> const & qin, RField<D>& qout)
+   void Block<D>::stepHalfBondBead(RField<D> const & qin, RField<D>& qout) const
    {
       // Preconditions
       UTIL_CHECK(isAllocated_);
@@ -672,8 +675,8 @@ namespace Rpg {
       UTIL_CHECK(p1.isSolved());
 
       // Calculate dKSq if necessary
-      if (!waveListPtr_->hasdKSq()) {
-         waveListPtr_->computedKSq();
+      if (!waveList().hasdKSq()) {
+         waveList().computedKSq();
       }
 
       // Workspace variables
@@ -739,14 +742,15 @@ namespace Rpg {
          }
 
          // Increment stress contributions for all unit cell parameters
+         const double b = BlockTmplT::kuhn();
          for (n = 0; n < nParams_ ; ++n) {
 
             // Launch kernel to evaluate dQ at all wavevectors
-            realMulVConjVV(rTmp, q0k_, q1k_, waveListPtr_->dKSq(n));
+            realMulVConjVV(rTmp, q0k_, q1k_, waveList().dKSq(n));
 
             // Get the sum of all elements
             increment = Reduce::sum(rTmp);
-            increment *= kuhn() * kuhn() * dels / normal;
+            increment *= b * b * dels / normal;
             dQ[n] -= increment;
          }
 
@@ -807,8 +811,8 @@ namespace Rpg {
       }
 
       // Calculate dKSq if necessary
-      if (!waveListPtr_->hasdKSq()) {
-         waveListPtr_->computedKSq();
+      if (!waveList().hasdKSq()) {
+         waveList().computedKSq();
       }
 
       // Initialize dQ to zero
@@ -819,7 +823,8 @@ namespace Rpg {
       }
 
       RField<D> rTmp(kMeshDimensions_);   // k-space work space
-      double bSq = kuhn()*kuhn()/6.0;
+      const double b = BlockTmplT::kuhn();
+      const double bSq = b * b / 6.0;
       double increment;
 
       // Half bond from head junction to first bead, if not a chain end
@@ -836,7 +841,7 @@ namespace Rpg {
             fft().forwardTransform(p1.q(ns_ - 2), q1k_);
          }
          for (int n = 0; n < nParams_ ; ++n) {
-            realMulVConjVV(rTmp, q0k_, q1k_, waveListPtr_->dKSq(n));
+            realMulVConjVV(rTmp, q0k_, q1k_, waveList().dKSq(n));
             VecOp::mulEqV(rTmp, expKsq2_);
             increment = Reduce::sum(rTmp);
             increment *= 0.5*bSq;
@@ -868,7 +873,7 @@ namespace Rpg {
          for (int n = 0; n < nParams_ ; ++n) {
 
             // Compute contributions to dQ at all wavevectors, in rTmp
-            realMulVConjVV(rTmp, q0k_, q1k_, waveListPtr_->dKSq(n));
+            realMulVConjVV(rTmp, q0k_, q1k_, waveList().dKSq(n));
             VecOp::mulEqV(rTmp, expKsq_);
 
             // Evaluate sum of over wavevectors
@@ -897,7 +902,7 @@ namespace Rpg {
             fft().forwardTransform(p1.q(0), q1k_);
          }
          for (int n = 0; n < nParams_ ; ++n) {
-            realMulVConjVV(rTmp, q0k_, q1k_, waveListPtr_->dKSq(n));
+            realMulVConjVV(rTmp, q0k_, q1k_, waveList().dKSq(n));
             VecOp::mulEqV(rTmp, expKsq2_);
             increment = Reduce::sum(rTmp);
             increment *= 0.5*bSq;

@@ -20,7 +20,6 @@ namespace Pscf {
       class Polymer;
       class Solvent;
    }
-   extern template class MixtureTmpl<R1d::Polymer, R1d::Solvent, double>;
 }
 
 namespace Pscf {
@@ -167,4 +166,9 @@ namespace R1d {
 
 } // namespace R1d
 } // namespace Pscf
+
+// Explicit instantiation declaration
+namespace Pscf {
+   extern template class MixtureTmpl<R1d::Polymer, R1d::Solvent, double>;
+}
 #endif

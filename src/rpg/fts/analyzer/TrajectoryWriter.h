@@ -9,6 +9,8 @@
 */
 
 #include "Analyzer.h"
+#include <rp/fts/analyzer/TrajectoryWriter.h>
+#include <rpg/system/Types.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -17,151 +19,49 @@ namespace Rpg {
    template <int D> class Simulator;
 
    using namespace Util;
-   
+
    /**
-   * Periodically write snapshots to a trajectory file
+   * Evaluate the derivative of H with respect to chi.
+   *
+   * Instantiations of this class are basically named instantiations
+   * of the base class template Rp::TrajectoryWriter, with type aliases
+   * defined using the Types<D> class for use on CPU hardware. See
+   * the documentation for this base class template for details.
+   *
+   * \see \ref rp_TrajectoryWriter_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>
-   class TrajectoryWriter : public Analyzer<D>
+   class TrajectoryWriter : public Rp::TrajectoryWriter< D, Types<D> >
    {
-   
+
    public:
-   
+
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       TrajectoryWriter(Simulator<D>& simulator, System<D>& system);
-   
-      /**
-      * Destructor.
-      */
-      virtual ~TrajectoryWriter()
-      {} 
-   
-      /**
-      * Read interval and output file name.
-      *
-      * \param in input parameter file
-      */
-      virtual void readParameters(std::istream& in);
-      
-      /**
-      * Save state to archive.
-      *
-      * \param ar saving (output) archive.
-      */
-      virtual void save(Serializable::OArchive& ar);
-
-      #if 0 
-      /**
-      * Load state from an archive.
-      *
-      * \param ar loading (input) archive.
-      */
-      virtual void loadParameters(Serializable::IArchive& ar);
-
-      /**
-      * Serialize to/from an archive. 
-      *
-      * \param ar      saving or loading archive
-      * \param version archive version id
-      */
-      template <class Archive>
-      void serialize(Archive& ar, const unsigned int version);
-      #endif
-      
-      /**
-      * Clear nSample counter.
-      */
-      virtual void setup();
-  
-      /**
-      * Write a frame/snapshot to trajectory file.
-      *
-      * \param iStep step index
-      */
-      virtual void sample(long iStep);
-  
-      /**
-      * Close trajectory file after run.
-      */
-      virtual void output();
-      
-      using ParamComposite::read;
-      using ParamComposite::setClassName;
-      using Analyzer<D>::outputFileName;
-      using Analyzer<D>::isAtInterval;
-  
-   protected:
-      
-      // Output file stream
-      std::ofstream outputFile_;
-      
-      // Output filename
-      std::string filename_;
-
-      /// Number of configurations dumped thus far (first dump is zero).
-      long nSample_;
-   
-      /// Has readParam been called?
-      long isInitialized_;
-      
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;
-      
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;  
-
-   protected:
-
-      /**
-      * Write data that should appear once, at beginning of the file. 
-      *
-      * Called by sample on first invocation. Default implementation is empty.
-      *
-      * \param out output file stream
-      */
-      void writeHeader(std::ofstream& out); 
-
-      /**
-      * Write data that should appear in every frame.
-      * 
-      * \param out output file stream
-      * \param iStep MC time step index
-      */
-      void writeFrame(std::ofstream& out, long iStep);
-
-      /** 
-      * Return reference to parent system.
-      */      
-      System<D>& system();
-      
-      /**
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-      
 
    };
 
-   // Get the parent system.
-   template <int D>
-   inline System<D>& TrajectoryWriter<D>::system()
-   {  return *systemPtr_; }
-   
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& TrajectoryWriter<D>::simulator()
-   {  return *simulatorPtr_; }
-
-   
-
 }
 }
-#endif 
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class TrajectoryWriter<1, Rpg::Types<1> >;
+      extern template class TrajectoryWriter<2, Rpg::Types<2> >;
+      extern template class TrajectoryWriter<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class TrajectoryWriter<1>;
+      extern template class TrajectoryWriter<2>;
+      extern template class TrajectoryWriter<3>;
+   }
+}
+#endif

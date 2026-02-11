@@ -8,13 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.h"
-#include <rpg/system/System.h>
-#include <rpg/fts/simulator/Simulator.h>
+#include "AverageAnalyzer.h"                // indirect base class
+#include <rp/fts/analyzer/ChiDerivative.h>  // base class template
+#include <rpg/system/Types.h>               // base template argument
 
 namespace Pscf {
-namespace Rpg 
-{
+namespace Rpg {
 
    template <int D> class System;
    template <int D> class Simulator;
@@ -24,57 +23,45 @@ namespace Rpg
    /**
    * Evaluate the derivative of H with respect to chi.
    *
+   * Instantiations of this class are basically named instantiations
+   * of the base class template Rp::ChiDerivative, with type aliases
+   * defined using the Types<D> class for use on CPU hardware. See
+   * the documentation for this base class template for details. 
+   *
+   * \see \ref rp_ChiDerivative_page "Manual Page"
+   *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>
-   class ChiDerivative : public AverageAnalyzer<D>
+   class ChiDerivative : public Rp::ChiDerivative< D, Types<D> >
    {
-   
+
    public:
-   
+
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       ChiDerivative(Simulator<D>& simulator, System<D>& system);
-   
-      /**
-      * Destructor.
-      */
-      virtual ~ChiDerivative(); 
-
-      /**
-      * Compute and return the derivative of H w/ respect to chi.
-      */
-      virtual double compute();
-      
-      /**
-      * Output a sampled or block average value.
-      *
-      * \param step  value for step counter
-      * \param value  value of physical observable
-      */
-      virtual void outputValue(int step, double value);
-      
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output; 
-      
-   protected:
- 
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system; 
-      using AverageAnalyzer<D>::outputFile_;
-      using ParamComposite::setClassName;
 
    };
-   
-   // Explicit instantiation declarations
-   extern template class ChiDerivative<1>;
-   extern template class ChiDerivative<2>;
-   extern template class ChiDerivative<3>;
 
 }
 }
-#endif 
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class ChiDerivative<1, Rpg::Types<1> >;
+      extern template class ChiDerivative<2, Rpg::Types<2> >;
+      extern template class ChiDerivative<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class ChiDerivative<1>;
+      extern template class ChiDerivative<2>;
+      extern template class ChiDerivative<3>;
+   }
+}
+#endif

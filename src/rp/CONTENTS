@@ -15,6 +15,7 @@ structures.
 Subdirectories:
   
 field/       - fields and spatial domain
+fts/         - partial saddle-point field theoretic simulation (PS-FTS)
 scft/        - self-consistent field theory (SCFT)
 solvers/     - modified diffusion equation (MDE) solvers
 system/      - main System class template

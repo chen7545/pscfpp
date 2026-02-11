@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_SYSTEM_H
-#define PRDC_RL_SYSTEM_H
+#ifndef RP_SYSTEM_H
+#define RP_SYSTEM_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -25,9 +25,9 @@ namespace Pscf {
 namespace Pscf {
 namespace Rp {
 
-   // Namespace that may be used implicitly
+   // Namespaces that may be used implicitly
    using namespace Util;
-   using namespace Prdc; 
+   using namespace Pscf::Prdc; 
 
    /**
    * Base class template for classes that represent a complete system.
@@ -93,11 +93,11 @@ namespace Rp {
    * <ul>
    *  <li> \ref scft_param_pc_page   "Parameter File: SCFT" </li>
    *  <li> \ref psfts_param_page     "Parameter File: PS-FTS" </li>
-   *  <li> \ref rpc_System_page      "Parameter File: Full Format" </li>
+   *  <li> \ref rp_System_page       "Parameter File: Full Format" </li>
    *  <li> \ref scft_command_pc_page "Command File Format" </li>
    * </ul>
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_System_Module
    */
    template <int D, class T>
    class System : public ParamComposite

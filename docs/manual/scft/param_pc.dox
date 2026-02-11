@@ -12,7 +12,7 @@ parameter file formats, and so are discussed together here. The description
 given here only discusses parameter file elements that are relevant to SCFT
 calculations. A complete description of the parameter file format for either
 of these programs, including optional elements that not relevant to SCFT, is
-given \ref rpc_System_page "here".
+given \ref rp_System_page "here".
 
 \section scft_param_pc_example_sec Example
 
@@ -84,7 +84,7 @@ System{
 The above skeleton only includes blocks that are relevant to SCFT
 calculations. It does not include an optional "Simulation" block that is
 only used for a PS-FTS calculation. A complete description of all allowed
-elements of the main System block is given \ref rpc_System_page "here".
+elements of the main System block is given \ref rp_System_page "here".
 
 Parameter file formats of the Mixture and Interaction blocks are the same
 (or nearly so) for all PSCF programs, and have been discussed previously.
@@ -163,7 +163,7 @@ The above example does not contains a Sweep block.
 \section scft_param_pc_seealso_sec See Also:
 
 <ul>
- <li> \subpage rpc_System_page "(Rpc|Rpg)::System"  </li>
+ <li> \subpage rp_System_page "(Rpc|Rpg)::System"  </li>
  <li> \ref user_param_mixture_page "Mixture"  </li>
  <li> \ref user_param_example_interaction "Interaction"  </li>
  <li> \subpage user_param_domain_pc_page "Domain" </li>

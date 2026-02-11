@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_C_FIELDS_H
-#define PRDC_RL_C_FIELDS_H
+#ifndef RP_C_FIELDS_H
+#define RP_C_FIELDS_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -66,7 +66,7 @@ namespace Rp {
    *    RFT = Cuda::RField \<D\> and FIT = Rpg::FieldIo \<D\> , and
    *    is used in the pscf_rpg GPU accelerated program.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Field_Module
    */
    template <int D, class RFT, class FIT>
    class CFields

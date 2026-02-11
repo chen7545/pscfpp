@@ -9,6 +9,8 @@
 */
 
 #include "AverageAnalyzer.h"
+#include <rp/fts/analyzer/PerturbationDerivative.h>
+#include <rpg/system/Types.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -19,59 +21,43 @@ namespace Rpg {
    using namespace Util;
 
    /**
-   * Evaluate the derivative of H w/ respect to perturbation parameter lambda.
+   * Evaluate derivative of H w/ respect to perturbation parameter lambda.
+   *
+   * \see rp_PerturbationDerivative_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>
-   class PerturbationDerivative : public AverageAnalyzer<D>
+   class PerturbationDerivative 
+     : public Rp::PerturbationDerivative< D, Types<D> >
    {
-   
+
    public:
-   
+
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       PerturbationDerivative(Simulator<D>& simulator, System<D>& system);
-   
-      /**
-      * Destructor.
-      */
-      virtual ~PerturbationDerivative();
-      
-      /**
-      * Compute and return the derivative of H w/ respect to lambda.
-      */
-      virtual double compute();
-      
-      /**
-      * Output a sampled or block average value.
-      *
-      * \param step  value for step counter
-      * \param value  value of physical observable
-      */
-      virtual void outputValue(int step, double value);
-      
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output;
-      
-   protected:
- 
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-      using AverageAnalyzer<D>::outputFile_;
-      using ParamComposite::setClassName;
-      
-   };
-   
-   // Explicit instantiation declarations
-   extern template class PerturbationDerivative<1>;
-   extern template class PerturbationDerivative<2>;
-   extern template class PerturbationDerivative<3>;
 
+   };
+
+} // namespace Rpg
+} // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class PerturbationDerivative< 1, Rpg::Types<1> >;
+      extern template class PerturbationDerivative< 2, Rpg::Types<2> >;
+      extern template class PerturbationDerivative< 3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class PerturbationDerivative<1>;
+      extern template class PerturbationDerivative<2>;
+      extern template class PerturbationDerivative<3>;
+   }
 }
-}
-#endif 
+#endif

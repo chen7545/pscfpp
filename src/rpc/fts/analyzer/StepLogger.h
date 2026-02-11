@@ -8,62 +8,55 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"
-#include <util/global.h>
+#include "Analyzer.h"                    // indirect base 
+#include <rp/fts/analyzer/StepLogger.h>  // base class template
+#include <rpc/system/Types.h>            // base class argument
 
 namespace Pscf {
 namespace Rpc {
 
+   template <int D> class Simulator;
+   template <int D> class System;
+
    using namespace Util;
 
    /**
-   * Periodically write snapshots to a trajectory file.
+   * Periodically write the step index to a log file.
    *
-   * \see rpc_StepLogger_page "Manual Page"
+   * \see \ref rp_StepLogger_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
-   class StepLogger : public Analyzer<D>
+   class StepLogger : public Rp::StepLogger< D, Types<D> >
    {
 
    public:
 
       /**
       * Constructor.
-      */
-      StepLogger();
-
-      /**
-      * Destructor.
-      */
-      virtual ~StepLogger()
-      {}
-
-      /**
-      * Read interval and output file name.
       *
-      * \param in input parameter file
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
-      virtual void readParameters(std::istream& in);
-
-      /**
-      * Write a frame/snapshot to trajectory file.
-      *
-      * \param iStep step index
-      */
-      virtual void sample(long iStep);
-
-      using ParamComposite::setClassName;
-      using Analyzer<D>::isAtInterval;
+      StepLogger(Simulator<D>& simulator, System<D>& system);
 
    };
 
-   // Explicit instantiation declarations
-   extern template class StepLogger<1>;
-   extern template class StepLogger<2>;
-   extern template class StepLogger<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class StepLogger< 1, Rpc::Types<1> >;
+      extern template class StepLogger< 2, Rpc::Types<2> >;
+      extern template class StepLogger< 3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class StepLogger<1>;
+      extern template class StepLogger<2>;
+      extern template class StepLogger<3>;
+   }
 }
 #endif

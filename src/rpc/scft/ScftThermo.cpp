@@ -5,13 +5,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "ScftThermo.h"
+#include "ScftThermo.h"            // class header
 #include <rpc/solvers/Mixture.h>
 #include <rpc/solvers/Polymer.h>
 #include <rpc/solvers/Solvent.h>
 #include <rpc/field/Domain.h>
-#include <rp/scft/ScftThermo.tpp>
 #include <pscf/interaction/Interaction.h>
+#include <pscf/cpu/Reduce.h>
+
+#include <rp/scft/ScftThermo.tpp>  // base class implementation
 
 namespace Pscf {
 
@@ -29,25 +31,8 @@ namespace Pscf {
       */
       template <int D>
       ScftThermo<D>::ScftThermo(System<D> const & system)
-       : Base(system)
+       : Rp::ScftThermo<D, System<D> >(system)
       {};
-
-      /*
-      * Inner product of r-grid fields.
-      */
-      template <int D>
-      double ScftThermo<D>::innerProduct(RFieldT const & A,
-                                         RFieldT const & B) const
-      {
-         const int meshSize = Base::domain().mesh().size();
-         UTIL_CHECK(meshSize == A.capacity())
-         UTIL_CHECK(meshSize == B.capacity())
-         double sum = 0.0;
-         for (int k = 0; k < meshSize; ++k) {
-            sum += A[k]*B[k];
-         }
-         return sum;
-      };
 
       // Explicit instantiation
       template class ScftThermo<1>;

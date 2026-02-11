@@ -8,19 +8,20 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"        // Base class template
+#include "Analyzer.h"
 
 namespace Pscf {
 namespace Rpg {
 
-   // Forward declarations
    template <int D> class System;
    template <int D> class Simulator;
 
    using namespace Util;
 
    /**
-   * Periodically write snapshots to a trajectory file.
+   * Periodically write c-field snapshots to a trajectory file.
+   *
+   * \see \ref rp_ConcentrationWriter_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -32,6 +33,9 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       ConcentrationWriter(Simulator<D>& simulator, System<D>& system);
 
@@ -44,19 +48,19 @@ namespace Rpg {
       /**
       * Read interval and output file name.
       *
-      * \param in input parameter file
+      * \param in  input parameter file
       */
       virtual void readParameters(std::istream& in);
 
       /**
-      * Clear nSample counter.
+      * Initialize before main simulation loop.
       */
       virtual void setup();
 
       /**
       * Write a frame/snapshot to trajectory file.
       *
-      * \param iStep step index
+      * \param iStep  step index
       */
       virtual void sample(long iStep);
 
@@ -65,12 +69,14 @@ namespace Rpg {
       */
       virtual void output();
 
-      using ParamComposite::read;
       using ParamComposite::setClassName;
+      using ParamComposite::read;
       using Analyzer<D>::outputFileName;
       using Analyzer<D>::isAtInterval;
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
 
-   protected:
+   private:
 
       // Output file stream
       std::ofstream outputFile_;
@@ -85,57 +91,21 @@ namespace Rpg {
       long isInitialized_;
 
       /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
-
-   protected:
-
-      /**
       * Write data that should appear once, at beginning of the file.
       *
-      * Called by sample on first invocation. Default implementation is empty.
-      *
-      * \param out output file stream
+      * \param out  output file stream
       */
       void writeHeader(std::ofstream& out);
 
       /**
       * Write data that should appear in every frame.
       *
-      * \param out output file stream
-      * \param iStep MC time step index
+      * \param out  output file stream
+      * \param iStep  step index
       */
       void writeFrame(std::ofstream& out, long iStep);
 
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
-      /**
-      * Return reference to parent Simulator.
-      */
-      Simulator<D>& simulator();
-
    };
-
-   // Inline member functions
-   
-   // Get the parent system.
-   template <int D>
-   inline System<D>& ConcentrationWriter<D>::system()
-   {  return *systemPtr_; }
-
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& ConcentrationWriter<D>::simulator()
-   {  return *simulatorPtr_; }
 
    // Explicit instantiation declarations
    extern template class ConcentrationWriter<1>;

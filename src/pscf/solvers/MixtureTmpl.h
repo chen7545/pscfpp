@@ -39,6 +39,11 @@ namespace Pscf
       */
       using PolymerT = PT;
 
+      /**
+      * Alias for base class.
+      */
+      using  MixtureBaseT = MixtureBase<WT>;
+
       // Public member functions
 
       /**

@@ -32,7 +32,7 @@ namespace Rpc {
    * the bottom, through user input arrays chi_bottom and chi_top. See 
    * \ref scft_thin_films_page for more information. 
    *
-   * \ingroup Rpc_Field_Module
+   * \ingroup Rpc_Environment_Module
    */
    template <int D>
    class FilmFieldGenExt : public FilmFieldGenExtBase<D>

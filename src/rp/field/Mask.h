@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_MASK_H
-#define PRDC_RL_MASK_H
+#ifndef RP_MASK_H
+#define RP_MASK_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -78,7 +78,7 @@ namespace Rp {
    * observer object and indicate a zero-parameter member function of
    * each observer that will be called whenever the field is modified.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Field_Module
    */
    template <int D, class RFT, class FIT>
    class Mask 

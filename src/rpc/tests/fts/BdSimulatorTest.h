@@ -49,6 +49,9 @@ public:
    template <int D>
    void initSimulator(BdSimulator<D>& simulator, std::string filename)
    {
+      Analyzer<D>::initStatic();
+      TEST_ASSERT(Analyzer<D>::baseInterval == 1);
+
       std::ifstream in;
       openInputFile(filename, in);
       simulator.readParam(in);

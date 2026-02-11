@@ -105,8 +105,8 @@ specific subdirectory of the src directory, as discussed below.
 
 The src directory contains six subdirectories that each contain source
 code defined in a specific C++ namespace.  These six directories will be
-referred to in what follows as "namespace" level subdirectories of src.
-These six namespace-level subdirectories are listed below:
+referred to in what follows as "namespace-level" subdirectories of src.
+These namespace-level subdirectories are listed below:
 
 <table>
 <tr>
@@ -165,13 +165,15 @@ These six namespace-level subdirectories are listed below:
   <td> Code used only by the pscf_cpg GPU program for complex periodic fields </td>
 </tr>
 </table>
-The src/pscf directory contains files that contain code for class and
-functions that are defined directly in the Pscf namespace, and accessible
-throughout the package. The src/prdc, src/r1d, src/rp, src/rpc, src/rpg and
-src/cp, src/cpc, and src/cpg instead each contain code for entities that are
-defined in a specific enclosed namespace of Pscf.
+The src/pscf directory contains files that contain code for classes and
+functions that are accessible throughout the package, most of which are
+defined directly in the Pscf namespace. The src/prdc, src/r1d, src/rp, 
+src/rpc, src/rpg and src/cp, src/cpc, and src/cpg directories instead 
+each contain code for entities that are defined in a specific enclosed 
+namespace of Pscf, and that are used in only some of the main programs
+constructed by the package.
 
-The PSCF makefile system constructs a static library file in each of 
+The PSCF makefile system constructs a static library file each of 
 the namespace level directories that contains compilable source files.
 Specifically, static libraries are constructed in the pscf, r1d, prdc,
 rpc, rpg, cpc, and cpg namespace level directories. Each such static 
@@ -180,37 +182,42 @@ compilable source files (with file extension .cpp or .cu) in the
 asssociated namespace-level directory.  Each static library is a file 
 with a name of the form lib[namespace].a, where [namespace] represents 
 the name of the relevant namespace level directory. For example, a 
-library named libprdc.a is created in the src/prdc directory.  Static 
-library files are not created in the src/rp and src/cp directories
-because these directories only contain files that define class
-templates that are included in other files, but that are not 
-separately compiled and linked. 
+library named libprdc.a is created in the src/prdc directory.  
+
+Static library files are not created in the src/rp and src/cp 
+directories because these directories currently only contain files
+with filename extensions .h and .tpp that are included by other 
+files, and that do not contain any source files with filename
+extensions .cpp or .cu that are separately compiled and linked. 
 
 * **Program-level namespaces and directories:**
 
 The Pscf::R1d, Pscf::Rpc, Pscf::Rpg, Pscf::Cpc and Pscf::Cpg namespaces 
-and the corresponding r1d, rpc, rpg, cpc, and cpg subdirectories of src 
-each contain code is only used within one associated executable program.  
-These five  namespaces and corresponding directories are referred to 
-hereafter as program-level namespaces and program-level directories, 
-respectively. Subdirectory r1d contains code that is only used by the
-pscf_1d program. Subdirectories rpc and rpg contains code that is only 
-used by the pscf_rpc and pscf_rpg programs, respectively. Subdirectories 
-cpc and cpg contain code that is only used by the the pscf_cpc and 
-pscf_cpg programs.  By convention, code within in any program-level 
-PSCF namespace may not use entities (e.g., classes or functions) that 
-are defined in any other program-level namespace.
+and the corresponding r1d, rpc, rpg, cpc, and cpg namespace-level
+subdirectories of src each contain code is only used within one 
+associated executable program.  These five namespaces and corresponding 
+directories are referred to hereafter as program-level namespaces and 
+program-level directories, respectively. Subdirectory r1d contains code 
+that is only used by the pscf_1d program. Subdirectories rpc and rpg 
+contains code that is only used by the pscf_rpc and pscf_rpg programs, 
+respectively. Subdirectories cpc and cpg contain code that will only 
+be used by the the pscf_cpc and pscf_cpg CL-FTS programs, though these
+programs aree still under development. By convention, code within in 
+any program-level PSCF namespace may not use named entities (e.g., 
+classes or functions) that are defined in any other program-level 
+namespace.
 
-Each of the five program-level directories contains a main program
-file that defines the main function for the associated program. The base
-name of each such file is the same as the executable name, followed by a
-suffix .cpp or .cu. For example, the main function for program pscf_rpc
-is defined in the file src/rpc/pscf_rpc.cpp.
+Each of the five program-level directories either contains or will 
+contain a main program file that defines a main C function for the 
+associated program. The base name of each such file is the same as the 
+executable name, followed by a suffix .cpp or .cu. For example, the 
+main function for program pscf_rpc is defined in the file 
+src/rpc/pscf_rpc.cpp.
 
-Subdirectories util, pscf, prdc, pc and pg are namespace-level 
-directories but are not program-level directories. These contain code 
-for classes and functions that can be used in more than program, and do 
-not contain any main program files.
+Subdirectories util, pscf, prdc, rp and rc are namespace-level 
+directories but are not also program-level directories. Each of
+these directories contains code for classes and functions that can 
+be used as building blocks in more than program.
 
 * **Dependencies among namespace level directories:**
 
@@ -267,8 +274,8 @@ upon in this sense:
   <td> cp, prdc, pscf, util </td>
 </tr>
 </table>
-Note that every directory other than util depends on util, and every
-directory other than util and pscf depends on both util and pscf. These
+Note that every directory other than util depends on util, and all
+directories other than util and pscf depend on both util and pscf. These
 two directories thus contain code that is available for use through the
 PSCF source code. The prdc directory contains code may be used throughout
 the pscf_rpc, pscf_rpg, pscf_cpc and pscf_cpg  programs for systems with 
@@ -276,7 +283,7 @@ periodic boundary conditions. The rp directory contains code that is used
 only in the pscf_rpc and pscf_rpg directory, while the cp directory 
 contains code that is used only in the pscf_cpc and pscf_cpg programs.
 None of the five program-level directories (r1d, rpc, prg, cpc, and cpg)
-depends on any other program-level directories
+depends on any other program-level directory.
 
 * **Unit test framework:**
 
@@ -307,15 +314,14 @@ command
 make test
 \endcode
 All of the tests associated with any single namespace-level directory
-can be compiled and run by changing directory to the corresponding
-tests subdirectory within that namespace directory in the relevant
-build directory (i.e., within a namespace level subdirectory of the
-bld directory for an out-of source build, or within a namespace level
-subdirectory of src for an in-source-build), and then entering
+can be compiled and run by changing directory to the subdirectory named
+"tests" within that namespace directory in the relevant build directory 
+(i.e., within the bld directory tree for an out-of source build, or 
+the src directory tree for an in-source-build), and then entering
 \code
 make run
 \endcode
-from within that subdirectory.
+from within that "tests" subdirectory.
 
 The src/rp and src/cp directories do not contain unit test directories.
 

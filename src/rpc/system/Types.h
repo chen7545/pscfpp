@@ -8,9 +8,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <fftw3.h>
+
 // Forward declarations
+namespace Util {
+   template <typename T> class Array;
+}
 namespace Pscf {
    class Interaction;
+   class CpuVecRandom;
    template <typename WT> class Species;
    template <typename WT> class PolymerSpecies;
    template <typename WT> class SolventSpecies;
@@ -39,14 +45,34 @@ namespace Pscf {
       template <int D> class WFields;
       template <int D> class CFields;
       template <int D> class Mask;
-      template <int D> class ScftThermo;
       template <int D> class EnvironmentFactory;
+      template <int D> class ScftThermo;
       template <int D> class Iterator;
       template <int D> class IteratorFactory;
       template <int D> class Sweep;
       template <int D> class SweepFactory;
       template <int D> class Simulator;
       template <int D> class SimulatorFactory;
+      template <int D> struct SimState;
+      template <int D> class Compressor;
+      template <int D> class CompressorFactory;
+      template <int D> class Perturbation;
+      template <int D> class PerturbationFactory;
+      template <int D> class Ramp;
+      template <int D> class RampFactory;
+      template <int D> class Analyzer;
+      template <int D> class AverageAnalyzer;
+      template <int D> class AverageListAnalyzer;
+      template <int D> class AnalyzerManager;
+      template <int D> class TrajectoryReader; 
+      template <int D> class TrajectoryReaderFactory; 
+      template <int D> class BdSimulator;
+      template <int D> class BdStep;
+      template <int D> class BdStepFactory;
+      template <int D> class McSimulator;
+      template <int D> class McMove;
+      template <int D> class McMoveFactory;
+      template <int D> class McMoveManager; 
    }
 }
 
@@ -58,7 +84,7 @@ namespace Rpc {
    using namespace Prdc;
 
    /**
-   * List of aliases for types used the in Rpc namespace.
+   * Aliases for types used the in Rpc program-level namespace.
    *
    * \ingroup Rpc_System_Module
    */
@@ -81,24 +107,48 @@ namespace Rpc {
       using PolymerSpecies = Pscf::PolymerSpecies<double>;
       using SolventSpecies = Pscf::SolventSpecies<double>;
       using MixtureBase = Pscf::MixtureBase<double>;
-
       using Interaction = Pscf::Interaction;
+
       using Domain = Rpc::Domain<D>;
       using FieldIo = Rpc::FieldIo<D>;
-      using ScftThermo = Rpc::ScftThermo<D>;
-
       using WFields = Rpc::WFields<D>;
       using CFields = Rpc::CFields<D>;
       using Mask = Rpc::Mask<D>;
 
       using Environment = Prdc::Environment;
       using EnvironmentFactory = Rpc::EnvironmentFactory<D>;
+
+      using ScftThermo = Rpc::ScftThermo<D>;
       using Iterator = Rpc::Iterator<D>;
       using IteratorFactory = Rpc::IteratorFactory<D>;
       using Sweep = Rpc::Sweep<D>;
       using SweepFactory = Rpc::SweepFactory<D>;
+
       using Simulator = Rpc::Simulator<D>;
       using SimulatorFactory = Rpc::SimulatorFactory<D>;
+      using SimState = Rpc::SimState<D>;
+      using Compressor = Rpc::Compressor<D>;
+      using CompressorFactory = Rpc::CompressorFactory<D>;
+      using Perturbation = Rpc::Perturbation<D>;
+      using PerturbationFactory = Rpc::PerturbationFactory<D>;
+      using Ramp = Rpc::Ramp<D>;
+      using RampFactory = Rpc::RampFactory<D>;
+      using TrajectoryReader = Rpc::TrajectoryReader<D>;
+      using TrajectoryReaderFactory = Rpc::TrajectoryReaderFactory<D>;
+
+      using Analyzer = Rpc::Analyzer<D>;
+      using AverageAnalyzer = Rpc::AverageAnalyzer<D>;
+      using AverageListAnalyzer = Rpc::AverageListAnalyzer<D>;
+      using AnalyzerManager = Rpc::AnalyzerManager<D>;
+
+      using BdSimulator = Rpc::BdSimulator<D>;
+      using BdStep = Rpc::BdStep<D>;
+      using BdStepFactory = Rpc::BdStepFactory<D>;
+
+      using McSimulator = Rpc::McSimulator<D>;
+      using McMove = Rpc::McMove<D>;
+      using McMoveFactory = Rpc::McMoveFactory<D>;
+      using McMoveManager = Rpc::McMoveManager<D>;
 
       using RField = Prdc::Cpu::RField<D>;
       using RFieldDft = Prdc::Cpu::RFieldDft<D>;
@@ -106,6 +156,10 @@ namespace Rpc {
       using RFieldComparison = Prdc::Cpu::RFieldComparison<D>;
       using RFieldDftComparison = Prdc::Cpu::RFieldDftComparison<D>;
       using WaveList = Prdc::Cpu::WaveList<D>;
+
+      using VecRandom = CpuVecRandom;
+      using RealArray = Array<double>;
+      using CmplxArray = Array<fftw_complex>;
 
    };
 

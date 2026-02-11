@@ -8,23 +8,25 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageListAnalyzer.h"     // base class template
+#include "AverageListAnalyzer.h"
 
 namespace Pscf {
 namespace Rpg {
 
    template <int D> class System;
    template <int D> class Simulator;
-   
+
    using namespace Util;
 
    /**
    * Compute averages and output block averages of Hamiltonian components.
    *
    * This class computes separate averages for each component of the
-   * total simulation Hamiltonian (ideal gas contributions (lnQ) and 
-   * Field contribution (HW)) as well as for the total, and 
+   * total simulation Hamiltonian (ideal gas contributions (lnQ) and
+   * Field contribution (HW)) as well as for the total, and
    * periodically outputs block averages of each to a file.
+   *
+   * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -33,18 +35,21 @@ namespace Rpg {
    {
 
    public:
-   
+
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system);
-   
+
       /**
       * Destructor.
       */
       virtual ~HamiltonianAnalyzer()
-      {} 
-      
+      {}
+
       /**
       * Read interval and output file name.
       *
@@ -52,57 +57,18 @@ namespace Rpg {
       */
       virtual void readParameters(std::istream& in);
 
-      #if 0
-      /**
-      * Load parameters from archive when restarting. 
-      *
-      * \param ar loading/input archive
-      */
-      virtual void loadParameters(Serializable::IArchive& ar); 
-   
-      /**
-      * Save internal state to archive.
-      *
-      * \param ar saving/output archive
-      */
-      virtual void save(Serializable::OArchive& ar);
-      #endif
-
-      /**
-      * Pointer to parent Simulator
-      */
-      Simulator<D>* simulatorPtr_;     
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_; 
-      
-      using ParamComposite::setClassName;
-      using AverageListAnalyzer<D>::setName;
-      using AverageListAnalyzer<D>::setValue;
-      
    protected:
 
       /**
       * Compute and store values of Hamiltonian components.
-      */  
-      void compute();
-      
-      /** 
-      * Return reference to parent system.
-      */      
-      System<D>& system();
-      
-      /** 
-      * Return reference to parent Simulator.
       */
-      Simulator<D>& simulator();
- 
-   private: 
-      /// Has eigenvalue analysis of projected chi matrix been performed?
-      bool hasAnalyzeChi_;
-      
+      void compute();
+
+      using Analyzer<D>::simulator;
+      using Analyzer<D>::system;
+
+   private:
+
       /// Array index for ideal gas contributions (lnQ) accumulator.
       int idealId_;
 
@@ -113,24 +79,12 @@ namespace Rpg {
       int totalId_;
 
    };
-   
-   // Get the parent system.
-   template <int D>
-   inline System<D>& HamiltonianAnalyzer<D>::system()
-   {  return *systemPtr_; }
-   
-   //Get parent Simulator object.
-   template <int D>
-   inline Simulator<D>& HamiltonianAnalyzer<D>::simulator()
-   {  return *simulatorPtr_; }
 
-   #ifndef RPG_HAMILTONIAN_ANALYZER_TPP
    // Explicit instantiation declarations
    extern template class HamiltonianAnalyzer<1>;
    extern template class HamiltonianAnalyzer<2>;
    extern template class HamiltonianAnalyzer<3>;
-   #endif
 
 }
 }
-#endif 
+#endif

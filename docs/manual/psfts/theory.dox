@@ -670,8 +670,8 @@ is designed to use a GPU.  In either namespace, the Simulator class template
 provides code to construct and diagonalize the projected chi matrix, and
 to compute the field theoretic Hamiltonian \f$ H \f$ and its functional
 derivatives. Instances of the Simulator template are used as base classes
-for \ref rpc_BdSimulator_page "BdSimulator" and
-\ref rpc_McSimulator_page "McSimulator" classes that provide more specialized
+for \ref rp_BdSimulator_page "BdSimulator" and
+\ref rp_McSimulator_page "McSimulator" classes that provide more specialized
 algorithms and data structures that are needed for Brownian dynamics (BD) or
 Monte Carlo (MC) samplying algorithms, respectively.
 

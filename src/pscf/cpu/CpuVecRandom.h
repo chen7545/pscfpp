@@ -26,7 +26,7 @@ namespace Pscf {
    * to generate these random numbers. 
    *
    * CpuVecRandom has an interface that is analogous to that of the
-   * CudaRandom class, which uses a GPU to generates arrays of random 
+   * CudaVecRandom class, which uses a GPU to generates arrays of random 
    * numbers in global GPU memory. This similarity is intended to allow 
    * creation of template code that can use either type of vector 
    * random number object interchangably for use in analogous programs 

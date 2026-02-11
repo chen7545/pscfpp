@@ -8,9 +8,14 @@
 #include "Simulator.tpp"
 
 namespace Pscf {
-namespace Rpg {
-   template class Simulator<1>;
-   template class Simulator<2>;
-   template class Simulator<3>;
-}
+   namespace Rp {
+      template class Simulator<1, Rpg::Types<1> >;
+      template class Simulator<2, Rpg::Types<2> >;
+      template class Simulator<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class Simulator<1>;
+      template class Simulator<2>;
+      template class Simulator<3>;
+   }
 }

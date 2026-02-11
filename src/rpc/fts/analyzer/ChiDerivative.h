@@ -8,13 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.h"
-#include <rpc/system/System.h>
-#include <rpc/fts/simulator/Simulator.h>
+#include "AverageAnalyzer.h"                // indirect base class
+#include <rp/fts/analyzer/ChiDerivative.h>  // base class template
+#include <rpc/system/Types.h>               // base template argument
 
 namespace Pscf {
-namespace Rpc
-{
+namespace Rpc {
 
    template <int D> class System;
    template <int D> class Simulator;
@@ -24,59 +23,45 @@ namespace Rpc
    /**
    * Evaluate the derivative of H with respect to chi.
    *
-   * \see \ref rpc_ChiDerivative_page "Manual Page"
+   * Instantiations of this class are basically named instantiations
+   * of the base class template Rp::ChiDerivative, with type aliases
+   * defined using the Types<D> class for use on CPU hardware. See
+   * the documentation for this base class template for details. 
+   *
+   * \see \ref rp_ChiDerivative_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
-   class ChiDerivative : public AverageAnalyzer<D>
+   class ChiDerivative : public Rp::ChiDerivative< D, Types<D> >
    {
 
    public:
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       ChiDerivative(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~ChiDerivative();
-
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output;
-
-   protected:
-
-      using ParamComposite::setClassName;
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-      using AverageAnalyzer<D>::outputFile_;
-
-      /**
-      * Compute and return the derivative of H w/ respect to chi.
-      */
-      virtual double compute();
-      
-      /**
-      * Output a sampled or block average value.
-      *
-      * \param step  value for step counter
-      * \param value  value of physical observable
-      */
-      virtual void outputValue(int step, double value);
-
    };
 
-   // Explicit instantiation declarations
-   extern template class ChiDerivative<1>;
-   extern template class ChiDerivative<2>;
-   extern template class ChiDerivative<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class ChiDerivative<1, Rpc::Types<1> >;
+      extern template class ChiDerivative<2, Rpc::Types<2> >;
+      extern template class ChiDerivative<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class ChiDerivative<1>;
+      extern template class ChiDerivative<2>;
+      extern template class ChiDerivative<3>;
+   }
 }
 #endif

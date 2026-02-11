@@ -10,8 +10,12 @@
 
 #include "Propagator.h"
 #include "Block.h"
-
+#include <prdc/cpu/RField.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
 #include <pscf/mesh/Mesh.h>
+
+#include <rp/solvers/Propagator.tpp>
 
 namespace Pscf {
 namespace Rpc {
@@ -23,10 +27,7 @@ namespace Rpc {
    */
    template <int D>
    Propagator<D>::Propagator()
-    : blockPtr_(nullptr),
-      meshPtr_(nullptr),
-      ns_(0),
-      isAllocated_(false)
+    : RpPropagatorT()
    {}
 
    /*
@@ -42,15 +43,16 @@ namespace Rpc {
    template <int D>
    void Propagator<D>::allocate(int ns, const Mesh<D>& mesh)
    {
-      UTIL_CHECK(!isAllocated_);
-      ns_ = ns;
-      meshPtr_ = &mesh;
+      RpPropagatorT::allocate(ns, mesh);
+      UTIL_CHECK(RpPropagatorT::ns() == ns);
 
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
          qFields_[i].allocate(mesh.dimensions());
       }
       isAllocated_ = true;
+
+      PropagatorTmplT::setIsSolved(false);
    }
 
    /*
@@ -59,221 +61,29 @@ namespace Rpc {
    template <int D>
    void Propagator<D>::reallocate(int ns)
    {
-      UTIL_CHECK(meshPtr_);
-      UTIL_CHECK(isAllocated_);
-      UTIL_CHECK(ns_ != ns);
-      ns_ = ns;
+      RpPropagatorT::reallocate(ns);
+      UTIL_CHECK(RpPropagatorT::ns() == ns);
 
       // Deallocate all memory previously used by this propagator.
       qFields_.deallocate();
 
-      // NOTE: The qFields_ container is a DArray<FieldT>, where FieldT
-      // is a typedef for RField<D>. The DArray::deallocate() function
-      // calls "delete [] ptr", where ptr is a pointer to the underlying
-      // C array. The C++ delete [] command calls the destructor for each
-      // RField<D> element array before deleting the array itself. The
-      // RField<D> destructor deletes the double* array that stores the
-      // field associated with each slice of the propagator.
+      // NOTE: Variable qFields_ is a DArray< RField<D> > container.
+      // The DArray::deallocate() function calls "delete [] ptr", where 
+      // ptr is a pointer to the underlying C array. The C++ delete [] 
+      // command calls the destructor for each RField<D> array element
+      // before deleting the parent array. The RField<D> destructor 
+      // deletes the double* array that stores the field associated 
+      // with each slice of the propagator. All memory is thus released.
 
-      // Allocate new memory for qFields_ using new value of ns
+      // Allocate new memory for qFields_ using the new value of ns
       qFields_.allocate(ns);
       for (int i = 0; i < ns; ++i) {
-         qFields_[i].allocate(meshPtr_->dimensions());
+         qFields_[i].allocate(RpPropagatorT::mesh().dimensions());
       }
 
-      setIsSolved(false);
+      PropagatorTmplT::setIsSolved(false);
    }
 
-   /*
-   * Compute initial head q-field for the thread model.
-   */
-   template <int D>
-   void Propagator<D>::computeHead()
-   {
-      UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
-
-      // Reference to head of this propagator
-      FieldT& qh = qFields_[0];
-
-      // Initialize qh field to 1.0 at all grid points
-      for (int ix = 0; ix < nx; ++ix) {
-         qh[ix] = 1.0;
-      }
-
-      if (!isHeadEnd()) {
-         // Pointwise multiply tail q-fields of all sources
-         for (int is = 0; is < nSource(); ++is) {
-            if (!source(is).isSolved()) {
-               UTIL_THROW("Source not solved in computeHead");
-            }
-            FieldT const& qt = source(is).tail();
-            for (int ix = 0; ix < nx; ++ix) {
-               qh[ix] *= qt[ix];
-            }
-         }
-      }
-
-   }
-
-   /*
-   * Compute initial head q-field for the bead model.
-   */
-   template <int D>
-   void Propagator<D>::assign(FieldT& lhs, FieldT const & rhs)
-   {
-      int nx = lhs.capacity();
-      UTIL_CHECK(rhs.capacity() == nx);
-      for (int ix = 0; ix < nx; ++ix) {
-          lhs[ix] = rhs[ix];
-      }
-   }
-
-   /*
-   * Solve the modified diffusion equation for this block.
-   */
-   template <int D>
-   void Propagator<D>::solve()
-   {
-      UTIL_CHECK(blockPtr_);
-      UTIL_CHECK(isAllocated());
-
-      // Initialize head as pointwise product of source propagators
-      computeHead();
-
-      if (PolymerModel::isThread()) {
-
-         // MDE step loop for thread model
-         for (int iStep = 0; iStep < ns_ - 1; ++iStep) {
-            block().stepThread(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-      } else 
-      if (PolymerModel::isBead()) {
-
-         // Half-bond and bead weight for first bead
-         if (isHeadEnd()) {
-            assign(qFields_[1], qFields_[0]);
-         } else {
-            block().stepHalfBondBead(qFields_[0], qFields_[1]);
-         }
-         block().stepFieldBead(qFields_[1]);
-
-         // MDE step loop for bead model (stop before tail vertex)
-         int iStep;
-         for (iStep = 1; iStep < ns_ - 2; ++iStep) {
-            block().stepBead(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-         // Half-bond for tail slice
-         if (isTailEnd()) {
-            assign(qFields_[ns_-1], qFields_[ns_-2]);
-         } else {
-            block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
-         }
-
-      } else {
-         // This should be impossible
-         UTIL_THROW("Unexpected PolymerModel type");
-      }
-
-      setIsSolved(true);
-   }
-
-   /*
-   * Solve the MDE with a specified initial condition at the head.
-   */
-   template <int D>
-   void Propagator<D>::solve(FieldT const & head)
-   {
-      UTIL_CHECK(blockPtr_);
-      UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
-      UTIL_CHECK(head.capacity() == nx);
-
-      // Initialize initial (head) field
-      FieldT& qh = qFields_[0];
-      for (int i = 0; i < nx; ++i) {
-         qh[i] = head[i];
-      }
-
-      if (PolymerModel::isThread()) {
-
-         // MDE step loop for thread model
-         for (int iStep = 0; iStep < ns_ - 1; ++iStep) {
-            block().stepThread(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-      } else 
-      if (PolymerModel::isBead()) {
-
-         // Half-bond and bead weight for first bead
-         if (isHeadEnd()) {
-            assign(qFields_[1], qFields_[0]);
-         } else {
-            block().stepHalfBondBead(qFields_[0], qFields_[1]);
-         }
-         block().stepFieldBead(qFields_[1]);
-
-         // MDE step loop for bead model (stop before tail vertex)
-         int iStep;
-         for (iStep = 1; iStep < ns_ - 2; ++iStep) {
-            block().stepBead(qFields_[iStep], qFields_[iStep + 1]);
-         }
-
-         // Half-bond for tail
-         if (isTailEnd()) {
-            assign(qFields_[ns_-1], qFields_[ns_-2]);
-         } else {
-            block().stepHalfBondBead(qFields_[ns_-2], qFields_[ns_-1]);
-         }
-
-      } else {
-         // This should be impossible
-         UTIL_THROW("Unexpected PolymerModel type");
-      }
-
-      setIsSolved(true);
-   }
-
-   /*
-   * Compute spatial average of product of head and tail of partner.
-   */
-   template <int D>
-   void Propagator<D>::computeQ(double & Q) const
-   {
-      // Preconditions
-      if (!isSolved()) {
-         UTIL_THROW("Propagator is not solved.");
-      }
-      if (!hasPartner()) {
-         UTIL_THROW("Propagator has no partner set.");
-      }
-      if (!partner().isSolved()) {
-         UTIL_THROW("Partner propagator is not solved");
-      }
-      UTIL_CHECK(isHeadEnd() == partner().isTailEnd());
-      UTIL_CHECK(meshPtr_);
-      int nx = meshPtr_->size();
-
-      Q = 0.0;
-      if (PolymerModel::isBead() && isHeadEnd()) {
-         // Compute average of q for last bead of partner
-         FieldT const& qt = partner().q(ns_-2);
-         for (int ix = 0; ix < nx; ++ix) {
-            Q += qt[ix];
-         }
-      } else {
-         // Compute average product of head slice and partner tail slice
-         FieldT const& qh = head();
-         FieldT const& qt = partner().tail();
-         for (int ix = 0; ix < nx; ++ix) {
-            Q += qh[ix]*qt[ix];
-         }
-      }
-      Q /= double(nx);
-   }
-
-}
-}
+} // namespace Rpc
+} // namespace Pscf
 #endif

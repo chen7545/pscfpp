@@ -11,7 +11,7 @@ namespace Pscf{
       * Class templates for use SCFT and PS-FTS with real fields.
       *
       * The Pscf::Rp namespace contains class templates that are designed
-      * to be used in both the Pscf::Cpc and Pscf::Cpg namespaces, for
+      * to be used in both the Pscf::Rpc and Pscf::Rpg namespaces, for
       * SCFT and PS-FTS calculations with real-valued periodic fields. 
       * Instantiations of class template defined in the Pscf::Pc namespace 
       * are used as a base classes for corresponding class templates of 

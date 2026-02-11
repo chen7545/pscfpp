@@ -1,5 +1,5 @@
-#ifndef PRDC_RL_MIXTURE_MODIFIER_H
-#define PRDC_RL_MIXTURE_MODIFIER_H
+#ifndef RP_MIXTURE_MODIFIER_H
+#define RP_MIXTURE_MODIFIER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -32,7 +32,7 @@ namespace Rp {
    * operations that modify parameters of the mixture that may be called 
    * via a non-const reference to a System.
    *
-   * \ingroup Pscf_Rp_Module
+   * \ingroup Rp_Solver_Module
    */
    template <class MT>
    class MixtureModifier 
