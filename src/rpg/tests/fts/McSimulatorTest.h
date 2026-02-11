@@ -9,6 +9,9 @@
 #include <rpg/fts/montecarlo/McSimulator.h>
 #include <rpg/fts/compressor/Compressor.h>
 
+#include <prdc/cuda/RField.h>
+#include <prdc/cuda/RFieldComparison.h>
+
 #include <util/tests/LogFileUnitTest.h>
 
 #include <fstream>
@@ -48,6 +51,48 @@ public:
       simulator.readParam(in);
       in.close();
    }
+
+   /*
+   * Allocate an array of rgrid fields.
+   */
+   template <int D>
+   void allocateRGridFields(System<D> const & system,
+                            DArray< RField<D> >& fields)
+   {
+      // Check and allocate outer DArray
+      int nMonomer = system.mixture().nMonomer();
+      UTIL_CHECK(nMonomer > 0);
+      if (!fields.isAllocated()) {
+         fields.allocate(nMonomer);
+      }
+      UTIL_CHECK(fields.capacity() == nMonomer);
+
+      // Allocate fields
+      Mesh<D> const & mesh = system.domain().mesh();
+      IntVec<D> const & meshDimensions = mesh.dimensions();
+      int meshSize = mesh.size();
+      UTIL_CHECK(meshSize > 0);
+      for (int i = 0; i < nMonomer; ++i) {
+         if (!fields[i].isAllocated()) {
+            fields[i].allocate(meshDimensions);
+         }
+         UTIL_CHECK(fields[i].capacity() == meshSize);
+      }
+   }
+   
+   /*
+   * Read r-grid fields into an array.
+   */
+   template <int D>
+   void readRGridFields(System<D> const & system,
+                        std::string filename,
+                        DArray< RField<D> >& fields,
+                        UnitCell<D>& unitCell)
+   {
+      allocateRGridFields(system, fields);
+      FieldIo<D> const & fieldIo = system.domain().fieldIo();
+      fieldIo.readFieldsRGrid(filename, fields, unitCell);
+   }
    
    void testMcSimulateDiblocks()
    {
@@ -63,6 +108,18 @@ public:
       system.w().readRGrid("in/w_dis.rf");
       simulator.compressor().compress();
       simulator.simulate(50);
+      system.w().writeRGrid("out/w_mc_diblock.rf");
+
+      // Read reference field
+      DArray< RField<3> > rf_0;
+      UnitCell<3> unitCell;
+      readRGridFields(system,"in/w_mc_diblock_ref.rf", rf_0, unitCell);
+
+      // Compare with reference fields
+      RFieldComparison<3> comparison;
+      comparison.compare(rf_0, system.w().rgrid());
+      TEST_ASSERT(comparison.maxDiff() < 1.0E-7);
+
    }
 
    void testMcSimulateTriblocks()
@@ -79,6 +136,18 @@ public:
       system.w().readRGrid("in/w_triblock.rf");
       simulator.compressor().compress();
       simulator.simulate(50);
+      system.w().writeRGrid("out/w_mc_triblock.rf");
+      
+      // Read reference field
+      DArray< RField<3> > rf_0;
+      UnitCell<3> unitCell;
+      readRGridFields(system,"in/w_mc_triblock_ref.rf", rf_0, unitCell);
+
+      // Compare with reference fields
+      RFieldComparison<3> comparison;
+      comparison.compare(rf_0, system.w().rgrid());
+      TEST_ASSERT(comparison.maxDiff() < 1.0E-7);
+
    }
 
 };
