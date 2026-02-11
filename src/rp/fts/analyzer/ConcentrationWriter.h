@@ -1,5 +1,5 @@
-#ifndef RPC_CONCENTRATION_WRITER_H
-#define RPC_CONCENTRATION_WRITER_H
+#ifndef RP_CONCENTRATION_WRITER_H
+#define RP_CONCENTRATION_WRITER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,8 +10,11 @@
 
 #include "Analyzer.h"
 
+#include <string>
+#include <iostream>
+
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    template <int D> class System;
    template <int D> class Simulator;
@@ -23,10 +26,10 @@ namespace Rpc {
    *
    * \see \ref rp_ConcentrationWriter_page "Manual Page"
    *
-   * \ingroup Rpc_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class ConcentrationWriter : public Analyzer<D>
+   template <int D, class T>
+   class ConcentrationWriter : public T::Analyzer
    {
 
    public:
@@ -37,7 +40,8 @@ namespace Rpc {
       * \param simulator  parent Simulator object
       * \param system  parent System object
       */
-      ConcentrationWriter(Simulator<D>& simulator, System<D>& system);
+      ConcentrationWriter(typename T::Simulator& simulator, 
+                          typename T::System& system);
 
       /**
       * Destructor.
@@ -69,20 +73,16 @@ namespace Rpc {
       */
       virtual void output();
 
-      using ParamComposite::setClassName;
-      using ParamComposite::read;
-      using Analyzer<D>::outputFileName;
-      using Analyzer<D>::isAtInterval;
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
+      using AnalyzerT = typename T::Analyzer;
+      using AnalyzerT::outputFileName;
+      using AnalyzerT::isAtInterval;
+      using AnalyzerT::simulator;
+      using AnalyzerT::system;
 
    private:
 
       // Output file stream
       std::ofstream outputFile_;
-
-      // Output filename
-      std::string filename_;
 
       /// Number of configurations dumped thus far (first dump is zero).
       long nSample_;
@@ -106,11 +106,6 @@ namespace Rpc {
       void writeFrame(std::ofstream& out, long iStep);
 
    };
-
-   // Explicit instantiation declarations
-   extern template class ConcentrationWriter<1>;
-   extern template class ConcentrationWriter<2>;
-   extern template class ConcentrationWriter<3>;
 
 }
 }

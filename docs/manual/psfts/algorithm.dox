@@ -340,17 +340,17 @@ of PSCF are listed below.  A brief description of the purpose of each
 class is provided below, and further details can be obtained by clicking
 on the class name.
 <ul>
-  <li> \subpage rpc_StepLogger_page "StepLogger": Record progress of a
+  <li> \subpage rp_StepLogger_page "StepLogger": Record progress of a
         simulation by periodically writing the number of completed BD
         or MC steps to standard output (e.g., the screen).  </li>
-  <li> \subpage rpc_TrajectoryWriter_page "TrajectoryWriter" : Periodically
+  <li> \subpage rp_TrajectoryWriter_page "TrajectoryWriter" : Periodically
        write the current configuration of monomer chemical potential fields
        (w-fields) to field trajectory file in r-grid format, for later
        postprocessing. </li>
-  <li> \subpage rpc_ConcentrationWriter_page "ConcentrationWriter" :
+  <li> \subpage rp_ConcentrationWriter_page "ConcentrationWriter" :
        Periodically write all monomer concentration fields (c-fields) to
        a file, in r-grid format. </li>
-  <li> \subpage rpc_HamiltonianAnalyzer_page "HamiltonianAnalyzer" :
+  <li> \subpage rp_HamiltonianAnalyzer_page "HamiltonianAnalyzer" :
        Compute average value of the field theoretic Hamiltonian, and
        optionally output Hamiltonian values. </li>
   <li> \subpage rpc_BinaryStructureFactorGrid_page "BinaryStructureFactorGrid":
@@ -362,15 +362,15 @@ on the class name.
   <li> \subpage rpc_FourthOrderParameter_page "FourthOrderParameter":
        Compute another order parameter that is useful for identifying
        spontaneous phase transitions. </li>
-  <li> \subpage rpc_ChiDerivative_page "ChiDerivative":
+  <li> \subpage rp_ChiDerivative_page "ChiDerivative":
        Compute the derivative of free energy with respect to changes in a
        chi parameter, for use in
        \ref psfts_algorithm_thermoint_sec "thermodynamic integration". </li>
-  <li> \subpage rpc_ConcentrationDerivative_page "ConcentrationDerivative"
+  <li> \subpage rp_ConcentrationDerivative_page "ConcentrationDerivative"
        Compute the derivative of free energy with respect to changes in
        total monomer concentation (the inverse of vMonomer), for use in
        \ref psfts_algorithm_thermoint_sec "thermodynamic integration". </li>
-  <li> \subpage rpc_PerturbationDerivative_page "PerturbationDerivative":
+  <li> \subpage rp_PerturbationDerivative_page "PerturbationDerivative":
        Compute the derivative of free energy with respect to the strength
        of a perturbation (the lambda parameter), for use in
        \ref psfts_algorithm_thermoint_sec "thermodynamic integration". </li>

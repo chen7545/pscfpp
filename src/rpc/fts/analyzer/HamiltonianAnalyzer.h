@@ -8,7 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageListAnalyzer.h"
+#include "AverageListAnalyzer.h"                  // indirect base class
+#include <rp/fts/analyzer/HamiltonianAnalyzer.h>  // base class template
+#include <rpc/system/Types.h>                     // template argument
 
 namespace Pscf {
 namespace Rpc {
@@ -21,17 +23,18 @@ namespace Rpc {
    /**
    * Compute averages and output block averages of Hamiltonian components.
    *
-   * This class computes separate averages for each component of the
-   * total simulation Hamiltonian (ideal gas contributions (lnQ) and
-   * Field contribution (HW)) as well as for the total, and
-   * periodically outputs block averages of each to a file.
+   * Instantiations of this template are basically named instantiations 
+   * of the base class template Rp::HamiltonianAnalyzer, using type name
+   * aliases defined by the Rpc::Types<D> class. See the documentation 
+   * for this base class template for details. 
    *
    * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
-   class HamiltonianAnalyzer : public AverageListAnalyzer<D>
+   class HamiltonianAnalyzer 
+     : public Rp::HamiltonianAnalyzer< D, Types<D> >
    {
 
    public:
@@ -44,47 +47,22 @@ namespace Rpc {
       */
       HamiltonianAnalyzer(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~HamiltonianAnalyzer()
-      {}
-
-      /**
-      * Read interval and output file name.
-      *
-      * \param in  input parameter file
-      */
-      virtual void readParameters(std::istream& in);
-
-   protected:
-
-      /**
-      * Compute and store values of Hamiltonian components.
-      */
-      void compute();
-
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
-   private:
-
-      /// Array index for ideal gas contributions (lnQ) accumulator.
-      int idealId_;
-
-      /// Array index for field contribution (HW) accumulator.
-      int fieldId_;
-
-      /// Array index for total Hamiltonian accumulator.
-      int totalId_;
-
    };
 
-   // Explicit instantiation declarations
-   extern template class HamiltonianAnalyzer<1>;
-   extern template class HamiltonianAnalyzer<2>;
-   extern template class HamiltonianAnalyzer<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class HamiltonianAnalyzer< 1, Rpc::Types<1> >;
+      extern template class HamiltonianAnalyzer< 2, Rpc::Types<2> >;
+      extern template class HamiltonianAnalyzer< 3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class HamiltonianAnalyzer<1>;
+      extern template class HamiltonianAnalyzer<2>;
+      extern template class HamiltonianAnalyzer<3>;
+   }
 }
 #endif
