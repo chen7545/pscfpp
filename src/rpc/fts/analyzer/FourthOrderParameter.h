@@ -105,23 +105,23 @@ namespace Rpc {
    
    private:
 
-      /// Number of wavevectors in fourier mode.
-      int  kSize_;
+      /// W_ in Fourier space
+      RFieldDft<D> wK_;
+      
+      /// Prefactor for each Fourier amplitude
+      DArray<double> prefactor_;
+      
+      /// Fourth power of Fourier magnitude times prefactor 
+      DArray<double> psi_;
       
       /// Dimensions of fourier space 
       IntVec<D> kMeshDimensions_;
       
+      /// Number of wavevectors in fourier mode.
+      int  kSize_;
+      
       /// Has variables been initialized?
       bool isInitialized_;
-      
-      /// W_ in Fourier mode
-      RFieldDft<D> wK_;
-      
-      /// Prefactor for each Fourier wavevector
-      DArray<double> prefactor_;
-      
-      /// Structure factor
-      double FourthOrderParameter_;
       
    };
    

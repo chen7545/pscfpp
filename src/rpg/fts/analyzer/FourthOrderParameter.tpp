@@ -107,7 +107,7 @@ namespace Rpg {
       for (int i = 1; i < kSize_; ++i){
          FourthOrderParameter_ += psiHost[i];
       }
-      
+
       FourthOrderParameter_ = std::pow(FourthOrderParameter_, 0.25);
 
       return FourthOrderParameter_;

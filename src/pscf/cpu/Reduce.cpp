@@ -36,7 +36,7 @@ namespace Reduce {
       int n = in.capacity();
       UTIL_CHECK(n > 0);
       UTIL_CHECK(begin >= 0);
-      UTIL_CHECK(end <= 0);
+      UTIL_CHECK(end <= n);
       double sum = 0.0;
       for (int i = begin; i < end; i++) {
          sum += in[i];

@@ -15,6 +15,8 @@
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
+#include <pscf/cpu/VecOpCx.h>
+#include <pscf/cpu/ReduceCx.h>
 
 #include <util/containers/DArray.h>
 #include <util/param/ParamComposite.h>
@@ -46,7 +48,7 @@ namespace Rpc {
     : AverageAnalyzer<D>(simulator, system),
       kSize_(1),
       isInitialized_(false)
-   {  setClassName("FourthOrderParameter"); }
+   {  ParamComposite::setClassName("FourthOrderParameter"); }
 
    /*
    * Destructor.
@@ -75,9 +77,8 @@ namespace Rpc {
       if (!isInitialized_){
          wK_.allocate(dimensions);
          prefactor_.allocate(kSize_);
-         for (int i = 0; i < kSize_; ++i){
-            prefactor_[i] = 0.0;
-         }
+         psi_.allocate(kSize_);
+         VecOp::eqS(prefactor_, 0.0);
       }
 
       isInitialized_ = true;
@@ -88,35 +89,26 @@ namespace Rpc {
    template <int D>
    double FourthOrderParameter<D>::compute()
    {
+      UTIL_CHECK(isInitialized_);
+      UTIL_CHECK(wK_.capacity() == kSize_);
+      UTIL_CHECK(prefactor_.capacity() == kSize_);
+      UTIL_CHECK(psi_.capacity() == kSize_);
       UTIL_CHECK(system().w().hasData());
 
       if (!simulator().hasWc()){
          simulator().computeWc();
       }
 
-      MeshIterator<D> itr;
-      itr.setDimensions(kMeshDimensions_);
-      std::vector<double> psi(kSize_);
-
-      // Conver W_(r) to fourier mode W_(k)
+      // Transform W_(r) to fourier representation W_(k)
       system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
-      for (itr.begin(); !itr.atEnd(); ++itr) {
-         std::complex<double> wK(wK_[itr.rank()][0], wK_[itr.rank()][1]);
-         psi[itr.rank()] = std::norm(wK) * std::norm(wK);
-         psi[itr.rank()] *= prefactor_[itr.rank()];
-      }
+      // Evaluate sum of fourth powers, scaled by array of prefactors
+      VecOp::sqSqAbsV(psi_, wK_);
+      VecOp::mulEqV(psi_, prefactor_);
+      double orderParameter = Reduce::sum(psi_, 1, kSize_);
 
-      FourthOrderParameter_ = 0.0;
-
-      // Get sum over all wavevectors
-      for (int i = 1; i < kSize_; ++i){
-         FourthOrderParameter_ += psi[i];
-      }
-
-      FourthOrderParameter_ = std::pow(FourthOrderParameter_, 0.25);
-
-      return FourthOrderParameter_;
+      orderParameter = std::pow(orderParameter, 0.25);
+      return orderParameter;
 
       #if 0
       // Debugging output
