@@ -64,7 +64,19 @@ namespace Pscf {
       cudaReal sum(DeviceArray<cudaReal> const & in);
 
       /**
-      * Return sum of elements of a complex array.
+      * Return sum of elements of a real array slice.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
+      * \param in  real input array
+      * \param begin  index of first element of slice
+      * \param end  index one past last element
+      * \return  sum of elements
+      */
+      cudaReal sum(DeviceArray<cudaReal> const & in, int begin, int end);
+
+      /**
+      * Return sum of all elements of a complex array.
       *
       * \ingroup Pscf_Cuda_Reduce_Module
       *
@@ -72,6 +84,19 @@ namespace Pscf {
       * \return  complex sum of elements
       */
       std::complex<cudaReal> sum(DeviceArray<cudaComplex> const & in);
+
+      /**
+      * Return sum of elements of a complex array slice.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
+      * \param in  real input array
+      * \param begin  index of first element of slice
+      * \param end  index one past last element of slice
+      * \return  sum of elements
+      */
+      std::complex<cudaReal> sum(DeviceArray<cudaComplex> const & in, 
+		                 int begin, int end);
 
       // Sum of squares and products 
 
@@ -112,10 +137,10 @@ namespace Pscf {
       cudaReal innerProduct(DeviceArray<cudaReal> const & a,
                             DeviceArray<cudaReal> const & b);
 
-      // Extrema - real array inputs
+      // Maxima - real array inputs
 
       /**
-      * Return maximum of real array elements.
+      * Return maximum of all real array elements.
       *
       * \ingroup Pscf_Cuda_Reduce_Module
       *
@@ -123,6 +148,18 @@ namespace Pscf {
       * \return  value of maximum element
       */
       cudaReal max(DeviceArray<cudaReal> const & in);
+
+      /**
+      * Return maximum of elements of a real array slice.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
+      * \param in  real input array
+      * \param begin  index of first element of slice
+      * \param end  index one past last element
+      * \return  value of maximum element
+      */
+      cudaReal max(DeviceArray<cudaReal> const & in, int begin, int end);
 
       /**
       * Get maximum absolute magnitude of real array elements.
@@ -134,8 +171,10 @@ namespace Pscf {
       */
       cudaReal maxAbs(DeviceArray<cudaReal> const & in);
 
+      // Minima - real array inputs
+ 
       /**
-      * Return minimum of real array elements.
+      * Return minimum of all real array elements.
       *
       * \ingroup Pscf_Cuda_Reduce_Module
       *
@@ -143,6 +182,18 @@ namespace Pscf {
       * \return  value of minimum element
       */
       cudaReal min(DeviceArray<cudaReal> const & in);
+
+      /**
+      * Return minimum of elements of a real array slice.
+      *
+      * \ingroup Pscf_Cuda_Reduce_Module
+      *
+      * \param in  real input array
+      * \param begin  index of first element of slice
+      * \param end  index one past last element
+      * \return  value of minimum element
+      */
+      cudaReal min(DeviceArray<cudaReal> const & in, int begin, int end);
 
       /**
       * Return minimum absolute magnitude of real array elements.

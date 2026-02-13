@@ -133,6 +133,81 @@ public:
       }
    }
 
+   /// Test sum for an array of real elements.
+   void testSumSlice()
+   {
+      printMethod(TEST_FUNC);
+
+      IntVec<3> nVals;
+      nVals[0] = 538;    // small array
+      nVals[1] = 2796;   // medium array
+
+      for (int j = 0; j < 2; j++) {
+
+         int n = nVals[j];
+	 int begin = 7;
+	 int end = n - 3;
+
+         if (verbose() > 0) {
+            Log::file() << std::endl << "n = " << n << std::endl;
+         }
+
+         // Generate random test data,
+         // normally distributed about 0.5 with stdev = 2
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)2.0, (cudaReal)0.5);
+
+         // Copy test data to host
+         HostDArray<cudaReal> num_h(n);
+         num_h = num;
+
+         // Determine highest power of 2 less than n
+         int nReduced = (int)(pow(2.0,floor(log2(n))) + 0.5);
+         // note: 0.5 added to make sure it casts to the correct int value
+
+         // Find sum on host using a binary tree
+         // (numerical round-off error should match that from GPU sum)
+         Timer timerCPU;
+         if (verbose() > 0) {
+            timerCPU.start();
+         }
+
+	 // Evaluate sum on CPU (simple loop)
+	 cudaReal sumCPU = 0.0;
+	 for (int i = begin; i < end; ++i) {
+            sumCPU += num_h[i];
+         }		  
+
+         if (verbose() > 0) {
+            timerCPU.stop();
+            Log::file() << "CPU wall time: " << Dbl(timerCPU.time())
+                        << std::endl;
+         }
+
+         // Call kernel wrapper to calculate sum on GPU
+         Timer timerGPU;
+         if (verbose() > 0) {
+            timerGPU.start();
+         }
+         cudaReal sumGPU = Reduce::sum(num, begin, end);
+
+         // Check answer
+         if (verbose() > 0) {
+            timerGPU.stop();
+            Log::file()
+                 << "GPU wall time: " << Dbl(timerGPU.time()) << "\n"
+                 << "Sum on CPU:    " << Dbl(sumCPU) << "\n"
+                 << "Sum on GPU:    " << Dbl(sumGPU) << "\n"
+                 << "Difference:    " << fabs(sumCPU - sumGPU) << "\n"
+                 << std::endl;
+         }
+
+         // Check that error is at least 5 (10) orders of magnitude smaller
+         // than the value of the sum for single (double) precision data
+         TEST_ASSERT((fabs(sumCPU - sumGPU) / sumCPU) < tolerance_);
+      }
+   }
+
    /// Test sum of an array of cudaComplex elements.
    void testSumComplex()
    {
@@ -156,7 +231,7 @@ public:
          DeviceArray<cudaReal> num_dr(2*n);
          HostDArray<cudaReal>  num_hr(2*n);
          rand_.normal(num_dr, (cudaReal)2.0, (cudaReal)0.5);
-          num_hr = num_dr;
+         num_hr = num_dr;
 
           // Copy data to cudaComplex arrays
          HostDArray<cudaComplex>  num_h(n);
@@ -215,6 +290,91 @@ public:
             timerGPU.start();
          }
 	 std::complex<cudaReal> sumGPU = Reduce::sum(num_d);
+	 std::complex<cudaReal> diff = sumGPU - sumCPU;
+
+         // Check answer
+         if (verbose() > 0) {
+            timerGPU.stop();
+            Log::file() 
+               << "GPU wall time: " << Dbl(timerGPU.time()) << "\n"
+               << "Sum on CPU:    "
+               << Dbl(sumCPU.real()) << "  " << Dbl(sumCPU.imag()) << "\n"
+               << "Sum on GPU:    "
+               << Dbl(sumGPU.real()) << "  " << Dbl(sumGPU.imag()) << "\n"
+               << "Difference:    " << std::abs(diff) << std::endl;
+         }
+
+         // Check that error is at least 5 (10) orders of magnitude smaller
+         // than the value of the sum for single (double) precision data
+         cudaReal relDiff = std::abs(diff) / std::abs(sumCPU);
+         TEST_ASSERT( relDiff < tolerance_);
+      }
+   }
+
+   /// Test sum of an array of cudaComplex elements.
+   void testSumComplexSlice()
+   {
+      printMethod(TEST_FUNC);
+
+      IntVec<3> nVals;
+      nVals[0] = 574; // large array
+      nVals[1] = 2378;   // medium array
+
+      for (int j = 0; j < 2; j++) {
+
+         int n = nVals[j];
+	 int begin = 13;
+	 int end = n - 1;
+
+         if (verbose() > 0) {
+            Log::file() << std::endl << "n = " << n << std::endl;
+         }
+
+         // Generate random test data,
+         // normally distributed about 0.5 with stdev = 2
+         DeviceArray<cudaReal> num_dr(2*n);
+         HostDArray<cudaReal>  num_hr(2*n);
+         rand_.normal(num_dr, (cudaReal)2.0, (cudaReal)0.5);
+         num_hr = num_dr;
+
+          // Copy data to cudaComplex arrays
+         HostDArray<cudaComplex>  num_h(n);
+         DeviceArray<cudaComplex> num_d(n);
+         //cudaComplex sum0 = makeComplex(0.0, 0.0);
+         for (int i = 0; i < n; ++i) {
+            num_h[i].x = num_hr[2*i];
+            num_h[i].y = num_hr[2*i + 1];
+         }
+         num_d = num_h;
+
+         Timer timerCPU;
+         if (verbose() > 0) {
+            timerCPU.start();
+         }
+
+	 // Evaluate sum on CPU
+	 cudaComplex sum;
+	 assign(sum, 0.0);
+	 for (int i = begin; i < end; ++i) {
+            addEq(sum, num_h[i]);
+         }
+         std::complex<cudaReal> sumCPU;
+	 assign(sumCPU, sum);
+
+         if (verbose() > 0) {
+            timerCPU.stop();
+            Log::file() << "CPU wall time: " << Dbl(timerCPU.time())
+                        << std::endl;
+         }
+
+         // Call kernel wrapper to calculate sum on GPU
+         Timer timerGPU;
+         if (verbose() > 0) {
+            timerGPU.start();
+         }
+
+	 // Evaluate sum on GPU
+	 std::complex<cudaReal> sumGPU = Reduce::sum(num_d, begin, end);
 	 std::complex<cudaReal> diff = sumGPU - sumCPU;
 
          // Check answer
@@ -591,6 +751,73 @@ public:
       }
    }
 
+   /// Test max of an array of real elements.
+   void testMaxSlice()
+   {
+      printMethod(TEST_FUNC);
+
+      IntVec<3> nVals;
+      nVals[0] = 734;     // small array
+      nVals[1] = 4378;    // medium array
+
+      for (int j = 0; j < 2; j++) {
+
+         int n = nVals[j];
+	 int begin = 1;
+	 int end = n;
+
+         if (verbose() > 0) {
+            Log::file() << std::endl << "n = " << n << std::endl;
+         }
+
+         // Generate random test data,
+         // normally distributed about 7.0 with stdev = 3
+         DeviceArray<cudaReal> num(n);
+         rand_.normal(num, (cudaReal)3.0, (cudaReal)7.0);
+
+         // Copy test data to host
+         HostDArray<cudaReal> num_h(n);
+         num_h = num;
+
+         // Find max on host
+         Timer timerCPU;
+         if (verbose() > 0) {
+            timerCPU.start();
+         }
+         cudaReal maxCPU = num_h[begin];
+         for (int i = begin; i < end; i++) {
+            if (num_h[i] > maxCPU) {
+               maxCPU = num_h[i];
+            }
+         }
+         if (verbose() > 0) {
+            timerCPU.stop();
+            Log::file() << "CPU wall time: " << Dbl(timerCPU.time())
+                        << std::endl;
+         }
+
+         Timer timerGPU;
+         if (verbose() > 0) {
+            timerGPU.start();
+         }
+
+         // Evaluate on GPU
+         cudaReal maxGPU = Reduce::max(num, begin, end);
+
+         // Check answer
+         if (verbose() > 0) {
+            timerGPU.stop();
+            Log::file()
+                  << "GPU wall time: " << Dbl(timerGPU.time()) << "\n"
+                  << "Max on CPU:    " << Dbl(maxCPU) << "\n"
+                  << "Max on GPU:    " << Dbl(maxGPU) << "\n"
+                  << "Difference:    " << fabs(maxCPU - maxGPU) << "\n"
+                  << std::endl;
+         }
+         TEST_ASSERT((fabs(maxCPU - maxGPU)) < tolerance_);
+      }
+   }
+
    /// Test maxAbs for a real array.
    void testMaxAbs()
    {
@@ -786,12 +1013,15 @@ public:
 };
 
 TEST_BEGIN(CudaReduceTest)
+TEST_ADD(CudaReduceTest, testSum)
+TEST_ADD(CudaReduceTest, testSumSlice)
+TEST_ADD(CudaReduceTest, testSumComplex)
+TEST_ADD(CudaReduceTest, testSumComplexSlice)
+TEST_ADD(CudaReduceTest, testSumSq)
 TEST_ADD(CudaReduceTest, testSumSqComplex)
 TEST_ADD(CudaReduceTest, testInnerProduct)
-TEST_ADD(CudaReduceTest, testSum)
-TEST_ADD(CudaReduceTest, testSumComplex)
-TEST_ADD(CudaReduceTest, testSumSq)
 TEST_ADD(CudaReduceTest, testMax)
+TEST_ADD(CudaReduceTest, testMaxSlice)
 TEST_ADD(CudaReduceTest, testMaxAbs)
 TEST_ADD(CudaReduceTest, testMin)
 TEST_ADD(CudaReduceTest, testMinAbs)

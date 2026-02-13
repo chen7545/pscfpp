@@ -70,6 +70,132 @@ namespace Reduce {
 
       };
 
+      /*
+      * Compute sum of elements of a real array.
+      */
+      cudaReal sum(cudaReal* inPtr, const int n)
+      {
+         UTIL_CHECK(n > 0);
+   
+         // Create output pointer
+         DeviceArray<cudaReal> out(1);
+         cudaReal* outPtr = out.cArray();
+   
+         // Determine size of required workspace, allocate if needed
+         size_t workSize = 0;
+         cudaError_t error;
+         error = cub::DeviceReduce::Sum(nullptr, workSize,
+                                        inPtr, outPtr, n);
+         UTIL_CHECK(error == cudaSuccess);
+         reduceSpace_.resize(workSize);
+         UTIL_CHECK(reduceSpace_.capacity() >= workSize);
+   
+         // Perform reduction
+         error = cub::DeviceReduce::Sum(reduceSpace_.cArray(), workSize,
+                                        inPtr, outPtr, n);
+         UTIL_CHECK(error == cudaSuccess);
+   
+         // Copy to host and return value
+         HostDArray<cudaReal> out_h;
+         out_h.allocate(1);
+         out_h = out;
+         return out_h[0];
+      }
+
+      /*
+      * Compute sum of elements of a complex array.
+      *
+      * Implementation uses Nvidia CUB Library functions.
+      */
+      std::complex<cudaReal> sum(cudaComplex* inPtr, const int n)
+      {
+         UTIL_CHECK(n > 0);
+   
+         // Create output pointer
+         DeviceArray<cudaComplex> out(1);
+         cudaComplex* outPtr = out.cArray();
+   
+         // Determine size of required workspace and allocate if necessary
+         size_t workSize = 0;
+         cudaError_t error;
+         auto op = addComplexFunctor{};
+         cudaComplex init = makeComplex(0.0, 0.0);
+         error = cub::DeviceReduce::Reduce(nullptr, workSize,
+                                           inPtr, outPtr, n, op, init);
+         UTIL_CHECK(error == cudaSuccess);
+         reduceSpace_.resize(workSize);
+   
+         // Perform reduction
+         error = cub::DeviceReduce::Reduce(reduceSpace_.cArray(), workSize,
+                                           inPtr, outPtr, n, op, init);
+         UTIL_CHECK(error == cudaSuccess);
+   
+         // Copy to host and return value
+         HostDArray<cudaComplex> out_h(1);
+         out_h = out;
+         return std::complex<cudaReal>(out_h[0].x, out_h[0].y);
+      }
+
+      /*
+      * Compute max of elements of a real array.
+      */
+      cudaReal max(cudaReal* inPtr, const int n)
+      {
+         UTIL_CHECK(n > 0);
+   
+         // Create input and output pointers 
+         DeviceArray<cudaReal> out(1);
+         cudaReal* outPtr = out.cArray();
+   
+         // Determine size of required workspace, allocated if needed
+         size_t workSize = 0;
+         cudaError_t error;
+         error = cub::DeviceReduce::Max(nullptr, workSize,
+                                        inPtr, outPtr, n);
+         UTIL_CHECK(error == cudaSuccess);
+         reduceSpace_.resize(workSize);
+   
+         // Perform reduction
+         error = cub::DeviceReduce::Max(reduceSpace_.cArray(), workSize,
+                                        inPtr, outPtr, n);
+         UTIL_CHECK(error == cudaSuccess);
+   
+         // Copy to host and return value
+         HostDArray<cudaReal> out_h(1);
+         out_h = out;
+         return out_h[0];
+      }
+
+      /*
+      * Compute min of elements of a real array.
+      */
+      cudaReal min(cudaReal* inPtr, const int n)
+      {
+         UTIL_CHECK(n > 0);
+   
+         // Create output pointer
+         DeviceArray<cudaReal> out(1);
+         cudaReal* outPtr = out.cArray();
+   
+         // Determine size of required workspace, allocated if needed
+         size_t workSize = 0;
+         cudaError_t error;
+         error = cub::DeviceReduce::Min(nullptr, workSize,
+                                        inPtr, outPtr, n);
+         UTIL_CHECK(error == cudaSuccess);
+         reduceSpace_.resize(workSize);
+   
+         // Perform reduction
+         error = cub::DeviceReduce::Min(reduceSpace_.cArray(), workSize,
+                                        inPtr, outPtr, n);
+         UTIL_CHECK(error == cudaSuccess);
+   
+         // Copy to host and return value
+         HostDArray<cudaReal> out_h(1);
+         out_h = out;
+         return out_h[0];
+      }
+
    } // anonmyous namespace Pscf::Reduce::(unnamed)
 
    // Memory management
@@ -93,31 +219,26 @@ namespace Reduce {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
 
-      // Create input and output pointers
       cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
-      DeviceArray<cudaReal> out;
-      out.allocate(1);
-      cudaReal* outPtr = out.cArray();
+      return sum(inPtr, n);
+   }
 
-      // Determine size of required workspace, allocate if needed
-      size_t workSize = 0;
-      cudaError_t error;
-      error = cub::DeviceReduce::Sum(nullptr, workSize,
-                                     inPtr, outPtr, n);
-      UTIL_CHECK(error == cudaSuccess);
-      reduceSpace_.resize(workSize);
-      UTIL_CHECK(reduceSpace_.capacity() >= workSize);
+   /*
+   * Compute sum of elements of a real array slice.
+   *
+   * This implementation uses Nvidia CUB Library functions.
+   */
+   cudaReal sum(DeviceArray<cudaReal> const & a, int begin, int end)
+   {
+      UTIL_CHECK(a.isAllocated());
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= a.capacity());
+      const int n = end - begin;
+      UTIL_CHECK(n > 0);
 
-      // Perform reduction
-      error = cub::DeviceReduce::Sum(reduceSpace_.cArray(), workSize,
-                                     inPtr, outPtr, n);
-      UTIL_CHECK(error == cudaSuccess);
-
-      // Copy to host and return value
-      HostDArray<cudaReal> out_h;
-      out_h.allocate(1);
-      out_h = out;
-      return out_h[0];
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      inPtr += begin;
+      return sum(inPtr, n);
    }
 
    /*
@@ -131,30 +252,27 @@ namespace Reduce {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
 
-      // Create input and output pointers
       cudaComplex* inPtr = const_cast<cudaComplex*>( a.cArray() );
-      DeviceArray<cudaComplex> out(1);
-      cudaComplex* outPtr = out.cArray();
+      return sum(inPtr, n);
+   }
 
-      // Determine size of required workspace and allocate if necessary
-      size_t workSize = 0;
-      cudaError_t error;
-      auto op = addComplexFunctor{};
-      cudaComplex init = makeComplex(0.0, 0.0);
-      error = cub::DeviceReduce::Reduce(nullptr, workSize,
-                                        inPtr, outPtr, n, op, init);
-      UTIL_CHECK(error == cudaSuccess);
-      reduceSpace_.resize(workSize);
+   /*
+   * Compute sum of elements of a complex array slice.
+   *
+   * This implementation uses Nvidia CUB Library functions.
+   */
+   std::complex<cudaReal> sum(DeviceArray<cudaComplex> const & a, 
+		              int begin, int end)
+   {
+      UTIL_CHECK(a.isAllocated());
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= a.capacity());
+      const int n = end - begin;
+      UTIL_CHECK(n > 0);
 
-      // Perform reduction
-      error = cub::DeviceReduce::Reduce(reduceSpace_.cArray(), workSize,
-                                        inPtr, outPtr, n, op, init);
-      UTIL_CHECK(error == cudaSuccess);
-
-      // Copy to host and return value
-      HostDArray<cudaComplex> out_h(1);
-      out_h = out;
-      return std::complex<cudaReal>(out_h[0].x, out_h[0].y);
+      cudaComplex* inPtr = const_cast<cudaComplex*>( a.cArray() );
+      inPtr += begin;
+      return sum(inPtr, n);
    }
 
    /*
@@ -231,6 +349,8 @@ namespace Reduce {
       return result;
    }
 
+   // Maxima
+
    /*
    * Compute max of elements of a real array.
    */
@@ -240,28 +360,24 @@ namespace Reduce {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
 
-      // Create input and output pointers 
       cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
-      DeviceArray<cudaReal> out(1);
-      cudaReal* outPtr = out.cArray();
+      return max(inPtr, n);
+   }
 
-      // Determine size of required workspace, allocated if needed
-      size_t workSize = 0;
-      cudaError_t error;
-      error = cub::DeviceReduce::Max(nullptr, workSize,
-                                     inPtr, outPtr, n);
-      UTIL_CHECK(error == cudaSuccess);
-      reduceSpace_.resize(workSize);
+   /*
+   * Compute max of elements of a real array slice.
+   */
+   cudaReal max(DeviceArray<cudaReal> const & a, int begin, int end)
+   {
+      UTIL_CHECK(a.isAllocated());
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= a.capacity());
+      const int n = end - begin; 
+      UTIL_CHECK(n > 0);
 
-      // Perform reduction
-      error = cub::DeviceReduce::Max(reduceSpace_.cArray(), workSize,
-                                     inPtr, outPtr, n);
-      UTIL_CHECK(error == cudaSuccess);
-
-      // Copy to host and return value
-      HostDArray<cudaReal> out_h(1);
-      out_h = out;
-      return out_h[0];
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      inPtr += begin;
+      return max(inPtr, n);
    }
 
    /*
@@ -288,38 +404,35 @@ namespace Reduce {
       return result;
    }
 
+   // Minima
+
    /*
-   * Compute min of elements of a real array.
+   * Compute minimum of all elements of a real array.
    */
    cudaReal min(DeviceArray<cudaReal> const & a)
    {
-      //std::cout << "\n Using CUB implementation of min";
       UTIL_CHECK(a.isAllocated());
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
 
-      // Create input and output pointers 
       cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
-      DeviceArray<cudaReal> out(1);
-      cudaReal* outPtr = out.cArray();
+      return min(inPtr, n);
+   }
 
-      // Determine size of required workspace, allocated if needed
-      size_t workSize = 0;
-      cudaError_t error;
-      error = cub::DeviceReduce::Min(nullptr, workSize,
-                                     inPtr, outPtr, n);
-      UTIL_CHECK(error == cudaSuccess);
-      reduceSpace_.resize(workSize);
+   /*
+   * Compute minimum of elements of a real array slice.
+   */
+   cudaReal min(DeviceArray<cudaReal> const & a, int begin, int end)
+   {
+      UTIL_CHECK(a.isAllocated());
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= a.capacity());
+      const int n = end - begin; 
+      UTIL_CHECK(n > 0);
 
-      // Perform reduction
-      error = cub::DeviceReduce::Min(reduceSpace_.cArray(), workSize,
-                                     inPtr, outPtr, n);
-      UTIL_CHECK(error == cudaSuccess);
-
-      // Copy to host and return value
-      HostDArray<cudaReal> out_h(1);
-      out_h = out;
-      return out_h[0];
+      cudaReal* inPtr = const_cast<cudaReal*>( a.cArray() );
+      inPtr += begin;
+      return min(inPtr, n);
    }
 
    /*
