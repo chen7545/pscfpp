@@ -29,6 +29,22 @@ namespace Reduce {
    }
 
    /*
+   * Compute the sum of array elements (real).
+   */
+   double sum(Array<double> const & in, int begin, int end)
+   {
+      int n = in.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= 0);
+      double sum = 0.0;
+      for (int i = begin; i < end; i++) {
+         sum += in[i];
+      }
+      return sum;
+   }
+
+   /*
    * Compute the sum of squares of all array elements (real).
    */
    double sumSq(Array<double> const & in)
@@ -79,6 +95,23 @@ namespace Reduce {
    }
 
    /*
+   * Get maximum element of array slice.
+   */
+   double max(Array<double> const & in, int begin, int end)
+   {
+      int n = in.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= n);
+      UTIL_CHECK(end > begin);
+      double max = in[begin];
+      for (int i = begin + 1; i < end; i++) {
+         if (in[i] > max) max = in[i];
+      }
+      return max;
+   }
+
+   /*
    * Get maximum absolute magnitude of array elements.
    */
    double maxAbs(Array<double> const & in)
@@ -103,6 +136,23 @@ namespace Reduce {
       UTIL_CHECK(n > 0);
       double min = in[0];
       for (int i = 1; i < n; i++) {
+         if (in[i] < min) min = in[i];
+      }
+      return min;
+   }
+
+   /*
+   * Get value of minimum element in an array slice.
+   */
+   double min(Array<double> const & in, int begin, int end)
+   {
+      int n = in.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= n);
+      UTIL_CHECK(end > begin);
+      double min = in[begin];
+      for (int i = begin + 1; i < end; i++) {
          if (in[i] < min) min = in[i];
       }
       return min;

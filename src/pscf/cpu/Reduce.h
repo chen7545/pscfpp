@@ -46,8 +46,21 @@ namespace Pscf {
       * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param in  input array
+      * \return  sum of all array elements
       */
       double sum(Array<double> const & in);
+
+      /**
+      * Compute sum of elements of an array slice (real).
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
+      * \param in  input array
+      * \param begin  index of first element in slice
+      * \param end  index one past the last in slice
+      * \return  sum of elements with indices [begin, end-1]
+      */
+      double sum(Array<double> const & in, int begin, int end);
 
       /**
       * Compute sum of of squares of array elements (real).
@@ -71,10 +84,10 @@ namespace Pscf {
       double innerProduct(Array<double> const & a,
                           Array<double> const & b);
 
-      // Maxima and minima
+      // Maxima 
 
       /**
-      * Get maximum of array elements .
+      * Get maximum of array elements (real).
       *
       * \ingroup Pscf_Cpu_Reduce_Module
       *
@@ -83,13 +96,28 @@ namespace Pscf {
       double max(Array<double> const & in);
 
       /**
+      * Get value of maximum element in an array slice (real).
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
+      * \param in  input array
+      * \param begin  index of first element in slice
+      * \param end  index one past the last in slice
+      * \return  maximum of elements with indices [begin, end-1]
+      */
+      double max(Array<double> const & in, int begin, int end);
+
+      /**
       * Get maximum absolute magnitude of array elements .
       *
       * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param in  input array
+      * \return  maximum absolute value
       */
       double maxAbs(Array<double> const & in);
+
+      // Minima
 
       /**
       * Get minimum of array elements .
@@ -97,8 +125,21 @@ namespace Pscf {
       * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param in  input array
+      * \return  value of minimum element
       */
       double min(Array<double> const & in);
+
+      /**
+      * Get value of minimum element in an array slice (real).
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
+      * \param in  input array
+      * \param begin  index of first element in slice
+      * \param end  index one past the last in slice
+      * \return  minimum of elements with indices [begin, end-1]
+      */
+      double min(Array<double> const & in, int begin, int end);
 
       /**
       * Get minimum absolute magnitude of array elements .
@@ -106,6 +147,7 @@ namespace Pscf {
       * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param in  input array
+      * \return  value of minimum absolute value of all elements
       */
       double minAbs(Array<double> const & in);
 
