@@ -323,6 +323,30 @@ namespace Reduce {
    }
 
    /*
+   * Return the sum of square absolute magnitudes for a complex array.
+   */
+   cudaReal sumSqAbs(DeviceArray<cudaComplex> const & in)
+   {
+      UTIL_CHECK(in.isAllocated());
+      int n = in.capacity();
+
+      // Set up temporary array for result of vector operation
+      int workSize = n * sizeof(cudaReal);
+      transformSpace_.resize(workSize);
+      DeviceArray<cudaReal> temp;
+      temp.associate(transformSpace_, n);
+
+      // Compute an array of element-wise square absolute magnitudes
+      VecOp::sqAbsV(temp, in);
+
+      // Compute sum of array temp of element-wise square magnitudes
+      cudaReal result = Reduce::sum(temp);
+      temp.dissociate();
+
+      return result;
+   }
+
+   /*
    * Compute inner product of two real arrays.
    */
    cudaReal innerProduct(DeviceArray<cudaReal> const & a,

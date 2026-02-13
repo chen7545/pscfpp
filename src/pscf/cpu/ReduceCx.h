@@ -34,14 +34,27 @@ namespace Pscf {
    namespace Reduce {
 
       /**
-      * Compute sum of array elements (complex).
+      * Compute sum of all elements of an array (complex).
       *
       * \ingroup Pscf_Cpu_Reduce_Module
       *
       * \param a  input array
-      * \return sum of elements of complex array a
+      * \return sum of all elements of complex array a
       */
       std::complex<double> sum(Array<fftw_complex> const & a);
+
+      /**
+      * Compute sum of elements of an array slice (complex).
+      *
+      * \ingroup Pscf_Cpu_Reduce_Module
+      *
+      * \param a  input array
+      * \param begin  index of first element of slice
+      * \param end  index one past the last element
+      * \return sum of elements with indices [begin, end-1]
+      */
+      std::complex<double> sum(Array<fftw_complex> const & a,
+		               int begin, int end);
 
       /**
       * Compute sum of squares of elements of a complex array.

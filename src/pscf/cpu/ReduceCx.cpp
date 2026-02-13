@@ -30,6 +30,28 @@ namespace Reduce {
    }
 
    /*
+   * Compute sum of elements in a complex array slice.
+   */
+   std::complex<double> sum(Array<fftw_complex> const & a, 
+		            int begin, int end)
+   {
+      int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(begin >= 0);
+      UTIL_CHECK(end <= n);
+      UTIL_CHECK(end > begin);
+      fftw_complex sum;
+      sum[0] = 0.0;
+      sum[1] = 0.0;
+      for (int i = begin; i < end; i++) {
+         sum[0] += a[i][0];
+         sum[1] += a[i][1];
+      }
+      std::complex<double> out(sum[0], sum[1]);
+      return out;
+   }
+
+   /*
    * Compute sum of square of elements of a complex array.
    */
    std::complex<double> sumSq(Array<fftw_complex> const & a)
