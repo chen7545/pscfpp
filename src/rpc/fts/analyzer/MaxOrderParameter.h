@@ -9,13 +9,8 @@
 */
 
 #include "AverageAnalyzer.h"                      // base class
-
-#include <util/containers/DArray.h>               // member
-#include <util/accumulators/Average.h>            // member
 #include <prdc/cpu/RFieldDft.h>                   // member
-#include <map>                                    // member
-
-#include <string>
+#include <util/containers/DArray.h>               // member
 #include <iostream>
 
 namespace Pscf {
@@ -32,7 +27,7 @@ namespace Rpc {
    *
    * This class evalutaes maximum amplitude of the second power of the
    * Fourier mode amplitude of fluctuating fields.
-   * 
+   *
    * The order parameter is defined as
    * \f[
    *     \psi(k)  = \max [ |W_{-}({\bf k})|^{2} ]
@@ -41,7 +36,7 @@ namespace Rpc {
    * wavevector \f$ {\bf k} \f$.
    *
    * \see \ref rpc_MaxOrderParameter_page "Manual Page"
-   * 
+   *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
@@ -59,30 +54,19 @@ namespace Rpc {
       * Destructor.
       */
       virtual ~MaxOrderParameter();
-   
-      /** 
+
+      /**
       * Setup before simulation loop.
       */
       virtual void setup();
-      
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output;
-   
+
    protected:
 
-      using ParamComposite::setClassName;
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-      using AverageAnalyzer<D>::outputFile_;
-      
       /**
       * Compute and return the max order parameter.
       */
       virtual double compute();
-      
+
       /**
       * Output a sampled or block average value.
       *
@@ -90,15 +74,12 @@ namespace Rpc {
       * \param value  value of physical observable
       */
       virtual void outputValue(int step, double value);
-            
+
+      using AverageAnalyzer<D>::simulator;
+      using AverageAnalyzer<D>::system;
+
    private:
-      
-      /// Number of wavevectors in fourier mode.
-      int  kSize_;
-      
-      /// Dimensions of fourier space 
-      IntVec<D> kMeshDimensions_;
-      
+
       /// W_ in Fourier mode
       RFieldDft<D> wK_;
 
@@ -108,11 +89,17 @@ namespace Rpc {
       /// q*
       IntVec<D> GminStar_;
 
-      /// Has readParam been called?
+      /// Dimensions of Fourier space (k-grid) mesh for a real field.
+      IntVec<D> kMeshDimensions_;
+
+      /// Number of wavevectors in Fourier space (k-grid) mesh.
+      int  kSize_;
+
+      /// Has setup been completed?
       bool isInitialized_;
 
    };
-   
+
    // Explicit instantiation declarations
    extern template class MaxOrderParameter<1>;
    extern template class MaxOrderParameter<2>;

@@ -43,7 +43,7 @@ namespace Rpc {
     : AverageAnalyzer<D>(simulator, system),
       kSize_(1),
       isInitialized_(false)
-   {  setClassName("MaxOrderParameter"); }
+   {  ParamComposite::setClassName("MaxOrderParameter"); }
 
    /*
    * Destructor.
@@ -53,7 +53,7 @@ namespace Rpc {
    {}
 
    /*
-   * MaxOrderParameter setup
+   * Setup before main loop.
    */
    template <int D>
    void MaxOrderParameter<D>::setup()
@@ -93,6 +93,9 @@ namespace Rpc {
          simulator().computeWc();
       }
 
+      // Convert W_(r) to Fourier transform wK_ = W_(k)
+      system().domain().fft().forwardTransform(simulator().wc(0), wK_);
+
       MeshIterator<D> itr;
       itr.setDimensions(kMeshDimensions_);
       std::vector<double> psi(kSize_);
@@ -102,9 +105,6 @@ namespace Rpc {
       IntVec<D> Gmin;
       UnitCell<D> const & unitCell = system().domain().unitCell();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-
-      // Conver W_(r) to fourier mode W_(k)
-      system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
       for (itr.begin(); !itr.atEnd(); ++itr) {
          G = itr.position();
@@ -135,29 +135,30 @@ namespace Rpc {
    template <int D>
    void MaxOrderParameter<D>::outputValue(int step, double value)
    {
-      if (simulator().hasRamp() && nSamplePerOutput() == 1) {
-         double chi= system().interaction().chi(0,1);
-
-         UTIL_CHECK(outputFile_.is_open());
-         outputFile_ << Int(step);
-         outputFile_ << Dbl(chi);
-         outputFile_ << "   ( ";
+      std::ofstream& file = AverageAnalyzer<D>::outputFile_;
+      UTIL_CHECK(file.is_open());
+      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      if (simulator().hasRamp() && nSamplePerOutput == 1) {
+         double chi = system().interaction().chi(0,1);
+         file << Int(step);
+         file << Dbl(chi);
+         file << "   ( ";
          for (int i = 0; i < D; i++){
-            outputFile_ << Int(GminStar_[i],3) << " ";
+            file << Int(GminStar_[i],3) << " ";
          }
-         outputFile_ << " )  ";
-         outputFile_ << Dbl(value);
-         outputFile_ << "\n";
+         file << " )  ";
+         file << Dbl(value);
+         file << "\n";
       } else {
          //AverageAnalyzer<D>::outputValue(step, value);
-         outputFile_ << Int(step);
-         outputFile_ << "   ( ";
+         file << Int(step);
+         file << "   ( ";
          for (int i = 0; i < D; i++){
-            outputFile_ << Int(GminStar_[i],3) << " ";
+            file << Int(GminStar_[i],3) << " ";
          }
-         outputFile_ << " )  ";
-         outputFile_ << Dbl(value);
-         outputFile_ << "\n";
+         file << " )  ";
+         file << Dbl(value);
+         file << "\n";
       }
    }
 

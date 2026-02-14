@@ -14,7 +14,6 @@
 
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
-#include <pscf/math/IntVec.h>
 #include <pscf/cpu/VecOpCx.h>
 #include <pscf/cpu/ReduceCx.h>
 
@@ -31,13 +30,13 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
-#include <set>
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /*
    * Constructor.
@@ -58,7 +57,7 @@ namespace Rpc {
    {}
 
    /*
-   * FourthOrderParameter setup
+   * Setup before main loop.
    */
    template <int D>
    void FourthOrderParameter<D>::setup()
@@ -76,16 +75,18 @@ namespace Rpc {
       // Allocate variables
       if (!isInitialized_){
          wK_.allocate(dimensions);
-         prefactor_.allocate(kSize_);
-         psi_.allocate(kSize_);
+         prefactor_.allocate(kMeshDimensions_);
+         psi_.allocate(kMeshDimensions_);
          VecOp::eqS(prefactor_, 0.0);
       }
 
-      isInitialized_ = true;
-
       computePrefactor();
+      isInitialized_ = true;
    }
 
+   /*
+   * Compute and return the quantity of interest.
+   */
    template <int D>
    double FourthOrderParameter<D>::compute()
    {
@@ -99,14 +100,15 @@ namespace Rpc {
          simulator().computeWc();
       }
 
-      // Transform W_(r) to fourier representation W_(k)
+      // Transform W_(r) to Fourier representation wK_ = W_(k)
       system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
       // Evaluate sum of fourth powers, scaled by array of prefactors
       VecOp::sqSqAbsV(psi_, wK_);
       VecOp::mulEqV(psi_, prefactor_);
-      double orderParameter = Reduce::sum(psi_, 1, kSize_);
 
+      // Summation
+      double orderParameter = Reduce::sum(psi_, 1, kSize_);
       orderParameter = std::pow(orderParameter, 0.25);
       return orderParameter;
 
@@ -142,7 +144,8 @@ namespace Rpc {
             Log::file() << "ksq: " << k[itr.rank()] << std::endl;
             Log::file() << " G: " << G<< std::endl;
             Log::file() << " Gmin: " << Gmin<< std::endl;
-            Log::file() << " prefactor: " <<  prefactor_[itr.rank()]<< std::endl;
+            Log::file() << " prefactor: " 
+                        <<  prefactor_[itr.rank()]<< std::endl;
             Log::file() << " psi: " <<  psi[itr.rank()]<< std::endl;
          }
 
@@ -151,6 +154,9 @@ namespace Rpc {
 
    }
 
+   /*
+   * Output value or block average during a simulation.
+   */
    template <int D>
    void FourthOrderParameter<D>::outputValue(int step, double value)
    {
@@ -158,7 +164,7 @@ namespace Rpc {
       if (simulator().hasRamp() && nSamplePerOutput == 1) {
          std::ofstream& file = AverageAnalyzer<D>::outputFile_;
          UTIL_CHECK(file.is_open());
-         double chi= system().interaction().chi(0,1);
+         double chi = system().interaction().chi(0,1);
          file << Int(step);
          file << Dbl(chi);
          file << Dbl(value);
@@ -168,8 +174,11 @@ namespace Rpc {
       }
    }
 
+   /*
+   * Compute prefactor for each wavevector.
+   */
    template <int D>
-   void FourthOrderParameter<D>::computePrefactor()
+   void FourthOrderParameter<D>::computePrefactor(Array<double>& prefactor)
    {
       IntVec<D> G;
       IntVec<D> Gmin;
@@ -193,7 +202,7 @@ namespace Rpc {
          bool inverseFound = false;
 
          // If prefactor of current wavevector has not been assigned
-         if (prefactor_[itr.rank()] == 0){
+         if (prefactor[itr.rank()] == 0){
             Gmin = GminList[itr.rank()];
 
             // Compute inverse of wavevector
@@ -203,20 +212,27 @@ namespace Rpc {
             searchItr = itr;
             for (; !searchItr.atEnd(); ++searchItr){
                if (nGmin == GminList[searchItr.rank()]){
-                  prefactor_[itr.rank()] = 1.0/2.0;
-                  prefactor_[searchItr.rank()] = 1.0/2.0;
+                  prefactor[itr.rank()] = 1.0/2.0;
+                  prefactor[searchItr.rank()] = 1.0/2.0;
                   inverseFound = true;
                }
             }
 
             if (inverseFound == false){
-               prefactor_[itr.rank()]  = 1.0;
+               prefactor[itr.rank()]  = 1.0;
             }
 
          }
 
       }
    }
+
+   /*
+   * Compute prefactor_ member variable.
+   */
+   template <int D>
+   void FourthOrderParameter<D>::computePrefactor()
+   {  computePrefactor(prefactor_); }
 
 }
 }

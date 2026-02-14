@@ -52,21 +52,18 @@ namespace Rpg {
    {}
 
    /*
-   * FourthOrderParameter setup
+   * Setup before the main loop.
    */
    template <int D>
    void FourthOrderParameter<D>::setup()
    {
-      // Local copies of data
-      const int nMonomer = system().mixture().nMonomer();
-      IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-
-      // Precondition: Require that the system has two monomer types
-      UTIL_CHECK(nMonomer == 2);
+      // Precondition: The system must have exactly two monomer types
+      UTIL_CHECK(system().mixture().nMonomer() == 2);
 
       AverageAnalyzer<D>::setup();
 
       // Compute DFT k-space mesh kMeshDimensions_ and kSize_
+      IntVec<D> const & dimensions = system().domain().mesh().dimensions();
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
       // Allocate variables
@@ -81,6 +78,9 @@ namespace Rpg {
       isInitialized_ = true;
    }
 
+   /*
+   * Compute and return the order parameter.
+   */
    template <int D>
    double FourthOrderParameter<D>::compute()
    {
@@ -94,7 +94,7 @@ namespace Rpg {
          simulator().computeWc();
       }
 
-      // Convert W_(r) to fourier mode W_(k)
+      // Transform W_(r) to obtain wK_ = W_(k)
       system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
       // psi_[i] = |wK_[i]|^4 * prefactor[i]
@@ -108,6 +108,9 @@ namespace Rpg {
       return orderParameter;
    }
 
+   /*
+   * Output a sampled or block average value.
+   */
    template <int D>
    void FourthOrderParameter<D>::outputValue(int step, double value)
    {
@@ -125,6 +128,9 @@ namespace Rpg {
        }
    }
 
+   /*
+   * Compute prefactors for all wavevectors.
+   */
    template <int D>
    void FourthOrderParameter<D>::computePrefactor(Array<double>& prefactor)
    {
@@ -149,7 +155,7 @@ namespace Rpg {
       for (itr.begin(); !itr.atEnd(); ++itr){
          bool inverseFound = false;
 
-         // If the weight factor of the current wavevector has not been assigned
+         // If weight factor of this wavevector has not been assigned
          if (prefactor[itr.rank()] == 0){
             Gmin = GminList[itr.rank()];
 
@@ -175,18 +181,22 @@ namespace Rpg {
       }
    }
 
+   /*
+   * Initialize member variable prefactor_.
+   */
    template <int D>
    void FourthOrderParameter<D>::computePrefactor()
    {
+      // Allocate CPU host array
       HostDArray<cudaReal> prefactor_h(kSize_);
       VecOp::eqS(prefactor_h, 0.0);
 
+      // Perform computation on host
       computePrefactor(prefactor_h);
 
-      // Copy the weight factor from cpu(host) to gpu(device)
+      // Copy from from cpu(host) to gpu(device)
       prefactor_ = prefactor_h;
    }
-
 
 }
 }

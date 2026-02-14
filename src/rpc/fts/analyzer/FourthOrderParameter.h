@@ -9,12 +9,9 @@
 */
 
 #include "AverageAnalyzer.h"                      // base class
-
+#include <prdc/cpu/RField.h>                      // member
 #include <prdc/cpu/RFieldDft.h>                   // member
-#include <util/containers/DArray.h>               // member
-#include <util/accumulators/Average.h>            // member
-
-#include <string>
+#include <pscf/math/IntVec.h>                     // member
 #include <iostream>
 
 namespace Pscf {
@@ -24,7 +21,8 @@ namespace Rpc {
    template <int D> class Simulator;
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * FourthOrderParameter is used to detect an order-disorder transition.
@@ -34,9 +32,10 @@ namespace Rpc {
    *
    * The order parameter is defined as
    * \f[
-   *     \Psi_{\text{fourth}} \equiv \left[ \sum W_{-}(\bf G)^4 \right] ^{\frac{1}{4}}
+   *     \Psi_{\text{fourth}} \equiv 
+   *     \left[ \sum_{\bf G} W_{-}(\bf G)^4 \right] ^{\frac{1}{4}}
    * \f]
-   * where \f$W_(G)\f$ is a Fourier mode of fluctuating field.
+   * where \f$W_({\bf G})\f$ is a Fourier mode of fluctuating field.
    *
    * \see \ref rpc_FourthOrderParameter_page "Manual Page"
    *
@@ -58,12 +57,12 @@ namespace Rpc {
       */
       virtual ~FourthOrderParameter();
 
-   protected:
-
       /**
       * Setup before simulation loop.
       */
       virtual void setup();
+
+   protected:
 
       /**
       * Compute and return the derivative of H w/ respect to chi.
@@ -83,22 +82,22 @@ namespace Rpc {
 
    private:
 
-      /// W_ in Fourier space
+      /// W_ in Fourier space.
       RFieldDft<D> wK_;
 
-      /// Prefactor for each Fourier amplitude
-      DArray<double> prefactor_;
+      /// Prefactor for each Fourier amplitude.
+      RField<D> prefactor_;
 
-      /// Fourth power of Fourier magnitude times prefactor
-      DArray<double> psi_;
+      /// Fourth power of Fourier magnitude times prefactor.
+      RField<D> psi_;
 
-      /// Dimensions of fourier space
+      /// Dimensions of Fourier space (k-grid) mesh for a real field.
       IntVec<D> kMeshDimensions_;
 
-      /// Number of wavevectors in fourier mode.
+      /// Number of wavevectors in Fourier space (k-grid) mesh.
       int  kSize_;
 
-      /// Has variables been initialized?
+      /// Has setup been completed?
       bool isInitialized_;
 
       /**
@@ -111,6 +110,11 @@ namespace Rpc {
       * inverse -G exist in k-space, the prefactor is
       * assigned to be 1/2 for both G and -G. Otherwise,
       * it is assigned to be 1.
+      */
+      void computePrefactor(Array<double>& prefactor);
+
+      /**
+      * Initialize member array variable prefactor_.
       */
       void computePrefactor();
 

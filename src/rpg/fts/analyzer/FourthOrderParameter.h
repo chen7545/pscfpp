@@ -20,8 +20,8 @@ namespace Rpg {
    template <int D> class Simulator;
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * FourthOrderParameter is used to detect an order-disorder transition.
@@ -56,15 +56,15 @@ namespace Rpg {
       */
       virtual ~FourthOrderParameter();
 
-   protected:
-
       /**
-      * Setup before simulation loop.
+      * Setup before the main loop.
       */
       virtual void setup();
 
+   protected:
+
       /**
-      * Compute and return the fourth order parameter.
+      * Compute and return the order parameter.
       */
       virtual double compute();
 
@@ -76,7 +76,28 @@ namespace Rpg {
       */
       virtual void outputValue(int step, double value);
 
-      void computePrefactor(Array<double>& array);
+      using AverageAnalyzer<D>::simulator;
+      using AverageAnalyzer<D>::system;
+
+   private:
+
+      /// Fourier transform of W_ field.
+      RFieldDft<D> wK_;
+
+      /// Prefactors for all Fourier wavevectors.
+      RField<D> prefactor_;
+
+      /// Fourth powers of Fourier amplitudes, with prefactors.
+      RField<D> psi_;
+
+      /// Dimensions of Fourier space (k-grid) mesh for real fields.
+      IntVec<D> kMeshDimensions_;
+
+      /// Number of wavevectors in Fourier space (k-grid) mesh.
+      int  kSize_;
+
+      /// Has setup been completed?
+      bool isInitialized_;
 
       /**
       * Compute prefactor for each Fourier wavevector.
@@ -89,30 +110,12 @@ namespace Rpg {
       * assigned to be 1/2 for both G and -G. Otherwise,
       * it is assigned to be 1.
       */
+      void computePrefactor(Array<double>& array);
+
+      /**
+      * Initialize member variable prefactor_. 
+      */
       void computePrefactor();
-
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-
-   private:
-
-      /// W_ in Fourier mode
-      RFieldDft<D> wK_;
-
-      /// Prefactor for each Fourier wavevector
-      RField<D> prefactor_;
-
-      /// Fourth power of Fourier amplitudes, with prefactors
-      RField<D> psi_;
-
-      /// Dimensions of Fourier space (k-grid) mesh for real fields.
-      IntVec<D> kMeshDimensions_;
-
-      /// Number of wavevectors in k-grid mesh.
-      int  kSize_;
-
-      /// Has setup been completed?
-      bool isInitialized_;
 
    };
 
