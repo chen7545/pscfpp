@@ -10,11 +10,14 @@
 
 #include <pscf/math/IntVec.h>                     // member
 
+// Forward declaration
+namespace Util {
+   template <typename T> class Array;
+}
+
 namespace Pscf {
 namespace Rp {
 
-   using namespace Util;
-   using namespace Prdc;
 
    /**
    * FourthOrderParameter is used to detect an order-disorder transition.
@@ -70,6 +73,9 @@ namespace Rp {
 
    protected:
 
+      /// Prefactor for each Fourier component.
+      typename T::RField prefactor_;
+
       /**
       * Compute and return the order parameter.
       */
@@ -103,10 +109,7 @@ namespace Rp {
    private:
 
       /// Fourier transform of W_ field.
-      typename T::RFieldDft<D> wK_;
-
-      /// Prefactor for each Fourier component.
-      typename T::RField prefactor_;
+      typename T::RFieldDft wK_;
 
       /// Fourth powers of Fourier magnitudes, with prefactors.
       typename T::RField psi_;

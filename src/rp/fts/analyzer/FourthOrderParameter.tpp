@@ -8,6 +8,7 @@
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
 
+#include <util/containers/Array.h>
 #include <util/containers/DArray.h>
 #include <util/misc/ioUtil.h>
 #include <util/format/Int.h>
