@@ -9,18 +9,23 @@
 #include <rpg/field/Domain.h>
 
 #include <prdc/cuda/FFT.h>
-#include <prdc/cuda/RField.h>
-#include <prdc/cuda/resources.h>
 #include <prdc/crystal/shiftToMinimum.h>
 
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
+#include <pscf/cuda/HostDArray.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
+#include <pscf/cuda/cudaTypes.h>
+#include <pscf/cpu/VecOp.h>
 
 #include <util/misc/ioUtil.h>
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
 #include <util/global.h>
+
+#include <iostream>
 
 namespace Pscf {
 namespace Rpg {
@@ -37,7 +42,7 @@ namespace Rpg {
     : AverageAnalyzer<D>(simulator, system),
       kSize_(1),
       isInitialized_(false)
-   {  setClassName("FourthOrderParameter"); }
+   {  ParamComposite::setClassName("FourthOrderParameter"); }
 
    /*
    * Destructor.
@@ -66,78 +71,61 @@ namespace Rpg {
 
       // Allocate variables
       if (!isInitialized_){
-         wc0_.allocate(dimensions);
          wK_.allocate(dimensions);
          prefactor_.allocate(kMeshDimensions_);
+         psi_.allocate(kMeshDimensions_);
          VecOp::eqS(prefactor_, 0.0);
       }
 
-      isInitialized_ = true;
-
       computePrefactor();
+      isInitialized_ = true;
    }
 
    template <int D>
    double FourthOrderParameter<D>::compute()
    {
+      UTIL_CHECK(isInitialized_);
+      UTIL_CHECK(wK_.capacity() == kSize_);
+      UTIL_CHECK(prefactor_.capacity() == kSize_);
+      UTIL_CHECK(psi_.capacity() == kSize_);
       UTIL_CHECK(system().w().hasData());
 
       if (!simulator().hasWc()){
          simulator().computeWc();
       }
 
-      RField<D> psi;
-      psi.allocate(kMeshDimensions_);
-
       // Convert W_(r) to fourier mode W_(k)
-      VecOp::eqV(wc0_, simulator().wc(0));
-      system().domain().fft().forwardTransform(wc0_, wK_);
+      system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
-      // psi = |wK_|^4
-      VecOp::sqSqAbsV(psi, wK_);
+      // psi_[i] = |wK_[i]|^4 * prefactor[i]
+      VecOp::sqSqAbsV(psi_, wK_);
+      VecOp::mulEqV(psi_, prefactor_);
 
-      // W_(k)^4 * weight factor
-      VecOp::mulEqV(psi, prefactor_);
-
-      // Get sum over all wavevectors
-      HostDArray<cudaReal> psiHost(kSize_);
-      psiHost = psi;
-      FourthOrderParameter_ = 0.0;
-
-      for (int i = 1; i < kSize_; ++i){
-         FourthOrderParameter_ += psiHost[i];
-      }
-      
-      FourthOrderParameter_ = std::pow(FourthOrderParameter_, 0.25);
-
-      return FourthOrderParameter_;
+      double orderParameter = Reduce::sum(psi_, 1, kSize_);
+      orderParameter = std::pow(orderParameter, 0.25);
+      return orderParameter;
    }
 
    template <int D>
    void FourthOrderParameter<D>::outputValue(int step, double value)
    {
-      if (simulator().hasRamp() && nSamplePerOutput() == 1) {
+      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      if (simulator().hasRamp() && nSamplePerOutput == 1) {
+         std::ofstream& file = AverageAnalyzer<D>::outputFile_;
+         UTIL_CHECK(file.is_open());
          double chi = system().interaction().chi(0,1);
-
-         UTIL_CHECK(outputFile_.is_open());
-         outputFile_ << Int(step);
-         outputFile_ << Dbl(chi);
-         outputFile_ << Dbl(value);
-         outputFile_ << "\n";
+         file << Int(step);
+         file << Dbl(chi);
+         file << Dbl(value);
+         file << "\n";
        } else {
          AverageAnalyzer<D>::outputValue(step, value);
        }
    }
 
    template <int D>
-   void FourthOrderParameter<D>::computePrefactor()
+   void FourthOrderParameter<D>::computePrefactor(Array<double>& prefactor)
    {
-      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
-      UnitCell<D> const & unitCell = system().domain().unitCell();
-      HostDArray<cudaReal> prefactor_h(kSize_);
-      for (int i = 0; i < kSize_; ++i){
-         prefactor_h[i] = 0;
-      }
       IntVec<D> G;
       IntVec<D> Gmin;
       IntVec<D> nGmin;
@@ -147,6 +135,8 @@ namespace Rpg {
       MeshIterator<D> searchItr(kMeshDimensions_);
 
       // Calculate GminList
+      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
+      UnitCell<D> const & unitCell = system().domain().unitCell();
       for (itr.begin(); !itr.atEnd(); ++itr){
          G = itr.position();
          Gmin = shiftToMinimum(G, meshDimensions, unitCell);
@@ -158,7 +148,7 @@ namespace Rpg {
          bool inverseFound = false;
 
          // If the weight factor of the current wavevector has not been assigned
-         if (prefactor_h[itr.rank()] == 0){
+         if (prefactor[itr.rank()] == 0){
             Gmin = GminList[itr.rank()];
 
             // Compute inverse of wavevector
@@ -168,23 +158,34 @@ namespace Rpg {
             searchItr = itr;
             for (; !searchItr.atEnd(); ++searchItr){
                if (nGmin == GminList[searchItr.rank()]){
-                  prefactor_h[itr.rank()] = 1.0/2.0;
-                  prefactor_h[searchItr.rank()] = 1.0/2.0;
+                  prefactor[itr.rank()] = 1.0/2.0;
+                  prefactor[searchItr.rank()] = 1.0/2.0;
                   inverseFound = true;
                }
             }
 
             if (inverseFound == false){
-               prefactor_h[itr.rank()]  = 1.0;
+               prefactor[itr.rank()]  = 1.0;
             }
 
          }
 
       }
+   }
+
+
+   template <int D>
+   void FourthOrderParameter<D>::computePrefactor()
+   {
+      HostDArray<cudaReal> prefactor_h(kSize_);
+      VecOp::eqS(prefactor_h, 0.0);
+
+      computePrefactor(prefactor_h);
 
       // Copy the weight factor from cpu(host) to gpu(device)
       prefactor_ = prefactor_h;
    }
+
 
 }
 }
