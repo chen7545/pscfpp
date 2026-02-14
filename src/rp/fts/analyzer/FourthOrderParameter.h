@@ -76,6 +76,9 @@ namespace Rp {
       /// Prefactor for each Fourier component.
       typename T::RField prefactor_;
 
+      /// Number of wavevectors in Fourier space (k-grid) mesh.
+      int  kSize_;
+
       /**
       * Compute and return the order parameter.
       */
@@ -116,9 +119,6 @@ namespace Rp {
 
       /// Dimensions of Fourier space (k-grid) mesh for a real field.
       IntVec<D> kMeshDimensions_;
-
-      /// Number of wavevectors in Fourier space (k-grid) mesh.
-      int  kSize_;
 
       /// Has setup been completed?
       bool isInitialized_;

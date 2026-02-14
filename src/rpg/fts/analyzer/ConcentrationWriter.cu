@@ -5,12 +5,42 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "ConcentrationWriter.tpp"
+#include "ConcentrationWriter.h"
+
+#include <rpg/fts/simulator/Simulator.h>
+#include <rpg/system/System.h>
+#include <rpg/solvers/Mixture.h>
+#include <rpg/field/Domain.h>
+#include <rpg/field/FieldIo.h>
+#include <rpg/field/CFields.h>
+#include <prdc/cuda/RField.h>
+
+#include <rp/fts/analyzer/ConcentrationWriter.tpp>
 
 namespace Pscf {
 namespace Rpg {
-   template class ConcentrationWriter<1>;
-   template class ConcentrationWriter<2>;
-   template class ConcentrationWriter<3>;
+
+   // Constructor.
+   template <int D>
+   ConcentrationWriter<D>::ConcentrationWriter(
+                                  Simulator<D>& simulator,
+                                  System<D>& system)
+    : Rp::ConcentrationWriter< D, Types<D> >(simulator, system)
+   {}
+
 }
+}
+
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class ConcentrationWriter<1, Rpg::Types<1> >;
+      template class ConcentrationWriter<2, Rpg::Types<2> >;
+      template class ConcentrationWriter<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class ConcentrationWriter<1>;
+      template class ConcentrationWriter<2>;
+      template class ConcentrationWriter<3>;
+   }
 }
