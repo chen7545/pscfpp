@@ -13,13 +13,13 @@
 
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
-#include <pscf/math/IntVec.h>
-#include <pscf/cuda/HostDArray.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
+#include <pscf/cuda/HostDArray.h>
 #include <pscf/cuda/cudaTypes.h>
 #include <pscf/cpu/VecOp.h>
 
+#include <util/containers/DArray.h>
 #include <util/misc/ioUtil.h>
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
@@ -31,7 +31,8 @@ namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /*
    * Constructor.
@@ -62,7 +63,7 @@ namespace Rpg {
 
       AverageAnalyzer<D>::setup();
 
-      // Compute DFT k-space mesh kMeshDimensions_ and kSize_
+      // Compute k-space mesh kMeshDimensions_ and kSize_
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
@@ -94,10 +95,10 @@ namespace Rpg {
          simulator().computeWc();
       }
 
-      // Transform W_(r) to obtain wK_ = W_(k)
+      // Fourier transform W_(r) to obtain wK_ = W_(k)
       system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
-      // psi_[i] = |wK_[i]|^4 * prefactor[i]
+      // Evaluate fourther powers, scaled by prefactors
       VecOp::sqSqAbsV(psi_, wK_);
       VecOp::mulEqV(psi_, prefactor_);
 
@@ -182,7 +183,7 @@ namespace Rpg {
    }
 
    /*
-   * Initialize member variable prefactor_.
+   * Initialize prefactor_ member variable.
    */
    template <int D>
    void FourthOrderParameter<D>::computePrefactor()

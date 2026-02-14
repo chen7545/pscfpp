@@ -36,7 +36,7 @@ namespace Rpg {
    * \f]
    * where \f$W_(G)\f$ is a Fourier mode of fluctuating field.
    *
-   * \see rpc_FourthOrderParameter_page
+   * \see rp_FourthOrderParameter_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -48,6 +48,9 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
+      * \param system  parent System object
       */
       FourthOrderParameter(Simulator<D>& simulator, System<D>& system);
 
@@ -59,14 +62,14 @@ namespace Rpg {
       /**
       * Setup before the main loop.
       */
-      virtual void setup();
+      void setup() override;
 
    protected:
 
       /**
       * Compute and return the order parameter.
       */
-      virtual double compute();
+      double compute() override;
 
       /**
       * Output a sampled or block average value.
@@ -74,7 +77,7 @@ namespace Rpg {
       * \param step  value for step counter
       * \param value  value of physical observable
       */
-      virtual void outputValue(int step, double value);
+      void outputValue(int step, double value) override;
 
       using AverageAnalyzer<D>::simulator;
       using AverageAnalyzer<D>::system;
@@ -84,10 +87,10 @@ namespace Rpg {
       /// Fourier transform of W_ field.
       RFieldDft<D> wK_;
 
-      /// Prefactors for all Fourier wavevectors.
+      /// Prefactor for each Fourier component.
       RField<D> prefactor_;
 
-      /// Fourth powers of Fourier amplitudes, with prefactors.
+      /// Fourth powers of Fourier magnitudes, with prefactors.
       RField<D> psi_;
 
       /// Dimensions of Fourier space (k-grid) mesh for real fields.
@@ -113,7 +116,7 @@ namespace Rpg {
       void computePrefactor(Array<double>& array);
 
       /**
-      * Initialize member variable prefactor_. 
+      * Initialize member variable prefactor_.
       */
       void computePrefactor();
 
