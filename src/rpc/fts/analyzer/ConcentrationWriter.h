@@ -8,7 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"
+#include <rp/fts/analyzer/ConcentrationWriter.h>  // base template
+#include <rpc/system/Types.h>                     // template argument
+#include <rpc/fts/analyzer/Analyzer.h>            // indirect base
 
 namespace Pscf {
 namespace Rpc {
@@ -26,7 +28,8 @@ namespace Rpc {
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
-   class ConcentrationWriter : public Analyzer<D>
+   class ConcentrationWriter 
+    : public Rp::ConcentrationWriter<D, Types<D> >
    {
 
    public:
@@ -39,79 +42,22 @@ namespace Rpc {
       */
       ConcentrationWriter(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~ConcentrationWriter()
-      {}
-
-      /**
-      * Read interval and output file name.
-      *
-      * \param in  input parameter file
-      */
-      virtual void readParameters(std::istream& in);
-
-      /**
-      * Initialize before main simulation loop.
-      */
-      virtual void setup();
-
-      /**
-      * Write a frame/snapshot to trajectory file.
-      *
-      * \param iStep  step index
-      */
-      virtual void sample(long iStep);
-
-      /**
-      * Close trajectory file after run.
-      */
-      virtual void output();
-
-      using ParamComposite::setClassName;
-      using ParamComposite::read;
-      using Analyzer<D>::outputFileName;
-      using Analyzer<D>::isAtInterval;
-      using Analyzer<D>::simulator;
-      using Analyzer<D>::system;
-
-   private:
-
-      // Output file stream
-      std::ofstream outputFile_;
-
-      // Output filename
-      std::string filename_;
-
-      /// Number of configurations dumped thus far (first dump is zero).
-      long nSample_;
-
-      /// Has readParam been called?
-      long isInitialized_;
-
-      /**
-      * Write data that should appear once, at beginning of the file.
-      *
-      * \param out  output file stream
-      */
-      void writeHeader(std::ofstream& out);
-
-      /**
-      * Write data that should appear in every frame.
-      *
-      * \param out  output file stream
-      * \param iStep  step index
-      */
-      void writeFrame(std::ofstream& out, long iStep);
-
    };
 
-   // Explicit instantiation declarations
-   extern template class ConcentrationWriter<1>;
-   extern template class ConcentrationWriter<2>;
-   extern template class ConcentrationWriter<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class ConcentrationWriter<1, Rpc::Types<1> >;
+      extern template class ConcentrationWriter<2, Rpc::Types<2> >;
+      extern template class ConcentrationWriter<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class ConcentrationWriter<1>;
+      extern template class ConcentrationWriter<2>;
+      extern template class ConcentrationWriter<3>;
+   }
 }
 #endif

@@ -10,14 +10,10 @@
 
 #include "Analyzer.h"
 
-#include <string>
 #include <iostream>
 
 namespace Pscf {
 namespace Rp {
-
-   template <int D> class System;
-   template <int D> class Simulator;
 
    using namespace Util;
 
@@ -84,8 +80,6 @@ namespace Rp {
       virtual void output();
 
       using AnalyzerT = typename T::Analyzer;
-      using AnalyzerT::outputFileName;
-      using AnalyzerT::isAtInterval;
       using AnalyzerT::simulator;
       using AnalyzerT::system;
 

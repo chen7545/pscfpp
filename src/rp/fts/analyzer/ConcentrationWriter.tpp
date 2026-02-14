@@ -8,8 +8,11 @@
 */
 
 #include "ConcentrationWriter.h"
+#include <prdc/crystal/UnitCell.h>
 #include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>
+
+#include <string>
 
 namespace Pscf {
 namespace Rp {
@@ -44,6 +47,7 @@ namespace Rp {
    template <int D, class T>
    void ConcentrationWriter<D,T>::setup()
    {
+      UTIL_CHECK(isInitialized_);
       nSample_ = 0;
       std::string filename = AnalyzerT::outputFileName();
       system().fileMaster().openOutputFile(filename, outputFile_);
@@ -53,6 +57,7 @@ namespace Rp {
    template <int D, class T>
    void ConcentrationWriter<D,T>::writeFrame(std::ofstream& out, long iStep)
    {
+      UTIL_CHECK(isInitialized_);
       UTIL_CHECK(system().w().hasData());
       if (!system().c().hasData()){
          system().compute();
@@ -71,6 +76,7 @@ namespace Rp {
    template <int D, class T>
    void ConcentrationWriter<D,T>::writeHeader(std::ofstream& out)
    {
+      UTIL_CHECK(isInitialized_);
       int nMonomer = system().mixture().nMonomer();
       bool isSymmetric = false;
       typename T::Domain const & domain = system().domain();
@@ -87,6 +93,7 @@ namespace Rp {
    template <int D, class T>
    void ConcentrationWriter<D,T>::sample(long iStep)
    {
+      UTIL_CHECK(isInitialized_);
       if (AnalyzerT::isAtInterval(iStep))  {
          writeFrame(outputFile_, iStep);
          ++nSample_;
