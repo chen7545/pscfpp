@@ -154,24 +154,23 @@ namespace Rpc {
    template <int D>
    void FourthOrderParameter<D>::outputValue(int step, double value)
    {
-      if (simulator().hasRamp() && nSamplePerOutput() == 1) {
+      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      if (simulator().hasRamp() && nSamplePerOutput == 1) {
+         std::ofstream& file = AverageAnalyzer<D>::outputFile_;
+         UTIL_CHECK(file.is_open());
          double chi= system().interaction().chi(0,1);
-
-         UTIL_CHECK(outputFile_.is_open());
-         outputFile_ << Int(step);
-         outputFile_ << Dbl(chi);
-         outputFile_ << Dbl(value);
-         outputFile_ << "\n";
-       } else {
+         file << Int(step);
+         file << Dbl(chi);
+         file << Dbl(value);
+         file << "\n";
+      } else {
          AverageAnalyzer<D>::outputValue(step, value);
-       }
+      }
    }
 
    template <int D>
    void FourthOrderParameter<D>::computePrefactor()
    {
-      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
-      UnitCell<D> const & unitCell = system().domain().unitCell();
       IntVec<D> G;
       IntVec<D> Gmin;
       IntVec<D> nGmin;
@@ -181,6 +180,8 @@ namespace Rpc {
       MeshIterator<D> searchItr(kMeshDimensions_);
 
       // Calculate GminList
+      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
+      UnitCell<D> const & unitCell = system().domain().unitCell();
       for (itr.begin(); !itr.atEnd(); ++itr){
          G = itr.position();
          Gmin = shiftToMinimum(G, meshDimensions, unitCell);
