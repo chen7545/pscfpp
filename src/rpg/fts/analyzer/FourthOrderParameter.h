@@ -32,11 +32,11 @@ namespace Rpg {
    * The order parameter is defined as
    * \f[
    *     \Psi_{\text{fourth}} \equiv
-   *     \left[ \sum W_{-}(\bf G)^4 \right] ^{\frac{1}{4}}
+   *     \left[ \sum_{\bf G} W_{-}({\bf G})^4 \right] ^{\frac{1}{4}}
    * \f]
-   * where \f$W_(G)\f$ is a Fourier mode of fluctuating field.
+   * where \f$W_({\bf G})\f$ is a Fourier mode of fluctuating field.
    *
-   * \see rp_FourthOrderParameter_page "Manual Page"
+   * \see \ref rp_FourthOrderParameter_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
@@ -93,7 +93,7 @@ namespace Rpg {
       /// Fourth powers of Fourier magnitudes, with prefactors.
       RField<D> psi_;
 
-      /// Dimensions of Fourier space (k-grid) mesh for real fields.
+      /// Dimensions of Fourier space (k-grid) mesh for a real field.
       IntVec<D> kMeshDimensions_;
 
       /// Number of wavevectors in Fourier space (k-grid) mesh.
@@ -113,7 +113,7 @@ namespace Rpg {
       * assigned to be 1/2 for both G and -G. Otherwise,
       * it is assigned to be 1.
       */
-      void computePrefactor(Array<double>& array);
+      void computePrefactor(Array<double>& prefactor);
 
       /**
       * Initialize member variable prefactor_.

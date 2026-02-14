@@ -1,23 +1,12 @@
-#ifndef RPG_FOURTH_ORDER_PARAMETER_TPP
-#define RPG_FOURTH_ORDER_PARAMETER_TPP
+#ifndef RP_FOURTH_ORDER_PARAMETER_TPP
+#define RP_FOURTH_ORDER_PARAMETER_TPP
 
 #include "FourthOrderParameter.h"
 
-#include <rpg/fts/simulator/Simulator.h>
-#include <rpg/system/System.h>
-#include <rpg/solvers/Mixture.h>
-#include <rpg/field/Domain.h>
-
-#include <prdc/cuda/FFT.h>
 #include <prdc/crystal/shiftToMinimum.h>
 
 #include <pscf/interaction/Interaction.h>
 #include <pscf/mesh/MeshIterator.h>
-#include <pscf/cuda/VecOp.h>
-#include <pscf/cuda/Reduce.h>
-#include <pscf/cuda/HostDArray.h>
-#include <pscf/cuda/cudaTypes.h>
-#include <pscf/cpu/VecOp.h>
 
 #include <util/containers/DArray.h>
 #include <util/misc/ioUtil.h>
@@ -28,19 +17,19 @@
 #include <iostream>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /*
    * Constructor.
    */
-   template <int D>
-   FourthOrderParameter<D>::FourthOrderParameter(Simulator<D>& simulator,
-                                                 System<D>& system)
-    : AverageAnalyzer<D>(simulator, system),
+   template <int D, class T>
+   FourthOrderParameter<D,T>::FourthOrderParameter(
+                                       typename T::Simulator& simulator,
+                                       typename T::System& system)
+    : AverageAnalyzerT(simulator, system),
       kSize_(1),
       isInitialized_(false)
    {  ParamComposite::setClassName("FourthOrderParameter"); }
@@ -48,24 +37,24 @@ namespace Rpg {
    /*
    * Destructor.
    */
-   template <int D>
-   FourthOrderParameter<D>::~FourthOrderParameter()
+   template <int D, class T>
+   FourthOrderParameter<D,T>::~FourthOrderParameter()
    {}
 
    /*
    * Setup before the main loop.
    */
-   template <int D>
-   void FourthOrderParameter<D>::setup()
+   template <int D, class T>
+   void FourthOrderParameter<D,T>::setup()
    {
       // Precondition: The system must have exactly two monomer types
       UTIL_CHECK(system().mixture().nMonomer() == 2);
 
-      AverageAnalyzer<D>::setup();
+      AverageAnalyzerT::setup();
 
       // Compute k-space mesh kMeshDimensions_ and kSize_
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-      FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
+      FFTT::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
       // Allocate variables
       if (!isInitialized_){
@@ -82,8 +71,8 @@ namespace Rpg {
    /*
    * Compute and return the order parameter.
    */
-   template <int D>
-   double FourthOrderParameter<D>::compute()
+   template <int D, class T>
+   double FourthOrderParameter<D,T>::compute()
    {
       UTIL_CHECK(isInitialized_);
       UTIL_CHECK(wK_.capacity() == kSize_);
@@ -112,12 +101,12 @@ namespace Rpg {
    /*
    * Output a sampled or block average value.
    */
-   template <int D>
-   void FourthOrderParameter<D>::outputValue(int step, double value)
+   template <int D, class T>
+   void FourthOrderParameter<D,T>::outputValue(int step, double value)
    {
-      int nSamplePerOutput = AverageAnalyzer<D>::nSamplePerOutput();
+      int nSamplePerOutput = AverageAnalyzerT::nSamplePerOutput();
       if (simulator().hasRamp() && nSamplePerOutput == 1) {
-         std::ofstream& file = AverageAnalyzer<D>::outputFile_;
+         std::ofstream& file = AverageAnalyzerT::outputFile_;
          UTIL_CHECK(file.is_open());
          double chi = system().interaction().chi(0,1);
          file << Int(step);
@@ -125,20 +114,20 @@ namespace Rpg {
          file << Dbl(value);
          file << "\n";
       } else {
-         AverageAnalyzer<D>::outputValue(step, value);
+         AverageAnalyzerT::outputValue(step, value);
       }
    }
 
    /*
    * Compute prefactors for all wavevectors.
    */
-   template <int D>
-   void FourthOrderParameter<D>::computePrefactor(Array<double>& prefactor)
+   template <int D, class T>
+   void FourthOrderParameter<D,T>::computePrefactor(Array<double>& prefactor)
    {
       IntVec<D> G;
       IntVec<D> Gmin;
       IntVec<D> nGmin;
-      DArray<IntVec<D>> GminList;
+      DArray< IntVec<D> > GminList;
       GminList.allocate(kSize_);
       MeshIterator<D> itr(kMeshDimensions_);
       MeshIterator<D> searchItr(kMeshDimensions_);
@@ -180,23 +169,6 @@ namespace Rpg {
          }
 
       }
-   }
-
-   /*
-   * Initialize prefactor_ member variable.
-   */
-   template <int D>
-   void FourthOrderParameter<D>::computePrefactor()
-   {
-      // Allocate CPU host array
-      HostDArray<cudaReal> prefactor_h(kSize_);
-      VecOp::eqS(prefactor_h, 0.0);
-
-      // Perform computation on host
-      computePrefactor(prefactor_h);
-
-      // Copy from from cpu(host) to gpu(device)
-      prefactor_ = prefactor_h;
    }
 
 }

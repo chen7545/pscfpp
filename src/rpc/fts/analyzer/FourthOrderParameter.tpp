@@ -8,7 +8,6 @@
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
 
-#include <prdc/cpu/RField.h>
 #include <prdc/cpu/FFT.h>
 #include <prdc/crystal/shiftToMinimum.h>
 
@@ -17,19 +16,16 @@
 #include <pscf/cpu/VecOpCx.h>
 #include <pscf/cpu/ReduceCx.h>
 
+
+
+
 #include <util/containers/DArray.h>
-#include <util/param/ParamComposite.h>
-#include <util/misc/FileMaster.h>
 #include <util/misc/ioUtil.h>
 #include <util/format/Int.h>
 #include <util/format/Dbl.h>
 #include <util/global.h>
 
 #include <iostream>
-#include <complex>
-#include <vector>
-#include <numeric>
-#include <cmath>
 
 namespace Pscf {
 namespace Rpc {
@@ -57,19 +53,18 @@ namespace Rpc {
    {}
 
    /*
-   * Setup before main loop.
+   * Setup before the main loop.
    */
    template <int D>
    void FourthOrderParameter<D>::setup()
    {
+      // Precondition: The system must have exactly two monomer types
+      UTIL_CHECK(system().mixture().nMonomer() == 2);
+
       AverageAnalyzer<D>::setup();
 
-      // Precondition: Require that the system has two monomer types
-      const int nMonomer = system().mixture().nMonomer();
-      UTIL_CHECK(nMonomer == 2);
-
+      // Compute k-space mesh kMeshDimensions_ and kSize_
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
       // Allocate variables
@@ -85,7 +80,7 @@ namespace Rpc {
    }
 
    /*
-   * Compute and return the quantity of interest.
+   * Compute and return the order parameter.
    */
    template <int D>
    double FourthOrderParameter<D>::compute()
@@ -100,62 +95,22 @@ namespace Rpc {
          simulator().computeWc();
       }
 
-      // Transform W_(r) to Fourier representation wK_ = W_(k)
+      // Fourier transform W_(r) to obtain wK_ = W_(k)
       system().domain().fft().forwardTransform(simulator().wc(0), wK_);
 
-      // Evaluate sum of fourth powers, scaled by array of prefactors
+      // Evaluate fourth powers, scaled by prefactors
       VecOp::sqSqAbsV(psi_, wK_);
       VecOp::mulEqV(psi_, prefactor_);
 
       // Summation
       double orderParameter = Reduce::sum(psi_, 1, kSize_);
       orderParameter = std::pow(orderParameter, 0.25);
+
       return orderParameter;
-
-      #if 0
-      // Debugging output
-      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
-      UnitCell<D> const & unitCell = system().domain().unitCell();
-      IntVec<D> G;
-      IntVec<D> Gmin;
-      IntVec<D> nGmin;
-      double kSq;
-      std::vector<double> k(kSize_);
-
-      // Calculate GminList
-      for (itr.begin(); !itr.atEnd(); ++itr){
-         G = itr.position();
-         Gmin = shiftToMinimum(G, meshDimensions, unitCell);
-         kSq = unitCell.ksq(Gmin);
-         k[itr.rank()] = kSq;
-      }
-
-      auto maxIt = std::max_element(psi.begin(), psi.end());
-
-      // Calculate the index of the maximum element
-      size_t maxIndex = std::distance(psi.begin(), maxIt);
-      double kmax = k[maxIndex];
-
-      Log::file() << std::endl;
-      for (itr.begin(); !itr.atEnd(); ++itr){
-         if (k[itr.rank()] == kmax){
-            G = itr.position();
-            Gmin = shiftToMinimum(G, meshDimensions, unitCell);
-            Log::file() << "ksq: " << k[itr.rank()] << std::endl;
-            Log::file() << " G: " << G<< std::endl;
-            Log::file() << " Gmin: " << Gmin<< std::endl;
-            Log::file() << " prefactor: " 
-                        <<  prefactor_[itr.rank()]<< std::endl;
-            Log::file() << " psi: " <<  psi[itr.rank()]<< std::endl;
-         }
-
-      }
-      #endif
-
    }
 
    /*
-   * Output value or block average during a simulation.
+   * Output a sampled or block average value.
    */
    template <int D>
    void FourthOrderParameter<D>::outputValue(int step, double value)
@@ -175,7 +130,7 @@ namespace Rpc {
    }
 
    /*
-   * Compute prefactor for each wavevector.
+   * Compute prefactors for all wavevectors.
    */
    template <int D>
    void FourthOrderParameter<D>::computePrefactor(Array<double>& prefactor)
@@ -197,7 +152,7 @@ namespace Rpc {
          GminList[itr.rank()] = Gmin;
       }
 
-      // Compute prefactor for each G wavevector
+      // Compute prefactor for each wavevector
       for (itr.begin(); !itr.atEnd(); ++itr){
          bool inverseFound = false;
 
@@ -228,7 +183,7 @@ namespace Rpc {
    }
 
    /*
-   * Compute prefactor_ member variable.
+   * Initialize prefactor_ member variable.
    */
    template <int D>
    void FourthOrderParameter<D>::computePrefactor()

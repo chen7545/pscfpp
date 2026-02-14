@@ -1,5 +1,5 @@
-#ifndef RPC_FOURTH_ORDER_PARAMETER_H
-#define RPC_FOURTH_ORDER_PARAMETER_H
+#ifndef RP_FOURTH_ORDER_PARAMETER_H
+#define RP_FOURTH_ORDER_PARAMETER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,20 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.h"                      // base class
-#include <prdc/cpu/RField.h>                      // member
-#include <prdc/cpu/RFieldDft.h>                   // member
 #include <pscf/math/IntVec.h>                     // member
 
 namespace Pscf {
-namespace Rpc {
-
-   template <int D> class System;
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
    * FourthOrderParameter is used to detect an order-disorder transition.
@@ -38,10 +31,20 @@ namespace Rpc {
    *
    * \see \ref rp_FourthOrderParameter_page "Manual Page"
    *
-   * \ingroup Rpc_Fts_Analyzer_Module
+   * Instantiations of this template are used as base classes for two
+   * closely analogous class templates, also named FourthOrderParameter, 
+   * that are defined in the Rpc and Rpg namespaces for use in the 
+   * pscf_rpc and pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *    - D : dimension of space
+   *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
+   *
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class FourthOrderParameter : public AverageAnalyzer<D>
+   template <int D, class T>
+   class FourthOrderParameter : public T::AverageAnalyzer
    {
 
    public:
@@ -52,7 +55,8 @@ namespace Rpc {
       * \param simulator  parent Simulator object
       * \param system  parent System object
       */
-      FourthOrderParameter(Simulator<D>& simulator, System<D>& system);
+      FourthOrderParameter(typename T::Simulator& simulator, 
+                           typename T::System& system);
 
       /**
       * Destructor.
@@ -79,29 +83,6 @@ namespace Rpc {
       */
       void outputValue(int step, double value) override;
 
-      using AverageAnalyzer<D>::simulator;
-      using AverageAnalyzer<D>::system;
-
-   private:
-
-      /// Fourier transform of W_ field.
-      RFieldDft<D> wK_;
-
-      /// Prefactor for each Fourier component.
-      RField<D> prefactor_;
-
-      /// Fourth powers of Fourier magnitudes, with prefactors.
-      RField<D> psi_;
-
-      /// Dimensions of Fourier space (k-grid) mesh for a real field.
-      IntVec<D> kMeshDimensions_;
-
-      /// Number of wavevectors in Fourier space (k-grid) mesh.
-      int  kSize_;
-
-      /// Has setup been completed?
-      bool isInitialized_;
-
       /**
       * Compute prefactor for each Fourier wavevector.
       *
@@ -115,17 +96,41 @@ namespace Rpc {
       */
       void computePrefactor(Array<double>& prefactor);
 
+      using AverageAnalyzerT = typename T::AverageAnalyzer;
+      using AverageAnalyzerT::simulator;
+      using AverageAnalyzerT::system;
+
+   private:
+
+      /// Fourier transform of W_ field.
+      typename T::RFieldDft<D> wK_;
+
+      /// Prefactor for each Fourier component.
+      typename T::RField prefactor_;
+
+      /// Fourth powers of Fourier magnitudes, with prefactors.
+      typename T::RField psi_;
+
+      /// Dimensions of Fourier space (k-grid) mesh for a real field.
+      IntVec<D> kMeshDimensions_;
+
+      /// Number of wavevectors in Fourier space (k-grid) mesh.
+      int  kSize_;
+
+      /// Has setup been completed?
+      bool isInitialized_;
+
       /**
-      * Initialize member variable prefactor_.
+      * Initialize prefactor_ member array.
+      *
+      * The GPU version of this function must compute values on
+      * on the CPU host and then copy them to a device array. 
       */
-      void computePrefactor();
+      virtual void computePrefactor() = 0;
+
+      using FFTT = typename T::FFT;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class FourthOrderParameter<1>;
-   extern template class FourthOrderParameter<2>;
-   extern template class FourthOrderParameter<3>;
 
 }
 }
