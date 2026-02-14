@@ -13,7 +13,6 @@
 #include <prdc/cuda/RFieldDft.h>                  // member
 #include <pscf/math/IntVec.h>                     // member
 
-
 namespace Pscf {
 namespace Rpg {
 
@@ -57,6 +56,8 @@ namespace Rpg {
       */
       virtual ~FourthOrderParameter();
 
+   protected:
+
       /**
       * Setup before simulation loop.
       */
@@ -74,8 +75,6 @@ namespace Rpg {
       * \param value  value of physical observable
       */
       virtual void outputValue(int step, double value);
-
-   protected:
 
       void computePrefactor(Array<double>& array);
 

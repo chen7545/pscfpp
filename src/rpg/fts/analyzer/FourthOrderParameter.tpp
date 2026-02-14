@@ -101,8 +101,10 @@ namespace Rpg {
       VecOp::sqSqAbsV(psi_, wK_);
       VecOp::mulEqV(psi_, prefactor_);
 
+      // Summation
       double orderParameter = Reduce::sum(psi_, 1, kSize_);
       orderParameter = std::pow(orderParameter, 0.25);
+
       return orderParameter;
    }
 
@@ -172,7 +174,6 @@ namespace Rpg {
 
       }
    }
-
 
    template <int D>
    void FourthOrderParameter<D>::computePrefactor()
