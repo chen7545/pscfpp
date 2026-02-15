@@ -1,5 +1,5 @@
-#ifndef RPC_W_FIELD_CONTAINER_H
-#define RPC_W_FIELD_CONTAINER_H
+#ifndef RPC_W_FIELDS_H
+#define RPC_W_FIELDS_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,11 +9,13 @@
 */
 
 #include <rp/field/WFields.h>    // base class template
-#include <prdc/cpu/RField.h>     // base class template argument
-#include <rpc/field/FieldIo.h>   // base class template argument
+#include <prdc/cpu/RField.h>     // base class member
 
 namespace Pscf {
 namespace Rpc {
+
+   // Forward declaration
+   template <int D> class FieldIo;
 
    using namespace Util;
    using namespace Prdc;
@@ -22,9 +24,11 @@ namespace Rpc {
    /**
    * A container of fields stored in both basis and r-grid format.
    *
-   * The public interface of this class is identical to that of the base
-   * class template Rp::WFields. Please see documentation of that base 
-   * class template for API documentation.
+   * Instantiations of this template with D =1, 2, and 3 are derived 
+   * from instantiations of the base class template Rp::WFields, and 
+   * inherit their public interface and almost all of their source code
+   * from this base class. See the documentation for this base class 
+   * template for details. 
    *
    * \ingroup Rpc_Field_Module
    */
@@ -32,37 +36,6 @@ namespace Rpc {
    class WFields 
      : public Rp::WFields<D, RField<D>, FieldIo<D> >
    {
-   public:
-
-      /// Alias for base class.
-      using Base = Rp::WFields< D, RField<D>, FieldIo<D> >;
-
-      // Inherited public member functions
-      using Base::setFieldIo;
-      using Base::setNMonomer;
-      using Base::allocateRGrid;
-      using Base::allocateBasis;
-      using Base::allocate;
-      using Base::setBasis;
-      using Base::setRGrid;
-      using Base::readBasis;
-      using Base::readRGrid;
-      using Base::symmetrize;
-      using Base::clear;
-      using Base::basis;
-      using Base::rgrid;
-      using Base::isAllocatedRGrid;
-      using Base::isAllocatedBasis;
-      using Base::hasData;
-      using Base::isSymmetric;
-
-   protected:
-
-      using Base::meshDimensions;
-      using Base::meshSize;
-      using Base::nBasis;
-      using Base::nMonomer;
-      using Base::fieldIo;
 
    private:
 
@@ -75,25 +48,25 @@ namespace Rpc {
       void assignRField(RField<D>& lhs, RField<D> const & rhs) const 
       override;
 
-   };
+      using RpWFields = Rp::WFields< D, RField<D>, FieldIo<D> >;
 
-   // Explicit instantiation declarations
-   extern template class WFields<1>;
-   extern template class WFields<2>;
-   extern template class WFields<3>;
+   };
 
 } // namespace Rpc
 } // namespace Pscf
 
-// Explicit instantiation declarations for base class
+// Explicit instantiation declarations
 namespace Pscf {
    namespace Rp {
-      extern template 
-      class WFields<1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
-      extern template 
-      class WFields<2, Prdc::Cpu::RField<2>, Rpc::FieldIo<2> >;
-      extern template 
-      class WFields<3, Prdc::Cpu::RField<3>, Rpc::FieldIo<3> >;
+      using namespace Prdc;
+      extern template class WFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
+      extern template class WFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
+      extern template class WFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
    }
-} // namespace Pscf
+   namespace Rpc {
+      extern template class WFields<1>;
+      extern template class WFields<2>;
+      extern template class WFields<3>;
+   }
+} 
 #endif

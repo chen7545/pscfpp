@@ -33,74 +33,39 @@ namespace Rpc {
    /**
    * Spatial domain for a periodic structure with real fields, on a CPU.
    *
-   * The public interface of this class is identical to that of the 
-   * Rp::Domain base class template. Please see documentation of
-   * that base class for API documentation. 
-   *
-   * The Rpc::Domain\<D\> class template is a named partial specialization
-   * of the base class template Rp::Domain<D, FFT, WLT, FIT> that 
-   * is designed to use standard CPU hardware, defined using template type 
-   * parameters FFT = Prdc::Cpu::FFT\<D\>, WLT = Prdc::Cpu::WaveList\<D\>, 
-   * and FIT = Rpc::FieldIo\<D\> . 
+   * Instantiations of this template with D =1, 2, and 3 are derived from
+   * instantiations of the class template Rp::Domain<D, FFT, WLT, FIT>,
+   * defined using template type parameters FFT = Prdc::Cpu::FFT\<D\>, 
+   * WLT = Prdc::Cpu::WaveList\<D\>, and FIT = Rpc::FieldIo\<D\> that are
+   * designed to use standard CPU hardware. The entire public interface 
+   * and all of the source code are inherited from this base class. See
+   * the documentation of the Rp::Domain base class template for details. 
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
    class Domain 
-     : public Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
-   {
-
-   public:
-
-      /**
-      * Constructor.
-      *
-      * Sets the class name used in the parameter file to "Domain".
-      */
-      Domain();
-
-      /// Typedef for base class
-      typedef Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> > Base;
-
-      // Inherited pubic member functions
-      using Base::setFileMaster;
-      using Base::readParameters;
-      using Base::readRGridFieldHeader;
-      using Base::makeBasis;
-      using Base::unitCell;
-      using Base::mesh;
-      using Base::group;
-      using Base::basis;
-      using Base::fft;
-      using Base::waveList;
-      using Base::fieldIo;
-      using Base::lattice;
-      using Base::groupName;
-      using Base::hasGroup;
-      using Base::hasBasis;
-      using Base::writeStars;
-      using Base::writeWaves;
-      using Base::writeGroup;
-
-   };
-
-   // Explicit instantiation declarations of all relevant cases
-   extern template class Domain<1>;
-   extern template class Domain<2>;
-   extern template class Domain<3>;
+    : public Rp::Domain< D, FFT<D>, WaveList<D>, FieldIo<D> >
+   {};
 
 } // namespace Rpc
-
-namespace Rp {
-   // Explicit instantiation declarations of base class
-   using namespace Prdc::Cpu;
-   extern template 
-   class Domain<1, FFT<1>, WaveList<1>, Rpc::FieldIo<1> >;
-   extern template 
-   class Domain<2, FFT<2>, WaveList<2>, Rpc::FieldIo<2> >;
-   extern template 
-   class Domain<3, FFT<3>, WaveList<3>, Rpc::FieldIo<3> >;
-} 
-
 } // namespace Pscf
+
+// Explicit instantiation declarations 
+namespace Pscf {
+   namespace Rp {
+      using namespace Prdc;
+      extern template 
+      class Domain<1, Cpu::FFT<1>, Cpu::WaveList<1>, Rpc::FieldIo<1> >;
+      extern template 
+      class Domain<2, Cpu::FFT<2>, Cpu::WaveList<2>, Rpc::FieldIo<2> >;
+      extern template 
+      class Domain<3, Cpu::FFT<3>, Cpu::WaveList<3>, Rpc::FieldIo<3> >;
+   } 
+   namespace Rpc {
+      extern template class Domain<1>;
+      extern template class Domain<2>;
+      extern template class Domain<3>;
+   } 
+} 
 #endif

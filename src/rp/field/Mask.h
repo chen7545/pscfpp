@@ -21,67 +21,74 @@ namespace Pscf {
       template <int D> class UnitCell;
    }
 }
- 
+
 namespace Pscf {
 namespace Rp {
 
    using namespace Util;
-   using namespace Prdc; 
+   using namespace Prdc;
 
    /**
-   * Container for a field to which the total density is constrained.
-   * 
+   * A field that specifies an inhomogeneous total monomer concentration.
+   *
    * A system that contains a Mask must satisfy a modified version of the
    * incompressibility constraint, in which the sum of the concentration
-   * (or volume fraction) fields of all monomer types must be equal to the 
-   * Mask field. The Mask field takes values in the range [0, 1] everywhere. 
-   * A system without a Mask is equivalent to one in which the mask field 
+   * (or volume fraction) fields of all monomer types must be equal to the
+   * Mask field. The Mask field takes values in the range [0, 1] everywhere.
+   * A system without a Mask is equivalent to one in which the mask field
    * is equal to 1 at all points in the unit cell.
-   * 
-   * <b> Field representations </b>: A Mask \<D\> contains representations 
+   *
+   * <b> Field representations </b>: A Mask \<D\> contains representations
    * of the mask field in two formats:
-   * 
+   *
    *  - An RFT object (where RFT is a template type parameter) contains
    *    values of the field on the nodes of a regular mesh. This is
    *    accessed by the rgrid() member function.
    *
-   *  - A DArray \<double\> that contains components of the field in a
-   *    symmetry-adapted Fourier expansion (i.e., in basis format). This 
+   *  - A DArray \<double\> contains components of the field in a
+   *    symmetry-adapted Fourier expansion (i.e., in basis format). This
    *    is accessed by the basis() member function.
    *
-   * A Mask is designed to automatically update one of these 
-   * representations when the other is modified, when appropriate. 
-   * A pointer to an associated FIT (another template parameter) is
-   * used for these conversions. The FieldIo class that is used to 
-   * instantiate this template should be a subclass of Rp::FieldIo.
-   * 
+   * A Mask is designed to automatically update each of these two
+   * representations when the other is modified, as appropriate.
+   * A pointer to an associated FieldIo object (an instance of temnplate
+   * parameter FIT) is used for these conversions. The FieldIo class that 
+   * is used as an argument for parameter FIT should be a subclass of 
+   * Rp::FieldIo.
+   *
    * The setBasis and readBasis functions allow the user to input field
-   * components in basis format, and both internally recompute the values 
-   * in r-grid format.  The setRGrid and readRGrid functions allows the 
-   * user to input the field in r-grid format, and both recompute the 
-   * components in basis format if and only if the user explicitly declares 
-   * that the field is known to be invariant under all symmetries of the 
-   * space group. A boolean member variable named isSymmetric is used to 
-   * keep track of whether the current mask field is symmetric, and thus 
+   * components in basis format, and both internally recompute the values
+   * in r-grid format.  The setRGrid and readRGrid functions allows the
+   * user to input the field in r-grid format, and both recompute the
+   * components in basis format if and only if the user explicitly declares
+   * that the field is known to be invariant under all symmetries of the
+   * space group. A boolean member variable named isSymmetric is used to
+   * keep track of whether the current mask field is symmetric, and thus
    * whether the symmetry-adapted basis representation exists.
    *
-   * <b> Subclasses </b>: Instantiations of the class template 
-   * Mask \<D, RFT, FIT\> are used as base classes for the class 
+   * <b> Signal </b>: A Mask owns an instance of class 
+   * Util::Signal<void> that notifies all observers whenever the field 
+   * owned by the Mask is modified. This Signal<void> object is returned
+   * by non-const reference by the Rp::Mask::signal() accessor function.
+   * The Util::Signal<void>::addObserver member function may used to add 
+   * an observer object, and to specify a zero-parameter member function 
+   * of each observer that will be called whenever the field is modified.
+   *
+   * <b> Template parameters </b>:
+   *
+   *   - D   : dimension of space
+   *   - RFT : real field type (Rpc::RField<D> or Rpg::RField<D>)
+   *   - FIT : FieldIo type (Rpc::FieldIo<D> or Rpg::FieldIo<D>)
+   *
+   * <b> Subclasses </b>: Instantiations of the class template
+   * Mask \<D, RFT, FIT\> are used as base classes for the class
    * templates Rpc::Mask \<D \> and Rpg::Mask \<D\> that are used by
    * the pscf_rpc and pscf_rpg programs, respectively.
-   *
-   * <b> Signal </b>: A Mask owns an instance of class 
-   * Util::Signal<void> that notifies all observers whenever the field
-   * owned by the Mask is modified. This Signal object may be accessed
-   * by reference using the signal() member function of Rp::Mask. The
-   * Util::Signal<void>::addObserver member function may used to add an
-   * observer object and indicate a zero-parameter member function of
-   * each observer that will be called whenever the field is modified.
    *
    * \ingroup Rp_Field_Module
    */
    template <int D, class RFT, class FIT>
-   class Mask 
+   class Mask
    {
 
    public:
@@ -101,7 +108,7 @@ namespace Rp {
 
       /**
       * Create association with FieldIo (store pointer).
-      * 
+      *
       * \param fieldIo  associated FieldIo object
       */
       void setFieldIo(FIT const & fieldIo);
@@ -111,7 +118,7 @@ namespace Rp {
       *
       * This function creates a stored pointer to a UnitCell<D> that is
       * is used by the readBasis and readRGrid functions, which reset the
-      * unit cell parameters in this object to those read from the field 
+      * unit cell parameters in this object to those read from the field
       * file header. This function may only be called once.
       *
       * \param cell  unit cell that is modified by readBasis and readRGrid.
@@ -123,7 +130,7 @@ namespace Rp {
       *
       * This function creates a stored pointer to a UnitCell<D> that is
       * is used by the writeBasis and writeRGrid functions, which each
-      * write the unit cell parameters from in this object to a field 
+      * write the unit cell parameters from in this object to a field
       * file header. This function may only be called once.
       *
       * \param cell  unit cell that is used by writeBasis and writeRGrid.
@@ -135,7 +142,7 @@ namespace Rp {
       *
       * An Exception will be thrown if this is called more than once.
       *
-      * \param nBasis  number of basis functions 
+      * \param nBasis  number of basis functions
       */
       void allocateBasis(int nBasis);
 
@@ -168,19 +175,19 @@ namespace Rp {
       /**
       * Set field values in real-space (r-grid) format.
       *
-      * If the isSymmetric parameter is true, this function assumes that 
+      * If the isSymmetric parameter is true, this function assumes that
       * the field are known to be symmetric and so computes and stores
       * the corresponding basis components. If isSymmetric is false, it
       * only sets the values in the r-grid format.
-      * 
-      * On return, hasData is true and the persistent isSymmetric flag 
-      * defined by the class is set to the value of the isSymmetric 
+      *
+      * On return, hasData is true and the persistent isSymmetric flag
+      * defined by the class is set to the value of the isSymmetric
       * input parameter.
       *
       * As needed, r-grid and/or basis fields may be allocated within this
       * function. If the isSymmetric parameter is true, then a basis must
       * be initialized prior to entry.
-      * 
+      *
       * \param field  new field in r-grid format
       * \param isSymmetric is this field symmetric under the space group?
       */
@@ -191,7 +198,7 @@ namespace Rp {
       *
       * This function also computes and stores the corresponding r-grid
       * representation. On return, hasData and isSymmetric are both true.
-      * 
+      *
       * This object must already be allocated and associated with a
       * a FieldIo object to run this function.
       *
@@ -209,7 +216,7 @@ namespace Rp {
       * This function also computes and stores the corresponding
       * r-grid representation. On return, hasData and isSymmetric
       * are both true.
-      * 
+      *
       * As needed, r-grid and/or basis fields may be allocated within
       * this functions, if not allocated on entry. An associated basis
       * will be initialized if it is not initialized on entry.
@@ -221,19 +228,19 @@ namespace Rp {
       /**
       * Reads field from an input stream in real-space (r-grid) format.
       *
-      * If the isSymmetric parameter is true, this function assumes that 
+      * If the isSymmetric parameter is true, this function assumes that
       * the field is known to be symmetric and so computes and stores
       * the corresponding basis format. If isSymmetric is false, it
       * only sets the values in the r-grid format.
-      * 
-      * On return, hasData is true and the persistent isSymmetric flag 
-      * defined by the class is set to the value of the isSymmetric 
+      *
+      * On return, hasData is true and the persistent isSymmetric flag
+      * defined by the class is set to the value of the isSymmetric
       * input parameter.
-      * 
+      *
       * As needed, r-grid and/or basis fields may be allocated within
       * this functions, if not allocated on entry. An associated basis
       * will be initialized if it is not initialized on entry.
-      * 
+      *
       * \param in  input stream from which to read field
       * \param isSymmetric  is this field symmetric under the space group?
       */
@@ -242,19 +249,19 @@ namespace Rp {
       /**
       * Reads field from a named file, in real-space (r-grid) format.
       *
-      * If the isSymmetric parameter is true, this function assumes that 
+      * If the isSymmetric parameter is true, this function assumes that
       * the field is known to be symmetric and so computes and stores
       * the corresponding basis format. If isSymmetric is false, it
       * only sets the values in the r-grid format.
-      * 
-      * On return, hasData is true and the persistent isSymmetric flag 
-      * defined by the class is set to the value of the isSymmetric 
+      *
+      * On return, hasData is true and the persistent isSymmetric flag
+      * defined by the class is set to the value of the isSymmetric
       * input parameter.
-      * 
+      *
       * As needed, r-grid and/or basis fields may be allocated within
       * this functions, if not allocated on entry. An associated basis
       * will be initialized if it is not initialized on entry.
-      * 
+      *
       * \param filename  file from which to read field
       * \param isSymmetric  is this field symmetric under the space group?
       */
@@ -293,7 +300,7 @@ namespace Rp {
       void writeRGrid(std::string filename) const;
 
       ///@}
-      /// \name Field Accessors 
+      /// \name Field Accessors
       ///@{
 
       /**
@@ -308,13 +315,13 @@ namespace Rp {
 
       /**
       * Return the volume fraction of unit cell occupied by material.
-      * 
-      * This value is equivalent to the spatial average of the mask, 
+      *
+      * This value is equivalent to the spatial average of the mask,
       * which is the q=0 coefficient of the discrete Fourier transform.
-      * 
-      * If hasData == true and isSymmetric == false (i.e., data only 
-      * exists in rgrid format), then this object must be associated 
-      * with a FieldIo object in order to call phiTot(). In other 
+      *
+      * If hasData == true and isSymmetric == false (i.e., data only
+      * exists in rgrid format), then this object must be associated
+      * with a FieldIo object in order to call phiTot(). In other
       * cases, the FieldIo association is not necessary.
       */
       double phiTot() const;
@@ -322,8 +329,8 @@ namespace Rp {
       /**
       * Get a signal that notifies observers of field modification.
       *
-      * The Signal<void>::notify method is called by within all member 
-      * functions that modify the field, to notify observers of this 
+      * The Signal<void>::notify method is called by within all member
+      * functions that modify the field, to notify observers of this
       * event. The Signal<void>::addObserver function may be applied
       * to the Signal object returned by this function to add one or
       * more observers.
@@ -355,7 +362,7 @@ namespace Rp {
       * Are field symmetric under all elements of the space group?
       *
       * A valid basis format exists if and only if isSymmetric is true.
-      * This flat is set true if the field were input in basis format 
+      * This flat is set true if the field were input in basis format
       * by the function setBasis, or if they were set in grid format
       * by the function setRGrid but isSymmetric was set true.
       */
@@ -394,7 +401,7 @@ namespace Rp {
 
       /**
       * Calculate the average value of the rgrid_ member.
-      * 
+      *
       * Must be implemented by subclasses, because this calculation
       * depends on the specific implementation of the RFT type.
       */

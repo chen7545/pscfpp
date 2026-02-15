@@ -40,7 +40,7 @@ namespace Rp {
       hasGroup_(false),
       isInitialized_(false)
    {
-      setClassName("Domain");
+      ParamComposite::setClassName("Domain");
 
       // Construct associated objects
       groupPtr_ = new SpaceGroup<D>();
@@ -90,12 +90,12 @@ namespace Rp {
       UTIL_CHECK(fileMasterPtr_);
 
       // Read computational mesh dimensions (required)
-      read(in, "mesh", mesh_);
+      ParamComposite::read(in, "mesh", mesh_);
       UTIL_CHECK(mesh_.size() > 0);
       fft().setup(mesh_.dimensions());
 
       // Read lattice system enumeration value (required)
-      read(in, "lattice", lattice_);
+      ParamComposite::read(in, "lattice", lattice_);
       unitCell_.set(lattice_);
       UTIL_CHECK(unitCell_.lattice() != UnitCell<D>::Null);
       UTIL_CHECK(unitCell_.nParameter() > 0);
@@ -106,7 +106,8 @@ namespace Rp {
       // Optionally read groupName_ (string identifier for space group)
       hasGroup_ = false;
       bool hasGroupName = false;
-      hasGroupName = readOptional(in, "groupName", groupName_).isActive();
+      hasGroupName = ParamComposite::readOptional(
+                              in, "groupName", groupName_).isActive();
 
       // If groupName_ exists, read and construct group (space group)
       if (hasGroupName) {

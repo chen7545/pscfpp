@@ -9,7 +9,6 @@
 */
 
 #include <util/param/ParamComposite.h>    // base class
-
 #include <prdc/crystal/UnitCell.h>        // member
 #include <pscf/mesh/Mesh.h>               // member
 #include <string>                         // member (groupName)
@@ -189,7 +188,7 @@ namespace Rp {
       ///@{
 
       /**
-      * Get the lattice system (enumeration value).
+      * Get the lattice type (enumeration value).
       */
       typename UnitCell<D>::LatticeSystem lattice() const;
 
@@ -265,7 +264,7 @@ namespace Rp {
       */
       std::string groupName_;
 
-      // Pointers to owned and associated objects
+      // Pointers to owned and associated objects.
 
       /**
       * Pointer to a SpaceGroup object (owned).
@@ -319,88 +318,79 @@ namespace Rp {
       /*
       * Get FileMaster as const reference.
       */
-      FileMaster const & fileMaster() const
-      {
-         UTIL_CHECK(fileMasterPtr_);
-         return * fileMasterPtr_;
-      }
-
-      // Members of parent class with non-dependent names
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
+      FileMaster const & fileMaster() const;
 
    };
 
-   // Inline member functions
+   // Public inline member functions
 
    // Get the UnitCell by non-const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline UnitCell<D>& Domain<D,FFT,WLT,FIT>::unitCell()
+   template <int D, class FFT, class WLT, class FIT> inline 
+   UnitCell<D>& Domain<D,FFT,WLT,FIT>::unitCell()
    {  return unitCell_; }
 
    // Get the UnitCell by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline UnitCell<D> const & Domain<D,FFT,WLT,FIT>::unitCell() const
+   template <int D, class FFT, class WLT, class FIT> inline 
+   UnitCell<D> const & Domain<D,FFT,WLT,FIT>::unitCell() const
    {  return unitCell_; }
 
    // Get the Mesh by non-const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline Mesh<D>& Domain<D,FFT,WLT,FIT>::mesh()
+   template <int D, class FFT, class WLT, class FIT> inline 
+   Mesh<D>& Domain<D,FFT,WLT,FIT>::mesh()
    {  return mesh_; }
 
    // Get the Mesh by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline Mesh<D> const & Domain<D,FFT,WLT,FIT>::mesh() const
+   template <int D, class FFT, class WLT, class FIT> inline 
+   Mesh<D> const & Domain<D,FFT,WLT,FIT>::mesh() const
    {  return mesh_; }
 
    // Get the SpaceGroup by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline SpaceGroup<D> const & Domain<D,FFT,WLT,FIT>::group() const
+   template <int D, class FFT, class WLT, class FIT> inline 
+   SpaceGroup<D> const & Domain<D,FFT,WLT,FIT>::group() const
    {  return *groupPtr_; }
 
    // Get the Basis by non-const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline Basis<D>& Domain<D,FFT,WLT,FIT>::basis()
+   template <int D, class FFT, class WLT, class FIT> inline 
+   Basis<D>& Domain<D,FFT,WLT,FIT>::basis()
    {  return *basisPtr_; }
 
    // Get the Basis by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline Basis<D> const & Domain<D,FFT,WLT,FIT>::basis() const
+   template <int D, class FFT, class WLT, class FIT> inline 
+   Basis<D> const & Domain<D,FFT,WLT,FIT>::basis() const
    {  return *basisPtr_; }
 
    // Get the FFT by non-const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline FFT& Domain<D,FFT,WLT,FIT>::fft()
+   template <int D, class FFT, class WLT, class FIT> inline 
+   FFT& Domain<D,FFT,WLT,FIT>::fft()
    {  return *fftPtr_; }
 
    // Get the FFT by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline FFT const & Domain<D,FFT,WLT,FIT>::fft() const
+   template <int D, class FFT, class WLT, class FIT> inline 
+   FFT const & Domain<D,FFT,WLT,FIT>::fft() const
    {  return *fftPtr_; }
 
    // Get the WaveList by non-const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline WLT& Domain<D,FFT,WLT,FIT>::waveList()
+   template <int D, class FFT, class WLT, class FIT> inline 
+   WLT& Domain<D,FFT,WLT,FIT>::waveList()
    {  return *waveListPtr_; }
 
    // Get the WaveList by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline WLT const & Domain<D,FFT,WLT,FIT>::waveList() const
+   template <int D, class FFT, class WLT, class FIT> inline 
+   WLT const & Domain<D,FFT,WLT,FIT>::waveList() const
    {  return *waveListPtr_; }
 
    // Get the FieldIo by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline FIT& Domain<D,FFT,WLT,FIT>::fieldIo()
+   template <int D, class FFT, class WLT, class FIT> inline
+   FIT& Domain<D,FFT,WLT,FIT>::fieldIo()
    {  return *fieldIoPtr_; }
 
    // Get the FieldIo by const reference.
-   template <int D, class FFT, class WLT, class FIT>
-   inline FIT const & Domain<D,FFT,WLT,FIT>::fieldIo() const
+   template <int D, class FFT, class WLT, class FIT> inline
+   FIT const & Domain<D,FFT,WLT,FIT>::fieldIo() const
    {  return *fieldIoPtr_; }
 
-   // Get the lattice system enumeration value.
-   template <int D, class FFT, class WLT, class FIT>
-   inline
+   // Get the lattice type enumeration value.
+   template <int D, class FFT, class WLT, class FIT> inline
    typename UnitCell<D>::LatticeSystem Domain<D,FFT,WLT,FIT>::lattice()
    const
    {  return lattice_; }
@@ -414,6 +404,16 @@ namespace Rp {
    template <int D, class FFT, class WLT, class FIT>
    inline bool Domain<D,FFT,WLT,FIT>::hasGroup() const
    {  return hasGroup_; }
+
+   // Private inline member function
+
+   // Get FileMaster as const reference.
+   template <int D, class FFT, class WLT, class FIT> inline
+   FileMaster const & Domain<D,FFT,WLT,FIT>::fileMaster() const
+   {
+      UTIL_CHECK(fileMasterPtr_);
+      return * fileMasterPtr_;
+   }
 
 } // namespace Rp
 } // namespace Pscf

@@ -63,20 +63,19 @@ namespace Rp {
    * <b>Basis construction as side effect of reading field files:</b>
    * Every member function that reads fields from a file may construct a
    * symmetry adapted basis in an associated Basis<D> object as a side
-   * effect of reading a field file header. All such functions call the
-   * member function readFieldHeader to read the field file header.
-   * If a space group was declared in the parameter file, but the
-   * symmetry-adapted basis has not been initialized before reading a
-   * field file header, then the readFieldHeader function will initialize
-   * the associated Basis<D> object using the unit cell parameters found
-   * in the field file header.
+   * effect of reading a field file header. All such functions call 
+   * the member function readFieldHeader to read the field file header.
+   * If a space group is declared in the parameter file, but the
+   * symmetry-adapted basis has not yet been initialized, then the
+   * readFieldHeader function will initialize the associated Basis<D> 
+   * object using the unit cell parameters found in the field file header.
    *
    * <b> Pure virtual member functions </b>: This class template defines
    * several pure virtual functions for which different implementations
    * are required for Cpu and Cuda code. Cpu and Cuda implementations
    * of these functions, which are defined in the Rpc::FieldIo<D> and
-   * Rpg::FieldIo<D> subclasses, differ because the Cuda versions must
-   * explicitly transfer data between Cpu and Gpu memory.
+   * Rpg::FieldIo<D> subclasses, generally differ because the Cuda 
+   * versions must explicitly transfer data between Cpu and Gpu memory.
    *
    * \ingroup Rp_Field_Module
    */

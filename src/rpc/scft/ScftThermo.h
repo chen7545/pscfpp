@@ -20,6 +20,12 @@ namespace Rpc {
    /**
    * Computes SCFT free energies.
    *
+   * Instantiations of this template with D =1, 2, and 3 are derived 
+   * from instantiations of the base class template Rp::ScftThermo, and 
+   * inherit their public interface and almost all of their source code
+   * from this base class. See the documentation for this base class 
+   * template for details. 
+   *
    * \ingroup Rpc_Scft_Module
    */
    template <int D>
@@ -36,19 +42,20 @@ namespace Rpc {
 
    };
 
-   // Explicit instantiation declarations
-   extern template class ScftThermo<1>;
-   extern template class ScftThermo<2>;
-   extern template class ScftThermo<3>;
-
-}
-
-namespace Rp {
-   // Explicit instantiation declarations for base class
-   extern template class Rp::ScftThermo<1, Rpc::System<1> >;
-   extern template class Rp::ScftThermo<2, Rpc::System<2> >;
-   extern template class Rp::ScftThermo<3, Rpc::System<3> >;
-}
-
+} // namespace Rpc
 } // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class Rp::ScftThermo<1, Rpc::System<1> >;
+      extern template class Rp::ScftThermo<2, Rpc::System<2> >;
+      extern template class Rp::ScftThermo<3, Rpc::System<3> >;
+   }
+   namespace Rpc {
+      extern template class ScftThermo<1>;
+      extern template class ScftThermo<2>;
+      extern template class ScftThermo<3>;
+   }
+} 
 #endif

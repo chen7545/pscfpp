@@ -7,16 +7,15 @@
 
 #include "WFields.tpp"
 
+// Explicit instantiation definitions
 namespace Pscf {
    namespace Rp {
-      // Explicit instantiation definitions for base class
-      using namespace Prdc::Cpu;
-      template class Rp::WFields<1, RField<1>, Rpc::FieldIo<1> >;
-      template class Rp::WFields<2, RField<2>, Rpc::FieldIo<2> >;
-      template class Rp::WFields<3, RField<3>, Rpc::FieldIo<3> >;
+      using namespace Prdc;
+      template class Rp::WFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
+      template class Rp::WFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
+      template class Rp::WFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
    }
    namespace Rpc {
-      // Explicit instantiation definitions
       template class WFields<1>;
       template class WFields<2>;
       template class WFields<3>;

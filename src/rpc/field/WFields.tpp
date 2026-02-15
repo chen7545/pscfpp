@@ -1,5 +1,5 @@
-#ifndef RPC_W_FIELD_CONTAINER_TPP
-#define RPC_W_FIELD_CONTAINER_TPP
+#ifndef RPC_W_FIELDS_TPP
+#define RPC_W_FIELDS_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,8 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "WFields.h"             // class header
-#include <rp/field/WFields.tpp>  // base class template implementation
+#include "WFields.h"               // class header
+#include <rpc/field/FieldIo.tpp>
+#include <rp/field/WFields.tpp>    // base class implementation
 
 namespace Pscf {
 namespace Rpc {
@@ -19,12 +20,12 @@ namespace Rpc {
    using namespace Pscf::Prdc::Cpu;
 
    template <int D>
-   void WFields<D>::assignRField(RField<D>& lhs, 
+   void WFields<D>::assignRField(RField<D>& lhs,
                                  RField<D> const & rhs) const
    {
       int n = rhs.capacity();
       UTIL_CHECK(lhs.capacity() == n);
-      UTIL_CHECK(meshSize() == n);
+      UTIL_CHECK(RpWFields::meshSize() == n);
       for (int i = 0; i < n; ++i) {
          lhs[i] = rhs[i];
       }

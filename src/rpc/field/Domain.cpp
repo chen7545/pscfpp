@@ -5,8 +5,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Domain.tpp"
+#include "Domain.h"                 // class header
+#include <rpc/field/FieldIo.tpp>    // base class template argument
+#include <prdc/cpu/WaveList.h>      // base class template argument
+#include <prdc/cpu/FFT.h>           // base class template argument
+#include <rp/field/Domain.tpp>      // base class template implementation
 
+// Explicit instantiation definitions
 namespace Pscf {
    namespace Rp {
       using namespace Prdc::Cpu;

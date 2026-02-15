@@ -9,7 +9,8 @@
 */
 
 #include <pscf/math/IntVec.h>            // member
-#include <util/containers/DArray.h>      // member template
+#include <util/containers/DArray.h>      // member
+#include <util/global.h>
 
 // Forward declarations
 namespace Util {
@@ -30,15 +31,15 @@ namespace Rp {
 
    /**
    * A container of w fields stored in both basis and r-grid format.
-   * 
+   *
    * <b> Template parameters </b>: The template parameters represent:
-   * 
+   *
    *     - D   : integer dimensionality of space, D=1,2, or 3
    *     - RFT : field type for r-grid data (e.g., RField<D>)
    *     - FIT : FieldIo type for field io operations (e.g., FieldIo<D>)
-   * 
+   *
    * <b> Field Representations </b>: A WFields contains a list of
-   * nMonomer chemical potential (w) fields that are each associated with 
+   * nMonomer chemical potential (w) fields that are each associated with
    * a monomer type. The fields may be stored in two different formats:
    *
    *  - A DArray of RFT containers holds valus of each field on
@@ -51,45 +52,44 @@ namespace Rp {
    *    functions.
    *
    * A WFields is designed to automatically update one of these
-   * representations when the other is modified, when appropriate. A 
+   * representations when the other is modified, when appropriate. A
    * pointer to an associated FIT object is used for these conversions.
    *
-   * The setBasis and readBasis functions allow the user to input new 
-   * components in basis format, and both internally recompute the values 
-   * in r-grid format.  The setRGrid and readRGrid functions allow the 
+   * The setBasis and readBasis functions allow the user to input new
+   * components in basis format, and both internally recompute the values
+   * in r-grid format.  The setRGrid and readRGrid functions allow the
    * user to input the fields in r-grid format, and compute corresponding
-   * components in basis format if and only if the user declares that the 
-   * fields are known to be invariant under all symmetries of the space 
-   * group. A boolean flag named isSymmetric is used to keep track of 
-   * whether the current field is symmetric, and thus whether the basis 
+   * components in basis format if and only if the user declares that the
+   * fields are known to be invariant under all symmetries of the space
+   * group. A boolean flag named isSymmetric is used to keep track of
+   * whether the current field is symmetric, and thus whether the basis
    * format exists.
-   *
-   * <b> Subclasses </b>: Partial specializations of WFields are
-   * used as base classes for classes Rpc::WFields \<D \> and 
-   * Rpg::WFields \<D\>:
-   *
-   *  - Subclass Rpc::WFields \<D\> is derived from a partial
-   *    specialization of WFields with template parameters 
-   *    RFT = Cpu::RFT \<D\> and FIT = Rpc::FIT \<D\> , and is used in
-   *    the pscf_rpc CPU program.
-   *
-   *  - Subclass Rpg::WFields \<D\> is derived from a partial
-   *    specialization of WFields with template parameters 
-   *    RFT = Cuda::RFT \<D\> and FIT = Rpg::FIT \<D\> , and is used in
-   *    the pscf_rpg GPU accelerated program.
    *
    * <b> Signal </b>: A WFields owns an instance of class
    * Util::Signal<void> that notifies all observers whenever the fields
-   * owned by the WFields are modified. This signal object may be 
+   * owned by the WFields are modified. This signal object may be
    * accessed by reference using the signal() member function. The
    * Util::Signal<void>::addObserver function may used to add "observer"
-   * objects and indicate a zero-parameter member function of each 
+   * objects and indicate a zero-parameter member function of each
    * observer that will be called whenever the fields are modified.
+   *
+   * <b> Subclasses </b>: Instantiations of Rp::WFields are used as base
+   * for classes Rpc::WFields \<D \> and Rpg::WFields \<D\>:
+   *
+   *  - Instantiations of Rpc::WFields \<D\> with D=1, 2, and 3 are
+   *    derived from instantiations of Rp::WFields with template arguments
+   *    RFT = Cpu::RFT \<D\> and FIT = Rpc::FIT \<D\> , and are used in
+   *    the pscf_rpc CPU program.
+   *
+   *  - Instantiations of Rpg::WFields \<D\> with D=1, 2 and 3 are
+   *    derived from instantiations of Rp::WFields with template arguments
+   *    RFT = Cuda::RFT \<D\> and FIT = Rpg::FIT \<D\> , and are used in
+   *    the pscf_rpg GPU accelerated program.
    *
    * \ingroup Rp_Field_Module
    */
    template <int D, class RFT, class FIT>
-   class WFields 
+   class WFields
    {
 
    public:
@@ -115,11 +115,11 @@ namespace Rp {
       void setFieldIo(FIT const & fieldIo);
 
       /**
-      * Set unit cell used when reading field files. 
+      * Set unit cell used when reading field files.
       *
       * This function creates a stored pointer to a UnitCell<D> that is
       * is used by the readBasis and readRGrid functions, which reset the
-      * unit cell parameters in this object to those read from the field 
+      * unit cell parameters in this object to those read from the field
       * file header. This function may only be called once.
       *
       * \param cell  unit cell that is modified by readBasis and readRGrid.
@@ -131,7 +131,7 @@ namespace Rp {
       *
       * This function creates a stored pointer to a UnitCell<D> that is
       * is used by the writeBasis and writeRGrid functions, which each
-      * write the unit cell parameters from in this object to a field 
+      * write the unit cell parameters from in this object to a field
       * file header. This function may only be called once.
       *
       * \param cell  unit cell that is used by writeBasis and writeRGrid.
@@ -181,8 +181,8 @@ namespace Rp {
       *
       * This function also computes and stores the corresponding r-grid
       * representation. On return, hasData and isSymmetric are both true.
-      * 
-      * The associated basis must be initialized on entry.  As needed, 
+      *
+      * The associated basis must be initialized on entry.  As needed,
       * r-grid and/or basis fields may be allocated within this function.
       *
       * \param fields  array of new fields in basis format
@@ -201,8 +201,8 @@ namespace Rp {
       * defined by the class is set to the value of the isSymmetric
       * input parameter.
       *
-      * As needed, r-grid and/or basis fields may be allocated within this 
-      * function. If the isSymmetric parameter is true, the a basis must 
+      * As needed, r-grid and/or basis fields may be allocated within this
+      * function. If the isSymmetric parameter is true, the a basis must
       * be initialized prior to entry.
       *
       * \param fields  array of new fields in r-grid format
@@ -218,7 +218,7 @@ namespace Rp {
       * representation. On return, hasData and isSymmetric are both true.
       *
       * As needed, r-grid and/or basis fields can be allocated within
-      * this function, if not allocated on entry. An associated basis 
+      * this function, if not allocated on entry. An associated basis
       * will be initialized if not initialized on entry.
       *
       * \param in  input stream from which to read fields
@@ -406,8 +406,8 @@ namespace Rp {
       *
       * A valid basis format exists if and only if isSymmetric is true.
       * This flag is set true when the fields are input in basis format
-      * by the function setBasis or readBasis, or when they are set in 
-      * grid format by calling the function setRGrid or readRGrid with 
+      * by the function setBasis or readBasis, or when they are set in
+      * grid format by calling the function setRGrid or readRGrid with
       * function parameter isSymmetric == true.
       */
       bool isSymmetric() const;
@@ -503,7 +503,7 @@ namespace Rp {
       * The Signal is constructed and owned by this field container.
       */
       Signal<void>* signalPtr_;
- 
+
       /*
       * Has memory been allocated for fields in r-grid format?
       */
@@ -529,7 +529,7 @@ namespace Rp {
 
       /*
       *  Assign one RFT to another: lhs = rhs.
-      *  
+      *
       *  \param lhs  left hand side of assignment
       *  \param rhs  right hand side of assignment
       */
@@ -537,16 +537,16 @@ namespace Rp {
 
    };
 
-   // Inline member functions
+   // Public inline member functions
 
    // Clear data stored in this object without deallocating
-   template <int D, class RField, class FieldIo> inline 
+   template <int D, class RField, class FieldIo> inline
    void WFields<D,RField,FieldIo>::clear()
    {  hasData_ = false; }
 
    // Get array of all fields in basis format (const)
    template <int D, class RFT, class FIT> inline
-   DArray< DArray<double> > const & 
+   DArray< DArray<double> > const &
    WFields<D,RFT,FIT>::basis() const
    {
       UTIL_ASSERT(isAllocatedBasis_);
@@ -580,51 +580,51 @@ namespace Rp {
    }
 
    // Has memory been allocated for fields in r-grid format?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool WFields<D,RFT,FIT>::isAllocatedRGrid() const
    {  return isAllocatedRGrid_; }
 
    // Has memory been allocated for fields in basis format?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool WFields<D,RFT,FIT>::isAllocatedBasis() const
    {  return isAllocatedBasis_; }
 
    // Has field data been initialized ?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool WFields<D,RFT,FIT>::hasData() const
    {  return hasData_; }
 
    // Are the fields symmetric under space group operations?
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    bool WFields<D,RFT,FIT>::isSymmetric() const
    {  return isSymmetric_; }
 
    // Protected inline member functions
-   
+
    // Get mesh dimensions in each direction, set on r-grid allocation.
    template <int D, class RFT, class FIT>
-   inline 
-   IntVec<D> const & 
+   inline
+   IntVec<D> const &
    WFields<D,RFT,FIT>::meshDimensions() const
    {  return meshDimensions_; }
 
    // Get mesh size (number of grid points), set on r-grid allocation.
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    int WFields<D,RFT,FIT>::meshSize() const
    {  return meshSize_; }
 
    // Get number of basis functions, set on basis allocation.
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    int WFields<D,RFT,FIT>::nBasis() const
    {  return nBasis_; }
 
    // Get number of monomer types.
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    int WFields<D,RFT,FIT>::nMonomer() const
    {  return nMonomer_; }
 
    // Associated FieldIo object (const reference).
-   template <int D, class RFT, class FIT> inline 
+   template <int D, class RFT, class FIT> inline
    FIT const & WFields<D,RFT,FIT>::fieldIo() const
    {
       UTIL_CHECK(fieldIoPtr_);

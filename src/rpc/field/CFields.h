@@ -9,69 +9,48 @@
 */
 
 #include <rp/field/CFields.h>       // base class template
-#include <rpc/field/FieldIo.h>      // base class template argument
-#include <prdc/cpu/RField.h>        // base class template argument
+#include <prdc/cpu/RField.h>        // base class member
 
 namespace Pscf {
 namespace Rpc {
+
+   // Forward declaration
+   template <int D> class FieldIo;
 
    using namespace Util;
    using namespace Prdc;
    using namespace Prdc::Cpu;
 
    /**
-   * A list of c fields stored in both basis and r-grid format.
+   * A container for c fields stored in both basis and r-grid format.
    *
-   * This class is simply a named instantiation of the base class
-   * template Rp::CFields, designed for use on CPU hardware. Please
-   * see documentation of this base class for API documentation.
+   * Instantiations of this template with D =1, 2, and 3 are derived
+   * from instantiations of the base class template Rp::CFields, and
+   * inherit their public interface and all of their source code from
+   * this base class. See the documentation for this base class
+   * template for details.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
    class CFields : public Rp::CFields<D, RField<D>, FieldIo<D> >
-   {
-
-   public:
-
-      /// Alias for direct base class.
-      using Base = Rp::CFields<D, RField<D>, FieldIo<D> >;
-
-      // Inherited public member functions
-      using Base::setFieldIo;
-      using Base::setNMonomer;
-      using Base::setWriteUnitCell;
-      using Base::allocateRGrid;
-      using Base::allocateBasis;
-      using Base::allocate;
-      using Base::basis;
-      using Base::rgrid;
-      using Base::isAllocatedRGrid;
-      using Base::isAllocatedBasis;
-      using Base::hasData;
-      using Base::isSymmetric;
-      using Base::setHasData;
-      using Base::setIsSymmetric;
-
-   };
-
-   // Explicit instantiation declarations
-   extern template class CFields<1>;
-   extern template class CFields<2>;
-   extern template class CFields<3>;
+   {};
 
 } // namespace Rpc
 } // namespace Pscf
 
-// Explicit instantiation declarations of base class
+// Explicit instantiation declarations
 namespace Pscf {
    namespace Rp {
-      extern template 
-      class CFields<1, Prdc::Cpu::RField<1>, Rpc::FieldIo<1> >;
-      extern template 
-      class CFields<2, Prdc::Cpu::RField<2>, Rpc::FieldIo<2> >;
-      extern template 
-      class CFields<3, Prdc::Cpu::RField<3>, Rpc::FieldIo<3> >;
+      using namespace Prdc;
+      extern template class CFields<1, Cpu::RField<1>, Rpc::FieldIo<1> >;
+      extern template class CFields<2, Cpu::RField<2>, Rpc::FieldIo<2> >;
+      extern template class CFields<3, Cpu::RField<3>, Rpc::FieldIo<3> >;
    }
-} 
+   namespace Rpc {
+      extern template class CFields<1>;
+      extern template class CFields<2>;
+      extern template class CFields<3>;
+   }
+}
 #endif
