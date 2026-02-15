@@ -221,7 +221,6 @@ namespace Rp {
       for (int i = 0; i < nMonomer_; ++i) {
          UTIL_CHECK(fields[i].capacity() == meshSize_);
          VecOp::eqV(rgrid_[i], fields[i]);
-         //assignRField(rgrid_[i], fields[i]);
       }
 
       // Optionally convert to basis form
@@ -458,20 +457,6 @@ namespace Rp {
       UTIL_CHECK(signalPtr_);
       return *signalPtr_;
    }
-
-   #if 0
-   // Private virtual function
-
-   /*
-   * Assignment operation for r-grid fields (RFT objects).
-   *
-   * Unimplemented virtual function - must be overridden by subclasses.
-   */
-   template <int D, class RFT, class FIT>
-   void
-   WFields<D,RFT,FIT>::assignRField(RFT & lhs, RFT const & rhs) const
-   {  UTIL_THROW("Unimplemented function WFields::assignRField"); }
-   #endif
 
 } // namespace Rp
 } // namespace Pscf

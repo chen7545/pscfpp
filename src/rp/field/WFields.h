@@ -527,16 +527,6 @@ namespace Rp {
       */
       bool isSymmetric_;
 
-      #if 0
-      /**
-      *  Assign one RFT to another: lhs = rhs.
-      *
-      *  \param lhs  left hand side of assignment
-      *  \param rhs  right hand side of assignment
-      */
-      virtual void assignRField(RFT& lhs, RFT const & rhs) const;
-      #endif
-
    };
 
    // Public inline member functions

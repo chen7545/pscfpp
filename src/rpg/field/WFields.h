@@ -9,12 +9,12 @@
 */
 
 #include <rp/field/WFields.h>    // base class template
-#include <prdc/cuda/RField.h>    // base class template argument
-//#include <rpg/field/FieldIo.h>   // base class template argument
+#include <prdc/cuda/RField.h>    // base class member
 
 namespace Pscf {
 namespace Rpg {
 
+   // Forward declaration
    template <int D> class FieldIo;
 
    using namespace Util;
@@ -37,29 +37,8 @@ namespace Rpg {
 
    public:
 
-      /// Alias for base class.
+      // Alias for base class.
       using Base = Rp::WFields<D, RField<D>, FieldIo<D> >;
-
-      // Inherited public member functions
-      using Base::setFieldIo;
-      using Base::setNMonomer;
-      using Base::allocateRGrid;
-      using Base::allocateBasis;
-      using Base::allocate;
-      using Base::setBasis;
-      using Base::setRGrid;
-      using Base::readBasis;
-      using Base::readRGrid;
-      using Base::symmetrize;
-      using Base::clear;
-      using Base::writeBasis;
-      using Base::writeRGrid;
-      using Base::basis;
-      using Base::rgrid;
-      using Base::isAllocatedRGrid;
-      using Base::isAllocatedBasis;
-      using Base::hasData;
-      using Base::isSymmetric;
 
       /**
       * Set new w fields, in unfolded real-space (r-grid) format.
@@ -71,26 +50,7 @@ namespace Rpg {
       */
       void setRGrid(DeviceArray<cudaReal>& fields);
 
-   protected:
-
-      using Base::meshDimensions;
-      using Base::meshSize;
-      using Base::nBasis;
-      using Base::nMonomer;
-      using Base::fieldIo;
-
-   #if 0
-   private:
-
-      /**
-      *  Assign one RField<D> to another: lhs = rhs.
-      *
-      *  \left lhs  left-hand side of assignment
-      *  \left rhs  right-hand side of assignment
-      */
-      void assignRField(RField<D>& lhs, RField<D> const & rhs) const
-      override;
-   #endif
+      using Base::setRGrid;
 
    };
 

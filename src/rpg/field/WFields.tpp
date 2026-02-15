@@ -29,29 +29,17 @@ namespace Rpg {
    template <int D>
    void WFields<D>::setRGrid(DeviceArray<cudaReal>& fields)
    {
+      int nMonomer = Base::nMonomer();
+      int meshSize = Base::meshSize();
       DArray< RField<D> > tmp;
-      tmp.allocate(nMonomer());
-      for (int i = 0; i < nMonomer(); i++) {
-         tmp[i].associate(fields, i * meshSize(), meshDimensions());
+      tmp.allocate(nMonomer);
+      for (int i = 0; i < nMonomer; i++) {
+         tmp[i].associate(fields, i * meshSize, Base::meshDimensions());
       }
+
       bool isSymmetric = false;
       Base::setRGrid(tmp, isSymmetric);
    }
-
-   #if 0
-   // Private virtual function
-
-   template <int D>
-   void
-   WFields<D>::assignRField(RField<D>& lhs, RField<D> const & rhs)
-   const
-   {
-      int n = rhs.capacity();
-      UTIL_CHECK(lhs.capacity() == n);
-      UTIL_CHECK(meshSize() == n);
-      VecOp::eqV(lhs, rhs);
-   }
-   #endif
 
 } // namespace Rpg
 } // namespace Pscf

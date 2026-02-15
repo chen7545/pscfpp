@@ -24,35 +24,18 @@ namespace Rpc {
    /**
    * A container of fields stored in both basis and r-grid format.
    *
-   * Instantiations of this template with D =1, 2, and 3 are derived 
-   * from instantiations of the base class template Rp::WFields, and 
-   * inherit their public interface and almost all of their source code
-   * from this base class. See the documentation for this base class 
-   * template for details. 
+   * Instantiations of this template with D =1, 2, and 3 are derived
+   * from instantiations of the base class template Rp::WFields, and
+   * inherit their public interface and all of their source code
+   * from this base class. See the documentation for this base class
+   * template for details.
    *
    * \ingroup Rpc_Field_Module
    */
    template <int D>
-   class WFields 
+   class WFields
      : public Rp::WFields<D, RField<D>, FieldIo<D> >
-   {
-
-   #if 0
-   private:
-
-      /**
-      * Assign one RField<D> to another: lhs = rhs.
-      *
-      * \param lhs  left-hand side of assignment
-      * \param rhs  right-hand side of assignment
-      */
-      void assignRField(RField<D>& lhs, RField<D> const & rhs) const 
-      override;
-
-      using RpWFields = Rp::WFields< D, RField<D>, FieldIo<D> >;
-   #endif
-
-   };
+   {};
 
 } // namespace Rpc
 } // namespace Pscf
@@ -70,5 +53,5 @@ namespace Pscf {
       extern template class WFields<2>;
       extern template class WFields<3>;
    }
-} 
+}
 #endif

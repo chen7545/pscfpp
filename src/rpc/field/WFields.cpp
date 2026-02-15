@@ -5,7 +5,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "WFields.tpp"
+#include "WFields.h"               // class header
+#include <rpc/field/FieldIo.tpp>
+#include <pscf/cpu/VecOp.h>
+#include <rp/field/WFields.tpp>    // base class implementation
 
 // Explicit instantiation definitions
 namespace Pscf {
