@@ -1,8 +1,8 @@
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
 /*! 
-\page rpc_StepLogger_page StepLogger
+\page rp_StepLogger_page StepLogger
 
 The StepLogger class periodically outputs the current value of the
 simulation step counter, to indicate the progress of a calculation.
@@ -11,7 +11,7 @@ redirected to a file.
 
 \see StepLogger (class API)
 
-\section rpc_StepLogger_parameter_sec Parameter File
+\section rp_StepLogger_parameter_sec Parameter File
 
 The parameter file format is shown below:
 \code

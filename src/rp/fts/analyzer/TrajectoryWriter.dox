@@ -1,8 +1,8 @@
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
 /*! 
-\page rpc_TrajectoryWriter_page TrajectoryWriter
+\page rp_TrajectoryWriter_page TrajectoryWriter
 
 This analyzer periodically writes the w-field configuration to
 frames of a trajectory file.  The resulting file can be read and 
@@ -10,7 +10,7 @@ postprocessed using the ANALYZE command of pscf_rpc or pscf_rpg.
 
 \see TrajectoryWriter (class API)
 
-\section rpc_TrajectoryWriter_parameter_sec Parameter File
+\section rp_TrajectoryWriter_parameter_sec Parameter File
 
 The parameter file format for the associated block is shown below:
 \code
@@ -36,7 +36,7 @@ Meanings of the parameters are described briefly below:
   </tr>
 </table>
 
-\section rpc_TrajectoryWriter_output_sec Output
+\section rp_TrajectoryWriter_output_sec Output
 
 During the simulation, the w-field configuration is output to file 
 {outputFileName} every interval simulation steps.

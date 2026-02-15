@@ -1,19 +1,19 @@
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
 /*! 
-\page rpc_PerturbationDerivative_page PerturbationDerivative
+\page rp_PerturbationDerivative_page PerturbationDerivative
 
 This analyzer calculates the derivative of free energy with 
 respect to the perturbation parameter \f$\lambda \f$.
 
 \see PerturbationDerivative (class API)
 
-\section rpc_PerturbationDerivative_algorithm_sec Mathematical Formula
+\section rp_PerturbationDerivative_algorithm_sec Mathematical Formula
 The mathematical formula can be found in the documentation of
 the perturbation class for different types of perturbation. 
 
-\section rpc_PerturbationDerivative_parameter_sec Parameter File
+\section rp_PerturbationDerivative_parameter_sec Parameter File
 
 The full parameter file format, including all optional parameters, 
 is shown below:
@@ -44,7 +44,7 @@ Meanings of the parameters are described briefly below:
   </tr>
 </table>
 
-\section rpc_PerturbationDerivative_output_sec Output
+\section rp_PerturbationDerivative_output_sec Output
 During the simulation, the parameter \f$\lambda \f$ and 
 corresponding \f$  \frac{\partial F}{\partial \lambda}  \f$
 are output to the file {outputFileName} every interval

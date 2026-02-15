@@ -16,18 +16,17 @@ namespace Rp {
    /**
    * Periodically write field frames (snapshots) to a trajectory file.
    *
-   * \see \ref rp_TrajectoryWriter_page "Manual Page"
-   *
    * Instantiations of this template are used as base classes for two
-   * closely analogous class templates, also named TrajectoryWriter, 
-   * that are defined in the Rpc and Rpg namespaces for use in the 
-   * pscf_rpc and pscf_rpg programs, respectively.
+   * closely analogous class templates, also named TrajectoryWriter, that
+   * are defined in the Rpc and Rpg namespaces for use in the pscf_rpc and 
+   * pscf_rpg programs, respectively.
    *
    * Template parameters:
    *
    *    - D : dimension of space
    *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
+   * \see \ref rp_TrajectoryWriter_page "Manual Page"
    * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>

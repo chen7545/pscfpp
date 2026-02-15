@@ -18,8 +18,6 @@ namespace Rp {
    /**
    * Evaluate the derivative of H with respect to chi.
    *
-   * \see \ref rp_ChiDerivative_page "Manual Page"
-   *
    * Instantiations of this template are used as base classes for two
    * closely analogous class templates, also named ChiDerivative, that 
    * are defined in the Rpc and Rpg namespaces for use in the pscf_rpc
@@ -30,6 +28,7 @@ namespace Rp {
    *    - D : dimension of space
    *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>.
    *
+   * \see \ref rp_ChiDerivative_page "Manual Page"
    * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>

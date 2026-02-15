@@ -1,9 +1,10 @@
 This src/ directory contains all C++ and CUDA C++ source code for the PSCF 
-package.  The subdirectories util/, pscf/, prdc/, r1d/, rpc/, and rpg/ 
-each contain source code for classes and functions defined in a particular 
-C++ namespace.  Subdirectories util/ and test/ are maintained as separate 
-github repositories that are installed as submodules of the pscfpp 
-respository. 
+package.  The subdirectories util, pscf, r1d, prdc, rp, rpc/, rpg, cp, cpc,
+and cpg each contain source code for classes and functions defined in a 
+particular C++ namespace. The test subdirectory contains source code for a
+unit test framework. Subdirectories util/ and test/ are maintained as 
+separate github repositories that are installed as submodules of the pscfpp
+git repository when the repository is cloned using the --recursive option.
 
 Subdirectories (with corresponding C++ namespace names in parentheses):
 
@@ -13,7 +14,7 @@ Subdirectories (with corresponding C++ namespace names in parentheses):
   prdc - periodic systems (Pscf::Prdc)
   rp   - SCFT & PS-FTS with real periodic fields, CPU & GPU (Pscf::Rp)
   rpc  - SCFT & PS-FTS with real periodic fields, CPU  (Pscf::Rpc)
-  rpc  - SCFT & PS-FTS with real periodic fields, GPU  (Pscf::Rpc)
+  rpg  - SCFT & PS-FTS with real periodic fields, GPU  (Pscf::Rpc)
   cp   - CL-FTS with complex periodic fields, CPU & GPU (Pscf:Cp)
   cpc  - CL-FTS with complex periodic fields, CPU (Pscf:Cpc)
   cpg  - CL-FTS with complex periodic fields, GPU (Pscf:Cpg)
@@ -22,17 +23,25 @@ Subdirectories (with corresponding C++ namespace names in parentheses):
   Directories r1d, rpc, rpg, cpc, and cpg are "program level" directories 
   that each contain code that is only accessible to and used by a single 
   executable program, namely, pscf_1d, pscf_pc, pscf_rpg, pscf_cpc, or
-  pscf_cpg.
+  pscf_cpg. By convention, source files in one program-level directory 
+  may never include files from a different program-level directory.
 
-  Directories util, pscf, prdc, rp, and cp each contain code that is
-  used in multiple programs. Names defined in files located in the util 
-  and pscf directories are accessible anywhere in PSCF. Names defined 
-  in the prdc directory are accessible in the other directories 
-  containing code designed for periodic boundary conditions (rp, rpc, 
-  rpg, cp, cpc, and cpg), but are not used in the r1d directory. Names 
-  defined in the rp directory are used in the rpc and rpg program level 
-  directories. Names defined in the cp directory are used in the cpc 
-  and cpg program level directories
+  Directories util, pscf, prdc, rp, and cp each contain code that is used
+  in two or more programs. Names of classes and other entitites defined 
+  in files located in the util and pscf directories may be used anywhere 
+  in the PSCF package. Names defined in the prdc directory are accessible 
+  in the other directories containing code designed for periodic boundary 
+  conditions (i.e., the rp, rpc, rpg, cp, cpc, and cpg directories), but 
+  are not used in the r1d directory. Names defined in the rp directory are
+  used only in the rpc and rpg program-level directories, for programs that
+  use real periodic fields. Names defined in the cp directory are used 
+  only in the cpc and cpg program-level directories, for programs that 
+  use complex periodic fields.
+
+  Status: The code for complex periodic fields in the cp, cpc, and cpg 
+  directories is currently very fragmentary, and is not ready for prime 
+  time.  Code in all other subdirectories of src is mature and ready 
+  for general use.
 
 Files (maintained in the git repository):
 

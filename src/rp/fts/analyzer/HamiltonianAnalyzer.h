@@ -23,8 +23,6 @@ namespace Rp {
    * Field contribution (HW)) as well as for the total, and
    * periodically outputs block averages of each to a file.
    *
-   * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
-   *
    * Instantiations of this template are used as base classes for two
    * closely analogous class templates, also named HamiltonianAnalyzer, 
    * that are defined in the Rpc and Rpg namespaces for use in the 
@@ -35,6 +33,7 @@ namespace Rp {
    *    - D : dimension of space
    *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
+   * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
    * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>

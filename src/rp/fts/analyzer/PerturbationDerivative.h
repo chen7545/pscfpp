@@ -16,8 +16,6 @@ namespace Rp {
    /**
    * Evaluate derivative of H w/ respect to perturbation parameter lambda.
    *
-   * \see rp_PerturbationDerivative_page "Manual Page"
-   *
    * Instantiations of this template are used as base classes for two
    * closely analogous class templates, also named PerturbationDerivative, 
    * that are defined in the Rpc and Rpg namespaces for use in the 
@@ -28,6 +26,7 @@ namespace Rp {
    *    - D : dimension of space
    *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
+   * \see rp_PerturbationDerivative_page "Manual Page"
    * \ingroup Rp_Fts_Analyzer_Module
    */
    template <int D, class T>

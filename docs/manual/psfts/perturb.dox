@@ -256,7 +256,7 @@ the lambda parameter of the associated Perturbation should be varied, and
 gives a range 1.0 to creat a ramp from the initial value of 0 to a final
 value of 1.0.
 
-In the \ref rpc_PerturbationDerivative_page "PerturbationDerivative"
+In the \ref rp_PerturbationDerivative_page "PerturbationDerivative"
 block of the AnalyzerManager, this analyzer is programmed to sample
 the partial derivative \f$ \partial H/\partial \lambda \f$ every 5
 simulation steps, and to output every sampled value to a file. The
@@ -268,7 +268,7 @@ information about the time average.
 
 <ul>
  <li> \subpage rpc_EinsteinCrystalPerturbation_page </li>
- <li> \ref rpc_PerturbationDerivative_page </li>
+ <li> \ref rp_PerturbationDerivative_page </li>
 </ul>
 
 <BR>

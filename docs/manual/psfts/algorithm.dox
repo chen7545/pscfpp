@@ -359,7 +359,7 @@ on the class name.
   <li> \subpage rpc_MaxOrderParameter_page "MaxOrderParameter" :
        Compute an order parameter that is useful for identifying
        spontaneous phase transitions. </li>
-  <li> \subpage rpc_FourthOrderParameter_page "FourthOrderParameter":
+  <li> \subpage rp_FourthOrderParameter_page "FourthOrderParameter":
        Compute another order parameter that is useful for identifying
        spontaneous phase transitions. </li>
   <li> \subpage rp_ChiDerivative_page "ChiDerivative":

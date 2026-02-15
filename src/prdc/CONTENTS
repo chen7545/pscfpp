@@ -4,11 +4,10 @@ periodic boundary conditions.
 All source code in this directory is defined in namespace Pscf::Prdc, 
 and may use classes and functions defined in namespace Util (directory 
 src/util) or parent namespace Pscf (directory src/pscf).  Code in the
-Pscf::Prdc namespace may be used throughout the Pscf::Rpc, Pscf::Rpg,
-Pscf::Cpc and Pscf::Cpg namespaces (or directories src/rpc, src/rpg, 
-src/cpc and src/cpg) to construct programs for systems with periodic 
-boundary conditions using either real- or complex-valued fields, using
-either CPU or GPU hardware. 
+Pscf::Prdc namespace may be used throughout the Pscf::Rp, Pscf::Rpc, 
+Pscf::Rpg, Pscf::Cp, Pscf::Cpc and Pscf::Cpg namespaces (or directories 
+src/rp, src/rpc, src/rpg, src/cp, src/cpc and src/cpg) to construct 
+programs for systems with periodic boundary conditions.
 
 Subdirectories:
 ---------------
@@ -17,14 +16,12 @@ Subdirectories:
   cuda/        - field containers etc. for GPU
   crystal/     - unit cells, space groups, and symmetry adapted basis
   environment/ - generation of imposed mask and external fields
-  rl/          - templates for use with real-valued fields
-  cl/          - templates for use with complex-valued fields
   tests/       - unit tests for code in src/prdc
 
 Enclosed namespaces:
 --------------------
 
-  Namespace Pscf::Prdc contains two enclosed namespaces containing
+  Namespace Pscf::Prdc encloses two sub-namespaces that contain
   analogous code designed to use different hardware:
 
   - Code in prdc/cpu is defined in namespace Pscf::Prdc::Cpu
