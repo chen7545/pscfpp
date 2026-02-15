@@ -443,7 +443,7 @@ namespace Rp {
 
    private:
 
-      /*
+      /**
       * Array of fields in symmetry-adapted basis format.
       *
       * Element basis_[i] is an array that contains the components
@@ -452,7 +452,7 @@ namespace Rp {
       */
       DArray< DArray<double> > basis_;
 
-      /*
+      /**
       * Array of fields in real-space grid (r-grid) format.
       *
       * Element basis_[i] is an RFT that contains values of the
@@ -460,66 +460,66 @@ namespace Rp {
       */
       DArray< RFT > rgrid_;
 
-      /*
+      /**
       * Integer vector of grid dimensions.
       *
       * Element i is the number of grid points along direction i
       */
       IntVec<D> meshDimensions_;
 
-      /*
+      /**
       * Total number grid points (product of mesh dimensions).
       */
       int meshSize_;
 
-      /*
+      /**
       * Number of basis functions in symmetry-adapted basis.
       */
       int nBasis_;
 
-      /*
+      /**
       * Number of monomer types (number of fields).
       */
       int nMonomer_;
 
-      /*
+      /**
       * Pointer to unit cell modified by read functions.
       */
       UnitCell<D> * readUnitCellPtr_;
 
-      /*
+      /**
       * Pointer to unit cell access by write functions.
       */
       UnitCell<D> const * writeUnitCellPtr_;
 
-      /*
+      /**
       * Pointer to an associated FIT object.
       */
       FIT const * fieldIoPtr_;
 
-      /*
+      /**
       * Pointer to a Signal that is triggered by field modification.
       *
       * The Signal is constructed and owned by this field container.
       */
       Signal<void>* signalPtr_;
 
-      /*
+      /**
       * Has memory been allocated for fields in r-grid format?
       */
       bool isAllocatedRGrid_;
 
-      /*
+      /**
       * Has memory been allocated for fields in basis format?
       */
       bool isAllocatedBasis_;
 
-      /*
+      /**
       * Has field data been initialized ?
       */
       bool hasData_;
 
-      /*
+      /**
       * Are the fields symmetric under space group operations?
       *
       * Set true when fields are set using the symmetry adapted basis
@@ -527,13 +527,15 @@ namespace Rp {
       */
       bool isSymmetric_;
 
-      /*
+      #if 0
+      /**
       *  Assign one RFT to another: lhs = rhs.
       *
       *  \param lhs  left hand side of assignment
       *  \param rhs  right hand side of assignment
       */
       virtual void assignRField(RFT& lhs, RFT const & rhs) const;
+      #endif
 
    };
 

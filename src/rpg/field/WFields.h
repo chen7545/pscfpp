@@ -10,10 +10,12 @@
 
 #include <rp/field/WFields.h>    // base class template
 #include <prdc/cuda/RField.h>    // base class template argument
-#include <rpg/field/FieldIo.h>   // base class template argument
+//#include <rpg/field/FieldIo.h>   // base class template argument
 
 namespace Pscf {
 namespace Rpg {
+
+   template <int D> class FieldIo;
 
    using namespace Util;
    using namespace Prdc;
@@ -23,13 +25,13 @@ namespace Rpg {
    * A container of fields stored in both basis and r-grid format.
    *
    * Almost all of the implementation of this class is defined by the base
-   * class template Prdc::WFieldsTmpl . See documentation of that base 
+   * class template Prdc::WFieldsTmpl . See documentation of that base
    * class template for documentation of most member functions.
    *
    * \ingroup Rpg_Field_Module
    */
    template <int D>
-   class WFields 
+   class WFields
     : public Rp::WFields<D, RField<D>, FieldIo<D> >
    {
 
@@ -77,6 +79,7 @@ namespace Rpg {
       using Base::nMonomer;
       using Base::fieldIo;
 
+   #if 0
    private:
 
       /**
@@ -85,25 +88,27 @@ namespace Rpg {
       *  \left lhs  left-hand side of assignment
       *  \left rhs  right-hand side of assignment
       */
-      void assignRField(RField<D>& lhs, RField<D> const & rhs) const 
+      void assignRField(RField<D>& lhs, RField<D> const & rhs) const
       override;
+   #endif
 
    };
 
-   // Explicit instantiation declarations
-   extern template class WFields<1>;
-   extern template class WFields<2>;
-   extern template class WFields<3>;
-
 } // namespace Rpg
-
-namespace Rp {
-   // Explicit instantiation declarations for base class
-   using namespace Prdc::Cuda;
-   extern template class WFields<1, RField<1>, Rpg::FieldIo<1> >;
-   extern template class WFields<2, RField<2>, Rpg::FieldIo<2> >;
-   extern template class WFields<3, RField<3>, Rpg::FieldIo<3> >;
-} // namespace Prdc
-
 } // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      using namespace Prdc;
+      extern template class WFields<1, Cuda::RField<1>, Rpg::FieldIo<1> >;
+      extern template class WFields<2, Cuda::RField<2>, Rpg::FieldIo<2> >;
+      extern template class WFields<3, Cuda::RField<3>, Rpg::FieldIo<3> >;
+   }
+   namespace Rpg {
+      extern template class WFields<1>;
+      extern template class WFields<2>;
+      extern template class WFields<3>;
+   }
+}
 #endif

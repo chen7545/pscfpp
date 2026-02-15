@@ -10,6 +10,7 @@
 
 #include "WFields.h"               // class header
 #include <rpc/field/FieldIo.tpp>
+#include <pscf/cpu/VecOp.h>
 #include <rp/field/WFields.tpp>    // base class implementation
 
 namespace Pscf {
@@ -19,6 +20,7 @@ namespace Rpc {
    using namespace Pscf::Prdc;
    using namespace Pscf::Prdc::Cpu;
 
+   #if 0
    template <int D>
    void WFields<D>::assignRField(RField<D>& lhs,
                                  RField<D> const & rhs) const
@@ -30,6 +32,7 @@ namespace Rpc {
          lhs[i] = rhs[i];
       }
    }
+   #endif
 
 } // namespace Rpc
 } // namespace Pscf

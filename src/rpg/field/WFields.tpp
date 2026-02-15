@@ -1,5 +1,5 @@
-#ifndef RPG_W_FIELD_CONTAINER_TPP
-#define RPG_W_FIELD_CONTAINER_TPP
+#ifndef RPG_W_FIELDS_TPP
+#define RPG_W_FIELDS_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,10 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "WFields.h"
-#include <rp/field/WFields.tpp>
+#include "WFields.h"                  // class header
+#include <rpg/field/FieldIo.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/DeviceArray.h>
+#include <rp/field/WFields.tpp>       // base class implementation
 
 namespace Pscf {
 namespace Rpg {
@@ -37,11 +38,12 @@ namespace Rpg {
       Base::setRGrid(tmp, isSymmetric);
    }
 
+   #if 0
    // Private virtual function
 
    template <int D>
-   void 
-   WFields<D>::assignRField(RField<D>& lhs, RField<D> const & rhs) 
+   void
+   WFields<D>::assignRField(RField<D>& lhs, RField<D> const & rhs)
    const
    {
       int n = rhs.capacity();
@@ -49,6 +51,7 @@ namespace Rpg {
       UTIL_CHECK(meshSize() == n);
       VecOp::eqV(lhs, rhs);
    }
+   #endif
 
 } // namespace Rpg
 } // namespace Pscf

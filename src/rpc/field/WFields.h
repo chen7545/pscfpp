@@ -37,6 +37,7 @@ namespace Rpc {
      : public Rp::WFields<D, RField<D>, FieldIo<D> >
    {
 
+   #if 0
    private:
 
       /**
@@ -49,6 +50,7 @@ namespace Rpc {
       override;
 
       using RpWFields = Rp::WFields< D, RField<D>, FieldIo<D> >;
+   #endif
 
    };
 
