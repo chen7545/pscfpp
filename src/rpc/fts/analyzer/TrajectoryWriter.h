@@ -23,13 +23,13 @@ namespace Rpc {
    /**
    * Evaluate the derivative of H with respect to chi.
    *
-   * Instantiations of this class are basically named instantiations
-   * of the base class template Rp::TrajectoryWriter, with type aliases
-   * defined using the Types<D> class for use on CPU hardware. See
-   * the documentation for this base class template for details.
+   * Instantiations of this template are derived from instantiations of 
+   * the base class template Rp::TrajectoryWriter, and inherit their 
+   * entire public interface and almost all of their source code from 
+   * this base class. See the documentation for this base class template 
+   * for details. 
    *
    * \see \ref rp_TrajectoryWriter_page "Manual Page"
-   *
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>

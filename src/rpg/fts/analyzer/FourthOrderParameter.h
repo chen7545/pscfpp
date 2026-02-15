@@ -29,6 +29,12 @@ namespace Rpg {
    * This class evaluates the sum of fourth power of the Fourier mode 
    * amplitude of fluctuating fields.
    *
+   * Instantiations of this template are derived from instantiations of 
+   * the base class template Rp::FourthOrderDerivative, and inherit their 
+   * entire public interface and almost all of their source code from this 
+   * base class. See the documentation for this base class template for
+   * details. 
+   *
    * \see \ref rp_FourthOrderParameter_page "Manual Page"
    * \ingroup Rpg_Fts_Analyzer_Module
    */

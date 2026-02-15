@@ -23,13 +23,13 @@ namespace Rpg {
    /**
    * Compute averages and output block averages of Hamiltonian components.
    *
-   * Instantiations of this template are basically named instantiations 
-   * of the base class template Rp::HamiltonianAnalyzer, using type name
-   * aliases defined by the Rpg::Types<D> class. See the documentation 
-   * for this base class template for details. 
+   * Instantiations of this template are derived from instantiations of 
+   * the base class template Rp::HamiltonianAnalyzer , and inherit their 
+   * entire public interface and almost all of their source code from this 
+   * base class. See the documentation for this base class template for
+   * details. 
    *
    * \see \ref rp_HamiltonianAnalyzer_page "Manual Page"
-   *
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>

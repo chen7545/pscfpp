@@ -23,8 +23,13 @@ namespace Rpc {
    /**
    * Evaluate derivative of H w/ respect to perturbation parameter lambda.
    *
-   * \see rp_PerturbationDerivative_page "Manual Page"
+   * Instantiations of this template are derived from instantiations of 
+   * the base class template Rp::PerturbationDerivative, and inherit their 
+   * entire public interface and almost all of their source code from this 
+   * base class. See the documentation for this base class template for
+   * details. 
    *
+   * \see rp_PerturbationDerivative_page "Manual Page"
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>

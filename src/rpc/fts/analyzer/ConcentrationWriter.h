@@ -23,8 +23,13 @@ namespace Rpc {
    /**
    * Periodically write c-field snapshots to a trajectory file.
    *
-   * \see \ref rp_ConcentrationWriter_page "Manual Page"
+   * Instantiations of this template are derived from instantiations of 
+   * the base class template Rp::ConcentrationWriter, and inherit their 
+   * public interface and almost all of their source code from this 
+   * base class. See the documentation of this base class template 
+   * for details. 
    *
+   * \see \ref rp_ConcentrationWriter_page "Manual Page"
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
