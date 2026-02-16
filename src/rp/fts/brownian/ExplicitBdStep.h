@@ -1,5 +1,5 @@
-#ifndef RPG_EXPLICIT_BD_STEP_H
-#define RPG_EXPLICIT_BD_STEP_H
+#ifndef RP_EXPLICIT_BD_STEP_H
+#define RP_EXPLICIT_BD_STEP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,25 +10,23 @@
 
 
 #include "BdStep.h"                    // base class
-#include <prdc/cuda/RField.h>          // member
 #include <util/containers/DArray.h>    // member
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Explicit Euler-Mayurama Brownian dynamics step.
    *
    * \see \ref rp_ExplicitBdStep_page "Manual Page"
    *
-   * \ingroup Rpg_Fts_Brownian_Module
+   * \ingroup Rp_Fts_Brownian_Module
    */
-   template <int D>
-   class ExplicitBdStep : public BdStep<D>
+   template <int D, class T>
+   class ExplicitBdStep : public T::BdStep
    {
 
    public:
@@ -38,7 +36,7 @@ namespace Rpg {
       *
       * \param simulator  parent BdSimulator object
       */
-      ExplicitBdStep(BdSimulator<D>& simulator);
+      ExplicitBdStep(typename T::BdSimulator& simulator);
 
       /**
       * Destructor.
@@ -66,30 +64,26 @@ namespace Rpg {
 
    protected:
 
-      using BdStep<D>::system;
-      using BdStep<D>::simulator;
-      using BdStep<D>::vecRandom;
+      using BdStepT = typename T::BdStep;
+      using BdStepT::system;
+      using BdStepT::simulator;
+      using BdStepT::vecRandom;
 
    private:
 
       // Local copy of w fields
-      DArray< RField<D> > w_;
+      DArray< typename T::RField > w_;
 
       // Change in one component of wc
-      RField<D> dwc_;
+      typename T::RField dwc_;
 
       // Normal distributed random numbers
-      RField<D> gaussianField_;
+      typename T::RField gaussianField_;
 
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class ExplicitBdStep<1>;
-   extern template class ExplicitBdStep<2>;
-   extern template class ExplicitBdStep<3>;
 
 }
 }

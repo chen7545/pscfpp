@@ -1,5 +1,5 @@
-#ifndef RPG_EXPLICIT_BD_STEP_TPP
-#define RPG_EXPLICIT_BD_STEP_TPP
+#ifndef RP_EXPLICIT_BD_STEP_TPP
+#define RP_EXPLICIT_BD_STEP_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,28 +9,20 @@
 */
 
 #include "ExplicitBdStep.h"
-#include <rpg/fts/brownian/BdSimulator.h>
-#include <rpg/fts/compressor/Compressor.h>
-#include <rpg/system/System.h>
-#include <rpg/solvers/Mixture.h>
-#include <rpg/field/Domain.h>
-#include <pscf/cuda/CudaVecRandom.h>
-#include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /*
    * Constructor.
    */
-   template <int D>
-   ExplicitBdStep<D>::ExplicitBdStep(BdSimulator<D>& simulator)
-    : BdStep<D>(simulator),
+   template <int D, class T>
+   ExplicitBdStep<D,T>::ExplicitBdStep(typename T::BdSimulator& simulator)
+    : BdStepT(simulator),
       w_(),
       dwc_(),
       gaussianField_(),
@@ -40,15 +32,15 @@ namespace Rpg {
    /*
    * Destructor.
    */
-   template <int D>
-   ExplicitBdStep<D>::~ExplicitBdStep()
+   template <int D, class T>
+   ExplicitBdStep<D,T>::~ExplicitBdStep()
    {}
 
    /*
    * Read body of parameter file block and allocate memory.
    */
-   template <int D>
-   void ExplicitBdStep<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void ExplicitBdStep<D,T>::readParameters(std::istream &in)
    {
       ParamComposite::read(in, "mobility", mobility_);
 
@@ -65,8 +57,8 @@ namespace Rpg {
    /*
    * Setup before entering simulation loop.
    */
-   template <int D>
-   void ExplicitBdStep<D>::setup()
+   template <int D, class T>
+   void ExplicitBdStep<D,T>::setup()
    {
       // Check array capacities
       IntVec<D> meshDimensions = system().domain().mesh().dimensions();
@@ -83,8 +75,8 @@ namespace Rpg {
    /*
    * Take a single BD step.
    */
-   template <int D>
-   bool ExplicitBdStep<D>::step()
+   template <int D, class T>
+   bool ExplicitBdStep<D,T>::step()
    {
       // Array sizes and indices
       const int nMonomer = system().mixture().nMonomer();

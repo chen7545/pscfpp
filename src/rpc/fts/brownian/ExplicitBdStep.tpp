@@ -89,7 +89,7 @@ namespace Rpc {
       // Array sizes and indices
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
-      int i, j, k;
+      int i, j;
 
       // Save current state
       simulator().saveState();
@@ -124,10 +124,9 @@ namespace Rpc {
          for (i = 0; i < nMonomer; ++i) {
             RField<D> & w = w_[i];
             evec = simulator().chiEvecs(j,i);
-            for (k = 0; k < meshSize; ++k) {
-               w[k] += evec*dwc_[k];
-            }
+            VecOp::addEqVc(w, dwc_, evec);
          }
+
       }
 
       // Set modified fields in parent system

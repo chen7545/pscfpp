@@ -23,7 +23,7 @@ namespace Rpc {
    /**
    * Explicit Euler-Mayurama Brownian dynamics step.
    *
-   * \see \ref rpc_ExplicitBdStep_page "Manual Page"
+   * \see \ref rp_ExplicitBdStep_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Brownian_Module
    */
@@ -68,7 +68,6 @@ namespace Rpc {
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
-      using BdStep<D>::random;
       using BdStep<D>::vecRandom;
 
    private:
