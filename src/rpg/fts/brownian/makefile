@@ -19,4 +19,4 @@ clean:
 #--------------------------------------------------------------------
 # Include dependency files
 
--include $(rpg_bdstep_OBJS:.o=.d)
+-include $(rpg_fts_brownian_OBJS:.o=.d)

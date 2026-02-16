@@ -16,15 +16,15 @@
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
 #include <pscf/cuda/VecOp.h>
-#include <pscf/math/IntVec.h>
 #include <pscf/cuda/CudaVecRandom.h>
+#include <pscf/math/IntVec.h>
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /*
    * Constructor.
@@ -36,31 +36,29 @@ namespace Rpg {
       etaA_(),
       etaB_(),
       dwc_(),
-      etaNewPtr_(0),
-      etaOldPtr_(0),
+      etaNewPtr_(nullptr),
+      etaOldPtr_(nullptr),
       mobility_(0.0)
    {}
 
    /*
-   * Destructor, empty default implementation.
+   * Destructor.
    */
    template <int D>
    LMBdStep<D>::~LMBdStep()
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block and allocate memory.
    */
    template <int D>
    void LMBdStep<D>::readParameters(std::istream &in)
    {
-      read(in, "mobility", mobility_);
+      ParamComposite::read(in, "mobility", mobility_);
 
+      // Allocate memory
       int nMonomer = system().mixture().nMonomer();
-      int meshSize = system().domain().mesh().size();
       IntVec<D> meshDimensions = system().domain().mesh().dimensions();
-
-      // Allocate memory for private containers
       w_.allocate(nMonomer);
       for (int i=0; i < nMonomer; ++i) {
          w_[i].allocate(meshDimensions);
@@ -72,11 +70,10 @@ namespace Rpg {
          etaB_[i].allocate(meshDimensions);
       }
       dwc_.allocate(meshDimensions);
-      gaussianField_.allocate(meshDimensions);
    }
 
    /*
-   * Generate new random displacement values
+   * Generate new random displacement values.
    */
    template <int D>
    void LMBdStep<D>::generateEtaNew()
@@ -93,6 +90,9 @@ namespace Rpg {
       }
    }
 
+   /*
+   * Exchange pointers to old and new random fields.
+   */
    template <int D>
    void LMBdStep<D>::exchangeOldNew()
    {
@@ -103,7 +103,7 @@ namespace Rpg {
    }
 
    /*
-   * Initial setup before main simulation loop.
+   * Setup before main simulation loop.
    */
    template <int D>
    void LMBdStep<D>::setup()
@@ -136,7 +136,7 @@ namespace Rpg {
    {
       // Save current state
       simulator().saveState();
-      
+
       // Copy current W fields from parent system into w_
       const int nMonomer = system().mixture().nMonomer();
       for (int i = 0; i < nMonomer; ++i) {
@@ -146,7 +146,7 @@ namespace Rpg {
       // Generate new random displacement values
       generateEtaNew();
 
-      // Take LM step:
+      // Take LM step
       const double a = -1.0*mobility_;
       double evec;
       // Loop over eigenvectors of projected chi matrix
@@ -158,24 +158,23 @@ namespace Rpg {
          VecOp::addEqVc(dwc_, dc, a);
          // Loop over monomer types
          for (int i = 0; i < nMonomer; ++i) {
-            RField<D> & w = w_[i];
             evec = simulator().chiEvecs(j,i);
-            VecOp::addEqVc(w, dwc_, evec);
+            VecOp::addEqVc(w_[i], dwc_, evec);
          }
       }
 
       // Set modified fields in parent system
       system().w().setRGrid(w_);
-      
+
       // Enforce incompressibility (also solves MDE repeatedly)
       bool isConverged = false;
       int compress = simulator().compressor().compress();
       if (compress != 0){
          simulator().restoreState();
-      } else{
+      } else {
          isConverged = true;
          UTIL_CHECK(system().c().hasData());
-         
+
          // Compute components and derivatives at wp_
          simulator().clearState();
          simulator().clearData();
@@ -186,7 +185,7 @@ namespace Rpg {
          // Exchange old and new random fields
          exchangeOldNew();
       }
-      
+
       return isConverged;
    }
 

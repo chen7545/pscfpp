@@ -1,5 +1,5 @@
-#ifndef RPG_LM_BD_STEP_H
-#define RPG_LM_BD_STEP_H
+#ifndef RP_LM_BD_STEP_H
+#define RP_LM_BD_STEP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,16 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "BdStep.h"                    // base class
-#include <prdc/cuda/RField.h>          // member
 #include <util/containers/DArray.h>    // member
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Leimkuhler-Matthews Brownian dynamics stepper.
@@ -39,10 +36,10 @@ namespace Rpg {
    * previous step.
    *
    * \see \ref rp_LMBdStep_page "Manual Page"
-   * \ingroup Rpg_Fts_Brownian_Module
+   * \ingroup Rp_Fts_Brownian_Module
    */
-   template <int D>
-   class LMBdStep : public BdStep<D>
+   template <int D, class T>
+   class LMBdStep : public typename T::BdStep
    {
 
    public:
@@ -80,41 +77,44 @@ namespace Rpg {
 
    protected:
 
-      using BdStep<D>::system;
-      using BdStep<D>::simulator;
-      using BdStep<D>::vecRandom;
+      using BdStepT = typename T::BdStep;
+      using typename T::BdStep::system;
+      using typename T::BdStep::simulator;
+      using typename T::BdStep::vecRandom;
 
    private:
+
+      using RFieldT = typename T::RField;
 
       // Private data members
 
       // New field values
-      DArray< RField<D> > w_;
+      DArray< RFieldT > w_;
 
       // Random displacements (A)
-      DArray< RField<D> > etaA_;
+      DArray< RFieldT > etaA_;
 
       // Random displacements (B)
-      DArray< RField<D> > etaB_;
+      DArray< RFieldT > etaB_;
 
       // Change in one field component
-      RField<D> dwc_;
+      RFieldT dwc_;
 
       // Pointer to new random displacements
-      DArray< RField<D> >* etaNewPtr_;
+      DArray< RFieldT >* etaNewPtr_;
 
       // Pointer to old random displacements
-      DArray< RField<D> >* etaOldPtr_;
+      DArray< RFieldT >* etaOldPtr_;
 
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
 
       // Private member functions
 
-      RField<D>& etaNew(int i)
+      RFieldT& etaNew(int i)
       {  return (*etaNewPtr_)[i]; }
 
-      RField<D>& etaOld(int i)
+      RFieldT& etaOld(int i)
       {  return (*etaOldPtr_)[i]; }
 
       /// Generate new values for etaNew
@@ -124,11 +124,6 @@ namespace Rpg {
       void exchangeOldNew();
 
    };
-
-   // Explicit instantiation declarations
-   extern template class LMBdStep<1>;
-   extern template class LMBdStep<2>;
-   extern template class LMBdStep<3>;
 
 }
 }

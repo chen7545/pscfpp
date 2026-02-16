@@ -1,5 +1,5 @@
-#ifndef RPC_LM_BD_STEP_TPP
-#define RPC_LM_BD_STEP_TPP
+#ifndef RP_LM_BD_STEP_TPP
+#define RP_LM_BD_STEP_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -10,28 +10,20 @@
 
 #include "LMBdStep.h"
 
-#include <rpc/fts/brownian/BdSimulator.h>
-#include <rpc/fts/compressor/Compressor.h>
-#include <rpc/system/System.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/field/Domain.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/CpuVecRandom.h>
 #include <pscf/math/IntVec.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /*
    * Constructor.
    */
-   template <int D>
-   LMBdStep<D>::LMBdStep(BdSimulator<D>& simulator)
-    : BdStep<D>(simulator),
+   template <int D, class T>
+   LMBdStep<D,T>::LMBdStep(typename T::BdSimulator& simulator)
+    : BdStepT(simulator),
       w_(),
       etaA_(),
       etaB_(),
@@ -39,20 +31,20 @@ namespace Rpc {
       etaNewPtr_(nullptr),
       etaOldPtr_(nullptr),
       mobility_(0.0)
-   {}
+   {  ParamComposite::setClassName("LmBdStep"); }
 
    /*
    * Destructor.
    */
-   template <int D>
-   LMBdStep<D>::~LMBdStep()
+   template <int D, class T>
+   LMBdStep<D,T>::~LMBdStep()
    {}
 
    /*
    * Read body of parameter file block and allocate memory.
    */
-   template <int D>
-   void LMBdStep<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void LMBdStep<D,T>::readParameters(std::istream &in)
    {
       ParamComposite::read(in, "mobility", mobility_);
 
@@ -75,8 +67,8 @@ namespace Rpc {
    /*
    * Generate new random displacement values.
    */
-   template <int D>
-   void LMBdStep<D>::generateEtaNew()
+   template <int D, class T>
+   void LMBdStep<D,T>::generateEtaNew()
    {
       // Constants
       const int nMonomer = system().mixture().nMonomer();
@@ -93,10 +85,10 @@ namespace Rpc {
    /*
    * Exchange pointers to old and new random fields.
    */
-   template <int D>
-   void LMBdStep<D>::exchangeOldNew()
+   template <int D, class T>
+   void LMBdStep<D,T>::exchangeOldNew()
    {
-      DArray< RField<D> >* temp;
+      DArray< RFieldT >* temp;
       temp = etaOldPtr_;
       etaOldPtr_ = etaNewPtr_;
       etaNewPtr_ = temp;
@@ -105,8 +97,8 @@ namespace Rpc {
    /*
    * Setup before main simulation loop.
    */
-   template <int D>
-   void LMBdStep<D>::setup()
+   template <int D, class T>
+   void LMBdStep<D,T>::setup()
    {
       int nMonomer = system().mixture().nMonomer();
       int meshSize = system().domain().mesh().size();
@@ -131,8 +123,8 @@ namespace Rpc {
    /*
    * One step of Leimkuhler-Matthews BD algorithm.
    */
-   template <int D>
-   bool LMBdStep<D>::step()
+   template <int D, class T>
+   bool LMBdStep<D,T>::step()
    {
       // Save current state
       simulator().saveState();
@@ -151,9 +143,9 @@ namespace Rpc {
       double evec;
       // Loop over eigenvectors of projected chi matrix
       for (int j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & etaN = etaNew(j);
-         RField<D> const & etaO = etaOld(j);
-         RField<D> const & dc = simulator().dc(j);
+         RFieldT const & etaN = etaNew(j);
+         RFieldT const & etaO = etaOld(j);
+         RFieldT const & dc = simulator().dc(j);
          VecOp::addVV(dwc_, etaN, etaO);
          VecOp::addEqVc(dwc_, dc, a);
          // Loop over monomer types
