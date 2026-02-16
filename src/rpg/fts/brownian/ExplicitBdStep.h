@@ -21,9 +21,9 @@ namespace Rpg {
    using namespace Pscf::Prdc::Cuda;
 
    /**
-   * BdStep is an abstract base class for Brownian dynamics steps.
+   * Explicit Euler-Mayurama Brownian dynamics step.
    *
-   * The virtual step() method must generate a single step.
+   * \see \ref rpc_ExplicitBdStep_page "Manual Page"
    *
    * \ingroup Rpg_Fts_Brownian_Module
    */
@@ -42,34 +42,34 @@ namespace Rpg {
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       virtual ~ExplicitBdStep();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block. 
       *
-      * Empty default implementation.
+      * \param in  input parameter stream
       */
-      virtual void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
       * Setup before simulation.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
       * Take a single Brownian dynamics step.
+      *
+      * \return true iff the compressor converged, false otherwise
       */
-      virtual bool step();
+      bool step() override;
 
    protected:
 
+      using BdStepT = BdStep<D>;
       using BdStep<D>::system;
       using BdStep<D>::simulator;
       using BdStep<D>::vecRandom;
-      using ParamComposite::read;
 
    private:
 
@@ -78,7 +78,7 @@ namespace Rpg {
 
       // Change in one component of wc
       RField<D> dwc_;
-      
+
       /// Normal-distributed random fields
       RField<D> gaussianField_;
 

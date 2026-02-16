@@ -9,12 +9,11 @@
 */
 
 #include "ExplicitBdStep.h"
-
 #include <rpg/fts/brownian/BdSimulator.h>
 #include <rpg/fts/compressor/Compressor.h>
+#include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <rpg/system/System.h>
 #include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/math/IntVec.h>
@@ -34,25 +33,26 @@ namespace Rpg {
     : BdStep<D>(simulator),
       w_(),
       dwc_(),
+      gaussianField_(),
       mobility_(0.0)
-   {}
+   {  ParamComposite::setClassName("ExplicitBdStep"); }
 
    /*
-   * Destructor, empty default implementation.
+   * Destructor.
    */
    template <int D>
    ExplicitBdStep<D>::~ExplicitBdStep()
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block and allocate memory.
    */
    template <int D>
    void ExplicitBdStep<D>::readParameters(std::istream &in)
    {
-      read(in, "mobility", mobility_);
+      ParamComposite::read(in, "mobility", mobility_);
 
-      // Allocate memory for private containers
+      // Allocate memory
       int nMonomer = system().mixture().nMonomer();
       IntVec<D> meshDimensions = system().domain().mesh().dimensions();
       w_.allocate(nMonomer);
@@ -60,24 +60,29 @@ namespace Rpg {
          w_[i].allocate(meshDimensions);
       }
       dwc_.allocate(meshDimensions);
-
    }
 
+   /*
+   * Setup before entering simulation loop.
+   */
    template <int D>
    void ExplicitBdStep<D>::setup()
    {
       // Check array capacities
+      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
       int meshSize = system().domain().mesh().size();
-      IntVec<D> dimensions = system().domain().mesh().dimensions();
       int nMonomer = system().mixture().nMonomer();
       UTIL_CHECK(w_.capacity() == nMonomer);
-      for (int i=0; i < nMonomer; ++i) {
+      for (int i = 0; i < nMonomer; ++i) {
          UTIL_CHECK(w_[i].capacity() == meshSize);
       }
       UTIL_CHECK(dwc_.capacity() == meshSize);
-      gaussianField_.allocate(dimensions);
+      gaussianField_.allocate(meshDimensions);
    }
 
+   /*
+   * Take a single BD step.
+   */
    template <int D>
    bool ExplicitBdStep<D>::step()
    {
@@ -85,7 +90,7 @@ namespace Rpg {
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       int i, j;
-      
+
       // Save current state
       simulator().saveState();
 
@@ -93,35 +98,35 @@ namespace Rpg {
       for (i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w_[i], system().w().rgrid(i));
       }
-      
+
       // Constants for dynamics
       const double vSystem = system().domain().unitCell().volume();
       double a = -1.0*mobility_;
       double b = sqrt(2.0*mobility_*double(meshSize)/vSystem);
-      
+
       // Constants for normal distribution
       double stddev = 1.0;
       double mean = 0;
-      
+
       // Modify local field copy wc_
       // Loop over eigenvectors of projected chi matrix
       double evec;
       for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & dc = simulator().dc(j);
-         
-         // Generate normal distributed random floating point numbers
+
+         // Generate normal distributed random numbers
          vecRandom().normal(gaussianField_, stddev, mean);
-         
-         // dwc
+
+         // Compute change dwc_
+         RField<D> const & dc = simulator().dc(j);
          VecOp::addVcVc(dwc_, dc, a, gaussianField_, b);
-         
+
          // Loop over monomer types
          for (i = 0; i < nMonomer; ++i) {
             RField<D> & w = w_[i];
             evec = simulator().chiEvecs(j,i);
             VecOp::addEqVc(w, dwc_, evec);
          }
-         
+
       }
 
       // Set modified fields in parent system
@@ -136,15 +141,15 @@ namespace Rpg {
       } else {
          isConverged = true;
          UTIL_CHECK(system().c().hasData());
-         
+
          // Evaluate component properties in new state
          simulator().clearState();
          simulator().computeWc();
          simulator().computeCc();
          simulator().computeDc();
-         
+
       }
-      
+
       return isConverged;
    }
 

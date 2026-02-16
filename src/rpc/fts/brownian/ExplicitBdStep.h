@@ -9,22 +9,19 @@
 */
 
 
-#include "BdStep.h"
-
-#include <prdc/cpu/RField.h>
-#include <util/containers/DArray.h>
-#include <util/containers/DArray.h>
+#include "BdStep.h"                    // base class
+#include <prdc/cpu/RField.h>           // member
+#include <util/containers/DArray.h>    // member
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
+   using namespace Prdc;
    using namespace Prdc::Cpu;
 
    /**
-   * BdStep is an abstract base class for Brownian dynamics steps.
-   *
-   * The virtual step() method must generate a single step.
+   * Explicit Euler-Mayurama Brownian dynamics step.
    *
    * \see \ref rpc_ExplicitBdStep_page "Manual Page"
    *
@@ -45,36 +42,34 @@ namespace Rpc {
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       virtual ~ExplicitBdStep();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block.
       *
-      * Empty default implementation.
+      * \param in  input parameter stream
       */
-      virtual void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
       * Setup before simulation.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
       * Take a single Brownian dynamics step.
-      * 
-      * \return true if converged, false if failed to converge.
+      *
+      * \return true iff the compressor converged, false otherwise
       */
-      virtual bool step();
-      
+      bool step() override;
+
    protected:
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
       using BdStep<D>::random;
-      using ParamComposite::read;
+      using BdStep<D>::vecRandom;
 
    private:
 
@@ -84,11 +79,14 @@ namespace Rpc {
       // Change in one component of wc
       RField<D> dwc_;
 
+      // Normal distributed random numbers
+      RField<D> gaussianField_;
+
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
-      
+
    };
-   
+
    // Explicit instantiation declarations
    extern template class ExplicitBdStep<1>;
    extern template class ExplicitBdStep<2>;
