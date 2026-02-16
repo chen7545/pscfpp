@@ -16,10 +16,9 @@ namespace Pscf {
 namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
 
    /**
-   * Explicit Euler-Mayurama Brownian dynamics step.
+   * Explicit Euler-Maruyama Brownian dynamics step.
    *
    * \see \ref rp_ExplicitBdStep_page "Manual Page"
    *
