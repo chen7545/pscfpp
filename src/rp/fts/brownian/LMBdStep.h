@@ -14,12 +14,16 @@ namespace Pscf {
 namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
 
    /**
    * Leimkuhler-Matthews Brownian dynamics stepper.
    *
-   * As described in:
+   * The Leimkuhler-Matthews step algorithm differs from an explicit
+   * Euler algorithm in that it uses a random displacement that is
+   * given by a sum of random numbers generated at this step and the
+   * previous step.
+   *
+   * References:
    *
    *   B. Vorselaars, J. Chemical Physics, 158 114117 (2023)
    *   [ https://doi.org/10.1063/5.0131183 ]
@@ -30,16 +34,11 @@ namespace Rp {
    *   B. Leimkuhler and C. Matthews, J. Chemical Physics,
    *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ]
    *
-   * The Leimkuhler-Matthews step algorithm differs from an explicit
-   * Euler algorithm in that it uses a random displacement that is
-   * given by a sum of random numbers generated at this step and the
-   * previous step.
-   *
    * \see \ref rp_LMBdStep_page "Manual Page"
    * \ingroup Rp_Fts_Brownian_Module
    */
    template <int D, class T>
-   class LMBdStep : public typename T::BdStep
+   class LMBdStep : public T::BdStep
    {
 
    public:
@@ -49,7 +48,7 @@ namespace Rp {
       *
       * \param simulator  parent BdSimulator object
       */
-      LMBdStep(BdSimulator<D>& simulator);
+      LMBdStep(typename T::BdSimulator& simulator);
 
       /**
       * Destructor.
@@ -78,9 +77,9 @@ namespace Rp {
    protected:
 
       using BdStepT = typename T::BdStep;
-      using typename T::BdStep::system;
-      using typename T::BdStep::simulator;
-      using typename T::BdStep::vecRandom;
+      using BdStepT::system;
+      using BdStepT::simulator;
+      using BdStepT::vecRandom;
 
    private:
 
