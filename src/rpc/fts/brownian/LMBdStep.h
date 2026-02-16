@@ -8,40 +8,37 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
 #include "BdStep.h"
-
 #include <prdc/cpu/RField.h>
-#include <util/containers/DArray.h>
 #include <util/containers/DArray.h>
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
+   using namespace Prdc;
    using namespace Prdc::Cpu;
 
    /**
    * Leimkuhler-Matthews Brownian dynamics stepper.
    *
    * The Leimkuhler-Matthews step algorithm differs from an explicit
-   * Euler algorithm in that it uses a random displacement that is 
+   * Euler algorithm in that it uses a random displacement that is
    * given by a sum of random numbers generated at this step and the
-   * previous step. 
+   * previous step.
    *
    * As described in:
-   * 
+   *
    *   B. Vorselaars, J. Chemical Physics, 158 114117 (2023)
    *   [ https://doi.org/10.1063/5.0131183 ]
    *
    *   B. Leimkuhler and C. Matthews, Applied Mathematics Research Express,
    *   Issue 1, pages 34-56 (2013) [ https://doi.org/10.1093/amrx/abs010 ]
    *
-   *   B. Leimkuhler and C. Matthews, J. Chemical Physics, 
-   *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ] 
-   * 
-   * \see \ref rpc_LMBdStep_page "Manual Page"
+   *   B. Leimkuhler and C. Matthews, J. Chemical Physics,
+   *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ]
    *
+   * \see \ref rp_LMBdStep_page "Manual Page"
    * \ingroup Rpc_Fts_Brownian_Module
    */
    template <int D>
@@ -59,36 +56,33 @@ namespace Rpc {
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       virtual ~LMBdStep();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block.
       *
-      * Empty default implementation.
+      * \param in  input parameter stream
       */
-      virtual void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
-      * Setup before simulation.
+      * Setup before simulation loop.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
       * Take a single Brownian dynamics step.
-      * 
-      * \return true if converged, false if failed to converge.
+      *
+      * \return true if compressor converged, false otherwise
       */
-      virtual bool step();
-      
+      bool step() override;
+
    protected:
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
-      using BdStep<D>::random;
-      using ParamComposite::read;
+      using BdStep<D>::vecRandom;
 
    private:
 
@@ -114,14 +108,14 @@ namespace Rpc {
 
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
-      
+
       // Private member functions
 
-      RField<D>& etaNew(int i) 
-      {   return (*etaNewPtr_)[i]; }
+      RField<D>& etaNew(int i)
+      {  return (*etaNewPtr_)[i]; }
 
-      RField<D>& etaOld(int i) 
-      {   return (*etaOldPtr_)[i]; }
+      RField<D>& etaOld(int i)
+      {  return (*etaOldPtr_)[i]; }
 
       /// Generate new values for etaNew
       void generateEtaNew();
@@ -130,7 +124,7 @@ namespace Rpc {
       void exchangeOldNew();
 
    };
-   
+
    // Explicit instantiation declarations
    extern template class LMBdStep<1>;
    extern template class LMBdStep<2>;

@@ -81,25 +81,15 @@ namespace Rpg {
    template <int D>
    void LMBdStep<D>::generateEtaNew()
    {
+      // Constants
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
-      
-      // Prefactor b for displacements
       const double vSystem = system().domain().unitCell().volume();
-      double b = sqrt(0.5*mobility_*double(meshSize)/vSystem);
+      const double stddev = sqrt(0.5*mobility_*double(meshSize)/vSystem);
+      const double mean = 0.0;
 
-      // Constants for normal distribution
-      double stddev = 1.0;
-      double mean = 0;
-
-      int j;
-      for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D>& eta = etaNew(j);
-        
-         // Generate normal distributed random floating point numbers
-         vecRandom().normal(gaussianField_, stddev, mean);
-         VecOp::mulVS(eta, gaussianField_, b);
-      
+      for (int j = 0; j < nMonomer - 1; ++j) {
+         vecRandom().normal(etaNew(j), stddev, mean);
       }
    }
 
@@ -144,16 +134,12 @@ namespace Rpg {
    template <int D>
    bool LMBdStep<D>::step()
    {
-      // Array sizes and indices
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      int i, j;
-      
       // Save current state
       simulator().saveState();
       
       // Copy current W fields from parent system into w_
-      for (i = 0; i < nMonomer; ++i) {
+      const int nMonomer = system().mixture().nMonomer();
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w_[i], system().w().rgrid(i));
       }
 
@@ -161,24 +147,24 @@ namespace Rpg {
       generateEtaNew();
 
       // Take LM step:
-      double a = -1.0*mobility_;
+      const double a = -1.0*mobility_;
       double evec;
-      
-      // Loop over composition eigenvectors of projected chi matrix
-      for (j = 0; j < nMonomer - 1; ++j) {
+      // Loop over eigenvectors of projected chi matrix
+      for (int j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & etaN = etaNew(j);
          RField<D> const & etaO = etaOld(j);
          RField<D> const & dc = simulator().dc(j);
-         VecOp::addVcVcVc(dwc_, etaN, 1.0, etaO, 1.0, dc, a);
+         VecOp::addVV(dwc_, etaN, etaO);
+         VecOp::addEqVc(dwc_, dc, a);
          // Loop over monomer types
-         for (i = 0; i < nMonomer; ++i) {
+         for (int i = 0; i < nMonomer; ++i) {
             RField<D> & w = w_[i];
             evec = simulator().chiEvecs(j,i);
             VecOp::addEqVc(w, dwc_, evec);
          }
       }
 
-      // Set modified fields 
+      // Set modified fields in parent system
       system().w().setRGrid(w_);
       
       // Enforce incompressibility (also solves MDE repeatedly)
@@ -199,11 +185,9 @@ namespace Rpg {
 
          // Exchange old and new random fields
          exchangeOldNew();
-         
       }
       
       return isConverged;
-     
    }
 
 }

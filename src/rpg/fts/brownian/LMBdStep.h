@@ -8,7 +8,6 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
 #include "BdStep.h"                       // base class
 #include <prdc/cuda/RField.h>             // member
 #include <util/containers/DArray.h>       // member
@@ -17,23 +16,24 @@ namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * Leimkuhler-Matthews Brownian dynamics stepper.
    *
    * As described in:
-   * 
+   *
    *   B. Vorselaars, J. Chemical Physics, 158 114117 (2023)
    *   [ https://doi.org/10.1063/5.0131183 ]
    *
    *   B. Leimkuhler and C. Matthews, Applied Mathematics Research Express,
    *   Issue 1, pages 34-56 (2013) [ https://doi.org/10.1093/amrx/abs010 ]
    *
-   *   B. Leimkuhler and C. Matthews, J. Chemical Physics, 
-   *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ] 
-   * 
+   *   B. Leimkuhler and C. Matthews, J. Chemical Physics,
+   *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ]
+   *
+   * \see \ref rp_LMBdStep_page
    * \ingroup Rpg_Fts_Brownian_Module
    */
    template <int D>
@@ -51,29 +51,25 @@ namespace Rpg {
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       virtual ~LMBdStep();
 
       /**
-      * Read required parameters from file.
-      *
-      * Empty default implementation.
+      * Read body of parameter file block.
       */
-      virtual void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
-      * Setup before simulation.
+      * Setup before simulation loop.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
       * Take a single Brownian dynamics step.
-      * 
-      * \return true if converged, false if failed to converge.
+      *
+      * \return true if compressor converged, false otherwise
       */
-      virtual bool step();
+      bool step() override;
 
    protected:
 
@@ -103,7 +99,7 @@ namespace Rpg {
 
       // Pointer to old random displacements
       DArray< RField<D> >* etaOldPtr_;
-      
+
       // Normal-distributed random fields
       RField<D> gaussianField_;
 
@@ -112,11 +108,11 @@ namespace Rpg {
 
       // Private member functions
 
-      RField<D>& etaNew(int i) 
-      {   return (*etaNewPtr_)[i]; }
+      RField<D>& etaNew(int i)
+      {  return (*etaNewPtr_)[i]; }
 
-      RField<D>& etaOld(int i) 
-      {   return (*etaOldPtr_)[i]; }
+      RField<D>& etaOld(int i)
+      {  return (*etaOldPtr_)[i]; }
 
       /// Generate new values for etaNew
       void generateEtaNew();

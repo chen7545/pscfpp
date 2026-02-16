@@ -15,13 +15,15 @@
 #include <rpc/system/System.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/CpuVecRandom.h>
 #include <pscf/math/IntVec.h>
-#include <util/random/Random.h>
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
+   using namespace Prdc;
    using namespace Prdc::Cpu;
 
    /*
@@ -34,30 +36,29 @@ namespace Rpc {
       etaA_(),
       etaB_(),
       dwc_(),
-      etaNewPtr_(0),
-      etaOldPtr_(0),
+      etaNewPtr_(nullptr),
+      etaOldPtr_(nullptr),
       mobility_(0.0)
    {}
 
    /*
-   * Destructor, empty default implementation.
+   * Destructor.
    */
    template <int D>
    LMBdStep<D>::~LMBdStep()
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block and allocate memory.
    */
    template <int D>
    void LMBdStep<D>::readParameters(std::istream &in)
    {
-      read(in, "mobility", mobility_);
+      ParamComposite::read(in, "mobility", mobility_);
 
+      // Allocate memory
       int nMonomer = system().mixture().nMonomer();
       IntVec<D> meshDimensions = system().domain().mesh().dimensions();
-
-      // Allocate memory for private containers
       w_.allocate(nMonomer);
       for (int i=0; i < nMonomer; ++i) {
          w_[i].allocate(meshDimensions);
@@ -77,19 +78,15 @@ namespace Rpc {
    template <int D>
    void LMBdStep<D>::generateEtaNew()
    {
+      // Constants
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
-
-      // Prefactor b for displacements
       const double vSystem = system().domain().unitCell().volume();
-      const double b = sqrt(0.5*mobility_*double(meshSize)/vSystem);
+      const double b = sqrt(0.5 * mobility_ * double(meshSize) / vSystem);
+      const double mean = 0.0;
 
-      int j, k;
-      for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D>& eta = etaNew(j);
-         for (k = 0; k < meshSize; ++k) {
-            eta[k] = b*random().gaussian();
-         }
+      for (int j = 0; j < nMonomer - 1; ++j) {
+         vecRandom().normal(etaNew(j), b, mean);
       }
    }
 
@@ -137,44 +134,37 @@ namespace Rpc {
    template <int D>
    bool LMBdStep<D>::step()
    {
-      // Array sizes and indices
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      int i, j, k;
-
       // Save current state
       simulator().saveState();
 
-      // Copy current fields to w_
-      for (i = 0; i < nMonomer; ++i) {
-         w_[i] = system().w().rgrid(i);
+      // Copy current W fields from parent system into w_
+      const int nMonomer = system().mixture().nMonomer();
+      for (int i = 0; i < nMonomer; ++i) {
+         VecOp::eqV(w_[i], system().w().rgrid(i));
       }
 
       // Generate new random displacement values
       generateEtaNew();
 
-      // Take LM step:
+      // Take LM step
       const double a = -1.0*mobility_;
       double evec;
-      // Loop over composition eigenvectors of projected chi matrix
-      for (j = 0; j < nMonomer - 1; ++j) {
+      // Loop over eigenvectors of projected chi matrix
+      for (int j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & etaN = etaNew(j);
          RField<D> const & etaO = etaOld(j);
          RField<D> const & dc = simulator().dc(j);
-         for (k = 0; k < meshSize; ++k) {
-            dwc_[k] = a*dc[k] + etaN[k] + etaO[k];
-         }
+         VecOp::addVV(dwc_, etaN, etaO);
+         VecOp::addEqVc(dwc_, dc, a);
          // Loop over monomer types
-         for (i = 0; i < nMonomer; ++i) {
+         for (int i = 0; i < nMonomer; ++i) {
             RField<D> & w = w_[i];
             evec = simulator().chiEvecs(j,i);
-            for (k = 0; k < meshSize; ++k) {
-               w[k] += evec*dwc_[k];
-            }
+            VecOp::addEqVc(w, dwc_, evec);
          }
       }
 
-      // Set modified fields
+      // Set modified fields in parent system
       system().w().setRGrid(w_);
 
       // Enforce incompressibility (also solves MDE repeatedly)
@@ -195,7 +185,6 @@ namespace Rpc {
 
          // Exchange old and new random fields
          exchangeOldNew();
-
       }
 
       return isConverged;
