@@ -54,6 +54,16 @@ namespace Rp {
       */
       bool move() override;
 
+      /**
+      * Do dc derivative components need to be saved before a step?
+      *
+      * The default implementation returns true.
+      *
+      * \return true to save, or false otherwise
+      */
+      bool needsDc() override
+      {  return true; }
+
    protected:
 
       /**
