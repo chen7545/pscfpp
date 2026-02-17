@@ -69,19 +69,28 @@ namespace Rp {
    template <int D, class T>
    bool BdMove<D,T>::move()
    {
-      // Start timers
+      // Start total timer
       McMoveT::totalTimer_.start();
-      McMoveT::attemptMoveTimer_.start();
-      McMoveT::incrementNAttempt();
+
+      // Preconditions
+      UTIL_CHECK(simulator().hasWc());
+      UTIL_CHECK(simulator().hasCc());
+      UTIL_CHECK(simulator().hasDc());
+      UTIL_CHECK(simulator().hasHamiltonian());
 
       // Run BD simulation of nStep steps
+      McMoveT::attemptMoveTimer_.start();
+      McMoveT::incrementNAttempt();
       bdSetup();
       for (int i=0; i < nStep_; ++i) {
          bdStep();
       }
       McMoveT::attemptMoveTimer_.stop();
 
-      // Recompute components Cc, Dc? Is this necessary ?
+      UTIL_CHECK(simulator().hasWc());
+      UTIL_CHECK(simulator().hasCc());
+      UTIL_CHECK(simulator().hasDc());
+      simulator().computeHamiltonian();
 
       simulator().clearState();
       McMoveT::incrementNAccept();
@@ -96,10 +105,23 @@ namespace Rp {
    template <int D, class T>
    void BdMove<D,T>::bdSetup()
    {
-      int nMonomer = system().mixture().nMonomer();
-      int meshSize = system().domain().mesh().size();
+      UTIL_CHECK(system().w().hasData());
+      UTIL_CHECK(system().c().hasData());
+
+      // Compute field components as needed
+      if (!simulator().hasWc()) {
+         simulator().computeWc();
+      }
+      if (!simulator().hasCc()) {
+         simulator().computeCc();
+      }
+      if (!simulator().hasDc()) {
+         simulator().computeDc();
+      }
 
       // Check array capacities
+      int nMonomer = system().mixture().nMonomer();
+      int meshSize = system().domain().mesh().size();
       UTIL_CHECK(etaA_.capacity() == nMonomer-1);
       UTIL_CHECK(etaB_.capacity() == nMonomer-1);
       for (int i=0; i < nMonomer - 1; ++i) {
@@ -122,6 +144,13 @@ namespace Rp {
    template <int D, class T>
    bool BdMove<D,T>::bdStep()
    {
+      // Preconditions
+      UTIL_CHECK(system().w().hasData());
+      UTIL_CHECK(system().c().hasData());
+      UTIL_CHECK(simulator().hasWc());
+      UTIL_CHECK(simulator().hasCc());
+      UTIL_CHECK(simulator().hasDc());
+
       // Save current state
       simulator().saveState();
 
