@@ -1,12 +1,13 @@
 #ifndef RPG_MC_MOVE_FACTORY_TPP
 #define RPG_MC_MOVE_FACTORY_TPP
 
-#include "McMoveFactory.h"  
+#include "McMoveFactory.h"
 #include <rpg/fts/montecarlo/McSimulator.h>
 
-// Subclasses of McMove 
+// Subclasses of McMove
 #include "RealMove.h"
 #include "ForceBiasMove.h"
+#include "BdMove.h"
 
 namespace Pscf {
 namespace Rpg {
@@ -21,7 +22,7 @@ namespace Rpg {
     : simulatorPtr_(&simulator)
    {}
 
-   /* 
+   /*
    * Return a pointer to a instance of McMove subclass className.
    */
    template <int D>
@@ -33,12 +34,13 @@ namespace Rpg {
       ptr = trySubfactories(className);
       if (ptr) return ptr;
 
-      
       // Try to match classname
       if (className == "RealMove") {
          ptr = new RealMove<D>(*simulatorPtr_);
       } else if (className == "ForceBiasMove") {
          ptr = new ForceBiasMove<D>(*simulatorPtr_);
+      } else if (className == "BdMove") {
+         ptr = new BdMove<D>(*simulatorPtr_);
       }
 
       return ptr;
