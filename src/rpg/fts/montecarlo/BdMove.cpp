@@ -11,7 +11,7 @@
 #include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <pscf/cuda/CpuVecRandom.h>
+#include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/cuda/VecOp.h>
 
 #include <rp/fts/montecarlo/BdMove.tpp>     // base class implementation
