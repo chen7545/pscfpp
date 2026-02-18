@@ -9,13 +9,14 @@
 */
 
 #include "RealMove.h"
-#include "McMove.h" 
+#include "McMove.h"
+#include <rpc/fts/montecarlo/McSimulator.h>
+#include <rpc/system/System.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
-#include <rpc/fts/montecarlo/McSimulator.h>
-#include <util/param/ParamComposite.h>
-#include <rpc/system/System.h>
-#include <util/random/Random.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/CpuVecRandom.h>
+#include <pscf/math/IntVec.h>
 
 namespace Pscf {
 namespace Rpc {
@@ -26,37 +27,38 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   RealMove<D>::RealMove(McSimulator<D>& simulator) 
+   RealMove<D>::RealMove(McSimulator<D>& simulator)
     : McMove<D>(simulator),
       dwc_(),
       sigma_(0.0),
       isAllocated_(false)
-   { setClassName("RealMove"); }
+   {  ParamComposite::setClassName("RealMove"); }
 
    /*
-   * Destructor, empty default implementation.
+   * Destructor.
    */
    template <int D>
    RealMove<D>::~RealMove()
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block.
    */
    template <int D>
    void RealMove<D>::readParameters(std::istream &in)
    {
+      McMove<D>::readProbability(in);
 
-      // Read the probability
-      readProbability(in);
-
-      // The standard deviation of the Gaussian distribution
-      read(in, "sigma", sigma_);
+      // Standard deviation of field change
+      ParamComposite::read(in, "sigma", sigma_);
    }
-   
+
+   /*
+   * Setup before simulation loop.
+   */
    template <int D>
    void RealMove<D>::setup()
-   {  
+   {
       McMove<D>::setup();
       const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & meshDimensions = system().domain().mesh().dimensions();
@@ -69,54 +71,38 @@ namespace Rpc {
          isAllocated_ = true;
       }
    }
-   
-   
-   
+
    /*
    * Attempt unconstrained move
    */
    template <int D>
    void RealMove<D>::attemptMove()
    {
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      
       // Copy current fields to w_
+      const int nMonomer = system().mixture().nMonomer();
       for (int i = 0; i < nMonomer; ++i) {
          w_[i] = system().w().rgrid(i);
       }
-      
+
       // Loop over composition eigenvectors of projected chi matrix
+      double evec, mean;
+      mean = 0.0;
       for (int j = 0; j < nMonomer - 1; j++){
 
-         // Generate Gaussian distributed random numbers
-         for (int k = 0; k < meshSize; k++){
-            dwc_[k] = sigma_* random().gaussian();
-         }
-         
-         // Loop over monomer types
-         double evec;
-         for (int i = 0; i < nMonomer; ++i) {
-            RField<D> & w = w_[i];
-            evec = simulator().chiEvecs(j, i);
-            for (int k = 0; k < meshSize; ++k) {
-               w[k] += evec*dwc_[k];
-            }
-         }
+         // Generate random field changes
+         vecRandom().normal(dwc_, sigma_, mean);
 
+         // Add changes to w_ field components
+         for (int i = 0; i < nMonomer; ++i) {
+            evec = simulator().chiEvecs(j, i);
+            VecOp::addEqVc(w_[i], dwc_, evec);
+         }
       }
 
       // Update w-fields in parent system
       system().w().setRGrid(w_);
    }
 
-   /*
-   * Trivial default implementation - do nothing
-   */
-   template <int D>
-   void RealMove<D>::output()
-   {}
-   
    template<int D>
    void RealMove<D>::outputTimers(std::ostream& out)
    {

@@ -9,16 +9,14 @@
 */
 
 #include "RealMove.h"
-#include "McMove.h" 
+#include "McMove.h"
 #include <rpg/fts/montecarlo/McSimulator.h>
 #include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <rpg/fts/VecOpFts.h>
 #include <pscf/cuda/VecOp.h>
-#include <pscf/math/IntVec.h>
 #include <pscf/cuda/CudaVecRandom.h>
-#include <util/param/ParamComposite.h>
+#include <pscf/math/IntVec.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -29,101 +27,87 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   RealMove<D>::RealMove(McSimulator<D>& simulator) 
+   RealMove<D>::RealMove(McSimulator<D>& simulator)
     : McMove<D>(simulator),
       w_(),
       dwc_(),
       sigma_(0.0),
       isAllocated_(false)
-   { setClassName("RealMove"); }
+   {  ParamComposite::setClassName("RealMove"); }
 
    /*
-   * Destructor, empty default implementation.
+   * Destructor.
    */
    template <int D>
    RealMove<D>::~RealMove()
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter block.
    */
    template <int D>
    void RealMove<D>::readParameters(std::istream &in)
    {
-      // Read the probability
-      readProbability(in);
-      
-      // The standard deviation of the Gaussian distribution
-      read(in, "sigma", sigma_);
-   
-   }
-   
+      McMove<D>::readProbability(in);
 
+      // Standard deviation of field changes
+      ParamComposite::read(in, "sigma", sigma_);
+   }
+
+   /*
+   * Setup before simulation loop.
+   */
    template <int D>
    void RealMove<D>::setup()
    {
       McMove<D>::setup();
-      const int nMonomer = system().mixture().nMonomer();
-      IntVec<D> meshDimensions = system().domain().mesh().dimensions();
 
       if (!isAllocated_){
+         const int nMonomer = system().mixture().nMonomer();
+         IntVec<D> meshDimensions = system().domain().mesh().dimensions();
          w_.allocate(nMonomer);
          for (int i=0; i < nMonomer; ++i) {
             w_[i].allocate(meshDimensions);
          }
          dwc_.allocate(meshDimensions);
-         gaussianField_.allocate(meshDimensions);
          isAllocated_ = true;
       }
    }
-   
+
    /*
    * Attempt unconstrained move
    */
    template <int D>
    void RealMove<D>::attemptMove()
    {
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      int i, j;
-      
       // Copy current W fields from parent system into w_
-      for (i = 0; i < nMonomer; ++i) {
+      const int nMonomer = system().mixture().nMonomer();
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w_[i], system().w().rgrid(i));
       }
-      
-      double evec;
-      double mean = 0.0;
-      
-      // Loop over composition eigenvectors of projected chi matrix
-      for (j = 0; j < nMonomer - 1; ++j) {
-         
-         // Generate Gaussian distributed random numbers 
-         vecRandom().normal(gaussianField_, sigma_, mean);
-         VecOp::eqV(dwc_, gaussianField_);
-         
-         // Loop over monomer types
-         for (i = 0; i < nMonomer; ++i) {
-            RField<D> & w = w_[i];
-            evec = simulator().chiEvecs(j,i);
-            VecOp::addEqVc(w, dwc_, evec);
-         }
 
+      // Loop over composition eigenvectors of projected chi matrix
+      double evec, mean;
+      mean = 0.0;
+      for (int j = 0; j < nMonomer - 1; ++j) {
+
+         // Generate random field changes
+         vecRandom().normal(dwc_, sigma_, mean);
+
+         // Add to w_ field components
+         for (int i = 0; i < nMonomer; ++i) {
+            evec = simulator().chiEvecs(j,i);
+            VecOp::addEqVc(w_[i], dwc_, evec);
+         }
       }
 
       // Set w-fields of parent System
       system().w().setRGrid(w_);
-
    }
 
-
    /*
-   * Trivial default implementation - do nothing
+   * Output time contributions.
    */
-   template <int D>
-   void RealMove<D>::output()
-   {}
-   
    template<int D>
    void RealMove<D>::outputTimers(std::ostream& out)
    {

@@ -16,12 +16,13 @@ namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * RealMove generates spatially uncorrelated random field changes.
    *
-   * \see \ref rpc_RealMove_page "Manual Page". 
+   * \see \ref rpc_RealMove_page "Manual Page".
    *
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
@@ -34,79 +35,61 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param simulator parent McSimulator
+      * \param simulator  parent McSimulator object
       */
       RealMove(McSimulator<D>& simulator);
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       ~RealMove();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block. 
       *
-      * \param in input stream
+      * \param in  input parameter stream
       */
-      void readParameters(std::istream &in);
-      
+      void readParameters(std::istream &in) override;
+
       /**
-      * Output statistics for this move (at the end of simulation)
+      * Setup before the simulation loop.
       */
-      void output();
-      
+      void setup() override;
+
       /**
-      * Setup before the beginning of each simulation run
+      * Output times contributions.
+      *
+      * \param out  output stream
       */
-      void setup();
-      
-      /**
-      * Return real move times contributions.
-      */
-      void outputTimers(std::ostream& out);
-      
-      // Inherited public member function
-      using McMove<D>::move;
-      using McMove<D>::readProbability;
-      using McMove<D>::clearTimers;
-      using ParamComposite::read;
-      using ParamComposite::setClassName;
+      void outputTimers(std::ostream& out) override;
 
    protected:
-      
+
       using McMove<D>::system;
       using McMove<D>::simulator;
-      using McMove<D>::random;
+      using McMove<D>::vecRandom;
 
       /**
-      *  Attempt unconstrained move.
-      *
-      *  This function should modify the system w fields in r-grid
-      *  format, as returned by system().w().rgrid(), in order apply
-      *  an unconstrained attempted move. The compressor will then be
-      *  applied in order to restore the density constraint.
-      *
+      * Attempt unconstrained move.
       */
       void attemptMove();
 
    private:
-      
-      // Change in one field component
-      RField<D> dwc_;
-      
-      // New field values
+
+      /// New field values.
       DArray< RField<D> > w_;
-      
-      // The standard deviation of the Gaussian distribution
+
+      /// Change in one field component.
+      RField<D> dwc_;
+
+      /// Standard deviation of field changes.
       double sigma_;
-      
-      // Has the variable been allocated?
+
+      /// Has memory been allocated?
       bool isAllocated_;
-   
+
    };
-      
+
    // Explicit instantiation declarations
    extern template class RealMove<1>;
    extern template class RealMove<2>;
