@@ -5,7 +5,8 @@ rpc_fts_montecarlo_= \
   rpc/fts/montecarlo/McMoveManager.cpp \
   rpc/fts/montecarlo/RealMove.cpp \
   rpc/fts/montecarlo/ForceBiasMove.cpp \
-  rpc/fts/montecarlo/BdMove.cpp
+  rpc/fts/montecarlo/BdMove.cpp \
+  rpc/fts/montecarlo/ShiftMove.cpp
 
 rpc_fts_montecarlo_OBJS=\
      $(addprefix $(BLD_DIR)/, $(rpc_fts_montecarlo_:.cpp=.o))

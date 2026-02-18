@@ -8,6 +8,7 @@
 #include "RealMove.h"
 #include "ForceBiasMove.h"
 #include "BdMove.h"
+#include "ShiftMove.h"
 
 namespace Pscf {
 namespace Rpg {
@@ -41,6 +42,8 @@ namespace Rpg {
          ptr = new ForceBiasMove<D>(*simulatorPtr_);
       } else if (className == "BdMove") {
          ptr = new BdMove<D>(*simulatorPtr_);
+      } else if (className == "ShiftMove") {
+         ptr = new ShiftMove<D>(*simulatorPtr_);
       }
 
       return ptr;
