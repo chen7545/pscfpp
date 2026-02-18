@@ -43,7 +43,7 @@ namespace Rpg {
    {}
 
    /*
-   * Read body of parameter block.
+   * Read body of parameter file block.
    */
    template <int D>
    void RealMove<D>::readParameters(std::istream &in)
@@ -66,7 +66,7 @@ namespace Rpg {
          const int nMonomer = system().mixture().nMonomer();
          IntVec<D> meshDimensions = system().domain().mesh().dimensions();
          w_.allocate(nMonomer);
-         for (int i=0; i < nMonomer; ++i) {
+         for (int i = 0; i < nMonomer; ++i) {
             w_[i].allocate(meshDimensions);
          }
          dwc_.allocate(meshDimensions);
@@ -75,12 +75,12 @@ namespace Rpg {
    }
 
    /*
-   * Attempt unconstrained move.
+   * Attempt unconstrained move
    */
    template <int D>
    void RealMove<D>::attemptMove()
    {
-      // Copy current W fields into w_
+      // Copy current W fields to w_
       const int nMonomer = system().mixture().nMonomer();
       for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w_[i], system().w().rgrid(i));
@@ -96,12 +96,12 @@ namespace Rpg {
 
          // Add changes to w_ field components
          for (int i = 0; i < nMonomer; ++i) {
-            evec = simulator().chiEvecs(j,i);
+            evec = simulator().chiEvecs(j, i);
             VecOp::addEqVc(w_[i], dwc_, evec);
          }
       }
 
-      // Set w-fields of parent System
+      // Update w-fields of parent system
       system().w().setRGrid(w_);
    }
 

@@ -1,5 +1,5 @@
-#ifndef RPC_REAL_MOVE_TPP
-#define RPC_REAL_MOVE_TPP
+#ifndef RP_REAL_MOVE_TPP
+#define RP_REAL_MOVE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,26 +9,19 @@
 */
 
 #include "RealMove.h"
-#include "McMove.h"
-#include <rpc/fts/montecarlo/McSimulator.h>
-#include <rpc/system/System.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/field/Domain.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/CpuVecRandom.h>
 #include <pscf/math/IntVec.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   RealMove<D>::RealMove(McSimulator<D>& simulator)
-    : McMove<D>(simulator),
+   template <int D, class T>
+   RealMove<D,T>::RealMove(typename T::McSimulator& simulator)
+    : McMoveT(simulator),
       w_(),
       dwc_(),
       sigma_(0.0),
@@ -38,17 +31,17 @@ namespace Rpc {
    /*
    * Destructor.
    */
-   template <int D>
-   RealMove<D>::~RealMove()
+   template <int D, class T>
+   RealMove<D,T>::~RealMove()
    {}
 
    /*
    * Read body of parameter file block.
    */
-   template <int D>
-   void RealMove<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void RealMove<D,T>::readParameters(std::istream &in)
    {
-      McMove<D>::readProbability(in);
+      McMoveT::readProbability(in);
 
       // Standard deviation of field changes
       ParamComposite::read(in, "sigma", sigma_);
@@ -57,10 +50,10 @@ namespace Rpc {
    /*
    * Setup before simulation loop.
    */
-   template <int D>
-   void RealMove<D>::setup()
+   template <int D, class T>
+   void RealMove<D,T>::setup()
    {
-      McMove<D>::setup();
+      McMoveT::setup();
 
       if (!isAllocated_){
          const int nMonomer = system().mixture().nMonomer();
@@ -75,10 +68,10 @@ namespace Rpc {
    }
 
    /*
-   * Attempt unconstrained move
+   * Attempt unconstrained move.
    */
-   template <int D>
-   void RealMove<D>::attemptMove()
+   template <int D, class T>
+   void RealMove<D,T>::attemptMove()
    {
       // Copy current W fields to w_
       const int nMonomer = system().mixture().nMonomer();
@@ -109,11 +102,11 @@ namespace Rpc {
    * Output time contributions.
    */
    template<int D>
-   void RealMove<D>::outputTimers(std::ostream& out)
+   void RealMove<D,T>::outputTimers(std::ostream& out)
    {
       out << "\n";
       out << "RealMove time contributions:\n";
-      McMove<D>::outputTimers(out);
+      McMoveT::outputTimers(out);
    }
 
 }

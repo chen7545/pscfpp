@@ -69,13 +69,13 @@ namespace Rpg {
       using McMove<D>::vecRandom;
 
       /**
-      *  Attempt unconstrained move.
+      * Attempt unconstrained move.
       */
       void attemptMove();
 
    private:
 
-      /// Field values, indexed by monomer type.
+      /// New field values, indexed by monomer type.
       DArray< RField<D> > w_;
 
       /// Change in one field component.

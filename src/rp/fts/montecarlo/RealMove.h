@@ -1,5 +1,5 @@
-#ifndef RPC_REAL_MOVE_H
-#define RPC_REAL_MOVE_H
+#ifndef RP_REAL_MOVE_H
+#define RP_REAL_MOVE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,25 +9,22 @@
 */
 
 #include "McMove.h"                          // base class
-#include <prdc/cpu/RField.h>                 // member
 #include <util/containers/DArray.h>          // member
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
    * RealMove generates spatially uncorrelated random field changes.
    *
-   * \see \ref rpc_RealMove_page "Manual Page"
+   * \see \ref rp_RealMove_page "Manual Page"
    *
-   * \ingroup Rpc_Fts_MonteCarlo_Module
+   * \ingroup Rp_Fts_MonteCarlo_Module
    */
-   template <int D>
-   class RealMove : public McMove<D>
+   template <int D, class T>
+   class RealMove : public T::McMove
    {
    public:
 
@@ -36,7 +33,7 @@ namespace Rpc {
       *
       * \param simulator  parent McSimulator object
       */
-      RealMove(McSimulator<D>& simulator);
+      RealMove(typename T::McSimulator& simulator);
 
       /**
       * Destructor.
@@ -64,9 +61,11 @@ namespace Rpc {
 
    protected:
 
-      using McMove<D>::system;
-      using McMove<D>::simulator;
-      using McMove<D>::vecRandom;
+      using McMoveT = typename T::McMove;
+      using RFieldT = typename T::RField;
+      using McMoveT::system;
+      using McMoveT::simulator;
+      using McMoveT::vecRandom;
 
       /**
       * Attempt unconstrained move.
@@ -76,10 +75,10 @@ namespace Rpc {
    private:
 
       /// New field values, indexed by monomer type.
-      DArray< RField<D> > w_;
+      DArray< RieldT > w_;
 
       /// Change in one field component.
-      RField<D> dwc_;
+      RieldT dwc_;
 
       /// Standard deviation of field changes.
       double sigma_;
@@ -88,11 +87,6 @@ namespace Rpc {
       bool isAllocated_;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class RealMove<1>;
-   extern template class RealMove<2>;
-   extern template class RealMove<3>;
 
 }
 }
