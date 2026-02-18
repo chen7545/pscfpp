@@ -8,11 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/global.h>
 #include <rpg/fts/montecarlo/McMoveManager.h>
 #include <rpg/fts/montecarlo/McMoveFactory.h>
 #include <rpg/fts/montecarlo/McSimulator.h>
 #include <util/random/Random.h>
+#include <util/global.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -23,13 +23,13 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   McMoveManager<D>::McMoveManager(McSimulator<D>& simulator, 
+   McMoveManager<D>::McMoveManager(McSimulator<D>& simulator,
                                    System<D>& system)
-   : Manager< McMove<D> >(),
-     simulatorPtr_(&simulator),
-     systemPtr_(&system),
-     randomPtr_(&simulator.random())
-   {  setClassName("McMoveManager"); }
+    : Manager< McMove<D> >(),
+      simulatorPtr_(&simulator),
+      systemPtr_(&system),
+      randomPtr_(&simulator.random())
+   {  ParamComposite::setClassName("McMoveManager"); }
 
    /*
    * Destructor.
@@ -45,7 +45,7 @@ namespace Rpg {
    Factory< McMove<D> >* McMoveManager<D>::newDefaultFactory() const
    {  return new McMoveFactory<D>(*simulatorPtr_); }
 
-   /* 
+   /*
    * Read instructions for creating objects from file.
    */
    template <int D>
@@ -57,7 +57,7 @@ namespace Rpg {
       // Allocate and store probabilities
       probabilities_.allocate(size());
       double  totalProbability = 0.0;
-      int     iMove;
+      int  iMove;
       for (iMove = 0; iMove < size(); ++iMove) {
          probabilities_[iMove] = (*this)[iMove].probability();
          totalProbability += probabilities_[iMove];
@@ -91,68 +91,68 @@ namespace Rpg {
       iMove = randomPtr_->drawFrom(&probabilities_[0], size());
       return (*this)[iMove];
    }
-   
+
    /*
    * Output statistics for every move.
    */
    template <int D>
    void McMoveManager<D>::output() const
    {
-      for (int i=0; i< size(); i++) {
+      for (int i = 0; i < size(); ++i) {
          (*this)[i].output();
       }
    }
-   
+
    /*
-   * Log output timing results 
+   * Log output timing results
    */
    template <int D>
    void McMoveManager<D>::outputTimers(std::ostream& out) const
    {
-      for (int i=0; i< size(); i++) {
+      for (int i = 0; i < size(); ++i) {
          (*this)[i].outputTimers(out);
       }
    }
-   
+
    /*
-   * Clear timers 
+   * Clear timers
    */
    template <int D>
-   void McMoveManager<D>::clearTimers() 
+   void McMoveManager<D>::clearTimers()
    {
-      for (int i=0; i< size(); i++) {
+      for (int i = 0; i < size(); ++i) {
          (*this)[i].clearTimers();
       }
    }
-   
+
    /*
    * Decide whether any move needs to store cc fields.
    */
    template <int D>
    bool McMoveManager<D>::needsCc()
    {
-      for (int i=0; i< size(); i++) {
-         if((*this)[i].needsCc()){
+      for (int i = 0; i < size(); ++i) {
+         if ((*this)[i].needsCc()) {
             return true;
          }
       }
       return false;
    }
-   
+
    /*
    * Decide whether any move needs to store dc fields.
    */
    template <int D>
    bool McMoveManager<D>::needsDc()
    {
-      for (int i=0; i< size(); i++) {
-         if((*this)[i].needsDc()){
+      for (int i = 0; i < size(); ++i) {
+         if ((*this)[i].needsDc()) {
             return true;
          }
       }
       return false;
    }
-   
+
 }
 }
 #endif

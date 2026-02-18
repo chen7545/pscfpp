@@ -1,5 +1,5 @@
-#ifndef RPC_MC_MOVE_MANAGER_TPP
-#define RPC_MC_MOVE_MANAGER_TPP
+#ifndef RP_MC_MOVE_MANAGER_TPP
+#define RP_MC_MOVE_MANAGER_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,24 +8,21 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rpc/fts/montecarlo/McMoveManager.h>
-#include <rpc/fts/montecarlo/McMoveFactory.h>
-#include <rpc/fts/montecarlo/McSimulator.h>
 #include <util/random/Random.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   McMoveManager<D>::McMoveManager(McSimulator<D>& simulator,
-                                   System<D>& system)
-    : Manager< McMove<D> >(),
+   template <int D, class T>
+   McMoveManager<D,T>::McMoveManager(typename T::McSimulator& simulator,
+                                     typename T::System& system)
+    : Base(),
       simulatorPtr_(&simulator),
       systemPtr_(&system),
       randomPtr_(&simulator.random())
@@ -34,37 +31,37 @@ namespace Rpc {
    /*
    * Destructor.
    */
-   template <int D>
-   McMoveManager<D>::~McMoveManager()
+   template <int D, class T>
+   McMoveManager<D,T>::~McMoveManager()
    {}
 
    /*
    * Return a pointer to a new McMoveFactory object.
    */
-   template <int D>
-   Factory< McMove<D> >* McMoveManager<D>::newDefaultFactory() const
-   {  return new McMoveFactory<D>(*simulatorPtr_); }
+   template <int D, class T>
+   Factory< McMoveT >* McMoveManager<D,T>::newDefaultFactory() const
+   {  return new typename T::McMoveFactory(*simulatorPtr_); }
 
    /*
    * Read instructions for creating objects from file.
    */
-   template <int D>
-   void McMoveManager<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void McMoveManager<D,T>::readParameters(std::istream &in)
    {
-      // Read parameters for all McMove<D> objects
-      Manager< McMove<D> >::readParameters(in);
+      // Read parameters for all McMoveT objects
+      Base::readParameters(in);
 
       // Allocate and store probabilities
-      probabilities_.allocate(size());
+      probabilities_.allocate(Base::size());
       double  totalProbability = 0.0;
       int  iMove;
-      for (iMove = 0; iMove < size(); ++iMove) {
+      for (iMove = 0; iMove < Base::size(); ++iMove) {
          probabilities_[iMove] = (*this)[iMove].probability();
          totalProbability += probabilities_[iMove];
       }
 
       // Allocate and store and normalize probabilities
-      for (iMove = 0; iMove < size(); ++iMove) {
+      for (iMove = 0; iMove < Base::size(); ++iMove) {
          probabilities_[iMove] = probabilities_[iMove]/totalProbability;
          (*this)[iMove].setProbability(probabilities_[iMove]);
       }
@@ -73,10 +70,10 @@ namespace Rpc {
    /*
    * Initialize all moves just prior to a run.
    */
-   template <int D>
-   void McMoveManager<D>::setup()
+   template <int D, class T>
+   void McMoveManager<D,T>::setup()
    {
-      for (int iMove = 0; iMove < size(); ++iMove) {
+      for (int iMove = 0; iMove < Base::size(); ++iMove) {
          (*this)[iMove].setup();
       }
    }
@@ -84,21 +81,21 @@ namespace Rpc {
    /*
    * Choose a McMove at random.
    */
-   template <int D>
-   McMove<D>& McMoveManager<D>::chooseMove()
+   template <int D, class T>
+   typename T::McMove& McMoveManager<D,T>::chooseMove()
    {
       int iMove;
-      iMove = randomPtr_->drawFrom(&probabilities_[0], size());
+      iMove = randomPtr_->drawFrom(&probabilities_[0], Base::size());
       return (*this)[iMove];
    }
 
    /*
    * Output statistics for every move.
    */
-   template <int D>
-   void McMoveManager<D>::output() const
+   template <int D, class T>
+   void McMoveManager<D,T>::output() const
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].output();
       }
    }
@@ -106,10 +103,10 @@ namespace Rpc {
    /*
    * Log output timing results
    */
-   template <int D>
-   void McMoveManager<D>::outputTimers(std::ostream& out) const
+   template <int D, class T>
+   void McMoveManager<D,T>::outputTimers(std::ostream& out) const
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].outputTimers(out);
       }
    }
@@ -117,10 +114,10 @@ namespace Rpc {
    /*
    * Clear timers
    */
-   template <int D>
-   void McMoveManager<D>::clearTimers()
+   template <int D, class T>
+   void McMoveManager<D,T>::clearTimers()
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].clearTimers();
       }
    }
@@ -128,10 +125,10 @@ namespace Rpc {
    /*
    * Decide whether any move needs to store cc fields.
    */
-   template <int D>
-   bool McMoveManager<D>::needsCc()
+   template <int D, class T>
+   bool McMoveManager<D,T>::needsCc()
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          if ((*this)[i].needsCc()) {
             return true;
          }
@@ -142,10 +139,10 @@ namespace Rpc {
    /*
    * Decide whether any move needs to store dc fields.
    */
-   template <int D>
-   bool McMoveManager<D>::needsDc()
+   template <int D, class T>
+   bool McMoveManager<D,T>::needsDc()
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          if ((*this)[i].needsDc()) {
             return true;
          }

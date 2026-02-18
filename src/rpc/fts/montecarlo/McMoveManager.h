@@ -79,33 +79,33 @@ namespace Rpc {
       * \return probability of McMove number i
       */
       double probability(int i) const;
-      
+
       using Manager< McMove<D> >::size;
-      
+
       /**
-      * Log output timing results 
+      * Log output timing results
       */
       void outputTimers(std::ostream& out) const;
-      
+
       /**
-      * Clear timers 
+      * Clear timers
       */
       void clearTimers();
-      
+
       /**
       * Decide whether any move needs to store cc fields.
       */
       bool needsCc();
-      
+
       /**
       * Decide whether any move needs to store dc fields.
       */
       bool needsDc();
- 
+
    protected:
-      
+
       using Manager< McMove<D> >::setClassName;
-   
+
    private:
 
       // Private data members
@@ -114,10 +114,10 @@ namespace Rpc {
       * Array of McMove probabilities.
       */
       DArray<double>  probabilities_;
-      
+
       /**
-       * Pointer to parent Simulator
-       */
+      * Pointer to parent Simulator.
+      */
       McSimulator<D>* simulatorPtr_;
 
       /**
@@ -142,13 +142,13 @@ namespace Rpc {
    // Inline functions
 
    /*
-   * Return probability of move number i
+   * Return probability of move number i.
    */
    template <int D>
    inline double McMoveManager<D>::probability(int i) const
    {
-      assert(i >= 0);  
-      assert(i < size());  
+      assert(i >= 0);
+      assert(i < size());
       return probabilities_[i];
    }
 

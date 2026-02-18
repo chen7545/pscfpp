@@ -1,5 +1,5 @@
-#ifndef RPG_MC_MOVE_MANAGER_H
-#define RPG_MC_MOVE_MANAGER_H
+#ifndef RP_MC_MOVE_MANAGER_H
+#define RP_MC_MOVE_MANAGER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,30 +8,30 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "McMove.h"                      // base class template parameter
 #include <util/param/Manager.h>          // base class template
-#include <util/containers/DArray.h>      // member template
+#include <util/containers/DArray.h>      // member
 
+// Forward declaration
 namespace Util { class Random; }
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
-
-   template <int D> class System;
-   template <int D> class McSimulator;
 
    /**
    * Manager for a set of McMove objects.
    *
-   * \ingroup Rpg_Fts_MonteCarlo_Module
+   * \ingroup Rp_Fts_MonteCarlo_Module
    */
-   template <int D>
-   class McMoveManager : public Manager< McMove<D> >
+   template <int D, class T>
+   class McMoveManager : public Manager< typename T::McMove >
    {
 
    public:
+
+      using McMoveT = typename T::McMove;
+      using Base = Manager< McMoveT >;
 
       /**
       * Constructor.
@@ -39,7 +39,8 @@ namespace Rpg {
       * \param simulator parent McSimulator
       * \param system parent System
       */
-      McMoveManager(McSimulator<D>& simulator, System<D>& system);
+      McMoveManager(typename T::McSimulator& simulator, 
+                    typename T::System& system);
 
       /**
       * Destructor.
@@ -65,7 +66,7 @@ namespace Rpg {
       *
       * \return chosen McMove
       */
-      McMove<D>& chooseMove();
+      typename T::McMove& chooseMove();
 
       /**
       * Output statistics for all moves.
@@ -79,8 +80,6 @@ namespace Rpg {
       * \return probability of McMove number i
       */
       double probability(int i) const;
-
-      using Manager< McMove<D> >::size;
 
       /**
       * Log output timing results
@@ -102,9 +101,7 @@ namespace Rpg {
       */
       bool needsDc();
 
-   protected:
-
-      using Manager< McMove<D> >::setClassName;
+      using Base::size;
 
    private:
 
@@ -118,12 +115,12 @@ namespace Rpg {
       /**
       * Pointer to parent Simulator.
       */
-      McSimulator<D>* simulatorPtr_;
+      typename T::McSimulator* simulatorPtr_;
 
       /**
       * Pointer to parent System.
       */
-      System<D>* systemPtr_;
+      typename T::System* systemPtr_;
 
       /**
       * Pointer to random number generator.
@@ -135,7 +132,7 @@ namespace Rpg {
       /**
       * Return pointer to a new McMoveFactory.
       */
-      virtual Factory< McMove<D> >* newDefaultFactory() const;
+      virtual Factory< McMoveT >* newDefaultFactory() const;
 
    };
 
@@ -144,18 +141,13 @@ namespace Rpg {
    /*
    * Return probability of move number i.
    */
-   template <int D>
-   inline double McMoveManager<D>::probability(int i) const
+   template <int D, class T> inline 
+   double McMoveManager<D,T>::probability(int i) const
    {
       assert(i >= 0);
       assert(i < size());
       return probabilities_[i];
    }
-
-   // Explicit instantiation declarations
-   extern template class McMoveManager<1>;
-   extern template class McMoveManager<2>;
-   extern template class McMoveManager<3>;
 
 }
 }
