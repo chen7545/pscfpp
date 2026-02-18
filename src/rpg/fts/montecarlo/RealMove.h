@@ -20,14 +20,15 @@ namespace Rpg {
    using namespace Prdc::Cuda;
 
    /**
-   * RealMove is a Monte Carlo move in real space
+   * RealMove generates spatially uncorrelated random field changes.
+   *
+   * \see \ref rpc_RealMove_page "Manual Page"
    *
    * \ingroup Rpg_Fts_MonteCarlo_Module
    */
    template <int D>
    class RealMove : public McMove<D>
    {
-
    public:
 
       /**
@@ -56,6 +57,8 @@ namespace Rpg {
 
       /**
       * Output time contributions.
+      *
+      * \param out  output stream
       */
       void outputTimers(std::ostream& out) override;
 
@@ -72,16 +75,16 @@ namespace Rpg {
 
    private:
 
-      /// New field values.
+      /// Field values, indexed by monomer type.
       DArray< RField<D> > w_;
 
-      /// Change in one component of wc.
+      /// Change in one field component.
       RField<D> dwc_;
 
-      // Standard deviation of field changes.
+      /// Standard deviation of field changes.
       double sigma_;
 
-      // Has memory been allocated?
+      /// Has memory been allocated?
       bool isAllocated_;
 
    };

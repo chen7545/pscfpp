@@ -75,12 +75,12 @@ namespace Rpg {
    }
 
    /*
-   * Attempt unconstrained move
+   * Attempt unconstrained move.
    */
    template <int D>
    void RealMove<D>::attemptMove()
    {
-      // Copy current W fields from parent system into w_
+      // Copy current W fields into w_
       const int nMonomer = system().mixture().nMonomer();
       for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w_[i], system().w().rgrid(i));
@@ -94,7 +94,7 @@ namespace Rpg {
          // Generate random field changes
          vecRandom().normal(dwc_, sigma_, mean);
 
-         // Add to w_ field components
+         // Add changes to w_ field components
          for (int i = 0; i < nMonomer; ++i) {
             evec = simulator().chiEvecs(j,i);
             VecOp::addEqVc(w_[i], dwc_, evec);
