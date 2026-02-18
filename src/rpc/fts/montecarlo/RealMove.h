@@ -24,10 +24,11 @@ namespace Rpc {
    /**
    * RealMove generates spatially uncorrelated random field changes.
    *
-   * Instantiations of this class template are derived from instantiations 
-   * of the base class template Rp::RealMove, and inherit their public 
-   * interface and almost all of their source code from this base class.
-   * See the documentation for this base class template for details. 
+   * Instantiations of this template with D = 1, 2, and 3 are derived from 
+   * instantiations of the base class template Rp::RealMove, and inherit 
+   * their public interface and almost all of their source code from this 
+   * base class.  See the documentation of this base class template for 
+   * details. 
    *
    * \see \ref rp_RealMove_page "Manual Page"
    * \ingroup Rpc_Fts_MonteCarlo_Module

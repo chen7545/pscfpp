@@ -39,7 +39,8 @@ namespace Rp {
    * Return a pointer to a new McMoveFactory object.
    */
    template <int D, class T>
-   Factory< McMoveT >* McMoveManager<D,T>::newDefaultFactory() const
+   Factory<typename T::McMove>* McMoveManager<D,T>::newDefaultFactory() 
+   const
    {  return new typename T::McMoveFactory(*simulatorPtr_); }
 
    /*
