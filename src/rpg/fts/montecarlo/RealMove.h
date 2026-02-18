@@ -8,26 +8,33 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "McMove.h"                          // base class
-#include <prdc/cuda/RField.h>                // member
-#include <util/containers/DArray.h>          // member
+#include <rp/fts/montecarlo/RealMove.h>    // base class template
+#include <rpg/system/Types.h>              // template argument
+#include <rpg/fts/montecarlo/McMove.h>     // indirect base class
+#include <prdc/cuda/RField.h>               // base class member
 
 namespace Pscf {
 namespace Rpg {
 
+   template <int D> class McSimulator;
+
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * RealMove generates spatially uncorrelated random field changes.
    *
-   * \see \ref rpc_RealMove_page "Manual Page"
+   * Instantiations of this template with D = 1, 2, and 3 are derived from 
+   * instantiations of the base class template Rp::RealMove, and inherit 
+   * their public interface and almost all of their source code from this 
+   * base class.  See the documentation of this base class template for 
+   * details. 
    *
+   * \see \ref rp_RealMove_page "Manual Page"
    * \ingroup Rpg_Fts_MonteCarlo_Module
    */
    template <int D>
-   class RealMove : public McMove<D>
+   class RealMove : public Rp::RealMove<D, Types<D> >
    {
    public:
 
@@ -38,62 +45,22 @@ namespace Rpg {
       */
       RealMove(McSimulator<D>& simulator);
 
-      /**
-      * Destructor.
-      */
-      ~RealMove();
-
-      /**
-      * Read body of parameter file block.
-      *
-      * \param in  input parameter stream
-      */
-      void readParameters(std::istream &in) override;
-
-      /**
-      * Setup before the simulation loop.
-      */
-      void setup() override;
-
-      /**
-      * Output time contributions.
-      *
-      * \param out  output stream
-      */
-      void outputTimers(std::ostream& out) override;
-
-   protected:
-
-      using McMove<D>::system;
-      using McMove<D>::simulator;
-      using McMove<D>::vecRandom;
-
-      /**
-      * Attempt unconstrained move.
-      */
-      void attemptMove();
-
-   private:
-
-      /// New field values, indexed by monomer type.
-      DArray< RField<D> > w_;
-
-      /// Change in one field component.
-      RField<D> dwc_;
-
-      /// Standard deviation of field changes.
-      double sigma_;
-
-      /// Has memory been allocated?
-      bool isAllocated_;
-
    };
 
-   // Explicit instantiation declarations
-   extern template class RealMove<1>;
-   extern template class RealMove<2>;
-   extern template class RealMove<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class RealMove<1, Rpg::Types<1> >;
+      extern template class RealMove<2, Rpg::Types<2> >;
+      extern template class RealMove<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class RealMove<1>;
+      extern template class RealMove<2>;
+      extern template class RealMove<3>;
+   }
 }
 #endif

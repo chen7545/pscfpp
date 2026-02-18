@@ -1,6 +1,3 @@
-#ifndef RPC_MC_MOVE_MANAGER_TPP
-#define RPC_MC_MOVE_MANAGER_TPP
-
 /*
 * PSCF - Polymer Self-Consistent Field
 *
@@ -42,4 +39,3 @@ namespace Pscf {
       template class McMoveManager<3>;
    }
 }
-#endif

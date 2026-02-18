@@ -1,3 +1,4 @@
+
 /*
 * PSCF - Polymer Self-Consistent Field
 *
@@ -5,12 +6,39 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "RealMove.tpp"
+#include "RealMove.h"                       // header
+#include "McMove.h"
+#include <rpg/fts/montecarlo/McSimulator.h>
+#include <rpg/system/System.h>
+#include <rpg/solvers/Mixture.h>
+#include <rpg/field/Domain.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/CudaVecRandom.h>
+
+#include <rp/fts/montecarlo/RealMove.tpp>  // base class implementation
 
 namespace Pscf {
 namespace Rpg {
-   template class RealMove<1>;
-   template class RealMove<2>;
-   template class RealMove<3>;
+
+   // Constructor.
+   template <int D>
+   RealMove<D>::RealMove(McSimulator<D>& simulator)
+    : Rp::RealMove<D, Types<D> > (simulator)
+   {}
+
 }
+}
+
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class RealMove<1, Rpg::Types<1> >;
+      template class RealMove<2, Rpg::Types<2> >;
+      template class RealMove<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class RealMove<1>;
+      template class RealMove<2>;
+      template class RealMove<3>;
+   }
 }
