@@ -224,7 +224,7 @@ PSCF currently provides the following two MC step algorithms:
   <li> \subpage rpc_ForceBiasMove_page "ForceBiasMove": A "smart MC" or
   "force bias" MC move that uses an explicit Euler BD step to
   generate a proposed MC move. </li>
-  <li> \subpage rpc_RealMove_page "RealMcMove" : A simple MC move that
+  <li> \subpage rp_RealMove_page "RealMcMove" : A simple MC move that
   generates spatially uncorrelated random changes of
   \f$ W_{-} \f$ at different grid points </li>
 </ul>

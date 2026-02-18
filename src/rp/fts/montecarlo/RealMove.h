@@ -70,15 +70,15 @@ namespace Rp {
       /**
       * Attempt unconstrained move.
       */
-      void attemptMove();
+      void attemptMove() override;
 
    private:
 
       /// New field values, indexed by monomer type.
-      DArray< RieldT > w_;
+      DArray< RFieldT > w_;
 
       /// Change in one field component.
-      RieldT dwc_;
+      RFieldT dwc_;
 
       /// Standard deviation of field changes.
       double sigma_;

@@ -101,7 +101,7 @@ namespace Rp {
    /*
    * Output time contributions.
    */
-   template<int D>
+   template <int D, class T>
    void RealMove<D,T>::outputTimers(std::ostream& out)
    {
       out << "\n";

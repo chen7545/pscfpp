@@ -432,7 +432,7 @@ line of a corresponding parameter file block. Further information about
 each MC move can be obtained by clicking on the associated link.
 <ul>
   <li> \ref rpc_ForceBiasMove_page "ForceBiasMove" </li>
-  <li> \ref rpc_RealMove_page "RealMove" </li>
+  <li> \ref rp_RealMove_page "RealMove" </li>
 </ul>
 
 \section psfts_param_compressor_sec Compressor Block
