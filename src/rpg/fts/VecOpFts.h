@@ -10,6 +10,8 @@
 
 #include <pscf/cuda/cudaTypes.h>
 #include <pscf/cuda/DeviceArray.h>
+#include <pscf/math/IntVec.h>
+#include <vector_types.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -68,6 +70,15 @@ namespace VecOpFts {
                          DeviceArray<cudaReal> const & df, 
                          DeviceArray<cudaReal> const & dwc, 
                          cudaReal mobility);
+
+   /**
+   * Shift w Field
+   */
+   template <int D>
+   void shiftWField(DeviceArray<cudaReal>& wshift,
+                    DeviceArray<cudaReal>const & w0,
+                    IntVec<D> const & meshDims,
+                    IntVec<D> shift);
 
 }
 /** @} */
