@@ -82,6 +82,7 @@ namespace Rp {
       McMoveT::attemptMoveTimer_.start();
       McMoveT::incrementNAttempt();
       bdSetup();
+
       for (int i=0; i < nStep_; ++i) {
          bdStep();
       }
@@ -150,6 +151,7 @@ namespace Rp {
       UTIL_CHECK(simulator().hasWc());
       UTIL_CHECK(simulator().hasCc());
       UTIL_CHECK(simulator().hasDc());
+      UTIL_CHECK(simulator().hasHamiltonian());
 
       // Save current state
       simulator().saveState();
@@ -198,6 +200,9 @@ namespace Rp {
          simulator().computeWc();
          simulator().computeCc();
          simulator().computeDc();
+
+         // Compute new Hamiltonian
+         simulator().computeHamiltonian();
 
          // Exchange old and new random fields
          exchangeOldNew();
