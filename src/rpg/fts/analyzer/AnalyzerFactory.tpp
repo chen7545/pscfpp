@@ -14,6 +14,7 @@
 #include "ConcentrationDerivative.h"
 #include "MaxOrderParameter.h"
 #include "FourthOrderParameter.h"
+#include "BoxLengthDerivative.h"
 
 namespace Pscf {
 namespace Rpg {
@@ -68,6 +69,8 @@ namespace Rpg {
          ptr = new MaxOrderParameter<D>(*simPtr_, *sysPtr_);
       } else if (className == "FourthOrderParameter") {
          ptr = new FourthOrderParameter<D>(*simPtr_, *sysPtr_);
+      } else if (className == "BoxLengthDerivative") {
+         ptr = new BoxLengthDerivative<D>(*simPtr_, *sysPtr_);
       }
 
       return ptr;

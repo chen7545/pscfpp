@@ -281,8 +281,32 @@ public:
       
    }
 
+   void testBoxLengthDerivative()
+   {
+      printMethod(TEST_FUNC);
+      openLogFile("out/testBoxLengthDerivative.log");
+      analyzeTrajectory();
 
-   
+      std::string filename = filePrefix() + "out/boxLengthDerivative_analyzer.ave";
+      std::ifstream file(filename);
+      if (!file.is_open()) {
+        std::cout << "Error: Could not open file out/boxLengthDerivative_analyzer.ave" 
+                  << std::endl;
+
+      }
+      
+      // Obtain the average value of parameter
+      std::string line;
+      double value;
+      std::string x;
+      std::getline(file, line);
+      std::istringstream iss(line);
+      iss >> x  >> x >> value;
+      
+      double diff = fabs(4.2481444e+03 - value);
+      TEST_ASSERT(diff < 1.0E-4);
+   }
+
 
 };
 
@@ -295,6 +319,7 @@ TEST_ADD(AnalyzerTest, testConcentrationDerivative)
 TEST_ADD(AnalyzerTest, testChiDerivative)
 TEST_ADD(AnalyzerTest, testHamiltonianAnalyzer)
 TEST_ADD(AnalyzerTest, testBinaryStructureFactorGrid)
+TEST_ADD(AnalyzerTest, testBoxLengthDerivative)
 TEST_END(AnalyzerTest)
 
 #endif
