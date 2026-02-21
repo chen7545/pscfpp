@@ -14,10 +14,11 @@
 #include "Block.h"
 #include "Propagator.h"
 #include <cpc/field/FieldIo.h>
-#include <cp/Mixture.tpp>
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/RField.h>
 #include <pscf/cpu/complex.h>
+
+#include <cp/Mixture.tpp>
 
 namespace Pscf {
 namespace Cpc {

@@ -12,7 +12,6 @@
 #include <pscf/cpu/complex.h>
 
 #include "FieldIo.h"
-#include <cp/FieldIo.tpp>
 #include <prdc/field/fieldCheck.h>
 #include <prdc/crystal/UnitCell.h>
 #include <prdc/cpu/CFieldComparison.h>
@@ -20,6 +19,8 @@
 #include <prdc/field/rFieldIo.h>
 #include <pscf/mesh/Mesh.h>
 #include <pscf/math/IntVec.h>
+
+#include <cp/field/FieldIo.tpp>
 
 namespace Pscf {
 namespace Cpc {

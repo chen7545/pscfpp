@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <cp/CFields.h>          // base class template
+#include <cp/field/CFields.h>          // base class template
 #include <prdc/cpu/CField.h>     // base class template argument
 #include <cpc/field/FieldIo.h>   // base class template argument
 

@@ -5,8 +5,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "CFields.h"            // class header
-#include <cp/CFields.tpp>       // base class template implementation
+#include "CFields.h"             // class header
+#include <cp/field/CFields.tpp>  // base class template implementation
 
 namespace Pscf {
    namespace Cp {

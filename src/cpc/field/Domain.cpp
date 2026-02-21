@@ -5,8 +5,32 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Domain.tpp"
+#include "Domain.h"               // Class header
+#include <cpc/field/FieldIo.tpp>
+#include <prdc/cpu/WaveList.h>
+#include <prdc/cpu/FFT.h>
 
+#include <cp/field/Domain.tpp>    // Base class template implementation
+
+namespace Pscf {
+namespace Cpc {
+
+   using namespace Util;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
+
+   /*
+   * Constructor.
+   */
+   template <int D>
+   Domain<D>::Domain()
+    : Cp::Domain<D, FFT<D>, WaveList<D>, FieldIo<D> >()
+   {  ParamComposite::setClassName("Domain"); }
+
+} // namespace Cpc
+} // namespace Pscf
+
+// Explicit instantiation definitions
 namespace Pscf {
    namespace Cp {
       using namespace Prdc::Cpu;

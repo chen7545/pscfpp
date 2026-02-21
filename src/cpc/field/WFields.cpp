@@ -5,8 +5,33 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "WFields.tpp"
+#include "WFields.h"                // class header
+#include <cp/field/WFields.tpp>     // base class implementation
 
+namespace Pscf {
+namespace Cpc {
+
+   using namespace Util;
+   using namespace Pscf::Prdc;
+   using namespace Pscf::Prdc::Cpu;
+
+   template <int D>
+   void WFields<D>::assignField(CField<D>& lhs, 
+                                CField<D> const & rhs) const
+   {
+      int n = rhs.capacity();
+      UTIL_CHECK(lhs.capacity() == n);
+      UTIL_CHECK(meshSize() == n);
+      for (int i = 0; i < n; ++i) {
+         lhs[i][0] = rhs[i][0];
+         lhs[i][1] = rhs[i][1];
+      }
+   }
+
+} // namespace Cpc
+} // namespace Pscf
+
+// Explicit instantiation definitions
 namespace Pscf {
    namespace Cp {
       // Explicit instantiation definitions for base class
@@ -15,7 +40,6 @@ namespace Pscf {
       template class WFields<3, Prdc::Cpu::CField<3>, Cpc::FieldIo<3> >;
    }
    namespace Cpc {
-      // Explicit instantiation definitions
       template class WFields<1>;
       template class WFields<2>;
       template class WFields<3>;

@@ -9,7 +9,7 @@
 */
 
 // Header file includes
-#include <cp/System.h>            // base class template
+#include <cp/system/System.h>            // base class template
 #include <cpc/system/Types.h>     // base class template argument
 #include <cpc/field/WFields.h>    // member of base class
 #include <cpc/field/CFields.h>    // member of base class

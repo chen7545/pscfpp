@@ -7,6 +7,7 @@
 
 #include "Mixture.tpp"
 
+// Explicit instantiation definitions
 namespace Pscf {
    namespace Cp { 
       template 

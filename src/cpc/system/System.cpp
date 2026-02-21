@@ -8,20 +8,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "System.h"             // header
-#include <cp/System.tpp>        // base class template implementation 
-
+#include "System.h"              // header
 #include <cpc/solvers/Mixture.h>
-//#include <cpc/solvers/MixtureModifier.h>
 #include <cpc/field/Domain.h>
-//#include <cpc/fts/simulator/Simulator.h>
-//#include <cpc/fts/simulator/SimulatorFactory.h>
-
 #include <prdc/cpu/WaveList.h>
 #include <prdc/cpu/FFT.h>
 #include <prdc/cpu/CField.h>
-
 #include <pscf/interaction/Interaction.h>
+
+#include <cp/system/System.tpp>  // base class template implementation 
 
 namespace Pscf {
 
