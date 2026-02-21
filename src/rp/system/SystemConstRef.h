@@ -22,7 +22,7 @@ namespace Rp {
    * Base class template for const access to an associated System.
    *
    * A SystemConstRef holds read-only (const) pointers to an associated 
-   * SystemT object (type parameter ST) and several of its primary 
+   * System object (type parameter ST) and several of its primary 
    * components, for a model with real fields and periodic boundary 
    * conditions. Accessor functions return the system and its components 
    * as const references.
@@ -143,16 +143,16 @@ namespace Rp {
       /// Pointer to Domain.
       DomainT const * domainPtr_;
 
-      /// Pointer to c field container.
+      /// Pointer to monomer concentration (c) field container.
       CFieldsT const * cPtr_;
 
       /// Pointer to chemical potential (w) field container.
       WFieldsT const * wPtr_;
 
-      /// Pointer to external potential (h)field container.
+      /// Pointer to external potential (h) field container.
       WFieldsT const * hPtr_;
 
-      /// Pointer to Mask .
+      /// Pointer to Mask.
       MaskT const * maskPtr_;
 
       /// Pointer to FileMaster .
