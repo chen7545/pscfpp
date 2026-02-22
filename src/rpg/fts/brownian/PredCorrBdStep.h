@@ -23,6 +23,7 @@ namespace Rpg {
    /**
    * Predictor-corrector Brownian dynamics stepper.
    *
+   * \see \ref rp_PredCorrBdStep_page "Manual Page"
    * \ingroup Rpg_Fts_Brownian_Module
    */
    template <int D>
@@ -40,15 +41,13 @@ namespace Rpg {
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       virtual ~PredCorrBdStep();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block.
       *
-      * Empty default implementation.
+      * \param in  input parameter file stream
       */
       virtual void readParameters(std::istream &in);
 
@@ -60,7 +59,7 @@ namespace Rpg {
       /**
       * Take a single Brownian dynamics step.
       * 
-      * \return true if converged, false if failed to converge.
+      * \return true if converged, false if failed to converge
       */
       virtual bool step();
 

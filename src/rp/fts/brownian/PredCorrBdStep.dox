@@ -1,5 +1,5 @@
 /*! 
-\page rpc_PredCorrBdStep_page PredCorrBdStep
+\page rp_PredCorrBdStep_page PredCorrBdStep
 
 The PredCorrBdStep classes used by both the pscf_rpc and pscf_rpg programs 
 implements a predictor corrector Brownian dynamics step algorithm.
@@ -11,7 +11,7 @@ pscf_rpc program (using a standard CPU) and for the pscf_rpg program
 same algorithm and use the same parameter file format, as documented 
 below.
 
-\section rpc_PredCorrBdStep_algorithm_sec Step Algorithm
+\section rp_PredCorrBdStep_algorithm_sec Step Algorithm
 
 A general discussion of conventions used in PSCF for BD step algorithms 
 is given \ref psfts_algorithm_page "here".  In what follows, we refer
@@ -44,7 +44,7 @@ field displacements as those used in the predictor step.  This is the
 the partial saddle-point condition in the final state.
 </ul>
 
-\section rpc_PredCorrBdStep_parameter_sec Parameter File
+\section rp_PredCorrBdStep_parameter_sec Parameter File
 
 The only parameter need by this algorithm is a required parameter named 
 "mobility", which gives the value of parameter denoted by \f$ \gamma \f$ 

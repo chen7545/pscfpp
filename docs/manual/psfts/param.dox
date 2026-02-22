@@ -303,9 +303,9 @@ the label of the BdStep parameter file block. Each such label is a
 clickable link to a file containing documentation of the algorithm and
 associated parameter file format.
 <ul>
-  <li> \ref rpc_LMBdStep_page "LMBdStep" </li> (default)
-  <li> \ref rpc_PredCorrBdStep_page "PredCorrBdStep" </li>
-  <li> \ref rpc_ExplicitBdStep_page "ExplicitBdStep" </li>
+  <li> \ref rp_LMBdStep_page "LMBdStep" </li> (default)
+  <li> \ref rp_PredCorrBdStep_page "PredCorrBdStep" </li>
+  <li> \ref rp_ExplicitBdStep_page "ExplicitBdStep" </li>
 </ul>
 As already noted, the LMBdStep algorithm is the default.
 
@@ -482,7 +482,7 @@ that is set to 1 by default, but it is often present and set to a value
 greater than 1 in parameter files for BD or MC simulation.
 
 The full format for an AnalyzerManager parameter file block is given
-\ref rpc_AnalyzerManager_page "here".
+\ref rp_AnalyzerManager_page "here".
 
 Below, we show the AnalyzerManager block for the BD simulation parameter
 file shown at the beginning of this page:
@@ -529,7 +529,7 @@ documentation, was given in earlier the discussion of
 <ul>
 <li> \subpage rp_BdSimulator_page "BdSimulator"  </li>
 <li> \subpage rp_McSimulator_page "McSimulator" </li>
-<li> \subpage rpc_AnalyzerManager_page "AnalyzerManager" </li>
+<li> \subpage rp_AnalyzerManager_page "AnalyzerManager" </li>
 </ul>
 
 <BR>

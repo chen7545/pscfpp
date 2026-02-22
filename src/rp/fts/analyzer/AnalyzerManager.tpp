@@ -1,13 +1,12 @@
-#ifndef RPG_ANALYZER_MANAGER_TPP
-#define RPG_ANALYZER_MANAGER_TPP
+#ifndef RP_ANALYZER_MANAGER_TPP
+#define RP_ANALYZER_MANAGER_TPP
 
 #include "AnalyzerManager.h"
-#include "AnalyzerFactory.h"
 #include <util/param/Factory.h>
 #include <util/param/ParamComposite.h>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
 
@@ -15,9 +14,9 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   AnalyzerManager<D>::AnalyzerManager(Simulator<D>& simulator,
-                                       System<D>& system)
-    : Manager< Analyzer<D> >(),
+   AnalyzerManager<D>::AnalyzerManager(typename T::Simulator& simulator,
+                                       typename T::System& system)
+    : Base(),
       simulatorPtr_(&simulator),
       systemPtr_(&system)
    {  ParamComposite::setClassName("AnalyzerManager"); }
@@ -33,7 +32,8 @@ namespace Rpg {
    * Return a pointer to a new AnalyzerFactory object.
    */
    template <int D>
-   Factory< Analyzer<D> >* AnalyzerManager<D>::newDefaultFactory() const
+   Factory<typename T::Analyzer>* AnalyzerManager<D>::newDefaultFactory() 
+   const
    {  return new AnalyzerFactory<D>(*simulatorPtr_, *systemPtr_); }
 
    /*
@@ -42,9 +42,9 @@ namespace Rpg {
    template <int D>
    void AnalyzerManager<D>::readParameters(std::istream &in)
    {
-      Analyzer<D>::baseInterval = 1;
+      AnalyzerT::baseInterval = 1;
       ParamComposite::readOptional(in, "baseInterval",
-                                   Analyzer<D>::baseInterval);
+                                   AnalyzerT::baseInterval);
       Base::readParameters(in);
    }
 
@@ -65,7 +65,7 @@ namespace Rpg {
    template <int D>
    void AnalyzerManager<D>::sample(long iStep)
    {
-      int baseInterval = Analyzer<D>::baseInterval;
+      int baseInterval = AnalyzerT::baseInterval;
       UTIL_CHECK(baseInterval > 0);
       UTIL_CHECK(iStep % baseInterval == 0);
       for (int i = 0; i < Base::size(); ++i) {

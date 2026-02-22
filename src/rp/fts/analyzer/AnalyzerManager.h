@@ -1,22 +1,15 @@
-#ifndef RPG_ANALYZER_MANAGER_H
-#define RPG_ANALYZER_MANAGER_H
+#ifndef RP_ANALYZER_MANAGER_H
+#define RP_ANALYZER_MANAGER_H
 
-#include "Analyzer.h"                  // template parameter
 #include <util/param/Manager.h>        // base class template
 
-// Forward declarations
+// Forward declaration
 namespace Util {
    template <class T> class Factory;
 }
-namespace Pscf {
-   namespace Rpc {
-      template <int D> class System;
-      template <int D> class Simulator;
-   }
-}
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
 
@@ -24,10 +17,10 @@ namespace Rpg {
    * Manager for a list of Analyzer objects.
    *
    * \see \ref rp_AnalyzerManager_page "Manual Page"
-   * \ingroup Rpg_Fts_Analyzer_Module
+   * \ingroup Rp_Fts_Analyzer_Module
    */
-   template <int D>
-   class AnalyzerManager : public Manager< Analyzer<D> >
+   template <int D, class T>
+   class AnalyzerManager : public Manager< typename T::Analyzer >
    {
 
    public:
@@ -38,7 +31,8 @@ namespace Rpg {
       * \param simulator  parent Simulator
       * \param system  parent System
       */
-      AnalyzerManager(Simulator<D>& simulator, System<D>& system);
+      AnalyzerManager(typename T::Simulator& simulator, 
+                      typename T::System& system);
 
       /**
       * Destructor.
@@ -65,8 +59,8 @@ namespace Rpg {
       /**
       * Call the sample function of each Analyzer.
       *
-      * \pre Analyzer<D>::baseInterval > 0
-      * \pre iStep % Analyzer<D>::baseInterval == 0
+      * \pre T::Analyzer::baseInterval > 0
+      * \pre iStep % T::Analyzer::baseInterval == 0
       *
       * \param iStep  step counter for main loop
       */
@@ -83,29 +77,25 @@ namespace Rpg {
 
    private:
 
+      using AnalyzerT = typename T::Analyzer;
+      using Base = Manager< AnalyzerT >;
+
       /**
       * Pointer to parent Simulator
       */
-      Simulator<D>* simulatorPtr_;
+      typename T::Simulator* simulatorPtr_;
 
       /**
       * Pointer to parent System.
       */
-      System<D>* systemPtr_;
+      typename T::System* systemPtr_;
 
       /**
       * Return pointer to a new AnalyzerFactory.
       */
-      Factory< Analyzer<D> >* newDefaultFactory() const override;
-
-      using Base = Manager< Analyzer<D> >;
+      Factory<typename T::Analyzer>* newDefaultFactory() const override;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class AnalyzerManager<1>;
-   extern template class AnalyzerManager<2>;
-   extern template class AnalyzerManager<3>;
 
 }
 }

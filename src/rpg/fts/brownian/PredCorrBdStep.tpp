@@ -40,10 +40,10 @@ namespace Rpg {
       dwc_(),
       dwp_(),
       mobility_(0.0)
-   {}
+   {  ParamComposite::setClassName("PredCorrBdStep"); }
 
    /*
-   * Destructor, empty default implementation.
+   * Destructor.
    */
    template <int D>
    PredCorrBdStep<D>::~PredCorrBdStep()
@@ -55,7 +55,7 @@ namespace Rpg {
    template <int D>
    void PredCorrBdStep<D>::readParameters(std::istream &in)
    {
-      read(in, "mobility", mobility_);
+      ParamComposite::read(in, "mobility", mobility_);
 
       // Allocate memory for private containers
       int nMonomer = system().mixture().nMonomer();
@@ -76,6 +76,9 @@ namespace Rpg {
       dwp_.allocate(meshDimensions);
    }
 
+   /*
+   * Setup before entering main simulation loop.
+   */
    template <int D>
    void PredCorrBdStep<D>::setup()
    {
@@ -98,6 +101,9 @@ namespace Rpg {
       UTIL_CHECK(dwp_.capacity() == meshSize);
    }
 
+   /*
+   * Take one BD step.
+   */
    template <int D>
    bool PredCorrBdStep<D>::step()
    {

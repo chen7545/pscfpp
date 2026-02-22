@@ -2,21 +2,23 @@ namespace Pscf {
 namespace Rpc {
 
 /*! 
-\page rpc_AnalyzerManager_page AnalyzerManager
+\page rp_AnalyzerManager_page AnalyzerManager
 
 An AnalyzerManager is a container for Analyzer objects (i.e., instances 
 of subclasses of Analyzer) that can be used to perform periodic actions
 involving data analysis or output of data to a file during a simulation
-or postprocessing operation.
+or postprocessing operation. 
 
 \see AnalyzerManager (class API)
 \see \ref rp_BdSimulator_page  (manual page)
 \see \ref rp_McSimulator_page  (manual page)
 
-\section rpc_AnalyzerManager_parameter_sec Parameter File
+\section rp_AnalyzerManager_parameter_sec Parameter File
 
-The parameter file format, including all optional parameters, is shown 
-below:
+An AnalyzerManager parameter file block is an optional element within
+a \ref rp_BdSimulator_page "BdSimulator" or 
+\ref rp_McSimulator_page "McSimulator" block. The required parameter 
+file format, including all optional parameters, is shown below:
 \code
 AnalyzerManager{
   baseInterval*      int (1 by default)
@@ -29,13 +31,13 @@ AnalyzerManager{
  
 }
 \endcode
-After the optional baseInterval parameter (which is usually omitted),
+After the optional baseInterval parameter (which is often omitted),
 the AnalyzerManager block contains a sequence of any number of 
-selectable Analyzer subblocks that ends when the closing bracket
-for the AnalyzerManager block is reached. Each such Analyzer subblock 
-must start with an opening line that contains the label (or class 
-name) for a known analyzer algorithm that is implemented by a 
-subclass of the Analyzer base class. 
+selectable Analyzer subblocks, followed by the closing bracket for 
+the AnalyzerManager block. Each such Analyzer subblock must start 
+with an opening line that contains the label (or class name) for 
+a known analyzer algorithm that is implemented by a subclass of 
+the Analyzer<D> base class. 
 
 <b> baseInterval </b> : The baseInterval parameter is an optional integer 
 parameter that is set equal to 1 by default. If the baseInterval is set 

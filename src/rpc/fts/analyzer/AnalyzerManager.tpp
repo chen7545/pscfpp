@@ -3,6 +3,7 @@
 
 #include "AnalyzerManager.h"
 #include "AnalyzerFactory.h"
+#include <util/param/Factory.h>
 #include <util/param/ParamComposite.h>
 
 namespace Pscf {
@@ -14,10 +15,11 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   AnalyzerManager<D>::AnalyzerManager(Simulator<D>& simulator, System<D>& system)
-   : Manager< Analyzer<D> >(),
-     simulatorPtr_(&simulator),
-     systemPtr_(&system)
+   AnalyzerManager<D>::AnalyzerManager(Simulator<D>& simulator,
+                                       System<D>& system)
+    : Manager< Analyzer<D> >(),
+      simulatorPtr_(&simulator),
+      systemPtr_(&system)
    {  ParamComposite::setClassName("AnalyzerManager"); }
 
    /*
@@ -35,25 +37,24 @@ namespace Rpc {
    {  return new AnalyzerFactory<D>(*simulatorPtr_, *systemPtr_); }
 
    /*
-   * Read parameter file.
-   *
-   * \param in input parameter file stream.
+   * Read body of parameter file block.
    */
    template <int D>
    void AnalyzerManager<D>::readParameters(std::istream &in)
    {
       Analyzer<D>::baseInterval = 1;
-      readOptional(in,"baseInterval", Analyzer<D>::baseInterval);
-      Manager< Analyzer<D> >::readParameters(in);
+      ParamComposite::readOptional(in, "baseInterval",
+                                   Analyzer<D>::baseInterval);
+      Base::readParameters(in);
    }
 
    /*
-   * Call initialize method of each analyzer.
+   * Call setup method of each analyzer.
    */
    template <int D>
    void AnalyzerManager<D>::setup()
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].setup();
       }
    }
@@ -67,7 +68,7 @@ namespace Rpc {
       int baseInterval = Analyzer<D>::baseInterval;
       UTIL_CHECK(baseInterval > 0);
       UTIL_CHECK(iStep % baseInterval == 0);
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].sample(iStep);
       }
    }
@@ -78,7 +79,7 @@ namespace Rpc {
    template <int D>
    void AnalyzerManager<D>::output()
    {
-      for (int i = 0; i < size(); ++i) {
+      for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].output();
       }
    }
