@@ -17,22 +17,21 @@ namespace Pscf {
    /**
    * \defgroup Pscf_Math_Arithmetic_Module Arithmetic Functions
    *
-   * Declarations of overloaded function for arithmetic operations for 
-   * real and complex data types. Definitions are given for some explicit 
-   * instantiations involving only real data types (double and float), 
-   * but only declarations are given in this file for functions that 
-   * involve complex types.  Definitions of instantiations that involve
-   * involve complex types are given for the complex data types used by 
-   * the FFT and cufft FFT libraries in files named complex.h located in 
-   * directories src/prdc/cpu and src/prdc/cuda, respectively.
+   * Overloaded functions and function templates for arithmetic operations 
+   * using built-in real types and/or C++ standard library complex types.
+   * Corresponding functions that use complex types used by the FFTW and
+   * cufft libraries are defined in the files pscf/cpu/complex.h and 
+   * pscf/cuda/complex.h
    *
-   * Convention: Functions for which the result or output may be a
-   * complex number provide this as a modified value of the first parameter
-   * of the function, which must be passed as a non-const reference.
-   * Functions for which the output must always be real value (such as an
-   * absolute value function) instead provide this as the function return
-   * value. This convention allows for the use of C data types for which
-   * no assignment operator is defined to represent complex numbers.
+   * Convention: Functions for which the result or output could be a 
+   * complex number provide this as a modified value of the first 
+   * parameter of the function, which must be passed as a non-const 
+   * reference.  Functions for which the output is always real (such as 
+   * an absolute value function) instead provide this as the function 
+   * return value. This convention creates interfaces that allow the use
+   * of data types to represent complex number for which no assignment 
+   * operator is defined, which cannot be returned as function return 
+   * values.
    *
    * \ingroup Pscf_Math_Module
    */

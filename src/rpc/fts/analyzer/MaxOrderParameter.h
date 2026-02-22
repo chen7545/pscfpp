@@ -35,7 +35,7 @@ namespace Rpc {
    * where \f$ W_{-}({\bf k})\f$ is fluctuating field component with
    * wavevector \f$ {\bf k} \f$.
    *
-   * \see \ref rpc_MaxOrderParameter_page "Manual Page"
+   * \see \ref rp_MaxOrderParameter_page "Manual Page"
    *
    * \ingroup Rpc_Fts_Analyzer_Module
    */

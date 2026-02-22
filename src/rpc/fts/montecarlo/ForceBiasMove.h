@@ -30,8 +30,7 @@ namespace Rpc {
    * the move() function must take into account the ratio of generation 
    * probabilities.
    *
-   * \see \ref rpc_ForceBiasMove_page "Manual Page"
-   *
+   * \see \ref rp_ForceBiasMove_page "Manual Page"
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>

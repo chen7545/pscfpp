@@ -15,12 +15,12 @@
 namespace Pscf {
 
    /**
-   * \defgroup Pscf_Math_Complex_Cuda_Module Complex Arithmetic (GPU)
+   * \defgroup Pscf_Cuda_Complex_Module Complex Arithmetic (GPU)
    *
    * Complex arithmetic functions using the complex type cudaComplex
    * used in GPU code that interfaces with cufft.
    *
-   * \ingroup Pscf_Math_Arithmetic_Module Pscf_Cuda_Module
+   * \ingroup Pscf_Cuda_Module
    */
 
    /*
@@ -34,7 +34,7 @@ namespace Pscf {
    /**
    * Return the real part of a complex number.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex argument (input)
    */
@@ -45,7 +45,7 @@ namespace Pscf {
    /**
    * Return the imaginary part of a complex number.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex argument (input)
    */
@@ -58,7 +58,7 @@ namespace Pscf {
    /**
    * Return absolute magnitude of a complex number.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex argument (in)
    */
@@ -69,7 +69,7 @@ namespace Pscf {
    /**
    * Return square of absolute magnitude of a complex number.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex argument (in)
    */
@@ -82,7 +82,7 @@ namespace Pscf {
    /**
    * Compute complex conjugate, z = a^*.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex conjugate of argument (out)
    * \param a complex argument (in)
@@ -97,7 +97,7 @@ namespace Pscf {
    /**
    * In-place complex conjugation of a complex number, a = a^* .
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a argument (in) and complex conjugate (out)
    */
@@ -113,7 +113,7 @@ namespace Pscf {
    /**
    * Create a complex number from real and imaginary parts, z = a + ib.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex (out)
    * \param a real part (in)
@@ -129,7 +129,7 @@ namespace Pscf {
    /**
    * Assign a real input to a complex variable.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex (out)
    * \param a real (in)
@@ -144,7 +144,7 @@ namespace Pscf {
    /**
    * Assign a complex input to a complex variable.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex (out)
    * \param a complex (in)
@@ -159,7 +159,7 @@ namespace Pscf {
    /**
    * Assign a std::complex input to a complex variable.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex (out)
    * \param a std::complex (in)
@@ -175,7 +175,7 @@ namespace Pscf {
    /**
    * Assign a complex input to a std::complex variable.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z std::complex (out)
    * \param a complex (in)
@@ -190,7 +190,7 @@ namespace Pscf {
    /**
    * Addition of two complex numbers, z = a + b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex sum (out)
    * \param a complex summand (in)
@@ -207,7 +207,7 @@ namespace Pscf {
    /**
    * Addition of a complex and real number, z = a + b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex sum (out)
    * \param a complex summand (in)
@@ -224,7 +224,7 @@ namespace Pscf {
    /**
    * In place addition of complex numbers, a += b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex summand (in) and sum (out)
    * \param b complex summand (in)
@@ -239,7 +239,7 @@ namespace Pscf {
    /**
    * In place addition of a complex and real number, a += b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex summand (in) and sum (out)
    * \param b real summand (in)
@@ -255,7 +255,7 @@ namespace Pscf {
    /**
    * Subtraction of two complex numbers, z = a - b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex difference (out)
    * \param a complex 1st argument (in)
@@ -272,7 +272,7 @@ namespace Pscf {
    /**
    * Subtraction of a real number from a complex number, z = a - b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex difference (out)
    * \param a complex 1st argument (in)
@@ -289,7 +289,7 @@ namespace Pscf {
    /**
    * In place subtraction of two complex numbers, a -= b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex argument (in) and difference (out)
    * \param b complex argument (in)
@@ -304,7 +304,7 @@ namespace Pscf {
    /**
    * In place subtraction of real number from a complex number, a -= b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex argument (in) and difference (out)
    * \param b real argument (in)
@@ -320,7 +320,7 @@ namespace Pscf {
    *
    * This function returns |a-b|^2 for complex a and b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex 1st argument (in)
    * \param b complex 2nd argument (in)
@@ -339,7 +339,7 @@ namespace Pscf {
    /**
    * Multiplication of two complex numbers, z = a * b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex product (out)
    * \param a complex factor (in)
@@ -356,7 +356,7 @@ namespace Pscf {
    /**
    * Multiplication of complex and real numbers, z = a * b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex product (out)
    * \param a complex factor (in)
@@ -373,7 +373,7 @@ namespace Pscf {
    /**
    * In place multiplication of two complex number, a *= b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex factor (in) and product (out)
    * \param b complex factor (in)
@@ -390,7 +390,7 @@ namespace Pscf {
    /**
    * In place multiplication of a complex and real number, a *= b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex factor (in) and product (out)
    * \param b real factor (in)
@@ -405,7 +405,7 @@ namespace Pscf {
    /**
    * Compute complex square of a complex number, z = a * a.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex product (out)
    * \param a complex factor (in)
@@ -422,7 +422,7 @@ namespace Pscf {
    /**
    * Division of two complex numbers, z = a / b .
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex ratio (out)
    * \param a complex numerator (in)
@@ -440,7 +440,7 @@ namespace Pscf {
    /**
    * Division of a complex number by a real number, z = a / b .
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z complex ratio (out)
    * \param a complex numerator (in)
@@ -457,7 +457,7 @@ namespace Pscf {
    /**
    * In place division of two complex number, a /= b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex numerator (in) and ratio (out)
    * \param b complex denominator (in)
@@ -474,7 +474,7 @@ namespace Pscf {
    /**
    * In place division of a complex number by a real number, a /= b.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param a complex numerator (in) and ratio (out)
    * \param b real denominator (in)
@@ -491,7 +491,7 @@ namespace Pscf {
    /**
    * Inversion of a complex number, z = 1 / a .
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z inverse (out)
    * \param a argument (in)
@@ -510,7 +510,7 @@ namespace Pscf {
    /**
    * Exponentation of a ffts_complex variable, z = exp(a).
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z exponent (out)
    * \param a argument (in)
@@ -529,7 +529,7 @@ namespace Pscf {
    /**
    * Logarithm of a cudaComplex variable, z = log(a).
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param z logarithm (out)
    * \param a argument (in)
@@ -550,7 +550,7 @@ namespace Pscf {
    /*
    * Pseudo-constructor function for cudaComplex.
    *
-   * \ingroup Pscf_Math_Complex_Cuda_Module
+   * \ingroup Pscf_Cuda_Complex_Module
    *
    * \param x  real part (in)
    * \param y  imaginary part (in)

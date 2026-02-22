@@ -431,7 +431,7 @@ pscf_rpg are listed below, labelled by the name that is used in the first
 line of a corresponding parameter file block. Further information about
 each MC move can be obtained by clicking on the associated link.
 <ul>
-  <li> \ref rpc_ForceBiasMove_page "ForceBiasMove" </li>
+  <li> \ref rp_ForceBiasMove_page "ForceBiasMove" </li>
   <li> \ref rp_RealMove_page "RealMove" </li>
 </ul>
 

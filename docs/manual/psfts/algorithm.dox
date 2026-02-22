@@ -221,7 +221,7 @@ type of move being chosen at the start of each step.
 
 PSCF currently provides the following two MC step algorithms:
 <ul>
-  <li> \subpage rpc_ForceBiasMove_page "ForceBiasMove": A "smart MC" or
+  <li> \subpage rp_ForceBiasMove_page "ForceBiasMove": A "smart MC" or
   "force bias" MC move that uses an explicit Euler BD step to
   generate a proposed MC move. </li>
   <li> \subpage rp_RealMove_page "RealMcMove" : A simple MC move that
@@ -356,7 +356,7 @@ on the class name.
   <li> \subpage rp_BinaryStructureFactorGrid_page "BinaryStructureFactorGrid":
        Compute the structure factor of a system with two monomer types.
        </li>
-  <li> \subpage rpc_MaxOrderParameter_page "MaxOrderParameter" :
+  <li> \subpage rp_MaxOrderParameter_page "MaxOrderParameter" :
        Compute an order parameter that is useful for identifying
        spontaneous phase transitions. </li>
   <li> \subpage rp_FourthOrderParameter_page "FourthOrderParameter":

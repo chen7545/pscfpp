@@ -11,7 +11,7 @@ namespace Pscf {
    /**
    * Device and host containers for use with CUDA programs.
    *
-   * \defgroup Pscf_Cuda_Containers_Module Containers (Cuda)
+   * \defgroup Pscf_Cuda_Containers_Module Containers (GPU)
    * \ingroup Pscf_Cuda_Module
    */
 

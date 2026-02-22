@@ -32,7 +32,6 @@ namespace ThreadMesh {
    *
    * \defgroup Pscf_Cuda_ThreadMesh_Module ThreadMesh
    * \ingroup Pscf_Cuda_Module
-   * @{
    */
 
    /**
@@ -100,6 +99,8 @@ namespace ThreadMesh {
    * having a block size of at least 32 in the x dimension if possible,
    * allowing coalescence to be maximized within a kernel.
    * 
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
+   *
    * \param meshDims  dimensions of the desired grid of threads (input)
    * \param invert  should the coordinate order be inverted, xyz -> zyx?
    * \param blockSize  desired block size (optional, must be power of 2)
@@ -113,12 +114,16 @@ namespace ThreadMesh {
    *
    * Check for validity and optimality, based on hardware warp size and 
    * streaming multiprocessor constraints. 
+   *
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
    */
    void checkConfig();
 
    /**
    * Manually set the block size that should be used by default.
    * 
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
+   *
    * \param blockSize  the block size to be used
    */
    void setThreadsPerBlock(int blockSize);
@@ -127,30 +132,38 @@ namespace ThreadMesh {
 
    /**
    * Get the multidimensional grid of blocks determined by setConfig.
+   *
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
    */
    dim3 gridDims();
 
    /**
    * Get the dimensions of a single block determined by setConfig.
+   *
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
    */
    dim3 blockDims();
 
    /**
    * Return last requested multidimensional grid of threads.
+   *
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
    */
    dim3 meshDims();
 
    /**
    * Get the warp size.
+   *
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
    */
    int warpSize();
 
    /**
    * Will there be unused threads?
+   *
+   * \ingroup Pscf_Cuda_ThreadMesh_Module
    */
    bool hasUnusedThreads();
-
-   /** @} */
 
 } // namespace ThreadMesh
 } // namespace Pscf

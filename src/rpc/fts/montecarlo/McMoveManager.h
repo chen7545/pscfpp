@@ -24,6 +24,7 @@ namespace Rpc {
    /**
    * Manager for a set of McMove objects.
    *
+   * \see \ref rp_McMoveManager_page "Manual Page"
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>

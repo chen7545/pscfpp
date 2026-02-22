@@ -45,7 +45,7 @@ namespace Pscf {
    */
 
    /**
-   * Reduction operations performed on a GPU.
+   * Reduction operations performed on a CPU or GPU.
    *
    * \ingroup Pscf_Math_Module
    */
