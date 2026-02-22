@@ -114,7 +114,7 @@ Required relationships among subblocks:
   <li> \ref psfts_algorithm_MC_sec "McMove algorithms" </li>
   <ul>
      <li> \ref rpc_ForceBiasMove_page </li> 
-     <li> \ref rpc_RealMove_page </li> 
+     <li> \ref rp_RealMove_page </li> 
   </ul>
   <li> \ref psfts_algorithm_compressor_sec "Compressor algorithms" </li>
   <li> \ref psfts_perturb_page "Perturbations" </li>

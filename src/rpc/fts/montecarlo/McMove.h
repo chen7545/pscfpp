@@ -27,7 +27,6 @@ namespace Rpc {
    * code from this base class.  See the documentation of this base class 
    * template for details. 
    *
-   * \see \ref rp_Class_page "Manual Page"
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>

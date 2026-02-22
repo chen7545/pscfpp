@@ -26,7 +26,7 @@ namespace Rpc {
    * from this base class.  See the documentation of this base class 
    * template for details. 
    *
-   * \see \ref rp_Class_page "Manual Page"
+   * \see \ref rp_McSimulator_page "Manual Page"
    * \see \ref rp_McSimulator_page (manual page)
    *
    * \ingroup Rpc_Fts_MonteCarlo_Module

@@ -25,7 +25,7 @@ namespace Pscf {
 namespace Pscf {
 namespace Cp {
 
-   // Namespace that may be used implicitly
+   // Namespaces that may be used implicitly
    using namespace Util;
    using namespace Prdc;
 
@@ -67,7 +67,7 @@ namespace Cp {
    *    - a CFields container of monomer concentration (c) fields
    *    - a Simulator
    *
-   * \ingroup Pscf_Cp_Module
+   * \ingroup Cp_System_Module
    */
    template <int D, class T>
    class System : public ParamComposite
@@ -187,8 +187,8 @@ namespace Cp {
       * This function does not compute the canonical (Helmholtz) free
       * energy or grand-canonical free energy (i.e., pressure).
       *
-      * This function also computes the stress, by calling computeStress(),
-      * if and only if the argument needStress is true. 
+      * This function also computes the stress, by calling 
+      * computeStress(), if and only if the argument needStress is true. 
       *
       * \pre  w().hasData() == true
       * \post c().hasData() == true
