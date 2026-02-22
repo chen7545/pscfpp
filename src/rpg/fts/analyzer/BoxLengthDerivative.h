@@ -24,8 +24,7 @@ namespace Rpg
    /**
    * Evaluate the derivative of H with respect to chi.
    *
-   * \see \ref rpg_BoxLengthDerivative_page "Manual Page"
-   *
+   * \see \ref rp_BoxLengthDerivative_page "Manual Page"
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>

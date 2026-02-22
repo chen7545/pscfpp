@@ -21,8 +21,7 @@ namespace Rpc {
    /**
    * ShiftMove shifts field.
    *
-   * \see \ref rpc_ShiftMove_page "Manual Page". 
-   *
+   * \see \ref rp_ShiftMove_page "Manual Page". 
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>

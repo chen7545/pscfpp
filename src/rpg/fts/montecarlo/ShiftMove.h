@@ -22,7 +22,7 @@ namespace Rpg {
    /**
    * ShiftMove shifts field.
    *
-   * \see \ref rpg_ShiftMove_page "Manual Page". 
+   * \see \ref rp_ShiftMove_page "Manual Page". 
    *
    * \ingroup Rpg_Fts_MonteCarlo_Module
    */

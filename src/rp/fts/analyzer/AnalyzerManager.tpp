@@ -13,8 +13,8 @@ namespace Rp {
    /*
    * Constructor.
    */
-   template <int D>
-   AnalyzerManager<D>::AnalyzerManager(typename T::Simulator& simulator,
+   template <int D, class T>
+   AnalyzerManager<D,T>::AnalyzerManager(typename T::Simulator& simulator,
                                        typename T::System& system)
     : Base(),
       simulatorPtr_(&simulator),
@@ -24,23 +24,23 @@ namespace Rp {
    /*
    * Destructor.
    */
-   template <int D>
-   AnalyzerManager<D>::~AnalyzerManager()
+   template <int D, class T>
+   AnalyzerManager<D,T>::~AnalyzerManager()
    {}
 
    /*
    * Return a pointer to a new AnalyzerFactory object.
    */
-   template <int D>
-   Factory<typename T::Analyzer>* AnalyzerManager<D>::newDefaultFactory() 
+   template <int D, class T>
+   Factory<typename T::Analyzer>* AnalyzerManager<D,T>::newDefaultFactory() 
    const
-   {  return new AnalyzerFactory<D>(*simulatorPtr_, *systemPtr_); }
+   {  return new AnalyzerFactoryT(*simulatorPtr_, *systemPtr_); }
 
    /*
    * Read body of parameter file block.
    */
-   template <int D>
-   void AnalyzerManager<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void AnalyzerManager<D,T>::readParameters(std::istream &in)
    {
       AnalyzerT::baseInterval = 1;
       ParamComposite::readOptional(in, "baseInterval",
@@ -51,8 +51,8 @@ namespace Rp {
    /*
    * Call setup method of each analyzer.
    */
-   template <int D>
-   void AnalyzerManager<D>::setup()
+   template <int D, class T>
+   void AnalyzerManager<D,T>::setup()
    {
       for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].setup();
@@ -62,8 +62,8 @@ namespace Rp {
    /*
    * Call sample method of each analyzer.
    */
-   template <int D>
-   void AnalyzerManager<D>::sample(long iStep)
+   template <int D, class T>
+   void AnalyzerManager<D,T>::sample(long iStep)
    {
       int baseInterval = AnalyzerT::baseInterval;
       UTIL_CHECK(baseInterval > 0);
@@ -76,8 +76,8 @@ namespace Rp {
    /*
    * Call output method of each analyzer.
    */
-   template <int D>
-   void AnalyzerManager<D>::output()
+   template <int D, class T>
+   void AnalyzerManager<D,T>::output()
    {
       for (int i = 0; i < Base::size(); ++i) {
          (*this)[i].output();

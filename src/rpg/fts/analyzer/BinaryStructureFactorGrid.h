@@ -32,7 +32,7 @@ namespace Rpg {
    using namespace Pscf::Prdc::Cuda;
 
    /**
-   * BinaryStructureFactorGrid evaluates AB diblock structure factors in Fourier space.
+   * BinaryStructureFactorGrid evaluates AB diblock structure factors.
    *
    * This class evaluates the structures factors for all wavevectors 
    * 
@@ -41,9 +41,10 @@ namespace Rpg {
    * \f[
    *     S(k)  = n/(V \chi N)^2 <W_(k)W_(-k)> - 1/(2 \chi N)
    * \f]
-   * where, V is system volume, and \f$W_(k)\f$ is a Fourier mode of fluctuating field 
+   * where, V is system volume, and \f$W_(k)\f$ is a Fourier mode of 
+   * fluctuating field 
    *
-   * 
+   * \see \ref rp_BinaryStructureFactorGrid_page "Manual Page" 
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>

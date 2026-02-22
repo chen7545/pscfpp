@@ -1,8 +1,8 @@
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
 /*! 
-\page rpc_MaxOrderParameter_page MaxOrderParameter
+\page rp_MaxOrderParameter_page MaxOrderParameter
 
 This analyzer calculates the maximum amplitude of the 
 second power of Fourier modes of exchange fields, referred
@@ -14,7 +14,7 @@ the max order parameter is a finite value.
 
 \see MaxOrderParameter (class API)
 
-\section rpc_MaxOrderParameter_algorithm_sec Mathematical Formula
+\section rp_MaxOrderParameter_algorithm_sec Mathematical Formula
 
 \f[
    \Psi_{\text{max}} \equiv \max_{\bf G} \left[ W_{-}(\mathbf{G}) W_{-}(-\mathbf{G}) \right]
@@ -25,7 +25,7 @@ denotes the Fourier wavevector. Note, since \f$ W_{-} \f$ is
 real-valued function, \f$ W_{-}(\mathbf {G}) = W_{-}(-\mathbf{G}) \f$. The 
 Fourier transformation is defined in \ref prdc_fourier_page.
 
-\section rpc_MaxOrderParameter_parameter_sec Parameter File
+\section rp_MaxOrderParameter_parameter_sec Parameter File
 
 The full parameter file format, including all optional parameters, is shown
 below:
@@ -61,7 +61,7 @@ Meanings of the parameters are described briefly below:
   </tr>
 </table>
 
-\section rpc_MaxOrderParameter_output_sec Output
+\section rp_MaxOrderParameter_output_sec Output
 
 During the simulation, the step index, the highest peak indicies, 
 and max order parameter are output to the file {outputFileName} 

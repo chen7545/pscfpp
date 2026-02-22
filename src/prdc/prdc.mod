@@ -7,7 +7,7 @@ namespace Pscf{
    namespace Prdc{
 
       /**
-      * \defgroup Pscf_Prdc_Module Periodic Systems
+      * \defgroup Pscf_Prdc_Module Pscf::Prdc - Periodic Systems
       *
       * Periodic fields and crystallography (namespace Pscf::Prdc)
       *

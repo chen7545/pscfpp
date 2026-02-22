@@ -78,6 +78,7 @@ namespace Rp {
    private:
 
       using AnalyzerT = typename T::Analyzer;
+      using AnalyzerFactoryT = typename T::AnalyzerFactory;
       using Base = Manager< AnalyzerT >;
 
       /**

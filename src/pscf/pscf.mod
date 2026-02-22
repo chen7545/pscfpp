@@ -12,9 +12,10 @@ namespace Pscf{
    */
 
    /**
-   * \defgroup Pscf_Base_Module Pscf Common
+   * \defgroup Pscf_Base_Module Pscf - Base Module
    *
-   * Names defined directly in namespace Pscf, rather than a sub-namespace.
+   * Names defined in subdirectory src/pscf that may be used throughout
+   * the Pscf namespace.
    *
    * \ingroup Pscf_NS_Module
    */
