@@ -114,11 +114,6 @@ namespace Rpc {
       DArray< RField<D> > wFieldTmp_;
 
       /**
-      * New Basis variable used in updateBasis function
-      */
-      DArray<double> newBasis_;
-
-      /**
       * Residual in real space used for linear response anderson mixing.
       */
       RField<D> resid_;
@@ -139,7 +134,12 @@ namespace Rpc {
       IntVec<D> kMeshDimensions_;
 
       /**
-      * IntraCorrelation object
+      * Number of points in k-space grid.
+      */
+      int kSize_;
+
+      /**
+      * IntraCorrelation object.
       */
       IntraCorrelation<D> intra_;
 
@@ -153,16 +153,17 @@ namespace Rpc {
       */
       bool isAllocated_;
 
+      // Private AM algorithm operations
+
       /**
-      * Add predicted error to field trial.
+      * Add a correction based on the predicted residual.
       *
-      * \param fieldTrial trial field (in-out)
-      * \param resTrial predicted error for current trial
+      * \param fieldTrial  trial field (in-out)
+      * \param resTrial  predicted error for current trial
       */
       void addCorrection(DArray<double>& fieldTrial,
                          DArray<double> const & resTrial) override;
 
-      // Private virtual functions that interact with parent System
 
       /**
       * Compute and returns the number of elements in field vector.

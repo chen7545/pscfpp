@@ -63,7 +63,7 @@ namespace VecOp {
    /*
    * Vector assignment, a[i] = (b[i], c[i]) (complex, real and imaginary).
    */
-   void eqV(Array<fftw_complex> & a, 
+   void eqV(Array<fftw_complex> & a,
             Array<double> const & b,
             Array<double> const & c)
    {
@@ -402,7 +402,7 @@ namespace VecOp {
    /*
    * Vector in-place addition, a[i] += b[i] (complex).
    */
-   void addEqV(Array<fftw_complex> & a, 
+   void addEqV(Array<fftw_complex> & a,
                Array<fftw_complex> const & b)
    {
       const int n = a.capacity();
@@ -417,7 +417,7 @@ namespace VecOp {
    /*
    * Vector in-place addition, a[i] += (b[i], c[i]) (complex, real/imag).
    */
-   void addEqV(Array<fftw_complex> & a, 
+   void addEqV(Array<fftw_complex> & a,
                Array<double> const & b,
                Array<double> const & c)
    {
@@ -722,6 +722,19 @@ namespace VecOp {
          bi = b[i][1];
          sq = br * br + bi * bi;
          a[i] = sq*sq;
+      }
+   }
+
+   // Combined operations
+
+   void divEqVc(Array<fftw_complex>& a, Array<double> const & b, double c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b.capacity() == n);
+      for (int i = 0; i < n; ++i) {
+         a[i][0] /= (b[i]*c);
+         a[i][1] /= (b[i]*c);
       }
    }
 

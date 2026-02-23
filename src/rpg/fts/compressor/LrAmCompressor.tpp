@@ -15,12 +15,17 @@
 #include <prdc/cuda/FFT.h>
 #include <prdc/cuda/resources.h>
 #include <pscf/mesh/MeshIterator.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
+#include <pscf/math/IntVec.h>
 #include <util/global.h>
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
+
+   // Public member functions
 
    /*
    * Constructor.
@@ -71,6 +76,7 @@ namespace Rpg {
 
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
+      #if 0
       // Compute Fourier space kMeshDimensions_
       for (int i = 0; i < D; ++i) {
          if (i < D - 1) {
@@ -85,6 +91,7 @@ namespace Rpg {
       for (int i = 0; i < D; ++i) {
          kSize_ *= kMeshDimensions_[i];
       }
+      #endif
 
       // Allocate memory required by compressor if not done earlier.
       if (!isAllocated_) {
@@ -97,7 +104,6 @@ namespace Rpg {
             w0_[i].allocate(dimensions);
             wFieldTmp_[i].allocate(dimensions);
          }
-
          isAllocated_ = true;
       }
 
@@ -124,8 +130,35 @@ namespace Rpg {
       return solve;
    }
 
+   /*
+   * Output timer results.
+   */
+   template<int D>
+   void LrAmCompressor<D>::outputTimers(std::ostream& out) const
+   {
+      out << "\n";
+      out << "LrAmCompressor time contributions:\n";
+      Base::outputTimers(out);
+   }
+
+   /*
+   * Clear timers and MDE counter.
+   */
+   template<int D>
+   void LrAmCompressor<D>::clearTimers()
+   {
+      Base::clearTimers();
+      Compressor<D>::mdeCounter_ = 0;
+   }
+
    // Protected virtual function for AM algorithm operation
 
+   /*
+   * Correction step (second step of Anderson mixing)
+   *
+   * This LrAm algorithm uses a quasi-Newton correction step with an
+   * approximate Jacobian given by the Jacobian in a homogeneous state.
+   */
    template <int D>
    void
    LrAmCompressor<D>::addCorrection(
@@ -233,27 +266,6 @@ namespace Rpg {
    template<int D>
    void LrAmCompressor<D>::outputToLog()
    {}
-
-   /*
-   * Output timer results.
-   */
-   template<int D>
-   void LrAmCompressor<D>::outputTimers(std::ostream& out) const
-   {
-      out << "\n";
-      out << "LrAmCompressor time contributions:\n";
-      Base::outputTimers(out);
-   }
-
-   /*
-   * Clear timers and MDE counter.
-   */
-   template<int D>
-   void LrAmCompressor<D>::clearTimers()
-   {
-      Base::clearTimers();
-      Compressor<D>::mdeCounter_ = 0;
-   }
 
    // Private virtual functions for vector math
 

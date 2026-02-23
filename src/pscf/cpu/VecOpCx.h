@@ -560,6 +560,21 @@ namespace Pscf {
       */
       void sqSqAbsV(Array<double> & a, Array<fftw_complex> const & b);
 
+      // Combined Operations
+
+      /**
+      * Vector division in-place w/ coeff., a[i] /= (b[i] * c).
+      *
+      * \ingroup Pscf_Cpu_VecOp_Module
+      *
+      * \param a  complex array (LHS)
+      * \param b  real array (RHS)
+      * \param c  input scalar (RHS)
+      */
+      void divEqVc(Array<fftw_complex>& a,
+                   Array<double> const & b,
+                   double const c);
+
    } // namespace VecOp
 
 } // namespace Pscf

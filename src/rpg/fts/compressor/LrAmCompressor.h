@@ -19,7 +19,7 @@
 #include <pscf/math/IntVec.h>                    // member
 #include <util/containers/DArray.h>              // member
 
-#include <iostream>                 
+#include <iostream>
 
 namespace Pscf {
 namespace Rpg {
@@ -34,16 +34,16 @@ namespace Rpg {
    /**
    * Anderson Mixing compressor with linear-response mixing step.
    *
-   * Class LrAmCompressor implements an Anderson mixing algorithm 
-   * which modifies the second mixing step, estimating Jacobian by linear 
-   * response of homogenous liquid instead of unity. The residual is a 
-   * vector in which each that represents a deviations 
+   * Class LrAmCompressor implements an Anderson mixing algorithm
+   * which modifies the second mixing step, estimating Jacobian by linear
+   * response of homogenous liquid instead of unity. The residual is a
+   * vector in which each that represents a deviations
    * in the sum of volume fractions from unity.
    *
    * \ingroup Rpg_Fts_Compressor_Module
    */
    template <int D>
-   class LrAmCompressor 
+   class LrAmCompressor
          : public AmIteratorTmpl<Compressor<D>, DeviceArray<cudaReal> >
    {
 
@@ -54,7 +54,7 @@ namespace Rpg {
 
       /**
       * Constructor.
-      * 
+      *
       * \param system System object associated with this compressor.
       */
       LrAmCompressor(System<D>& system);
@@ -75,20 +75,20 @@ namespace Rpg {
       * Initialize just before entry to iterative loop.
       *
       * This function is called by the solve function before entering the
-      * loop over iterations. Store the current values of the fields at the 
+      * loop over iterations. Store the current values of the fields at the
       * beginning of iteration
       *
       * \param isContinuation true iff continuation within a sweep
-      */ 
-      void setup(bool isContinuation);      
-      
+      */
+      void setup(bool isContinuation);
+
       /**
       * Compress to obtain partial saddle point w+
       *
       * \return 0 for convergence, 1 for failure
       */
-      int compress();    
-      
+      int compress();
+
       /**
       * Return compressor times contributions.
       */
@@ -99,78 +99,80 @@ namespace Rpg {
       */
       void clearTimers();
 
+   protected:
+
+      // Inherited member function
+      using Compressor<D>::system;
+
    private:
-   
+
       /**
-      * How many times MDE has been solved for each mc move 
+      * How many times MDE has been solved for each mc move
       */
       int itr_;
-      
+
       /**
       * Current values of the fields
       */
-      DArray< RField<D> > w0_;  
-      
+      DArray< RField<D> > w0_;
+
       /**
       * Template w Field used in update function
       */
       DArray< RField<D> > wFieldTmp_;
-      
+
       /**
       * Residual in real space used for linear response anderson mixing.
       */
       RField<D> resid_;
-      
+
       /**
       * Residual in Fourier space used for linear response anderson mixing.
       */
       RFieldDft<D> residK_;
-     
+
       /**
       * IntraCorrelation in fourier space calculated by IntraCorrlation class
       */
       RField<D> intraCorrelationK_;
-      
+
       /**
       * Dimensions of wavevector mesh in real-to-complex transform
-      */ 
+      */
       IntVec<D> kMeshDimensions_;
-      
+
       /**
       * Number of points in k-space grid
       */
       int kSize_;
 
       /**
+      * IntraCorrelation object.
+      */
+      IntraCorrelation<D> intra_;
+
+      /**
       * Has the IntraCorrelation been calculated?
       */
       bool isIntraCalculated_;
-      
-      /**
-      * IntraCorrelation object
-      */
-      IntraCorrelation<D> intra_;
-      
+
       /**
       * Has the variable been allocated?
       */
       bool isAllocated_;
-   
-      // AM algorithm operations
-    
+
+      // Private AM algorithm operations
+
       /**
-      * Add a correction based on the predicted residual. 
-      * 
-      * \param fieldTrial trial field (in/out)
-      * \param resTrial predicted residual for current trial (in)
+      * Add a correction based on the predicted residual.
+      *
+      * \param fieldTrial  trial field (in/out)
+      * \param resTrial  predicted residual for current trial (in)
       */
-      void addCorrection(VectorT& fieldTrial, 
+      void addCorrection(VectorT& fieldTrial,
                          VectorT const & resTrial) override;
 
-      
-      // Private virtual that interact with the parent System
-      
-      /** 
+      /**
       * Compute and returns the number of elements in field vector.
       *
       * Called during allocation and then stored.
@@ -181,12 +183,12 @@ namespace Rpg {
       * Does the system has an initial guess for the field?
       */
       bool hasInitialGuess() override;
-     
+
       /**
       * Gets the current field vector from the system.
-      * 
+      *
       * \param curr current field vector
-      */ 
+      */
       void getCurrent(VectorT& curr) override;
 
       /**
@@ -215,16 +217,16 @@ namespace Rpg {
       * Outputs relevant system details to the iteration log.
       */
       void outputToLog() override;
- 
+
       // Private virtual functions for vector math
-      
+
       /**
       * Assign one field to another.
-      * 
-      * \param a the field to be set (lhs of assignment)
-      * \param b the field for it to be set to (rhs of assigment)
+      *
+      * \param a  field to be set (lhs of assignment)
+      * \param b  field for it to be set to (rhs of assigment)
       */
-      void setEqual(VectorT& a, 
+      void setEqual(VectorT& a,
                     VectorT const & b) override;
 
       /**
@@ -233,7 +235,7 @@ namespace Rpg {
       * \param a  first input vector
       * \param a  second input vector
       */
-      double dotProduct(VectorT const & a, 
+      double dotProduct(VectorT const & a,
                         VectorT const & b) override;
 
       /**
@@ -244,32 +246,30 @@ namespace Rpg {
       /**
       * Compute the difference a = b - c for vectors a, b and c.
       *
-      * \param a result vector (LHS)
-      * \param b first vector (RHS)
-      * \param c second vector (RHS)
+      * \param a  result vector (LHS)
+      * \param b  first vector (RHS)
+      * \param c  second vector (RHS)
       */
-      void subVV(VectorT& a, 
-                 VectorT const & b, 
+      void subVV(VectorT& a,
+                 VectorT const & b,
 		 VectorT const & c) override;
 
       /**
       * Compute a += c*b for vectors a and b and scalar c.
       *
-      * \param a result vector (LHS)
-      * \param b input vector (RHS)
-      * \param c scalar coefficient (RHS)
+      * \param a  result vector (LHS)
+      * \param b  input vector (RHS)
+      * \param c  scalar coefficient (RHS)
       */
-      void addEqVc(VectorT& a, 
-		   VectorT const & b, 
+      void addEqVc(VectorT& a,
+		   VectorT const & b,
                    double c) override;
-
-      // Inherited private member
-      using Compressor<D>::system;
 
       /// Typename alias for base class.
       using Base = AmIteratorTmpl< Compressor<D>, VectorT >;
+
    };
-   
+
    // Explicit instantiation declarations
    extern template class LrAmCompressor<1>;
    extern template class LrAmCompressor<2>;

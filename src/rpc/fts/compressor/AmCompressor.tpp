@@ -168,7 +168,7 @@ namespace Rpc {
       // Initialize residual to -1.0
       VecOp::eqS(resid, -1.0);
 
-       // Add c fields to get SCF residual vector
+      // Add c fields to get SCF residual vector
       const int nMonomer = system().mixture().nMonomer();
       for (int i = 0; i < nMonomer; ++i) {
          VecOp::addEqV(resid, system().c().rgrid(i));
