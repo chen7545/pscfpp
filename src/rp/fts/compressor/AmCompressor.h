@@ -1,5 +1,5 @@
-#ifndef RPG_AM_COMPRESSOR_H
-#define RPG_AM_COMPRESSOR_H
+#ifndef RP_AM_COMPRESSOR_H
+#define RP_AM_COMPRESSOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,46 +9,39 @@
 */
 
 #include "Compressor.h"                    // base class argument
-#include <pscf/cuda/cudaTypes.h>           // base class argument
-#include <pscf/cuda/DeviceArray.h>         // base class argument
 #include <pscf/iterator/AmIteratorTmpl.h>  // base class template
 
-#include <prdc/cuda/RField.h>              // member
 #include <util/containers/DArray.h>        // member
 
 #include <iostream>
 
 namespace Pscf {
-namespace Rpg {
-
-   // Forward declaration
-   template <int D> class System;
+namespace Rp {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
 
    /**
    * Anderson Mixing compressor.
    *
-   * \ingroup Rpg_Fts_Compressor_Module
+   * \ingroup Rp_Fts_Compressor_Module
    */
-   template <int D>
+   template <int D, class T, class V>
    class AmCompressor 
-     : public AmIteratorTmpl< Compressor<D>, DeviceArray<cudaReal> >
+     : public AmIteratorTmpl< typename T::Compressor, V>
    {
 
    public:
 
       /// Typename for state and residual vectors.
-      using VectorT = DeviceArray<cudaReal>;
+      using VectorT = V;
 
       /**
       * Constructor.
       *
       * \param system System object associated with this compressor.
       */
-      AmCompressor(System<D>& system);
+      AmCompressor(typename T::System& system);
 
       /**
       * Destructor.
@@ -98,19 +91,20 @@ namespace Rpg {
    protected:
 
       // Inherited protected member
-      using Compressor<D>::system;
+      using CompressorT = typename T::Compressor;
+      using CompressorT::system;
 
    private:
 
       /**
       * Current values of the fields
       */
-      DArray< RField<D> > w0_;
+      DArray< typename T::RField > w0_;
 
       /**
       * Temporary w field used in update function
       */
-      DArray< RField<D> > wFieldTmp_;
+      DArray< typename T::RField > wFieldTmp_;
 
       /**
       * How many times has MDE has been solved for this stochastic move?
@@ -215,15 +209,10 @@ namespace Rpg {
 		   double c) override;
 
       /// Typename alias for base class.
-      using AmTmpl = AmIteratorTmpl< Compressor<D>, VectorT >;
+      using AmTmpl = AmIteratorTmpl< CompressorT, VectorT >;
 
    };
 
-   // Explicit instantiation declarations
-   extern template class AmCompressor<1>;
-   extern template class AmCompressor<2>;
-   extern template class AmCompressor<3>;
-
-} // namespace Rpg
+} // namespace Rp
 } // namespace Pscf
 #endif

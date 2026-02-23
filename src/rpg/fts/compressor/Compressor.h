@@ -94,14 +94,6 @@ namespace Rpg {
 
    };
 
-   #if 0
-   // Default constructor
-   template <int D>
-   inline Compressor<D>::Compressor()
-    : sysPtr_(&system)
-   {  setClassName("Compressor"); }
-   #endif
-
    // Constructor
    template <int D>
    Compressor<D>::Compressor(System<D>& system)
