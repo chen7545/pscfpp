@@ -9,7 +9,6 @@
 */
 
 #include "AmCompressor.h"
-#include <rpg/field/Domain.h>
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 
@@ -83,7 +82,7 @@ namespace Rp {
    }
 
    /*
-   * Main compressor function.
+   * Main function - identify partial saddle-point state.
    */
    template <int D, class T, class V>
    int AmCompressor<D,T,V>::compress()
@@ -99,7 +98,7 @@ namespace Rp {
    void AmCompressor<D,T,V>::outputTimers(std::ostream& out) const
    {
       out << "\n";
-      out << "Compressor times contributions:\n";
+      out << "Compressor time contributions:\n";
       AmTmpl::outputTimers(out);
    }
 
@@ -133,13 +132,13 @@ namespace Rp {
    * Get the current field from the system.
    */
    template <int D, class T, class V>
-   void AmCompressor<D,T,V>::getCurrent(V& curr)
+   void AmCompressor<D,T,V>::getCurrent(VectorT& curr)
    {
       /*
       * The field that we are adjusting is the Langrange multiplier
       * field.  The current value is the difference between w and w0_
       * for the first monomer type, but any monomer type would give
-      * the same answer)
+      * the same answer.
       */
       VecOp::subVV(curr, system().w().rgrid(0), w0_[0]);
    }
@@ -155,30 +154,30 @@ namespace Rp {
    }
 
    /*
-   * Compute the residual for the current system state.
+   * Compute the residual vector for the current system state.
    */
    template <int D, class T, class V>
-   void AmCompressor<D,T,V>::getResidual(V& resid)
+   void AmCompressor<D,T,V>::getResidual(VectorT& resid)
    {
       // Initialize residual to -1.0
       VecOp::eqS(resid, -1.0);
 
       // Add c fields to get SCF residual vector
       const int nMonomer = system().mixture().nMonomer();
-      for (int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addEqV(resid, system().c().rgrid(i));
       }
    }
 
    /*
-   * Update the current system field coordinates.
+   * Update the current system w fields.
    */
    template <int D, class T, class V>
-   void AmCompressor<D,T,V>::update(V& newGuess)
+   void AmCompressor<D,T,V>::update(VectorT& newGuess)
    {
       // New field is w0_ + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();
-      for (int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addVV(wFieldTmp_[i], w0_[i], newGuess);
       }
 
@@ -187,7 +186,7 @@ namespace Rp {
    }
 
    /*
-   * Do nothing output function.
+   * Do-nothing output function.
    */
    template<int D>
    void AmCompressor<D,T,V>::outputToLog()
@@ -199,8 +198,8 @@ namespace Rp {
    * Assign one array to another.
    */
    template <int D, class T, class V>
-   void AmCompressor<D,T,V>::setEqual(V& a,
-                                  V const & b)
+   void AmCompressor<D,T,V>::setEqual(VectorT& a,
+                                      VectorT const & b)
    {
       UTIL_CHECK(b.capacity() == a.capacity());
       VecOp::eqV(a, b);
@@ -210,8 +209,8 @@ namespace Rp {
    * Compute and return inner product of two vectors.
    */
    template <int D, class T, class V>
-   double AmCompressor<D,T,V>::dotProduct(V const & a,
-                                          V const & b)
+   double AmCompressor<D,T,V>::dotProduct(VectorT const & a,
+                                          VectorT const & b)
    {
       UTIL_CHECK(a.capacity() == b.capacity());
       return Reduce::innerProduct(a, b);
@@ -221,16 +220,16 @@ namespace Rp {
    * Compute and return maximum absolute value element of a vector.
    */
    template <int D, class T, class V>
-   double AmCompressor<D,T,V>::maxAbs(V const & a)
+   double AmCompressor<D,T,V>::maxAbs(VectorT const & a)
    {  return Reduce::maxAbs(a); }
 
    /*
    * Compute the vector difference a = b - c
    */
    template <int D, class T, class V>
-   void AmCompressor<D,T,V>::subVV(V& a,
-                                   V const & b,
-                                   V const & c)
+   void AmCompressor<D,T,V>::subVV(VectorT& a,
+                                   VectorT const & b,
+                                   VectorT const & c)
    {
       UTIL_CHECK(a.capacity() == b.capacity());
       VecOp::subVV(a, b, c);
@@ -240,8 +239,8 @@ namespace Rp {
    * Composite a += b*c for vectors a and b, scalar c
    */
    template <int D, class T, class V>
-   void AmCompressor<D,T,V>::addEqVc(V& a,
-                                     V const & b,
+   void AmCompressor<D,T,V>::addEqVc(VectorT& a,
+                                     VectorT const & b,
                                      double c)
    {
       UTIL_CHECK(a.capacity() == b.capacity());

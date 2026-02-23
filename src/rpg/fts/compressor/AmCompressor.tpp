@@ -88,7 +88,7 @@ namespace Rpg {
    }
 
    /*
-   * Main compressor function.
+   * Main function - identify partial saddle-point state.
    */
    template <int D>
    int AmCompressor<D>::compress()
@@ -104,7 +104,7 @@ namespace Rpg {
    void AmCompressor<D>::outputTimers(std::ostream& out) const
    {
       out << "\n";
-      out << "Compressor times contributions:\n";
+      out << "Compressor time contributions:\n";
       AmTmpl::outputTimers(out);
    }
 
@@ -144,7 +144,7 @@ namespace Rpg {
       * The field that we are adjusting is the Langrange multiplier
       * field.  The current value is the difference between w and w0_
       * for the first monomer type, but any monomer type would give
-      * the same answer)
+      * the same answer.
       */
       VecOp::subVV(curr, system().w().rgrid(0), w0_[0]);
    }
@@ -160,7 +160,7 @@ namespace Rpg {
    }
 
    /*
-   * Compute the residual for the current system state.
+   * Compute the residual vector for the current system state.
    */
    template <int D>
    void AmCompressor<D>::getResidual(VectorT& resid)
@@ -170,7 +170,7 @@ namespace Rpg {
 
       // Add c fields to get SCF residual vector
       const int nMonomer = system().mixture().nMonomer();
-      for (int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addEqV(resid, system().c().rgrid(i));
       }
    }
@@ -183,7 +183,7 @@ namespace Rpg {
    {
       // New field is w0_ + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();
-      for (int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addVV(wFieldTmp_[i], w0_[i], newGuess);
       }
 
@@ -192,7 +192,7 @@ namespace Rpg {
    }
 
    /*
-   * Do nothing output function.
+   * Do-nothing output function.
    */
    template<int D>
    void AmCompressor<D>::outputToLog()

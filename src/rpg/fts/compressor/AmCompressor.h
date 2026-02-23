@@ -8,15 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Compressor.h"                    // base class argument
-#include <pscf/cuda/cudaTypes.h>           // base class argument
-#include <pscf/cuda/DeviceArray.h>         // base class argument
-#include <pscf/iterator/AmIteratorTmpl.h>  // base class template
-
-#include <prdc/cuda/RField.h>              // member
-#include <util/containers/DArray.h>        // member
-
-#include <iostream>
+#include "Compressor.h"                     // base class argument
+#include <pscf/cuda/cudaTypes.h>            // base class argument
+#include <pscf/cuda/DeviceArray.h>          // base class argument
+#include <pscf/iterator/AmIteratorTmpl.h>   // base class template
+#include <prdc/cuda/RField.h>               // member
+#include <util/containers/DArray.h>         // member
 
 namespace Pscf {
 namespace Rpg {
@@ -24,29 +21,30 @@ namespace Rpg {
    // Forward declaration
    template <int D> class System;
 
+   // Namespaces that can be used implicitly
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
-   * Anderson Mixing compressor.
+   * Anderson mixing compressor.
    *
    * \ingroup Rpg_Fts_Compressor_Module
    */
    template <int D>
-   class AmCompressor 
+   class AmCompressor
      : public AmIteratorTmpl< Compressor<D>, DeviceArray<cudaReal> >
    {
 
    public:
 
-      /// Typename for state and residual vectors.
+      /// Type for state and residual vectors.
       using VectorT = DeviceArray<cudaReal>;
 
       /**
       * Constructor.
       *
-      * \param system System object associated with this compressor.
+      * \param system  parent System object
       */
       AmCompressor(System<D>& system);
 
@@ -58,9 +56,9 @@ namespace Rpg {
       /**
       * Read all parameters and initialize.
       *
-      * \param in input filestream
+      * \param in  input parameter file stream
       */
-      void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
       * Initialize just before entry to iterative loop.
@@ -71,58 +69,50 @@ namespace Rpg {
       *
       * \param isContinuation true iff continuation within a sweep
       */
-      void setup(bool isContinuation);
+      void setup(bool isContinuation) override;
 
       /**
       * Compress to obtain partial saddle point w+
       *
       * \return 0 for convergence, 1 for failure
       */
-      int compress();
-
-      /**
-      * Return how many times MDE has been solved.
-      */
-      int mdeCounter();
+      int compress() override;
 
       /**
       * Return compressor times contributions.
+      *
+      * \param out  output stream
       */
-      void outputTimers(std::ostream& out) const;
+      void outputTimers(std::ostream& out) const override;
 
       /**
-      * Clear all timers (reset accumulated time to zero).
+      * Clear all timers and mde counter.
       */
-      void clearTimers();
+      void clearTimers() override;
 
    protected:
 
-      // Inherited protected member
+      // Inherited protected member function
       using Compressor<D>::system;
 
    private:
 
       /**
-      * Current values of the fields
+      * Initial values of all fields.
       */
       DArray< RField<D> > w0_;
 
       /**
-      * Temporary w field used in update function
+      * Temporary array of w fields used in update function.
       */
       DArray< RField<D> > wFieldTmp_;
-
-      /**
-      * How many times has MDE has been solved for this stochastic move?
-      */
-      int counter_;
 
       /**
       * Has required memory been allocated?
       */
       bool isAllocated_;
 
-      // Private virtual functions that interact with parent System
+      // Private virtual functions that interact with parent system
 
       /**
       * Compute and returns the number of elements in field vector.
@@ -199,8 +189,8 @@ namespace Rpg {
       * \param b first vector (RHS)
       * \param c second vector (RHS)
       */
-      void subVV(VectorT& a, 
-                 VectorT const & b, 
+      void subVV(VectorT& a,
+                 VectorT const & b,
                  VectorT const & c) override;
 
       /**
@@ -210,8 +200,8 @@ namespace Rpg {
       * \param b input vector (RHS)
       * \param c scalar coefficient (RHS)
       */
-      void addEqVc(VectorT& a, 
-		   VectorT const & b, 
+      void addEqVc(VectorT& a,
+		   VectorT const & b,
 		   double c) override;
 
       /// Typename alias for base class.

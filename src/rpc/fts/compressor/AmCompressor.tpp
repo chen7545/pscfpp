@@ -68,10 +68,10 @@ namespace Rpc {
       AmTmpl::setup(isContinuation);
 
       const int nMonomer = system().mixture().nMonomer();
-      IntVec<D> const & dimensions = system().domain().mesh().dimensions();
+      const IntVec<D> dimensions = system().domain().mesh().dimensions();
 
       // Allocate memory required by compressor if not done earlier.
-      if (!isAllocated_){
+      if (!isAllocated_) {
          w0_.allocate(nMonomer);
          wFieldTmp_.allocate(nMonomer);
          for (int i = 0; i < nMonomer; ++i) {
@@ -104,7 +104,7 @@ namespace Rpc {
    void AmCompressor<D>::outputTimers(std::ostream& out) const
    {
       out << "\n";
-      out << "AmCompressor time contributions:\n";
+      out << "Compressor time contributions:\n";
       AmTmpl::outputTimers(out);
    }
 
@@ -118,7 +118,7 @@ namespace Rpc {
       Compressor<D>::mdeCounter_ = 0;
    }
 
-   // Private virtual functions that interact with parent system
+   // Private virtual functions that interact with the parent System
 
    /*
    * Compute and return the number of elements in a field vector.
@@ -138,11 +138,11 @@ namespace Rpc {
    * Get the current field from the system.
    */
    template <int D>
-   void AmCompressor<D>::getCurrent(DArray<double>& curr)
+   void AmCompressor<D>::getCurrent(VectorT& curr)
    {
       /*
-      * The field that we are adjusting is the Langrange multiplier 
-      * field.  The current value is the difference between w and w0_ 
+      * The field that we are adjusting is the Langrange multiplier
+      * field.  The current value is the difference between w and w0_
       * for the first monomer type, but any monomer type would give
       * the same answer.
       */
@@ -163,7 +163,7 @@ namespace Rpc {
    * Compute the residual vector for the current system state.
    */
    template <int D>
-   void AmCompressor<D>::getResidual(DArray<double>& resid)
+   void AmCompressor<D>::getResidual(VectorT& resid)
    {
       // Initialize residual to -1.0
       VecOp::eqS(resid, -1.0);
@@ -179,11 +179,11 @@ namespace Rpc {
    * Update the current system field coordinates.
    */
    template <int D>
-   void AmCompressor<D>::update(DArray<double>& newGuess)
+   void AmCompressor<D>::update(VectorT& newGuess)
    {
       // New field is w0_ + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();
-      for (int i = 0; i < nMonomer; i++){
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addVV(wFieldTmp_[i], w0_[i], newGuess);
       }
 

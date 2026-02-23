@@ -8,38 +8,35 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Compressor.h"                    // base class argument
-#include <pscf/iterator/AmIteratorTmpl.h>  // base class template
-
-#include <util/containers/DArray.h>        // member
-
-#include <iostream>
+#include <pscf/iterator/AmIteratorTmpl.h>   // base class template
+#include <util/containers/DArray.h>         // member
 
 namespace Pscf {
 namespace Rp {
 
+   // Namespaces that can be used implicitly
    using namespace Util;
    using namespace Prdc;
 
    /**
-   * Anderson Mixing compressor.
+   * Anderson mixing compressor.
    *
    * \ingroup Rp_Fts_Compressor_Module
    */
    template <int D, class T, class V>
    class AmCompressor 
-     : public AmIteratorTmpl< typename T::Compressor, V>
+    : public AmIteratorTmpl< typename T::Compressor, V >
    {
 
    public:
 
-      /// Typename for state and residual vectors.
+      /// Type for state and residual vectors.
       using VectorT = V;
 
       /**
       * Constructor.
       *
-      * \param system System object associated with this compressor.
+      * \param system  parent System object
       */
       AmCompressor(typename T::System& system);
 
@@ -51,9 +48,9 @@ namespace Rp {
       /**
       * Read all parameters and initialize.
       *
-      * \param in input filestream
+      * \param in  input parameter file stream
       */
-      void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
       * Initialize just before entry to iterative loop.
@@ -64,59 +61,53 @@ namespace Rp {
       *
       * \param isContinuation true iff continuation within a sweep
       */
-      void setup(bool isContinuation);
+      void setup(bool isContinuation) override;
 
       /**
       * Compress to obtain partial saddle point w+
       *
       * \return 0 for convergence, 1 for failure
       */
-      int compress();
-
-      /**
-      * Return how many times MDE has been solved.
-      */
-      int mdeCounter();
+      int compress() override;
 
       /**
       * Return compressor times contributions.
+      *
+      * \param out  output stream
       */
-      void outputTimers(std::ostream& out) const;
+      void outputTimers(std::ostream& out) const override;
 
       /**
-      * Clear all timers (reset accumulated time to zero).
+      * Clear all timers and mde counter.
       */
-      void clearTimers();
+      void clearTimers() override;
 
    protected:
 
-      // Inherited protected member
-      using CompressorT = typename T::Compressor;
+      /// Compressor type.
+      using CompressorT = typename T::Compressor
+
+      // Inherited protected member function
       using CompressorT::system;
 
    private:
 
       /**
-      * Current values of the fields
+      * Initial values of all fields.
       */
       DArray< typename T::RField > w0_;
 
       /**
-      * Temporary w field used in update function
+      * Temporary array of w fields used in update function.
       */
       DArray< typename T::RField > wFieldTmp_;
-
-      /**
-      * How many times has MDE has been solved for this stochastic move?
-      */
-      int counter_;
 
       /**
       * Has required memory been allocated?
       */
       bool isAllocated_;
 
-      // Private virtual functions that interact with parent System
+      // Private virtual AM algorithm functions.
 
       /**
       * Compute and returns the number of elements in field vector.
@@ -164,7 +155,7 @@ namespace Rp {
       */
       void outputToLog() override;
 
-      // Private virtual functions for vector math
+      // Private virtual functions for vector math operations
 
       /**
       * Assign one field to another.
@@ -193,8 +184,8 @@ namespace Rp {
       * \param b first vector (RHS)
       * \param c second vector (RHS)
       */
-      void subVV(VectorT& a, 
-                 VectorT const & b, 
+      void subVV(VectorT& a,
+                 VectorT const & b,
                  VectorT const & c) override;
 
       /**
@@ -204,9 +195,11 @@ namespace Rp {
       * \param b input vector (RHS)
       * \param c scalar coefficient (RHS)
       */
-      void addEqVc(VectorT& a, 
-		   VectorT const & b, 
+      void addEqVc(VectorT& a,
+		   VectorT const & b,
 		   double c) override;
+
+      // Private typename alias
 
       /// Typename alias for base class.
       using AmTmpl = AmIteratorTmpl< CompressorT, VectorT >;

@@ -13,13 +13,15 @@
 #include <pscf/iterator/AmIteratorDArray.h> // base class template
 #include <util/containers/DArray.h>         // member
 
+
+
 namespace Pscf {
 namespace Rpc {
 
    // Forward declaration
    template <int D> class System;
 
-   // Namespaces from which names can be used without qualification
+   // Namespaces that can be used implicitly
    using namespace Util;
    using namespace Prdc;
    using namespace Prdc::Cpu;
@@ -36,7 +38,7 @@ namespace Rpc {
 
    public:
 
-      /// Alias for type of state and residual vectors.
+      /// Type for state and residual vectors.
       using VectorT = DArray<double>;
 
       /**
@@ -54,7 +56,7 @@ namespace Rpc {
       /**
       * Read all parameters and initialize.
       *
-      * \param in input filestream
+      * \param in  input parameter file stream
       */
       void readParameters(std::istream& in) override;
 
@@ -62,7 +64,7 @@ namespace Rpc {
       * Initialize just before entry to iterative loop.
       *
       * This function is called by the solve function before entering the
-      * loop over iterations. Store the current values of the fields at 
+      * loop over iterations. Store the current values of the fields at
       * the beginning of iteration
       *
       * \param isContinuation true iff continuation within a sweep
@@ -78,11 +80,13 @@ namespace Rpc {
 
       /**
       * Return compressor times contributions.
+      *
+      * \param out  output stream
       */
       void outputTimers(std::ostream& out) const override;
 
       /**
-      * Clear all timers (reset accumulated time to zero).
+      * Clear all timers and mde counter.
       */
       void clearTimers() override;
 
@@ -94,19 +98,14 @@ namespace Rpc {
    private:
 
       /**
-      * Current values of the fields
+      * Initial values of all fields.
       */
       DArray< RField<D> > w0_;
 
       /**
-      * Temporary w field used in update function
+      * Temporary array of w fields used in update function.
       */
       DArray< RField<D> > wFieldTmp_;
-
-      /**
-      * How many times has MDE been solved for this stochastic move?
-      */
-      int itr_;
 
       /**
       * Has required memory been allocated?
@@ -161,7 +160,7 @@ namespace Rpc {
       */
       void outputToLog() override;
 
-      // Indirect (grandparent) base class.
+      /// Typename alias for base class.
       using AmTmpl = AmIteratorTmpl< Compressor<D>, VectorT >;
 
    };
