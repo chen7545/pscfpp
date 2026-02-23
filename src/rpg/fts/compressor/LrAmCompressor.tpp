@@ -32,7 +32,7 @@ namespace Rpg {
    */
    template <int D>
    LrAmCompressor<D>::LrAmCompressor(System<D>& system)
-    : Compressor<D>(system),
+    : CompressorT(system),
       intra_(system),
       isIntraCalculated_(false),
       isAllocated_(false)
@@ -46,7 +46,7 @@ namespace Rpg {
    {}
 
    /*
-   * Read parameters from file.
+   * Read body of parameter file block and initialize.
    */
    template <int D>
    void LrAmCompressor<D>::readParameters(std::istream& in)
@@ -67,33 +67,15 @@ namespace Rpg {
    template <int D>
    void LrAmCompressor<D>::setup(bool isContinuation)
    {
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      IntVec<D> const & dimensions = system().domain().mesh().dimensions();
 
-      // Allocate memory required by AM algorithm if not done earlier.
+      // Allocate memory required by AM algorithm, if not done earlier
       AmTmpl::setup(isContinuation);
 
+      const int nMonomer = system().mixture().nMonomer();
+      IntVec<D> const & dimensions = system().domain().mesh().dimensions();
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
-      #if 0
-      // Compute Fourier space kMeshDimensions_
-      for (int i = 0; i < D; ++i) {
-         if (i < D - 1) {
-            kMeshDimensions_[i] = dimensions[i];
-         } else {
-            kMeshDimensions_[i] = dimensions[i]/2 + 1;
-         }
-      }
-
-      // Compute number of points in k-space grid
-      kSize_ = 1;
-      for (int i = 0; i < D; ++i) {
-         kSize_ *= kMeshDimensions_[i];
-      }
-      #endif
-
-      // Allocate memory required by compressor if not done earlier.
+      // Allocate memory required by compressor, if not done earlier
       if (!isAllocated_) {
          w0_.allocate(nMonomer);
          wFieldTmp_.allocate(nMonomer);
@@ -107,13 +89,13 @@ namespace Rpg {
          isAllocated_ = true;
       }
 
-      // Compute intraCorrelation
+      // Compute intraCorrelationK_
       if (!isIntraCalculated_){
          intra_.computeIntraCorrelations(intraCorrelationK_);
          isIntraCalculated_ = true;
       }
 
-      // Store value of initial guess chemical potential fields
+      // Store initial values of monomer chemical potential fields
       for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w0_[i], system().w().rgrid(i));
       }
@@ -142,51 +124,19 @@ namespace Rpg {
    }
 
    /*
-   * Clear timers and MDE counter.
+   * Clear timers and the MDE counter.
    */
    template<int D>
    void LrAmCompressor<D>::clearTimers()
    {
       AmTmpl::clearTimers();
-      Compressor<D>::mdeCounter_ = 0;
+      CompressorT::mdeCounter_ = 0;
    }
 
-   // Private virtual AM operation functions
+   // Private virtual AM algorithm operation functions
 
    /*
-   * Correction step (second step of Anderson mixing)
-   *
-   * This LrAm algorithm uses a quasi-Newton correction step with an
-   * approximate Jacobian given by the Jacobian in a homogeneous state.
-   */
-   template <int D>
-   void
-   LrAmCompressor<D>::addCorrection(
-                                 VectorT& fieldTrial,
-                                 VectorT const & resTrial)
-   {
-      // Convert resTrial to RField<D> type.
-      // Allows use of FFT functions that take an RField container
-      VecOp::eqV(resid_, resTrial);
-
-      // Convert residual to Fourier space
-      system().domain().fft().forwardTransform(resid_, residK_);
-
-      // Combine with linear response factor to obtain update step
-      const double vMonomer = system().mixture().vMonomer();
-      VecOp::divEqVc(residK_, intraCorrelationK_, vMonomer);
-
-      // Convert update back to real space (destroys residK_)
-      system().domain().fft().inverseTransformUnsafe(residK_, resid_);
-
-      // Add update resid_ to obtain corrected fieldTrial_
-      VecOp::addEqVc(fieldTrial, resid_, 1.0);
-   }
-
-   // Private virtual functions that interact with parent System
-
-   /*
-   * Get the number of elements in a field vector.
+   * Compute and return the number of elements in a field vector.
    */
    template <int D>
    int LrAmCompressor<D>::nElements()
@@ -201,12 +151,15 @@ namespace Rpg {
 
    /*
    * Get the current field variable from the system.
+   *
+   * The field variable is the change in the Lagrange multiplier field
+   * relative to that used in the initial array of monomer fields, w0_.
    */
    template <int D>
    void LrAmCompressor<D>::getCurrent(VectorT& curr)
    {
       /*
-      * The field that we are adjusting is the Langrange multiplier 
+      * The field that we are adjusting is the Langrange multiplier
       * field. The current value is the difference between w and w0_
       * for the first monomer type, but any monomer type would give
       * the same answer.
@@ -221,7 +174,7 @@ namespace Rpg {
    void LrAmCompressor<D>::evaluate()
    {
       system().compute();
-      ++(Compressor<D>::mdeCounter_);
+      ++(CompressorT::mdeCounter_);
    }
 
    /*
@@ -230,37 +183,63 @@ namespace Rpg {
    template <int D>
    void LrAmCompressor<D>::getResidual(VectorT& resid)
    {
+      // Initialize residual to -1.0
+      VecOp::eqS(resid, -1.0);
+
+      // Add c fields to get SCF residual vector
       const int nMonomer = system().mixture().nMonomer();
-
-      // Initialize resid to c field of species 0 minus 1
-      VecOp::subVS(resid, system().c().rgrid(0), 1.0);
-
-      // Add other c fields to get SCF residual vector elements
-      for (int i = 1; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addEqV(resid, system().c().rgrid(i));
       }
    }
 
    /*
-   * Update the system state to reflect new state vector.
+   * Correction step (second step of Anderson mixing)
+   *
+   * This LrAm algorithm uses a quasi-Newton correction step with an
+   * approximate Jacobian given by the Jacobian in a homogeneous state.
+   */
+   template <int D>
+   void
+   LrAmCompressor<D>::addCorrection(VectorT& fieldTrial,
+                                    VectorT const & resTrial)
+   {
+      // Copy resTrial to RField<D> resid_
+      // Allows use of FFT functions that take an RField container
+      VecOp::eqV(resid_, resTrial);
+
+      // Convert residual to Fourier space
+      system().domain().fft().forwardTransform(resid_, residK_);
+
+      // Combine with linear response factor to obtain update step
+      const double vMonomer = system().mixture().vMonomer();
+      VecOp::divEqVc(residK_, intraCorrelationK_, vMonomer);
+
+      // Convert update back to real space (destroys residK_)
+      system().domain().fft().inverseTransformUnsafe(residK_, resid_);
+
+      // Add update resid_ to obtain corrected fieldTrial_
+      VecOp::addEqV(fieldTrial, resid_);
+   }
+
+   /*
+   * Update the w field values stored in the system
    */
    template <int D>
    void LrAmCompressor<D>::update(VectorT& newGuess)
    {
-      // Convert back to field format
+      // New field is w0_ + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();
-
-      // New field is w0_[i] + newGuess for the Lagrange multiplier field
-      for (int i = 0; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addVV(wFieldTmp_[i], w0_[i], newGuess);
       }
 
-      // Set system r grid
+      // Update system r-grid fields
       system().w().setRGrid(wFieldTmp_);
    }
 
    /*
-   * Do-nothing output function.
+   * Output results to log file (do-nothing implementation).
    */
    template<int D>
    void LrAmCompressor<D>::outputToLog()

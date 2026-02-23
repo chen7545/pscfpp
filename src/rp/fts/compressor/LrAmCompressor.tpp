@@ -1,5 +1,5 @@
-#ifndef RPC_LR_AM_COMPRESSOR_TPP
-#define RPC_LR_AM_COMPRESSOR_TPP
+#ifndef RP_LR_AM_COMPRESSOR_TPP
+#define RP_LR_AM_COMPRESSOR_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,19 +9,12 @@
 */
 
 #include "LrAmCompressor.h"
-#include <rpc/system/System.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/field/Domain.h>
-#include <prdc/cpu/FFT.h>
 #include <pscf/mesh/MeshIterator.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/VecOpCx.h>
-#include <pscf/cpu/Reduce.h>
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpc{
+namespace Rp {
 
    using namespace Util;
 
@@ -30,8 +23,8 @@ namespace Rpc{
    /*
    * Constructor.
    */
-   template <int D>
-   LrAmCompressor<D>::LrAmCompressor(System<D>& system)
+   template <int D, class T, class V>
+   LrAmCompressor<D,T,V>::LrAmCompressor(typename T::System& system)
     : CompressorT(system),
       intra_(system),
       isIntraCalculated_(false),
@@ -41,15 +34,15 @@ namespace Rpc{
    /*
    * Destructor.
    */
-   template <int D>
-   LrAmCompressor<D>::~LrAmCompressor()
+   template <int D, class T, class V>
+   LrAmCompressor<D,T,V>::~LrAmCompressor()
    {}
 
    /*
    * Read body of parameter file block and initialize.
    */
-   template <int D>
-   void LrAmCompressor<D>::readParameters(std::istream& in)
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::readParameters(std::istream& in)
    {
       // Default values
       AmTmpl::maxItr_ = 100;
@@ -64,15 +57,16 @@ namespace Rpc{
    /*
    * Initialize just before entry to iterative loop.
    */
-   template <int D>
-   void LrAmCompressor<D>::setup(bool isContinuation)
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::setup(bool isContinuation)
    {
+
       // Allocate memory required by AM algorithm, if not done earlier
       AmTmpl::setup(isContinuation);
 
       const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-      FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
+      FFTT::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
       // Allocate memory required by compressor, if not done earlier
       if (!isAllocated_) {
@@ -98,13 +92,14 @@ namespace Rpc{
       for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w0_[i], system().w().rgrid(i));
       }
+
    }
 
    /*
    * Main function - iteratively adjust the pressure field.
    */
-   template <int D>
-   int LrAmCompressor<D>::compress()
+   template <int D, class T, class V>
+   int LrAmCompressor<D,T,V>::compress()
    {
       int solve = AmTmpl::solve();
       return solve;
@@ -113,8 +108,8 @@ namespace Rpc{
    /*
    * Output timer results.
    */
-   template<int D>
-   void LrAmCompressor<D>::outputTimers(std::ostream& out) const
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::outputTimers(std::ostream& out) const
    {
       out << "\n";
       out << "LrAmCompressor time contributions:\n";
@@ -124,8 +119,8 @@ namespace Rpc{
    /*
    * Clear timers and the MDE counter.
    */
-   template<int D>
-   void LrAmCompressor<D>::clearTimers()
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::clearTimers()
    {
       AmTmpl::clearTimers();
       CompressorT::mdeCounter_ = 0;
@@ -136,15 +131,15 @@ namespace Rpc{
    /*
    * Compute and return the number of elements in a field vector.
    */
-   template <int D>
-   int LrAmCompressor<D>::nElements()
+   template <int D, class T, class V>
+   int LrAmCompressor<D,T,V>::nElements()
    {  return system().domain().mesh().size(); }
 
    /*
    * Does the system have an initial field guess?
    */
-   template <int D>
-   bool LrAmCompressor<D>::hasInitialGuess()
+   template <int D, class T, class V>
+   bool LrAmCompressor<D,T,V>::hasInitialGuess()
    {  return system().w().hasData(); }
 
    /*
@@ -153,8 +148,8 @@ namespace Rpc{
    * The field variable is the change in the Lagrange multiplier field
    * relative to that used in the initial array of monomer fields, w0_.
    */
-   template <int D>
-   void LrAmCompressor<D>::getCurrent(VectorT& curr)
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::getCurrent(VectorT& curr)
    {
       /*
       * The field that we are adjusting is the Langrange multiplier
@@ -168,8 +163,8 @@ namespace Rpc{
    /*
    * Perform the main system computation (solve the MDE).
    */
-   template <int D>
-   void LrAmCompressor<D>::evaluate()
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::evaluate()
    {
       system().compute();
       ++(CompressorT::mdeCounter_);
@@ -178,8 +173,8 @@ namespace Rpc{
    /*
    * Compute the residual vector for the current system state.
    */
-   template <int D>
-   void LrAmCompressor<D>::getResidual(VectorT& resid)
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::getResidual(VectorT& resid)
    {
       // Initialize residual to -1.0
       VecOp::eqS(resid, -1.0);
@@ -197,12 +192,12 @@ namespace Rpc{
    * This LrAm algorithm uses a quasi-Newton correction step with an
    * approximate Jacobian given by the Jacobian in a homogeneous state.
    */
-   template <int D>
+   template <int D, class T, class V>
    void
-   LrAmCompressor<D>::addCorrection(VectorT& fieldTrial,
+   LrAmCompressor<D,T,V>::addCorrection(VectorT& fieldTrial,
                                     VectorT const & resTrial)
    {
-      // Copy resTrial to RField<D> resid_
+      // Copy resTrial to RField resid_
       // Allows use of FFT functions that take an RField container
       VecOp::eqV(resid_, resTrial);
 
@@ -223,8 +218,8 @@ namespace Rpc{
    /*
    * Update the w field values stored in the system
    */
-   template <int D>
-   void LrAmCompressor<D>::update(VectorT& newGuess)
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::update(VectorT& newGuess)
    {
       // New field is w0_ + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();
@@ -239,9 +234,58 @@ namespace Rpc{
    /*
    * Output results to log file (do-nothing implementation).
    */
-   template<int D>
-   void LrAmCompressor<D>::outputToLog()
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::outputToLog()
    {}
+
+   // Private virtual functions for vector math
+
+   /*
+   * Vector assignment, a = b.
+   */
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::setEqual(VectorT& a,
+                                    VectorT const & b)
+   {
+      UTIL_CHECK(b.capacity() == a.capacity());
+      VecOp::eqV(a, b);
+   }
+
+   /*
+   * Compute and return inner product of two vectors.
+   */
+   template <int D, class T, class V>
+   double LrAmCompressor<D,T,V>::dotProduct(VectorT const & a,
+                                            VectorT const & b)
+   {
+      UTIL_CHECK(a.capacity() == b.capacity());
+      return Reduce::innerProduct(a, b);
+   }
+
+   /*
+   * Compute and return maximum element of a vector.
+   */
+   template <int D, class T, class V>
+   double LrAmCompressor<D,T,V>::maxAbs(VectorT const & a)
+   {  return Reduce::maxAbs(a); }
+
+   /*
+   * Compute the vector difference a = b - c
+   */
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::subVV(VectorT& a,
+                                     VectorT const & b,
+                                     VectorT const & c)
+   {  VecOp::subVV(a, b, c); }
+
+   /*
+   * Compute a += b*c for vectors a and b, scalar c
+   */
+   template <int D, class T, class V>
+   void LrAmCompressor<D,T,V>::addEqVc(VectorT& a,
+                                       VectorT const & b,
+                                       double c)
+   {  VecOp::addEqVc(a, b, c); }
 
 }
 }

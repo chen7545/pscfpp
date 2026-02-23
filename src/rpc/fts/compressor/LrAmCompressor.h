@@ -33,10 +33,10 @@ namespace Rpc {
    * Anderson mixing compressor with linear-response correction step.
    *
    * Class LrAmCompressor implements an Anderson mixing algorithm in
-   * which the second "correction" step is treated as quasi-Newton
+   * which the second "correction" step is treated as a quasi-Newton
    * step, while the Jacobian is approximated by the linear response
    * of a hypothetical homogenous liquid. The residual is an r-grid
-   * vector in which each element represents the deviation of the 
+   * vector in which each element represents the deviation of the
    * sum of volume fractions from unity.
    *
    * \ingroup Rpc_Fts_Compressor_Module
@@ -48,13 +48,13 @@ namespace Rpc {
 
    public:
 
-      /// Typename for field and residual vectors.
+      /// Type of field and residual vectors.
       using VectorT = DArray<double>;
 
       /**
       * Constructor.
       *
-      * \param system  parent System object 
+      * \param system  parent System object
       */
       LrAmCompressor(System<D>& system);
 
@@ -74,10 +74,10 @@ namespace Rpc {
       * Initialize just before entry to iterative loop.
       *
       * This function is called by the solve function before entering the
-      * loop over iterations. It stores the initial values of the fields 
+      * loop over iterations. It stores the initial values of the fields
       * prior to iteration.
       *
-      * \param isContinuation true iff continuation within a sweep
+      * \param isContinuation  true iff continuation within a sweep
       */
       void setup(bool isContinuation) override;
 
@@ -89,8 +89,8 @@ namespace Rpc {
       int compress() override;
 
       /**
-      * Return compressor time contribution.
-      *   
+      * Return compressor time contributions.
+      *
       * \param out  output stream
       */
       void outputTimers(std::ostream& out) const override;
@@ -102,8 +102,10 @@ namespace Rpc {
 
    protected:
 
-      // Inherited protected members
-      using Compressor<D>::system;
+      using CompressorT = Compressor<D>;
+
+      // Inherited member function
+      using CompressorT::system;
 
    private:
 
@@ -148,11 +150,6 @@ namespace Rpc {
       int kSize_;
 
       /**
-      * Number of times MDE has been solved for this stochastic move.
-      */
-      int itr_;
-
-      /**
       * Has intraCorrelationK_ been calculated?
       */
       bool isIntraCalculated_;
@@ -165,30 +162,21 @@ namespace Rpc {
       // Private AM algorithm operations
 
       /**
-      * Add a correction based on the predicted residual.
-      *
-      * \param fieldTrial  trial field (in-out)
-      * \param resTrial  predicted error for current trial
-      */
-      void addCorrection(VectorT& fieldTrial,
-                         VectorT const & resTrial) override;
-
-      /**
-      * Compute and returns the number of elements in field vector.
+      * Compute and return the number of elements in a field vector.
       *
       * Called during allocation and then stored.
       */
       int nElements() override;
 
       /**
-      * Does the system has an initial guess for the field?
+      * Does the system have an initial guess for the field?
       */
       bool hasInitialGuess() override;
 
       /**
       * Gets the current field vector from the system.
       *
-      * \param curr current field vector
+      * \param curr  current field vector
       */
       void getCurrent(VectorT& curr) override;
 
@@ -203,14 +191,23 @@ namespace Rpc {
       /**
       * Compute the residual vector.
       *
-      * \param resid current residual vector value
+      * \param resid  current residual vector value
       */
       void getResidual(VectorT& resid) override;
 
       /**
-      * Updates the system field with the new trial field.
+      * Add a correction based on the predicted residual.
       *
-      * \param newGuess trial field vector
+      * \param fieldTrial  trial field (in/out)
+      * \param resTrial  predicted residual for current trial (in)
+      */
+      void addCorrection(VectorT& fieldTrial,
+                         VectorT const & resTrial) override;
+
+      /**
+      * Update the system field with the new trial field.
+      *
+      * \param newGuess  trial field vector
       */
       void update(VectorT& newGuess) override;
 
@@ -219,8 +216,8 @@ namespace Rpc {
       */
       void outputToLog() override;
 
-      // Indirect (grandparent) base class.
-      using AmTmpl = AmIteratorTmpl<Compressor<D>, VectorT >;
+      /// Typename alias for base class.
+      using AmTmpl = AmIteratorTmpl< CompressorT, VectorT >;
 
    };
 

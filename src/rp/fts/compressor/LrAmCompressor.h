@@ -1,5 +1,5 @@
-#ifndef RPG_LR_AM_COMPRESSOR_H
-#define RPG_LR_AM_COMPRESSOR_H
+#ifndef RP_LR_AM_COMPRESSOR_H
+#define RP_LR_AM_COMPRESSOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,25 +9,15 @@
 */
 
 #include "Compressor.h"                          // base class argument
-#include <pscf/cuda/DeviceArray.h>               // base class argument
 #include <pscf/iterator/AmIteratorTmpl.h>        // base class template
-#include <pscf/cuda/cudaTypes.h>                 // base class argument
-
-#include <rpg/fts/compressor/IntraCorrelation.h> // member
-#include <prdc/cuda/RField.h>                    // member
-#include <prdc/cuda/RFieldDft.h>                 // member
 #include <pscf/math/IntVec.h>                    // member
 #include <util/containers/DArray.h>              // member
 
 namespace Pscf {
-namespace Rpg {
-
-   // Forward declaration
-   template <int D> class System;
+namespace Rp {
 
    using namespace Util;
    using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Anderson mixing compressor with linear-response correction step.
@@ -39,24 +29,24 @@ namespace Rpg {
    * vector in which each element represents the deviation of the
    * sum of volume fractions from unity.
    *
-   * \ingroup Rpg_Fts_Compressor_Module
+   * \ingroup Rp_Fts_Compressor_Module
    */
-   template <int D>
+   template <int D, class T, class V>
    class LrAmCompressor
-    : public AmIteratorTmpl< Compressor<D>, DeviceArray<cudaReal> >
+    : public AmIteratorTmpl<typename T::Compressor, V>
    {
 
    public:
 
       /// Type of field and residual vectors.
-      using VectorT = DeviceArray<cudaReal>;
+      using VectorT = V;
 
       /**
       * Constructor.
       *
       * \param system  parent System object
       */
-      LrAmCompressor(System<D>& system);
+      LrAmCompressor(typename T::System& system);
 
       /**
       * Destructor.
@@ -102,7 +92,7 @@ namespace Rpg {
 
    protected:
 
-      using CompressorT = Compressor<D>;
+      using CompressorT = typename T::Compressor;
 
       // Inherited member function
       using CompressorT::system;
@@ -112,32 +102,32 @@ namespace Rpg {
       /**
       * Initial values of all w fields.
       */
-      DArray< RField<D> > w0_;
+      DArray< typename T::RField > w0_;
 
       /**
       * Temporary array of w fields used in update function.
       */
-      DArray< RField<D> > wFieldTmp_;
+      DArray< typename T::RField > wFieldTmp_;
 
       /**
       * Residual in real space.
       */
-      RField<D> resid_;
+      typename T::RField resid_;
 
       /**
       * Residual in Fourier space.
       */
-      RFieldDft<D> residK_;
+      typename T::RFieldDft residK_;
 
       /**
       * Intramolecular correlation function in Fourier space.
       */
-      RField<D> intraCorrelationK_;
+      typename T::RField intraCorrelationK_;
 
       /**
       * IntraCorrelation object, used to compute intraCorrelationK_.
       */
-      IntraCorrelation<D> intra_;
+      typename T::IntraCorrelation intra_;
 
       /**
       * Dimensions of wavevector mesh for real-to-complex transform.
@@ -263,16 +253,14 @@ namespace Rpg {
 		   VectorT const & b,
                    double c) override;
 
+      /// Typename alias for FFT class
+      using FFTT = typename T::FFT;
+
       /// Typename alias for base class.
       using AmTmpl = AmIteratorTmpl< CompressorT, VectorT >;
 
    };
 
-   // Explicit instantiation declarations
-   extern template class LrAmCompressor<1>;
-   extern template class LrAmCompressor<2>;
-   extern template class LrAmCompressor<3>;
-
-} // namespace Rpg
+} // namespace Rp
 } // namespace Pscf
 #endif
