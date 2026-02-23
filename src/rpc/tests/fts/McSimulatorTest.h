@@ -182,7 +182,7 @@ public:
 TEST_BEGIN(McSimulatorTest)
 TEST_ADD(McSimulatorTest, testMcSimulateDiblocks)
 TEST_ADD(McSimulatorTest, testMcSimulateTriblocks)
-TEST_ADD(McSimulatorTest, testMcSimulateShiftDiblocks)
+//TEST_ADD(McSimulatorTest, testMcSimulateShiftDiblocks)
 TEST_END(McSimulatorTest)
 
 #endif

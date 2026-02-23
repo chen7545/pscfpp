@@ -12,6 +12,10 @@
 #include <rpc/system/System.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
+#include <prdc/cpu/RField.h>
+#include <pscf/math/IntVec.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
 #include <util/global.h>
 
 namespace Pscf {
@@ -47,7 +51,7 @@ namespace Rpc {
       AmTmpl::maxItr_ = 100;
       AmTmpl::verbose_ = 0;
       AmTmpl::errorType_ = "rms";
-      bool useLambdaRamp = false; 
+      bool useLambdaRamp = false;
 
       AmTmpl::readParameters(in);
       AmTmpl::readErrorType(in);
@@ -64,7 +68,6 @@ namespace Rpc {
       AmTmpl::setup(isContinuation);
 
       const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
 
       // Allocate memory required by compressor if not done earlier.
@@ -80,9 +83,7 @@ namespace Rpc {
 
       // Store value of initial guess chemical potential fields
       for (int i = 0; i < nMonomer; ++i) {
-         for (int j = 0; j< meshSize; ++j){
-            w0_[i][j] = system().w().rgrid(i)[j];
-         }
+         VecOp::eqV(w0_[i], system().w().rgrid(i));
       }
    }
 
@@ -120,13 +121,6 @@ namespace Rpc {
    // Private virtual functions that interact with parent system
 
    /*
-   * Does the system have an initial field guess?
-   */
-   template <int D>
-   bool AmCompressor<D>::hasInitialGuess()
-   {  return system().w().hasData(); }
-
-   /*
    * Compute and return the number of elements in a field vector.
    */
    template <int D>
@@ -134,25 +128,25 @@ namespace Rpc {
    {  return system().domain().mesh().size(); }
 
    /*
+   * Does the system have an initial field guess?
+   */
+   template <int D>
+   bool AmCompressor<D>::hasInitialGuess()
+   {  return system().w().hasData(); }
+
+   /*
    * Get the current field from the system.
    */
    template <int D>
    void AmCompressor<D>::getCurrent(DArray<double>& curr)
    {
-      // Straighten out fields into  linear arrays
-      const int meshSize = system().domain().mesh().size();
-      const DArray< RField<D> > * currSys = &system().w().rgrid();
-
       /*
       * The field that we are adjusting is the Langrange multiplier 
       * field.  The current value is the difference between w and w0_ 
       * for the first monomer type, but any monomer type would give
       * the same answer.
       */
-      for (int i = 0; i < meshSize; i++){
-         curr[i] = (*currSys)[0][i] - w0_[0][i];
-      }
-
+      VecOp::subVV(curr, system().w().rgrid(0), w0_[0]);
    }
 
    /*
@@ -171,22 +165,14 @@ namespace Rpc {
    template <int D>
    void AmCompressor<D>::getResidual(DArray<double>& resid)
    {
-      const int n = nElements();
+      // Initialize residual to -1.0
+      VecOp::eqS(resid, -1.0);
+
+       // Add c fields to get SCF residual vector
       const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-
-      // Initialize residuals
-      for (int i = 0 ; i < n; ++i) {
-         resid[i] = -1.0;
+      for (int i = 0; i < nMonomer; ++i) {
+         VecOp::addEqV(resid, system().c().rgrid(i));
       }
-
-       // Compute SCF residual vector elements
-      for (int j = 0; j < nMonomer; ++j) {
-        for (int k = 0; k < meshSize; ++k) {
-           resid[k] += system().c().rgrid(j)[k];
-        }
-      }
-
    }
 
    /*
@@ -195,16 +181,13 @@ namespace Rpc {
    template <int D>
    void AmCompressor<D>::update(DArray<double>& newGuess)
    {
-      // Convert back to field format
+      // New field is w0_ + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-
-      // New field is the w0_ + newGuess for the pressure field
       for (int i = 0; i < nMonomer; i++){
-         for (int k = 0; k < meshSize; k++){
-            wFieldTmp_[i][k] = w0_[i][k] + newGuess[k];
-         }
+         VecOp::addVV(wFieldTmp_[i], w0_[i], newGuess);
       }
+
+      // Set system r-grid fields
       system().w().setRGrid(wFieldTmp_);
    }
 

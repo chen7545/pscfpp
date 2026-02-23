@@ -21,7 +21,8 @@ namespace Rpc {
 
    // Namespaces from which names can be used without qualification
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * Anderson mixing compressor.
@@ -35,10 +36,13 @@ namespace Rpc {
 
    public:
 
+      /// Alias for type of state and residual vectors.
+      using VectorT = DArray<double>;
+
       /**
       * Constructor.
       *
-      * \param system System object associated with this compressor.
+      * \param system  parent System object
       */
       AmCompressor(System<D>& system);
 
@@ -58,8 +62,8 @@ namespace Rpc {
       * Initialize just before entry to iterative loop.
       *
       * This function is called by the solve function before entering the
-      * loop over iterations. Store the current values of the fields at the
-      * beginning of iteration
+      * loop over iterations. Store the current values of the fields at 
+      * the beginning of iteration
       *
       * \param isContinuation true iff continuation within a sweep
       */
@@ -82,12 +86,12 @@ namespace Rpc {
       */
       void clearTimers() override;
 
-   private:
+   protected:
 
-      /**
-      * How many times MDE has been solved for this stochastic move?
-      */
-      int itr_;
+      // Inherited protected member function
+      using Compressor<D>::system;
+
+   private:
 
       /**
       * Current values of the fields
@@ -95,14 +99,19 @@ namespace Rpc {
       DArray< RField<D> > w0_;
 
       /**
-      * Has the variable been allocated?
-      */
-      bool isAllocated_;
-
-      /**
       * Temporary w field used in update function
       */
       DArray< RField<D> > wFieldTmp_;
+
+      /**
+      * How many times has MDE been solved for this stochastic move?
+      */
+      int itr_;
+
+      /**
+      * Has required memory been allocated?
+      */
+      bool isAllocated_;
 
       // Private virtual functions that interact with parent system
 
@@ -123,7 +132,7 @@ namespace Rpc {
       *
       * \param curr current field vector
       */
-      void getCurrent(DArray<double>& curr) override;
+      void getCurrent(VectorT& curr) override;
 
       /**
       * Have the system perform a computation using new field.
@@ -138,25 +147,22 @@ namespace Rpc {
       *
       * \param resid current residual vector value
       */
-      void getResidual(DArray<double>& resid) override;
+      void getResidual(VectorT& resid) override;
 
       /**
-      * Updates the system field with the new trial field.
+      * Update the system field with the new trial field.
       *
       * \param newGuess trial field vector
       */
-      void update(DArray<double>& newGuess) override;
+      void update(VectorT& newGuess) override;
 
       /**
-      * Outputs relevant system details to the iteration log.
+      * Output relevant system details to the iteration log.
       */
       void outputToLog() override;
 
-      // Inherited private members
-      using Compressor<D>::system;
-
       // Indirect (grandparent) base class.
-      using AmTmpl = AmIteratorTmpl< Compressor<D>, DArray<double> >;
+      using AmTmpl = AmIteratorTmpl< Compressor<D>, VectorT >;
 
    };
 
