@@ -52,13 +52,13 @@ namespace Rpg {
    void LrAmCompressor<D>::readParameters(std::istream& in)
    {
       // Default values
-      Base::maxItr_ = 100;
-      Base::verbose_ = 0;
-      Base::errorType_ = "rms";
-   
-      // Call base class read methods 
-      Base::readParameters(in);
-      Base::readErrorType(in);
+      AmTmpl::maxItr_ = 100;
+      AmTmpl::verbose_ = 0;
+      AmTmpl::errorType_ = "rms";
+
+      // Call base class read methods
+      AmTmpl::readParameters(in);
+      AmTmpl::readErrorType(in);
    }
 
    /*
@@ -72,7 +72,7 @@ namespace Rpg {
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
 
       // Allocate memory required by AM algorithm if not done earlier.
-      Base::setup(isContinuation);
+      AmTmpl::setup(isContinuation);
 
       FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
 
@@ -126,7 +126,7 @@ namespace Rpg {
    template <int D>
    int LrAmCompressor<D>::compress()
    {
-      int solve = Base::solve();
+      int solve = AmTmpl::solve();
       return solve;
    }
 
@@ -138,7 +138,7 @@ namespace Rpg {
    {
       out << "\n";
       out << "LrAmCompressor time contributions:\n";
-      Base::outputTimers(out);
+      AmTmpl::outputTimers(out);
    }
 
    /*
@@ -147,11 +147,11 @@ namespace Rpg {
    template<int D>
    void LrAmCompressor<D>::clearTimers()
    {
-      Base::clearTimers();
+      AmTmpl::clearTimers();
       Compressor<D>::mdeCounter_ = 0;
    }
 
-   // Protected virtual function for AM algorithm operation
+   // Private virtual AM operation functions
 
    /*
    * Correction step (second step of Anderson mixing)
@@ -165,22 +165,21 @@ namespace Rpg {
                                  VectorT& fieldTrial,
                                  VectorT const & resTrial)
    {
-      int n = fieldTrial.capacity();
-      const double vMonomer = system().mixture().vMonomer();
-
-      // Convert resTrial to RField<D> type
+      // Convert resTrial to RField<D> type.
+      // Allows use of FFT functions that take an RField container
       VecOp::eqV(resid_, resTrial);
 
-      // Convert residual to Fourier Space
+      // Convert residual to Fourier space
       system().domain().fft().forwardTransform(resid_, residK_);
 
-      // Combine with Linear response factor to update second step
+      // Combine with linear response factor to obtain update step
+      const double vMonomer = system().mixture().vMonomer();
       VecOp::divEqVc(residK_, intraCorrelationK_, vMonomer);
 
-      // Convert back to real space (destroys residK_)
+      // Convert update back to real space (destroys residK_)
       system().domain().fft().inverseTransformUnsafe(residK_, resid_);
 
-      // fieldTrial += resid_ 
+      // Add update resid_ to obtain corrected fieldTrial_
       VecOp::addEqVc(fieldTrial, resid_, 1.0);
    }
 
@@ -201,16 +200,16 @@ namespace Rpg {
    {  return system().w().hasData(); }
 
    /*
-   * Get the current field from the system.
+   * Get the current field variable from the system.
    */
    template <int D>
    void LrAmCompressor<D>::getCurrent(VectorT& curr)
    {
       /*
-      * The field that we are adjusting is the Langrange multiplier field
-      * with number of grid pts components.The current value is the difference
-      * between w and w0_ for the first monomer (any monomer should give the
-      * same answer)
+      * The field that we are adjusting is the Langrange multiplier 
+      * field. The current value is the difference between w and w0_
+      * for the first monomer type, but any monomer type would give
+      * the same answer.
       */
       VecOp::subVV(curr, system().w().rgrid(0), w0_[0]);
    }

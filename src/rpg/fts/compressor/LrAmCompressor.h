@@ -10,16 +10,14 @@
 
 #include "Compressor.h"                          // base class argument
 #include <pscf/cuda/DeviceArray.h>               // base class argument
-#include <pscf/cuda/cudaTypes.h>                     // base class argument
 #include <pscf/iterator/AmIteratorTmpl.h>        // base class template
+#include <pscf/cuda/cudaTypes.h>                 // base class argument
 
 #include <rpg/fts/compressor/IntraCorrelation.h> // member
 #include <prdc/cuda/RField.h>                    // member
 #include <prdc/cuda/RFieldDft.h>                 // member
 #include <pscf/math/IntVec.h>                    // member
 #include <util/containers/DArray.h>              // member
-
-#include <iostream>
 
 namespace Pscf {
 namespace Rpg {
@@ -32,19 +30,20 @@ namespace Rpg {
    using namespace Pscf::Prdc::Cuda;
 
    /**
-   * Anderson Mixing compressor with linear-response mixing step.
+   * Anderson mixing compressor with linear-response correction step.
    *
-   * Class LrAmCompressor implements an Anderson mixing algorithm
-   * which modifies the second mixing step, estimating Jacobian by linear
-   * response of homogenous liquid instead of unity. The residual is a
-   * vector in which each that represents a deviations
-   * in the sum of volume fractions from unity.
+   * Class LrAmCompressor implements an Anderson mixing algorithm in
+   * which the second "correction" step is treated as a quasi-Newton 
+   * step, while the Jacobian is approximated by the linear response
+   * of a hypothetical homogenous liquid. The residual is an r-grid
+   * vector in which each elements represents a deviation of the
+   * sum of volume fractions from unity.
    *
    * \ingroup Rpg_Fts_Compressor_Module
    */
    template <int D>
    class LrAmCompressor
-         : public AmIteratorTmpl<Compressor<D>, DeviceArray<cudaReal> >
+    : public AmIteratorTmpl<Compressor<D>, DeviceArray<cudaReal> >
    {
 
    public:
@@ -55,7 +54,7 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param system System object associated with this compressor.
+      * \param system   parent System object
       */
       LrAmCompressor(System<D>& system);
 
@@ -67,7 +66,7 @@ namespace Rpg {
       /**
       * Read all parameters and initialize.
       *
-      * \param in input filestream
+      * \param in  input parameter file stream
       */
       void readParameters(std::istream& in);
 
@@ -75,27 +74,29 @@ namespace Rpg {
       * Initialize just before entry to iterative loop.
       *
       * This function is called by the solve function before entering the
-      * loop over iterations. Store the current values of the fields at the
-      * beginning of iteration
+      * loop over iterations. It stores the initial values of the fields 
+      * prior to iteration.
       *
       * \param isContinuation true iff continuation within a sweep
       */
       void setup(bool isContinuation);
 
       /**
-      * Compress to obtain partial saddle point w+
+      * Compress to obtain partial saddle point field.
       *
       * \return 0 for convergence, 1 for failure
       */
       int compress();
 
       /**
-      * Return compressor times contributions.
+      * Return compressor time contributions.
+      *
+      * \param out  output stream
       */
       void outputTimers(std::ostream& out) const;
 
       /**
-      * Clear all timers (reset accumulated time to zero).
+      * Clear all timers and MDE solution counter.
       */
       void clearTimers();
 
@@ -107,57 +108,57 @@ namespace Rpg {
    private:
 
       /**
-      * How many times MDE has been solved for each mc move
-      */
-      int itr_;
-
-      /**
-      * Current values of the fields
+      * Initial values of all w fields
       */
       DArray< RField<D> > w0_;
 
       /**
-      * Template w Field used in update function
+      * Temporary array of w fields used in update function
       */
       DArray< RField<D> > wFieldTmp_;
 
       /**
-      * Residual in real space used for linear response anderson mixing.
+      * Residual in real space.
       */
       RField<D> resid_;
 
       /**
-      * Residual in Fourier space used for linear response anderson mixing.
+      * Residual in Fourier space.
       */
       RFieldDft<D> residK_;
 
       /**
-      * IntraCorrelation in fourier space calculated by IntraCorrlation class
+      * Intramolecular correlation function in Fourier space.
       */
       RField<D> intraCorrelationK_;
 
       /**
-      * Dimensions of wavevector mesh in real-to-complex transform
-      */
-      IntVec<D> kMeshDimensions_;
-
-      /**
-      * Number of points in k-space grid
-      */
-      int kSize_;
-
-      /**
-      * IntraCorrelation object.
+      * IntraCorrelation object, used to compute intraCorrelationK_.
       */
       IntraCorrelation<D> intra_;
 
       /**
-      * Has the IntraCorrelation been calculated?
+      * Dimensions of wavevector mesh for real-to-complex transform.
+      */
+      IntVec<D> kMeshDimensions_;
+
+      /**
+      * Number of points in k-space wavevector mesh.
+      */
+      int kSize_;
+
+      /**
+      * Number of times MDE has been solved for this stochastic move.
+      */
+      int itr_;
+
+      /**
+      * Has intraCorrelationK_ been calculated?
       */
       bool isIntraCalculated_;
 
       /**
-      * Has the variable been allocated?
+      * Has required memory been allocated?
       */
       bool isAllocated_;
 
@@ -180,7 +181,7 @@ namespace Rpg {
       int nElements() override;
 
       /**
-      * Does the system has an initial guess for the field?
+      * Does the system have an initial guess for the field?
       */
       bool hasInitialGuess() override;
 
@@ -266,7 +267,7 @@ namespace Rpg {
                    double c) override;
 
       /// Typename alias for base class.
-      using Base = AmIteratorTmpl< Compressor<D>, VectorT >;
+      using AmTmpl = AmIteratorTmpl< Compressor<D>, VectorT >;
 
    };
 

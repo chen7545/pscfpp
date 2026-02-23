@@ -20,7 +20,6 @@
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 
-
 namespace Pscf {
 namespace Rpc{
 
@@ -70,7 +69,7 @@ namespace Rpc{
    {
       
       // Allocate memory required by AM algorithm if not done earlier.
-      AmIteratorTmpl<Compressor<D>, DArray<double> >::setup(isContinuation);
+      AmIteratorTmpl<Compressor<D>, VectorT >::setup(isContinuation);
       
       const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
@@ -110,7 +109,7 @@ namespace Rpc{
    template <int D>
    int LrAmCompressor<D>::compress()
    {
-      int solve = AmIteratorTmpl<Compressor<D>, DArray<double> >::solve();
+      int solve = AmIteratorTmpl<Compressor<D>, VectorT >::solve();
       return solve;
    }
 
@@ -145,8 +144,8 @@ namespace Rpc{
    */
    template <int D>
    void
-   LrAmCompressor<D>::addCorrection(DArray<double>& fieldTrial,
-                                    DArray<double> const & resTrial)
+   LrAmCompressor<D>::addCorrection(VectorT& fieldTrial,
+                                    VectorT const & resTrial)
    {
       // Copy resTrial to RField<D> resid_ 
       // Allows use of FFT functions that take an RField container
@@ -162,7 +161,7 @@ namespace Rpc{
       // Convert update back to real space (destroys residK_)
       system().domain().fft().inverseTransformUnsafe(residK_, resid_);
 
-      // Add update to obtain new fieldTrial
+      // Add update resid_ to obtain corrected fieldTrial_
       VecOp::addEqV(fieldTrial, resid_);
    }
 
@@ -187,7 +186,7 @@ namespace Rpc{
    * relative to that used in initial array of monomer fields, w0_.
    */
    template <int D>
-   void LrAmCompressor<D>::getCurrent(DArray<double>& curr)
+   void LrAmCompressor<D>::getCurrent(VectorT& curr)
    {
       /*
       * The field that we are adjusting is the Langrange multiplier 
@@ -212,7 +211,7 @@ namespace Rpc{
    * Compute the residual vector for the current system state
    */
    template <int D>
-   void LrAmCompressor<D>::getResidual(DArray<double>& resid)
+   void LrAmCompressor<D>::getResidual(VectorT& resid)
    {
 
       // Initialize residual to -1.0
@@ -229,7 +228,7 @@ namespace Rpc{
    * Update the w field values stored in the system 
    */
    template <int D>
-   void LrAmCompressor<D>::update(DArray<double>& newGuess)
+   void LrAmCompressor<D>::update(VectorT& newGuess)
    {
       // New field is w0 + newGuess for the pressure field
       const int nMonomer = system().mixture().nMonomer();

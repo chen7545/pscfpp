@@ -11,11 +11,13 @@
 #include "Compressor.h"                           // base class argument
 #include <pscf/iterator/AmIteratorDArray.h>       // base class template
 
+
+
 #include <rpc/fts/compressor/IntraCorrelation.h>  // member
 #include <prdc/cpu/RField.h>                      // member
 #include <prdc/cpu/RFieldDft.h>                   // member
+#include <pscf/math/IntVec.h>                     // member
 #include <util/containers/DArray.h>               // member
-
 
 namespace Pscf {
 namespace Rpc {
@@ -24,17 +26,18 @@ namespace Rpc {
    template <int D> class System;
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
-   * Anderson Mixing compressor with linear-response mixing step.
+   * Anderson mixing compressor with linear-response correction step.
    *
-   * Class LrAmCompressor implements an Anderson mixing algorithm
-   * which modifies the second mixing step, estimating Jacobian by linear
-   * response of homogenous liquid instead of unity. The residual is a
-   * vector in which each that represents a deviations
-   * in the sum of volume fractions from unity.
+   * Class LrAmCompressor implements an Anderson mixing algorithm in
+   * which the second "correction" step is treated as quasi-Newton
+   * step, while the Jacobian is approximated by the linear response
+   * of a hypothetical homogenous liquid. The residual is an r-grid
+   * vector in which each element represents the deviation of the 
+   * sum of volume fractions from unity.
    *
    * \ingroup Rpc_Fts_Compressor_Module
    */
@@ -45,11 +48,13 @@ namespace Rpc {
 
    public:
 
+      /// Typename for field and residual vectors.
+      using VectorT = DArray<double>;
 
       /**
       * Constructor.
       *
-      * \param system  parent System<D> object 
+      * \param system  parent System object 
       */
       LrAmCompressor(System<D>& system);
 
@@ -59,9 +64,9 @@ namespace Rpc {
       ~LrAmCompressor();
 
       /**
-      * Read all parameters and initialize.
+      * Read body of parameter file block and initialize.
       *
-      * \param in  input filestream
+      * \param in  input parameter file stream
       */
       void readParameters(std::istream& in) override;
 
@@ -69,87 +74,91 @@ namespace Rpc {
       * Initialize just before entry to iterative loop.
       *
       * This function is called by the solve function before entering the
-      * loop over iterations. Store the current values of the fields at the
-      * beginning of iteration
+      * loop over iterations. It stores the initial values of the fields 
+      * prior to iteration.
       *
       * \param isContinuation true iff continuation within a sweep
       */
       void setup(bool isContinuation) override;
 
-
       /**
-      * Compress to obtain partial saddle point w+
+      * Compress to obtain partial saddle point field.
       *
       * \return 0 for convergence, 1 for failure
       */
       int compress() override;
 
       /**
-      * Return compressor times contributions.
+      * Return compressor time contribution.
       *   
       * \param out  output stream
       */
       void outputTimers(std::ostream& out) const override;
 
       /**
-      * Clear all timers (reset accumulated time to zero).
+      * Clear all timers and MDE solution counter.
       */
       void clearTimers() override;
+
+   protected:
+
+      // Inherited protected members
+      using Compressor<D>::system;
 
    private:
 
       /**
-      * How many times MDE has been solved for each move ?
-      */
-      int itr_;
-
-      /**
-      * Current values of the fields
+      * Initial values of all w fields.
       */
       DArray< RField<D> > w0_;
 
       /**
-      * Template w Field used in update function
+      * Temporary array of w fields used in update function.
       */
       DArray< RField<D> > wFieldTmp_;
 
       /**
-      * Residual in real space used for linear response anderson mixing.
+      * Residual in real space.
       */
       RField<D> resid_;
 
       /**
-      * Residual in Fourier space used for linear response anderson mixing.
+      * Residual in Fourier space.
       */
       RFieldDft<D> residK_;
 
       /**
-      * IntraCorrelation in fourier space calculated by IntraCorrlation class
+      * Intramolecular correlation function in Fourier space.
       */
       RField<D> intraCorrelationK_;
 
       /**
-      * Dimensions of wavevector mesh in real-to-complex transform
-      */
-      IntVec<D> kMeshDimensions_;
-
-      /**
-      * Number of points in k-space grid.
-      */
-      int kSize_;
-
-      /**
-      * IntraCorrelation object.
+      * IntraCorrelation object, used to compute intraCorrelationK_.
       */
       IntraCorrelation<D> intra_;
 
       /**
-      * Has the IntraCorrelation been calculated?
+      * Dimensions of wavevector mesh for real-to-complex transform.
+      */
+      IntVec<D> kMeshDimensions_;
+
+      /**
+      * Number of points in k-space wavevector mesh.
+      */
+      int kSize_;
+
+      /**
+      * Number of times MDE has been solved for this stochastic move.
+      */
+      int itr_;
+
+      /**
+      * Has intraCorrelationK_ been calculated?
       */
       bool isIntraCalculated_;
 
       /**
-      * Has the variable been allocated?
+      * Has required memory been allocated?
       */
       bool isAllocated_;
 
@@ -161,9 +170,8 @@ namespace Rpc {
       * \param fieldTrial  trial field (in-out)
       * \param resTrial  predicted error for current trial
       */
-      void addCorrection(DArray<double>& fieldTrial,
-                         DArray<double> const & resTrial) override;
-
+      void addCorrection(VectorT& fieldTrial,
+                         VectorT const & resTrial) override;
 
       /**
       * Compute and returns the number of elements in field vector.
@@ -182,7 +190,7 @@ namespace Rpc {
       *
       * \param curr current field vector
       */
-      void getCurrent(DArray<double>& curr) override;
+      void getCurrent(VectorT& curr) override;
 
       /**
       * Have the system perform a computation using new field.
@@ -197,14 +205,14 @@ namespace Rpc {
       *
       * \param resid current residual vector value
       */
-      void getResidual(DArray<double>& resid) override;
+      void getResidual(VectorT& resid) override;
 
       /**
       * Updates the system field with the new trial field.
       *
       * \param newGuess trial field vector
       */
-      void update(DArray<double>& newGuess) override;
+      void update(VectorT& newGuess) override;
 
       /**
       * Outputs relevant system details to the iteration log.
@@ -212,10 +220,7 @@ namespace Rpc {
       void outputToLog() override;
 
       // Indirect (grandparent) base class.
-      using AmTmpl = AmIteratorTmpl<Compressor<D>, DArray<double> >;
-
-      // Inherited private members
-      using Compressor<D>::system;
+      using AmTmpl = AmIteratorTmpl<Compressor<D>, VectorT >;
 
    };
 
