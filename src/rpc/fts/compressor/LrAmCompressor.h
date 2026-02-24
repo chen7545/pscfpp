@@ -15,7 +15,6 @@
 #include <prdc/cpu/RFieldDft.h>                  // direct base member
 #include <pscf/iterator/AmIteratorTmpl.h>        // indirect base template
 #include <rpc/fts/compressor/Compressor.h>       // indirect base argument
-#include <util/containers/DArray.h>              // indirect base argument
 
 namespace Pscf {
 namespace Rpc {
@@ -29,7 +28,7 @@ namespace Rpc {
    using namespace Prdc::Cpu;
 
    /**
-   * Anderson mixing compressor.
+   * Linear-response Anderson mixing compressor.
    *
    * \see \ref rp_LrAmCompressor_page "Manual Page"
    * \ingroup Rpc_Fts_Compressor_Module
@@ -38,7 +37,6 @@ namespace Rpc {
    class LrAmCompressor
     : public Rp::LrAmCompressor<D, Rpc::Types<D>, DArray<double> >
    {
-
    public:
 
       /**
@@ -47,11 +45,6 @@ namespace Rpc {
       * \param system  parent System object
       */
       LrAmCompressor(System<D>& system);
-
-   private:
-
-      using RpLrAmCompressor 
-            = Rp::LrAmCompressor<D, Types<D>, DArray<double> >;
 
    };
 

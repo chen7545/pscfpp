@@ -23,7 +23,7 @@ namespace Rpc {
    */
    template <int D>
    AmCompressor<D>::AmCompressor(System<D>& system)
-    : RpAmCompressor(system)
+    : Rp::AmCompressor<D, Types<D>, DArray<double> >(system)
    {}
 
 }

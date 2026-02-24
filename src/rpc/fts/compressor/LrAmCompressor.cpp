@@ -14,7 +14,6 @@
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/VecOpCx.h>
 #include <pscf/cpu/Reduce.h>
-#include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 
@@ -28,7 +27,7 @@ namespace Rpc {
    */
    template <int D>
    LrAmCompressor<D>::LrAmCompressor(System<D>& system)
-    : RpLrAmCompressor(system)
+    : Rp::LrAmCompressor<D, Types<D>, DArray<double> >(system)
    {}
 
 }

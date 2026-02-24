@@ -35,7 +35,6 @@ namespace Rpc {
    class AmCompressor
     : public Rp::AmCompressor<D, Rpc::Types<D>, DArray<double> >
    {
-
    public:
 
       /**
@@ -44,10 +43,6 @@ namespace Rpc {
       * \param system  parent System object
       */
       AmCompressor(System<D>& system);
-
-   private:
-
-      using RpAmCompressor = Rp::AmCompressor<D, Types<D>, DArray<double> >;
 
    };
 
