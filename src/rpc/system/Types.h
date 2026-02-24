@@ -130,10 +130,13 @@ namespace Rpc {
       using SimState = Rpc::SimState<D>;
       using Compressor = Rpc::Compressor<D>;
       using CompressorFactory = Rpc::CompressorFactory<D>;
+
       using Perturbation = Rpc::Perturbation<D>;
       using PerturbationFactory = Rpc::PerturbationFactory<D>;
+
       using Ramp = Rpc::Ramp<D>;
       using RampFactory = Rpc::RampFactory<D>;
+
       using TrajectoryReader = Rpc::TrajectoryReader<D>;
       using TrajectoryReaderFactory = Rpc::TrajectoryReaderFactory<D>;
 

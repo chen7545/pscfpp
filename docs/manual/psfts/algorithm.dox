@@ -285,11 +285,11 @@ the link associated with each algorithm label to access more a detailed
 description of each algorithm, and of the format of the associated
 parameter file block.
 <ul>
-  <li> \subpage rpc_LrAmCompressor_page "LrAmCompressor":
+  <li> \subpage rp_LrAmCompressor_page "LrAmCompressor":
         A linear-response Anderson mixing algorithm </li>
-  <li> \subpage rpc_LrCompressor_page "LrCompressor":
+  <li> \subpage rp_LrCompressor_page "LrCompressor":
         A simple linear-response algorithm </li>
-  <li> \subpage rpc_AmCompressor_page "AmCompressor":
+  <li> \subpage rp_AmCompressor_page "AmCompressor":
         An Anderson-mixing algorithm </li>
 </ul>
 The LrAmCompressor is the default choice, and is recommended for general

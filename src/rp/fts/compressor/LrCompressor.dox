@@ -1,5 +1,5 @@
 /*! 
-\page rpc_LrCompressor_page LrCompressor
+\page rp_LrCompressor_page LrCompressor
 
 The LrCompressor classes used by both the pscf_rpc and pscf_rpg programs 
 implements a linear-response Anderson mixing (LRAM) algorithm as described
@@ -24,7 +24,7 @@ field \f$ W_{+}({\bf r}) \f$ is approximated by the analytically
 calculable response of a hypothetical homogeneous state of the same 
 fluid.
 
-\section rpc_LrCompressor_parameter_sec Parameter file
+\section rp_LrCompressor_parameter_sec Parameter file
 
 The LR algorithm does not require any adjustable parameters that 
 affect the progress of iteration towards a solution.  The only required 
@@ -69,11 +69,11 @@ Meanings of all parameters are described briefly below:
   <tr>
     <td>  errorType* </td>
     <td>  Type of norm used to define the scalar error, as discussed
-          \ref rpc_LrCompressor_error_sec "below". ("rms" by default) </td>
+          \ref rp_LrCompressor_error_sec "below". ("rms" by default) </td>
   </tr>
 </table>
 
-\section rpc_LrCompressor_residual_sec Residual definition
+\section rp_LrCompressor_residual_sec Residual definition
 
 The residual vector for the LrCompressor is defined in real space, as 
 an array in which each element is associated with one node of a regular 
@@ -87,7 +87,7 @@ where \f$ \phi_{i}({\bf r}) \f$ is the volume fraction of monomer type
 \f$ i \f$ at that grid point, and \f$ N_{\rm m} \f$ is the number of 
 monomer types, also known as nMonomer.
 
-\section rpc_LrCompressor_error_sec Error type
+\section rp_LrCompressor_error_sec Error type
 
 The LrCompressor algorithm terminates either: (1) when the number of 
 iterations reaches the maximum allowed value maxItr, or (2) when the 

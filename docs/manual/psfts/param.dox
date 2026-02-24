@@ -449,9 +449,9 @@ the link associated with each algorithm label to see more a detailed
 discussion of that algorithm and the format of the associated parameter
 file block.
 <ul>
-  <li> \ref rpc_LrAmCompressor_page "LrAmCompressor" (default) </li>
-  <li> \ref rpc_LrCompressor_page "LrCompressor" </li>
-  <li> \ref rpc_AmCompressor_page "AmCompressor" </li>
+  <li> \ref rp_LrAmCompressor_page "LrAmCompressor" (default) </li>
+  <li> \ref rp_LrCompressor_page "LrCompressor" </li>
+  <li> \ref rp_AmCompressor_page "AmCompressor" </li>
 </ul>
 The LrAmCompressor is the default choice, and is generally the most
 efficient of these three options. As the default, the LrAmCompressor

@@ -5,14 +5,40 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmCompressor.tpp"
+#include "AmCompressor.h"
+#include <rpc/system/System.h>
+#include <rpc/solvers/Mixture.h>
+#include <rpc/field/Domain.h>
+#include <prdc/cpu/RField.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
+
+#include <rp/fts/compressor/AmCompressor.tpp>
 
 namespace Pscf {
 namespace Rpc {
 
-   template class AmCompressor<1>;
-   template class AmCompressor<2>;
-   template class AmCompressor<3>;
+   /*
+   * Constructor.
+   */
+   template <int D>
+   AmCompressor<D>::AmCompressor(System<D>& system)
+    : RpAmCompressor(system)
+   {}
 
 }
+}
+
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class AmCompressor<1, Rpc::Types<1>, DArray<double> >;
+      template class AmCompressor<2, Rpc::Types<2>, DArray<double> >;
+      template class AmCompressor<3, Rpc::Types<3>, DArray<double> >;
+   }
+   namespace Rpc {
+      template class AmCompressor<1>;
+      template class AmCompressor<2>;
+      template class AmCompressor<3>;
+   }
 }

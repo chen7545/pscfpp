@@ -16,7 +16,6 @@ namespace Rp {
 
    // Namespaces that can be used implicitly
    using namespace Util;
-   using namespace Prdc;
 
    /**
    * Anderson mixing compressor.
@@ -85,7 +84,7 @@ namespace Rp {
    protected:
 
       /// Compressor type.
-      using CompressorT = typename T::Compressor
+      using CompressorT = typename T::Compressor;
 
       // Inherited protected member function
       using CompressorT::system;

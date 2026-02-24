@@ -12,6 +12,8 @@
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 
+#include <pscf/iterator/AmIteratorTmpl.tpp>
+
 namespace Pscf {
 namespace Rp {
 
@@ -24,9 +26,11 @@ namespace Rp {
    */
    template <int D, class T, class V>
    AmCompressor<D,T,V>::AmCompressor(typename T::System& system)
-    : CompressorT(system),
-      isAllocated_(false)
-   {  ParamComposite::setClassName("AmCompressor"); }
+    : isAllocated_(false)
+   {  
+      ParamComposite::setClassName("AmCompressor"); 
+      CompressorT::setSystem(system);
+   }
 
    /*
    * Destructor.
@@ -58,6 +62,7 @@ namespace Rp {
    template <int D, class T, class V>
    void AmCompressor<D,T,V>::setup(bool isContinuation)
    {
+      Log::file() << "\n Entering setup";
       // Allocate memory required by AM algorithm if not done earlier.
       AmTmpl::setup(isContinuation);
 
@@ -79,6 +84,7 @@ namespace Rp {
       for (int i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w0_[i], system().w().rgrid(i));
       }
+      Log::file() << "\n Exiting setup";
    }
 
    /*
@@ -87,14 +93,16 @@ namespace Rp {
    template <int D, class T, class V>
    int AmCompressor<D,T,V>::compress()
    {
+      Log::file() << "\n Entering compress";
       int solve = AmTmpl::solve();
+      Log::file() << "\n Exiting compress";
       return solve;
    }
 
    /*
    * Output timer information, if requested.
    */
-   template<int D>
+   template <int D, class T, class V>
    void AmCompressor<D,T,V>::outputTimers(std::ostream& out) const
    {
       out << "\n";
@@ -105,7 +113,7 @@ namespace Rp {
    /*
    * Clear timers and MDE counter.
    */
-   template<int D>
+   template <int D, class T, class V>
    void AmCompressor<D,T,V>::clearTimers()
    {
       AmTmpl::clearTimers();
@@ -188,7 +196,7 @@ namespace Rp {
    /*
    * Do-nothing output function.
    */
-   template<int D>
+   template <int D, class T, class V>
    void AmCompressor<D,T,V>::outputToLog()
    {}
 

@@ -74,22 +74,21 @@ namespace Rpc
    protected:
 
       /**
-      * Return const reference to parent system.
+      *  Create association with the parent System.
+      *
+      * \param system parent System object
       */
-      System<D> const & system() const
-      {  
-         UTIL_ASSERT(sysPtr_);
-         return *sysPtr_;
-      }
+      void setSystem(System<D>& system);
 
       /**
-      * Return non-const reference to parent system.
+      * Return parent system by const reference.
       */
-      System<D>& system()
-      {  
-         UTIL_ASSERT(sysPtr_);
-         return *sysPtr_;
-      }
+      System<D> const & system() const;
+
+      /**
+      * Return parent system by non-const reference.
+      */
+      System<D>& system();
 
       /**
       * Count how many times MDE has been solved.
@@ -103,28 +102,65 @@ namespace Rpc
 
    };
 
-   // Member functions
+   // Inline member functions
+ 
+   /*
+   * Return parent system by const reference.
+   */
+   template <int D> inline
+   System<D> const & Compressor<D>::system() const
+   {  
+      UTIL_ASSERT(sysPtr_);
+      return *sysPtr_;
+   }
 
-   // Default constructor.
+   /*
+   * Return parent system by non-const reference.
+   */
+   template <int D> inline
+   System<D>& Compressor<D>::system()
+   {  
+      UTIL_ASSERT(sysPtr_);
+      return *sysPtr_;
+   }
+
+   // Non-inline Member functions
+
+   /*
+   * Default constructor.
+   */
    template <int D>
    Compressor<D>::Compressor()
     : mdeCounter_(0),
       sysPtr_(nullptr)
    {  setClassName("Compressor"); }
 
-   // Constructor.
+   /*
+   * Constructor (creates association with parent system)
+   */
    template <int D>
    Compressor<D>::Compressor(System<D>& system)
     : mdeCounter_(0),
       sysPtr_(&system)
    {  setClassName("Compressor"); }
 
-   // Destructor
+   /*
+   * Destructor.
+   */
    template <int D>
    Compressor<D>::~Compressor()
    {}
 
-   // Get number of times MDE has been solved.
+   /*
+   * Create association with the parent system.
+   */
+   template <int D>
+   void Compressor<D>::setSystem(System<D>& system)
+   {  sysPtr_ = &system; }
+
+   /*
+   * Get number of times MDE has been solved.
+   */
    template <int D>
    inline int Compressor<D>::mdeCounter() const
    {  return mdeCounter_; }

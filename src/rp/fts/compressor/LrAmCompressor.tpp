@@ -25,11 +25,13 @@ namespace Rp {
    */
    template <int D, class T, class V>
    LrAmCompressor<D,T,V>::LrAmCompressor(typename T::System& system)
-    : CompressorT(system),
-      intra_(system),
+    : intra_(system),
       isIntraCalculated_(false),
       isAllocated_(false)
-   {  ParamComposite::setClassName("LrAmCompressor"); }
+   {
+      CompressorT::setSystem(system);  
+      ParamComposite::setClassName("LrAmCompressor"); 
+   }
 
    /*
    * Destructor.

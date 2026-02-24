@@ -1,5 +1,5 @@
 /*! 
-\page rpc_AmCompressor_page AmCompressor
+\page rp_AmCompressor_page AmCompressor
 
 The AmCompressor classes used by both the pscf_rpc and pscf_rpg programs 
 each implement a \ref pscf_AmIteratorTmpl_page "Anderson mixing" 
@@ -9,7 +9,7 @@ algorithm for the pscf_rpc CPU program and the pscf_rpg GPU-accelerated
 program, respectively. These two classes implement the same step 
 algorithm and use the same parameter file format, as documented below.
 
-\section rpc_AmCompressor_algorithm_sec Step Algorithm
+\section rp_AmCompressor_algorithm_sec Step Algorithm
 
 A general discussion of compressor algorithms for PS-FTS is given 
 \ref psfts_algorithm_page "here". The implementation of the AM 
@@ -19,7 +19,7 @@ mixing algorithm used in PSCF is discussed in the article:
 field theoretic simulations", K. Chen and D.C. Morse, 
 <em> J. Chem. Phys. </em> <b> 162 </b>, 243901 (2025). </a>,
 
-\section rpc_AmCompressor_parameter_sec Parameter File
+\section rp_AmCompressor_parameter_sec Parameter File
 
 The only required parameter for this algorithm is the error threshhold
 "epsilon". A minimal parameter file block could thus look something like
@@ -104,7 +104,7 @@ briefly summarized below:
   </tr>
 </table>
 
-\section rpc_AmCompressor_residual_sec Residual definition
+\section rp_AmCompressor_residual_sec Residual definition
 
 The residual vector for the AmCompressor is defined in real space, as 
 an array in which each element is associated with one node of a regular 

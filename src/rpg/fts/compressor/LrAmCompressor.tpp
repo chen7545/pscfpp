@@ -32,11 +32,13 @@ namespace Rpg {
    */
    template <int D>
    LrAmCompressor<D>::LrAmCompressor(System<D>& system)
-    : CompressorT(system),
-      intra_(system),
+    : intra_(system),
       isIntraCalculated_(false),
       isAllocated_(false)
-   {  ParamComposite::setClassName("LrAmCompressor"); }
+   {
+      CompressorT::setSystem(system);  
+      ParamComposite::setClassName("LrAmCompressor"); 
+   }
 
    /*
    * Destructor.
