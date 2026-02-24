@@ -8,7 +8,6 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Compressor.h"                          // base class argument
 #include <pscf/iterator/AmIteratorTmpl.h>        // base class template
 #include <pscf/math/IntVec.h>                    // member
 #include <util/containers/DArray.h>              // member
@@ -17,7 +16,6 @@ namespace Pscf {
 namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
 
    /**
    * Anderson mixing compressor with linear-response correction step.

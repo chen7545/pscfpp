@@ -5,14 +5,45 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "LrAmCompressor.tpp"
+#include "LrAmCompressor.h"
+#include <rpc/system/System.h>
+#include <rpc/solvers/Mixture.h>
+#include <rpc/field/Domain.h>
+#include <prdc/cpu/FFT.h>
+#include <prdc/cpu/RField.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/VecOpCx.h>
+#include <pscf/cpu/Reduce.h>
+#include <pscf/mesh/MeshIterator.h>
+#include <pscf/math/IntVec.h>
+#include <util/global.h>
+
+#include <rp/fts/compressor/LrAmCompressor.tpp>
 
 namespace Pscf {
 namespace Rpc {
 
-   template class LrAmCompressor<1>;
-   template class LrAmCompressor<2>;
-   template class LrAmCompressor<3>;
+   /*
+   * Constructor.
+   */
+   template <int D>
+   LrAmCompressor<D>::LrAmCompressor(System<D>& system)
+    : RpLrAmCompressor(system)
+   {}
 
 }
+}
+
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class LrAmCompressor<1, Rpc::Types<1>, DArray<double> >;
+      template class LrAmCompressor<2, Rpc::Types<2>, DArray<double> >;
+      template class LrAmCompressor<3, Rpc::Types<3>, DArray<double> >;
+   }
+   namespace Rpc {
+      template class LrAmCompressor<1>;
+      template class LrAmCompressor<2>;
+      template class LrAmCompressor<3>;
+   }
 }

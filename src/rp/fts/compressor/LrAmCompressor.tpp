@@ -9,7 +9,6 @@
 */
 
 #include "LrAmCompressor.h"
-#include <pscf/mesh/MeshIterator.h>
 #include <pscf/math/IntVec.h>
 #include <util/global.h>
 

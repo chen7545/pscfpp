@@ -50,6 +50,7 @@ namespace Pscf {
       template <int D> struct SimState;
       template <int D> class Compressor;
       template <int D> class CompressorFactory;
+      template <int D> class IntraCorrelation;
       template <int D> class Perturbation;
       template <int D> class PerturbationFactory;
       template <int D> class Ramp;
@@ -115,17 +116,23 @@ namespace Rpg {
       using Simulator = Rpg::Simulator<D>;
       using SimulatorFactory = Rpg::SimulatorFactory<D>;
       using SimState = Rpg::SimState<D>;
+
       using Compressor = Rpg::Compressor<D>;
       using CompressorFactory = Rpg::CompressorFactory<D>;
+      using IntraCorrelation = Rpg::IntraCorrelation<D>;
+
       using Perturbation = Rpg::Perturbation<D>;
       using PerturbationFactory = Rpg::PerturbationFactory<D>;
+
       using Ramp = Rpg::Ramp<D>;
       using RampFactory = Rpg::RampFactory<D>;
+
       using Analyzer = Rpg::Analyzer<D>;
       using AnalyzerFactory = Rpg::AnalyzerFactory<D>;
       using AnalyzerManager = Rpg::AnalyzerManager<D>;
       using AverageAnalyzer = Rpg::AverageAnalyzer<D>;
       using AverageListAnalyzer = Rpg::AverageListAnalyzer<D>;
+
       using TrajectoryReader = Rpg::TrajectoryReader<D>;
       using TrajectoryReaderFactory = Rpg::TrajectoryReaderFactory<D>;
 
