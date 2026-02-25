@@ -9,14 +9,16 @@
 */
 
 #include "ForceBiasMove.h"
-#include "McMove.h" 
+#include "McMove.h"
 #include <rpg/fts/montecarlo/McSimulator.h>
-#include <rpg/fts/compressor/Compressor.h>
-#include <rpg/fts/VecOpFts.h>
 #include <rpg/system/System.h>
+#include <rpg/fts/compressor/Compressor.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
+#include <rpg/fts/VecOpFts.h>
 #include <prdc/cuda/resources.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
 #include <pscf/cuda/CudaVecRandom.h>
 #include <util/param/ParamComposite.h>
 #include <util/random/Random.h>
@@ -30,7 +32,7 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   ForceBiasMove<D>::ForceBiasMove(McSimulator<D>& simulator) 
+   ForceBiasMove<D>::ForceBiasMove(McSimulator<D>& simulator)
     : McMove<D>(simulator),
       w_(),
       dwc_(),
@@ -45,15 +47,12 @@ namespace Rpg {
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block and allocate memory.
    */
    template <int D>
    void ForceBiasMove<D>::readParameters(std::istream &in)
    {
-      //Read the probability
       readProbability(in);
-
-      // Read Brownian dynamics mobility parameter
       read(in, "mobility", mobility_);
 
       // Allocate memory for private containers
@@ -69,15 +68,18 @@ namespace Rpg {
          dc_[i].allocate(meshDimensions);
          dwc_[i].allocate(meshDimensions);
       }
-
+      biasField_.allocate(meshDimensions);
+      eta_.allocate(meshDimensions);
    }
-   
+
+   /*
+   * Setup  before entering main simulation loop.
+   */
    template <int D>
    void ForceBiasMove<D>::setup()
-   {  
+   {
       // Check array capacities
       int meshSize = system().domain().mesh().size();
-      IntVec<D> dimensions = system().domain().mesh().dimensions();
       int nMonomer = system().mixture().nMonomer();
       UTIL_CHECK(w_.capacity() == nMonomer);
       for (int i=0; i < nMonomer; ++i) {
@@ -85,18 +87,16 @@ namespace Rpg {
       }
       UTIL_CHECK(dc_.capacity() == nMonomer-1);
       UTIL_CHECK(dwc_.capacity() == nMonomer-1);
-      for (int i=0; i < nMonomer - 1; ++i) {
+      for (int i = 0; i < nMonomer - 1; ++i) {
          UTIL_CHECK(dc_[i].capacity() == meshSize);
          UTIL_CHECK(dwc_[i].capacity() == meshSize);
       }
 
       McMove<D>::setup();
-      biasField_.allocate(dimensions);
-      gaussianField_.allocate(dimensions);
    }
- 
+
    /*
-   * Attempt unconstrained move
+   * Attempt and accept or reject MC move
    */
    template <int D>
    bool ForceBiasMove<D>::move()
@@ -113,7 +113,6 @@ namespace Rpg {
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       int i, j;
-      
 
       // Get current Hamiltonian
       double oldHamiltonian = simulator().hamiltonian();
@@ -125,13 +124,13 @@ namespace Rpg {
       simulator().clearData();
 
       attemptMoveTimer_.start();
-      
+
       // Copy current W fields from parent system into wc_
       for (i = 0; i < nMonomer; ++i) {
          VecOp::eqV(w_[i], system().w().rgrid(i));
       }
 
-      // Copy current derivative fields from into member variable dc_
+      // Copy current derivative fields into member variable dc_
       for (i = 0; i < nMonomer - 1; ++i) {
          VecOp::eqV(dc_[i], simulator().dc(i));
       }
@@ -139,25 +138,23 @@ namespace Rpg {
       // Constants for dynamics
       const double vSystem = system().domain().unitCell().volume();
       const double vNode = vSystem/double(meshSize);
-      double a = -1.0*mobility_;
-      double b = sqrt(2.0*mobility_/vNode);
-      
-      // Constants for normal distribution
-      double stddev = 1.0;
-      double mean = 0;
+      const double a = -1.0*mobility_;
+      const double b = sqrt(2.0*mobility_/vNode);
+      const double stddev = 1.0;
+      const double mean = 0;
 
       // Modify local variables dwc_ and wc_
       // Loop over eigenvectors of projected chi matrix
       double evec;
       for (j = 0; j < nMonomer - 1; ++j) {
          RField<D> & dwc = dwc_[j];
-         
+
          // Generate normal distributed random floating point numbers
-         vecRandom().normal(gaussianField_, stddev, mean);
-         
-         // dwc
-         VecOp::addVcVc(dwc, dc_[j], a, gaussianField_, b);
-         
+         vecRandom().normal(eta_, stddev, mean);
+
+         // Compute dwc
+         VecOp::addVcVc(dwc, dc_[j], a, eta_, b);
+
          // Loop over monomer types
          for (i = 0; i < nMonomer; ++i) {
             RField<D> const & dwc = dwc_[j];
@@ -165,7 +162,7 @@ namespace Rpg {
             evec = simulator().chiEvecs(j,i);
             VecOp::addEqVc(wn, dwc, evec);
          }
-         
+
       }
 
       // Set modified fields in parent system
@@ -179,14 +176,14 @@ namespace Rpg {
       int compress = simulator().compressor().compress();
       UTIL_CHECK(system().c().hasData());
       compressorTimer_.stop();
-      
+
       bool isConverged = false;
       if (compress != 0){
          incrementNFail();
          simulator().restoreState();
       } else {
          isConverged = true;
-         
+
          // Compute eigenvector components of current fields
          componentTimer_.start();
          simulator().computeWc();
@@ -201,13 +198,13 @@ namespace Rpg {
          double newHamiltonian = simulator().hamiltonian();
          double dH = newHamiltonian - oldHamiltonian;
 
-         // Compute force bias 
+         // Compute force bias
          double bias = 0.0;
          for (j = 0; j < nMonomer - 1; ++j) {
             RField<D> const & di = dc_[j];
             RField<D> const & df = simulator().dc(j);
             RField<D> const & dwc = dwc_[j];
-         
+
             VecOpFts::computeForceBias(biasField_, di, df, dwc, mobility_);
             bias += Reduce::sum(biasField_);
          }
@@ -227,7 +224,7 @@ namespace Rpg {
          }
          decisionTimer_.stop();
       }
-      
+
       totalTimer_.stop();
       return isConverged;
    }

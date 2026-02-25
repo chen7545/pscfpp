@@ -10,7 +10,7 @@
 
 #include "McMove.h"                          // base class
 #include <prdc/cuda/RField.h>
-#include <util/containers/DArray.h> 
+#include <util/containers/DArray.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -72,7 +72,7 @@ namespace Rpg {
       * Return real move times contributions.
       */
       void outputTimers(std::ostream& out);
-      
+
       /**
       * Decide whether dc fields need to be saved for move
       */
@@ -107,22 +107,23 @@ namespace Rpg {
       /// Local copy of w fields
       DArray< RField<D> > w_;
 
-      /// Copy of initial dc field 
+      /// Copy of initial dc field
       DArray< RField<D> > dc_;
 
       /// Change in wc
       DArray<RField<D> >  dwc_;
 
-      /// Normal-distributed random fields
-      RField<D> gaussianField_;
-      
+      /// Normal-distributed random field
+      RField<D> eta_;
+
+      /// Field used to compute bias for Metropolis criterion
       RField<D> biasField_;
-      
+
       /// Prefactor of -dc_ in deterministic drift term
       double mobility_;
-      
+
    };
-   
+
    // Public inline methods
 
    /*

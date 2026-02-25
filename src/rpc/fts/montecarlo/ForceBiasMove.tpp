@@ -9,14 +9,18 @@
 */
 
 #include "ForceBiasMove.h"
-#include "McMove.h" 
+#include "McMove.h"
+#include <rpc/fts/montecarlo/McSimulator.h>
+#include <rpc/system/System.h>
+#include <rpc/fts/compressor/Compressor.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
-#include <rpc/fts/montecarlo/McSimulator.h>
-#include <rpc/fts/compressor/Compressor.h>
-#include <rpc/system/System.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
+#include <pscf/cpu/CpuVecRandom.h>
 #include <util/param/ParamComposite.h>
 #include <util/random/Random.h>
+
 
 
 namespace Pscf {
@@ -28,7 +32,7 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   ForceBiasMove<D>::ForceBiasMove(McSimulator<D>& simulator) 
+   ForceBiasMove<D>::ForceBiasMove(McSimulator<D>& simulator)
     : McMove<D>(simulator),
       w_(),
       dwc_(),
@@ -43,15 +47,12 @@ namespace Rpc {
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block and allocate memory.
    */
    template <int D>
    void ForceBiasMove<D>::readParameters(std::istream &in)
    {
-      //Read the probability
       readProbability(in);
-
-      // Read Brownian dynamics mobility parameter
       read(in, "mobility", mobility_);
 
       // Allocate memory for private containers
@@ -67,12 +68,16 @@ namespace Rpc {
          dc_[i].allocate(meshDimensions);
          dwc_[i].allocate(meshDimensions);
       }
-
+      biasField_.allocate(meshDimensions);
+      eta_.allocate(meshDimensions);
    }
-   
+
+   /*
+   * Setup before entering main simulation loop.
+   */
    template <int D>
    void ForceBiasMove<D>::setup()
-   {  
+   {
       // Check array capacities
       int meshSize = system().domain().mesh().size();
       int nMonomer = system().mixture().nMonomer();
@@ -82,16 +87,16 @@ namespace Rpc {
       }
       UTIL_CHECK(dc_.capacity() == nMonomer-1);
       UTIL_CHECK(dwc_.capacity() == nMonomer-1);
-      for (int i=0; i < nMonomer - 1; ++i) {
+      for (int i = 0; i < nMonomer - 1; ++i) {
          UTIL_CHECK(dc_[i].capacity() == meshSize);
          UTIL_CHECK(dwc_[i].capacity() == meshSize);
       }
 
       McMove<D>::setup();
    }
- 
+
    /*
-   * Attempt unconstrained move
+   * Attempt and accept or reject MC move
    */
    template <int D>
    bool ForceBiasMove<D>::move()
@@ -107,7 +112,7 @@ namespace Rpc {
       // Array sizes and indices
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
-      int i, j, k;
+      int i, j;
 
       // Get current Hamiltonian
       double oldHamiltonian = simulator().hamiltonian();
@@ -119,15 +124,15 @@ namespace Rpc {
       simulator().clearData();
 
       attemptMoveTimer_.start();
-      
+
       // Copy current W fields from parent system into wc_
       for (i = 0; i < nMonomer; ++i) {
-         w_[i] = system().w().rgrid(i);
+         VecOp::eqV(w_[i], system().w().rgrid(i));
       }
 
-      // Copy current derivative fields from into member variable dc_
+      // Copy current derivative fields into member variable dc_
       for (i = 0; i < nMonomer - 1; ++i) {
-         dc_[i] = simulator().dc(i);
+         VecOp::eqV(dc_[i], simulator().dc(i));
       }
 
       // Constants for dynamics
@@ -135,27 +140,24 @@ namespace Rpc {
       const double vNode = vSystem/double(meshSize);
       const double a = -1.0*mobility_;
       const double b = sqrt(2.0*mobility_/vNode);
+      const double stddev = 1.0;
+      const double mean = 0.0;
 
-      // Modify local variables dwc_ and wc_
+      // Modify local variables dwc_ and w_
       // Loop over eigenvectors of projected chi matrix
-      double dwd, dwr, evec;
+      double  evec;
       for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & dc = dc_[j];
-         RField<D> & dwc = dwc_[j];
-         for (k = 0; k < meshSize; ++k) {
-            dwd = a*dc[k];
-            dwr = b*random().gaussian();
-            dwc[k] = dwd + dwr;
-         }
 
-         // Loop over monomer types
+         // Generate a vector of normal distributed random numbers
+         vecRandom().normal(eta_, stddev, mean);
+
+         // Compute vector dwc_[j] of field component changes
+         VecOp::addVcVc(dwc_[j], dc_[j], a, eta_, b);
+
+         // Loop over monomer types to add to w_
          for (i = 0; i < nMonomer; ++i) {
-            RField<D> const & dwc = dwc_[j];
-            RField<D> & wn = w_[i];
             evec = simulator().chiEvecs(j,i);
-            for (k = 0; k < meshSize; ++k) {
-               wn[k] += evec*dwc[k];
-            }
+            VecOp::addEqVc(w_[i], dwc_[j], evec);
          }
 
       }
@@ -177,7 +179,7 @@ namespace Rpc {
          simulator().restoreState();
       } else {
          isConverged = true;
-         
+
          // Compute eigenvector components of current fields
          componentTimer_.start();
          simulator().computeWc();
@@ -191,18 +193,19 @@ namespace Rpc {
          double newHamiltonian = simulator().hamiltonian();
          double dH = newHamiltonian - oldHamiltonian;
 
-         // Compute force bias 
-         double dp, dm;
+         // Compute force bias
          double bias = 0.0;
+         double dp, dm;
          for (j = 0; j < nMonomer - 1; ++j) {
             RField<D> const & di = dc_[j];
             RField<D> const & df = simulator().dc(j);
             RField<D> const & dwc = dwc_[j];
-            for (k=0; k < meshSize; ++k) {
+            for (int k=0; k < meshSize; ++k) {
                dp = 0.5*(di[k] + df[k]);
                dm = 0.5*(di[k] - df[k]);
-               bias += dp*( dwc[k] + mobility_*dm );
+               biasField_[k] = dp*( dwc[k] + mobility_*dm );
             }
+            bias += Reduce::sum(biasField_);
          }
          bias *= vNode;
          hamiltonianTimer_.stop();
@@ -221,13 +224,13 @@ namespace Rpc {
          decisionTimer_.stop();
 
       }
-      
+
       totalTimer_.stop();
       return isConverged;
    }
 
    /*
-   * Trivial default implementation - do nothing
+   * Output data to log file (do-nothing implementation).
    */
    template <int D>
    void ForceBiasMove<D>::output()

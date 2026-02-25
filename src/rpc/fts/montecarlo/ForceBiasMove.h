@@ -99,6 +99,7 @@ namespace Rpc {
       using McMove<D>::system;
       using McMove<D>::simulator;
       using McMove<D>::random;
+      using McMove<D>::vecRandom;
       using McMove<D>::incrementNAttempt;
       using McMove<D>::incrementNAccept;
       using McMove<D>::incrementNFail;
@@ -120,6 +121,12 @@ namespace Rpc {
 
       /// Change in wc
       DArray<RField<D> >  dwc_;
+
+      /// Normal-distributed random field
+      RField<D> eta_;
+
+      /// Field used to compute bias for Metropolis criterion
+      RField<D> biasField_;
 
       /// Prefactor of -dc_ in deterministic drift term
       double mobility_;
