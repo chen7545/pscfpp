@@ -20,6 +20,11 @@
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
 #include <pscf/cuda/CudaVecRandom.h>
+#include <pscf/cuda/ThreadArray.h>
+#include <pscf/cuda/DeviceArray.h>
+#include <pscf/cuda/HostDArray.h>
+#include <pscf/mesh/Mesh.h>
+#include <pscf/math/IntVec.h>
 #include <util/param/ParamComposite.h>
 #include <util/random/Random.h>
 
@@ -28,16 +33,38 @@ namespace Rpg {
 
    using namespace Util;
 
+   // Anonymous namespace for CUDA kernel
+   namespace {
+
+      // Compute force bias
+      __global__ 
+      void _computeForceBias(cudaReal* result, 
+                             cudaReal const * di, 
+                             cudaReal const * df, 
+                             cudaReal const * dwc, 
+                             double mobility, 
+                             const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            result[i] = 0.5 * (di[i] + df[i]) * 
+                        (dwc[i] + mobility * (0.5 * (di[i] - df[i])));
+         }
+      }
+
+   }
+
    /*
    * Constructor.
    */
    template <int D>
    ForceBiasMove<D>::ForceBiasMove(McSimulator<D>& simulator)
-    : McMove<D>(simulator),
+    : McMoveT(simulator),
       w_(),
       dwc_(),
       mobility_(0.0)
-   {  setClassName("ForceBiasMove"); }
+   {  ParamComposite::setClassName("ForceBiasMove"); }
 
    /*
    * Destructor, empty default implementation.
@@ -52,8 +79,8 @@ namespace Rpg {
    template <int D>
    void ForceBiasMove<D>::readParameters(std::istream &in)
    {
-      readProbability(in);
-      read(in, "mobility", mobility_);
+      McMoveT::readProbability(in);
+      ParamComposite::read(in, "mobility", mobility_);
 
       // Allocate memory for private containers
       int nMonomer = system().mixture().nMonomer();
@@ -92,7 +119,7 @@ namespace Rpg {
          UTIL_CHECK(dwc_[i].capacity() == meshSize);
       }
 
-      McMove<D>::setup();
+      McMoveT::setup();
    }
 
    /*
@@ -101,8 +128,8 @@ namespace Rpg {
    template <int D>
    bool ForceBiasMove<D>::move()
    {
-      totalTimer_.start();
-      incrementNAttempt();
+      McMoveT::totalTimer_.start();
+      McMoveT::incrementNAttempt();
 
       // Preconditions
       UTIL_CHECK(simulator().hasWc());
@@ -123,7 +150,7 @@ namespace Rpg {
       // Clear both eigen-components of the fields and hamiltonian
       simulator().clearData();
 
-      attemptMoveTimer_.start();
+      McMoveT::attemptMoveTimer_.start();
 
       // Copy current W fields from parent system into wc_
       for (i = 0; i < nMonomer; ++i) {
@@ -150,7 +177,7 @@ namespace Rpg {
          RField<D> & dwc = dwc_[j];
 
          // Generate normal distributed random floating point numbers
-         vecRandom().normal(eta_, stddev, mean);
+         McMoveT::vecRandom().normal(eta_, stddev, mean);
 
          // Compute dwc
          VecOp::addVcVc(dwc, dc_[j], a, eta_, b);
@@ -169,31 +196,31 @@ namespace Rpg {
       system().w().setRGrid(w_);
       simulator().clearData();
 
-      attemptMoveTimer_.stop();
+      McMoveT::attemptMoveTimer_.stop();
 
       // Call compressor
-      compressorTimer_.start();
+      McMoveT::compressorTimer_.start();
       int compress = simulator().compressor().compress();
       UTIL_CHECK(system().c().hasData());
-      compressorTimer_.stop();
+      McMoveT::compressorTimer_.stop();
 
       bool isConverged = false;
       if (compress != 0){
-         incrementNFail();
+         McMoveT::incrementNFail();
          simulator().restoreState();
       } else {
          isConverged = true;
 
          // Compute eigenvector components of current fields
-         componentTimer_.start();
+         McMoveT::componentTimer_.start();
          simulator().computeWc();
          UTIL_CHECK(system().c().hasData());
          simulator().computeCc();
          simulator().computeDc();
-         componentTimer_.stop();
+         McMoveT::componentTimer_.stop();
 
          // Evaluate new Hamiltonian
-         hamiltonianTimer_.start();
+         McMoveT::hamiltonianTimer_.start();
          simulator().computeHamiltonian();
          double newHamiltonian = simulator().hamiltonian();
          double dH = newHamiltonian - oldHamiltonian;
@@ -205,27 +232,27 @@ namespace Rpg {
             RField<D> const & df = simulator().dc(j);
             RField<D> const & dwc = dwc_[j];
 
-            VecOpFts::computeForceBias(biasField_, di, df, dwc, mobility_);
+            computeForceBias(biasField_, di, df, dwc, mobility_);
             bias += Reduce::sum(biasField_);
          }
          bias *= vNode;
-         hamiltonianTimer_.stop();
+         McMoveT::hamiltonianTimer_.stop();
 
          // Accept or reject move
-         decisionTimer_.start();
+         McMoveT::decisionTimer_.start();
          bool accept = false;
          double weight = exp(bias - dH);
-         accept = random().metropolis(weight);
+         accept = McMoveT::random().metropolis(weight);
          if (accept) {
-            incrementNAccept();
+            McMoveT::incrementNAccept();
             simulator().clearState();
          } else {
             simulator().restoreState();
          }
-         decisionTimer_.stop();
+         McMoveT::decisionTimer_.stop();
       }
+      McMoveT::totalTimer_.stop();
 
-      totalTimer_.stop();
       return isConverged;
    }
 
@@ -242,7 +269,36 @@ namespace Rpg {
       // Output timing results, if requested.
       out << "\n";
       out << "ForceBiasMove time contributions:\n";
-      McMove<D>::outputTimers(out);
+      McMoveT::outputTimers(out);
+   }
+
+   // Private member function
+
+   /*
+   * Compute force bias field for use in Metropolis acceptance test.
+   */
+   template<int D>
+   void ForceBiasMove<D>::computeForceBias(
+                               RField<D>& result, 
+                               RField<D> const & di, 
+                               RField<D> const & df, 
+                               RField<D> const & dwc, 
+                               double mobility)
+   {
+      const int n = result.capacity();
+      UTIL_CHECK(di.capacity() == n);
+      UTIL_CHECK(df.capacity() == n);
+      UTIL_CHECK(dwc.capacity() == n);
+      
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _computeForceBias<<<nBlocks, nThreads>>>(
+                        result.cArray(), di.cArray(), 
+                        df.cArray(), dwc.cArray(), 
+                        mobility, n);
    }
 
 }

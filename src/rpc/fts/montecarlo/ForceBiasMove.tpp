@@ -37,7 +37,7 @@ namespace Rpc {
       w_(),
       dwc_(),
       mobility_(0.0)
-   {  setClassName("ForceBiasMove"); }
+   {  ParamComposite::setClassName("ForceBiasMove"); }
 
    /*
    * Destructor, empty default implementation.
@@ -52,8 +52,8 @@ namespace Rpc {
    template <int D>
    void ForceBiasMove<D>::readParameters(std::istream &in)
    {
-      readProbability(in);
-      read(in, "mobility", mobility_);
+      McMoveT::readProbability(in);
+      ParamComposite::read(in, "mobility", mobility_);
 
       // Allocate memory for private containers
       int nMonomer = system().mixture().nMonomer();
@@ -101,8 +101,8 @@ namespace Rpc {
    template <int D>
    bool ForceBiasMove<D>::move()
    {
-      totalTimer_.start();
-      incrementNAttempt();
+      McMoveT::totalTimer_.start();
+      McMoveT::incrementNAttempt();
 
       // Preconditions
       UTIL_CHECK(simulator().hasWc());
@@ -123,7 +123,7 @@ namespace Rpc {
       // Clear both eigen-components of the fields and hamiltonian
       simulator().clearData();
 
-      attemptMoveTimer_.start();
+      McMoveT::attemptMoveTimer_.start();
 
       // Copy current W fields from parent system into wc_
       for (i = 0; i < nMonomer; ++i) {
@@ -149,7 +149,7 @@ namespace Rpc {
       for (j = 0; j < nMonomer - 1; ++j) {
 
          // Generate a vector of normal distributed random numbers
-         vecRandom().normal(eta_, stddev, mean);
+         McMoveT::vecRandom().normal(eta_, stddev, mean);
 
          // Compute vector dwc_[j] of field component changes
          VecOp::addVcVc(dwc_[j], dc_[j], a, eta_, b);
@@ -166,29 +166,29 @@ namespace Rpc {
       system().w().setRGrid(w_);
       simulator().clearData();
 
-      attemptMoveTimer_.stop();
+      McMoveT::attemptMoveTimer_.stop();
 
       // Call compressor
-      compressorTimer_.start();
+      McMoveT::compressorTimer_.start();
       int compress = simulator().compressor().compress();
-      compressorTimer_.stop();
+      McMoveT::compressorTimer_.stop();
 
       bool isConverged = false;
       if (compress != 0){
-         incrementNFail();
+         McMoveT::incrementNFail();
          simulator().restoreState();
       } else {
          isConverged = true;
 
          // Compute eigenvector components of current fields
-         componentTimer_.start();
+         McMoveT::componentTimer_.start();
          simulator().computeWc();
          simulator().computeCc();
          simulator().computeDc();
-         componentTimer_.stop();
+         McMoveT::componentTimer_.stop();
 
          // Evaluate new Hamiltonian
-         hamiltonianTimer_.start();
+         McMoveT::hamiltonianTimer_.start();
          simulator().computeHamiltonian();
          double newHamiltonian = simulator().hamiltonian();
          double dH = newHamiltonian - oldHamiltonian;
@@ -208,24 +208,24 @@ namespace Rpc {
             bias += Reduce::sum(biasField_);
          }
          bias *= vNode;
-         hamiltonianTimer_.stop();
+         McMoveT::hamiltonianTimer_.stop();
 
          // Accept or reject move
          bool accept = false;
-         decisionTimer_.start();
+         McMoveT::decisionTimer_.start();
          double weight = exp(bias - dH);
-         accept = random().metropolis(weight);
+         accept = McMoveT::random().metropolis(weight);
          if (accept) {
-            incrementNAccept();
+            McMoveT::incrementNAccept();
             simulator().clearState();
          } else {
             simulator().restoreState();
          }
-         decisionTimer_.stop();
+         McMoveT::decisionTimer_.stop();
 
       }
 
-      totalTimer_.stop();
+      McMoveT::totalTimer_.stop();
       return isConverged;
    }
 

@@ -63,15 +63,6 @@ namespace VecOpFts {
                       cudaReal const s);
 
    /**
-   * Compute force bias
-   */
-   void computeForceBias(DeviceArray<cudaReal>& result, 
-                         DeviceArray<cudaReal> const & di, 
-                         DeviceArray<cudaReal> const & df, 
-                         DeviceArray<cudaReal> const & dwc, 
-                         cudaReal mobility);
-
-   /**
    * Shift w Field
    */
    template <int D>

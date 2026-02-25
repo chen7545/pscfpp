@@ -87,29 +87,14 @@ namespace Rpc {
       */
       bool needsDc();
 
-      // Inherited public member function
-      using McMove<D>::move;
-      using McMove<D>::readProbability;
-      using McMove<D>::clearTimers;
-      using ParamComposite::read;
-      using ParamComposite::setClassName;
-
    protected:
 
-      using McMove<D>::system;
-      using McMove<D>::simulator;
-      using McMove<D>::random;
-      using McMove<D>::vecRandom;
-      using McMove<D>::incrementNAttempt;
-      using McMove<D>::incrementNAccept;
-      using McMove<D>::incrementNFail;
+      // Alias for McMove base class
+      using McMoveT = McMove<D>;
 
-      using McMove<D>::attemptMoveTimer_;
-      using McMove<D>::compressorTimer_;
-      using McMove<D>::componentTimer_;
-      using McMove<D>::hamiltonianTimer_;
-      using McMove<D>::decisionTimer_;
-      using McMove<D>::totalTimer_;
+      // Protected inherited member functions
+      using McMoveT::system;
+      using McMoveT::simulator;
 
    private:
 

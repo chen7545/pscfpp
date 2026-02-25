@@ -55,20 +55,6 @@ namespace VecOpFts {
          }
       }
 
-      // Compute force bias
-      __global__ void _computeForceBias(cudaReal* result, cudaReal const * di, 
-                                        cudaReal const * df, 
-                                        cudaReal const * dwc, 
-                                        cudaReal mobility, const int n)
-      {
-         int nThreads = blockDim.x * gridDim.x;
-         int startID = blockIdx.x * blockDim.x + threadIdx.x;
-         for (int i = startID; i < n; i += nThreads) {
-            result[i] = 0.5 * (di[i] + df[i]) * 
-                        (dwc[i] + mobility * (0.5 * (di[i] - df[i])));
-         }
-      }
-
       // Shift w Field
       template <int D>
       __global__ void _shiftWField(cudaReal*  wshift,
@@ -178,29 +164,6 @@ namespace VecOpFts {
       // Launch kernel
       _computeDField<<<nBlocks, nThreads>>>(d.cArray(), Wc.cArray(), 
                                             Cc.cArray(), a, b, s, n);
-   }
-
-   /*
-   * Compute force bias
-   */
-   void computeForceBias(DeviceArray<cudaReal>& result, 
-                         DeviceArray<cudaReal> const & di, 
-                         DeviceArray<cudaReal> const & df, 
-                         DeviceArray<cudaReal> const & dwc, cudaReal mobility)
-   {
-      const int n = result.capacity();
-      UTIL_CHECK(di.capacity() == n);
-      UTIL_CHECK(df.capacity() == n);
-      UTIL_CHECK(dwc.capacity() == n);
-      
-      // GPU resources
-      int nBlocks, nThreads;
-      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
-
-      // Launch kernel
-      _computeForceBias<<<nBlocks, nThreads>>>(result.cArray(), di.cArray(), 
-                                               df.cArray(), dwc.cArray(), 
-                                               mobility, n);
    }
 
    /**
