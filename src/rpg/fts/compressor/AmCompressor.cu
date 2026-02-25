@@ -5,14 +5,43 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmCompressor.tpp"
+#include "AmCompressor.h"
+#include <rpg/system/System.h>
+#include <rpg/solvers/Mixture.h>
+#include <rpg/field/Domain.h>
+#include <prdc/cuda/RField.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
+
+#include <rp/fts/compressor/AmCompressor.tpp>
 
 namespace Pscf {
 namespace Rpg {
 
-   template class AmCompressor<1>;
-   template class AmCompressor<2>;
-   template class AmCompressor<3>;
+   /*
+   * Constructor.
+   */
+   template <int D>
+   AmCompressor<D>::AmCompressor(System<D>& system)
+    : Rp::AmCompressor<D, Types<D>, DeviceArray<cudaReal> >(system)
+   {}
 
 }
+}
+
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template 
+      class AmCompressor<1, Rpg::Types<1>, DeviceArray<cudaReal> >;
+      template 
+      class AmCompressor<2, Rpg::Types<2>, DeviceArray<cudaReal> >;
+      template 
+      class AmCompressor<3, Rpg::Types<3>, DeviceArray<cudaReal> >;
+   }
+   namespace Rpg {
+      template class AmCompressor<1>;
+      template class AmCompressor<2>;
+      template class AmCompressor<3>;
+   }
 }
