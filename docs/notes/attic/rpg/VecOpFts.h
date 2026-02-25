@@ -42,6 +42,27 @@ namespace VecOpFts {
                    cudaReal const b);
 
    /**
+   * Add array b to real part of a and array c to imaginary part of a
+   *
+   * \param a  output array of cudaComplex values
+   * \param b  input array of cudaReal values
+   * \param c  input array of cudaReal values
+   */
+   void fourierMove(DeviceArray<cudaComplex>& a, 
+                    DeviceArray<cudaReal> const & b, 
+                    DeviceArray<cudaReal> const & c);
+
+   /**
+   * Compute d field (functional derivative of H[w])
+   */
+   void computeDField(DeviceArray<cudaReal>& d, 
+                      DeviceArray<cudaReal> const & Wc, 
+                      DeviceArray<cudaReal> const & Cc, 
+                      cudaReal const a, 
+                      cudaReal const b, 
+                      cudaReal const s);
+
+   /**
    * Shift w Field
    */
    template <int D>

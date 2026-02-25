@@ -22,8 +22,7 @@ namespace VecOpFts {
    namespace {
 
       // Rescale array a from [0,1] to [-b, b]
-      __global__ 
-      void _mcftsScale(cudaReal* a, cudaReal const b, const int n)
+      __global__ void _mcftsScale(cudaReal* a, cudaReal const b, const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -32,14 +31,37 @@ namespace VecOpFts {
          }
       }
 
+      // Add array b to real part of a and array c to imaginary part of a
+      __global__ void _fourierMove(cudaComplex* a, cudaReal const * b, 
+                                   cudaReal const * c, const int n) {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            a[i].x += b[i];
+            a[i].y += c[i];
+         }
+      }
+
+      // Compute d field (functional derivative of H[w])
+      __global__ void _computeDField(cudaReal* d, cudaReal const * Wc, 
+                                     cudaReal const * Cc, cudaReal const a, 
+                                     cudaReal const b, cudaReal const s, 
+                                     const int n)
+      {
+         int nThreads = blockDim.x * gridDim.x;
+         int startID = blockIdx.x * blockDim.x + threadIdx.x;
+         for (int i = startID; i < n; i += nThreads) {
+            d[i] = a * (b * (Wc[i] - s) + Cc[i]);
+         }
+      }
+
       // Shift w Field
       template <int D>
-      __global__ 
-      void _shiftWField(cudaReal*  wshift,
-                        cudaReal const * w0,
-                        int const * meshDims, 
-                        int const * shift,
-                        const int n)
+      __global__ void _shiftWField(cudaReal*  wshift,
+                                   cudaReal const * w0,
+                                   int const * meshDims, 
+                                   int const * shift,
+                                   const int n)
       {
          int nThreads = blockDim.x * gridDim.x;
          int startID = blockIdx.x * blockDim.x + threadIdx.x;
@@ -68,8 +90,7 @@ namespace VecOpFts {
                if (shift[d]>= 0){
                   shiftPosition[d] = (position[d] + shift[d]) % meshDims[d];
                }  else{
-                  shiftPosition[d] 
-                      = (position[d] + shift[d] + meshDims[d]) % meshDims[d];
+                  shiftPosition[d] = (position[d] + shift[d] + meshDims[d]) % meshDims[d];
                }
             }
 
@@ -102,6 +123,47 @@ namespace VecOpFts {
 
       // Launch kernel
       _mcftsScale<<<nBlocks, nThreads>>>(a.cArray(), b, n);
+   }
+
+   /*
+   * Add array b to real part of a and array c to imaginary part of a
+   */
+   void fourierMove(DeviceArray<cudaComplex>& a, 
+                    DeviceArray<cudaReal> const & b, 
+                    DeviceArray<cudaReal> const & c)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(b.capacity() >= n);
+      UTIL_CHECK(c.capacity() >= n);
+      
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _fourierMove<<<nBlocks, nThreads>>>(a.cArray(), b.cArray(), 
+                                          c.cArray(), n);
+   }
+
+   /*
+   * Compute d field (functional derivative of H[w])
+   */
+   void computeDField(DeviceArray<cudaReal>& d, 
+                      DeviceArray<cudaReal> const & Wc, 
+                      DeviceArray<cudaReal> const & Cc, 
+                      cudaReal const a, cudaReal const b, cudaReal const s)
+   {
+      const int n = d.capacity();
+      UTIL_CHECK(Wc.capacity() == n);
+      UTIL_CHECK(Cc.capacity() == n);
+      
+      // GPU resources
+      int nBlocks, nThreads;
+      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
+
+      // Launch kernel
+      _computeDField<<<nBlocks, nThreads>>>(d.cArray(), Wc.cArray(), 
+                                            Cc.cArray(), a, b, s, n);
    }
 
    /**
