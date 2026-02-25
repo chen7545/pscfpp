@@ -29,34 +29,41 @@ namespace Cuda {
    using namespace Util;
 
    /**
-   * Class to calculate and store properties of wavevectors.
+   * Class to compute and store properties associated with wavevectors.
    *
-   * In particular, minimum images, square norms of wavevectors (kSq), and
-   * derivatives of the square norms of wavevectors with respect to the
-   * lattice parameters (dKSq) are calculated and stored by this class.
+   * A WaveList computes and stores minimum images of wavevectors,
+   * square norms of wavevectors (kSq), and derivatives of the square
+   * norms with respect to the unit cell parameters (dKSq).
    *
    * Any time the lattice parameters change the clearUnitCellData() method
-   * should be called, which will effectively reset the WaveList object so
-   * that the wavevector properties will need to be recalculated before
-   * being used.
+   * should be called. This function sets internal flags that mark some
+   * properties as outdated, indicating that they should be recalculated
+   * before the next use. 
    *
-   * This object calculates these wavevector properties for a mesh of grid
-   * points in k-space. If a calculation only requires real-valued fields,
-   * PSCF uses a reduced-size k-space mesh, as output by cuFFT. However, a
+   * A WaveList computes these properties for a mesh of grid points in
+   * k-space. If a calculation only involves real-valued fields, PSCF
+   * uses a reduced-size k-space mesh, as output by cuFFT for the
+   * result of a real-to-complex discrete Fourier transform. However, a
    * full-sized k-space mesh (the same size as the real-space mesh) is
-   * necessary when dealing with complex-valued fields. The k-space mesh
-   * used by a WaveList object is determined by the parameter isRealField,
-   * which is assigned in the constructor and cannot later be changed.
+   * necessary when dealing with complex-valued fields. The choice of
+   * which k-space mesh is used by a WaveList object is determined by 
+   * the bool parameter isRealField that is passed to the constructor, 
+   * which cannot be changed after construction.
+   *
+   * \ingroup Prdc_Cuda_Module
    */
    template <int D>
    class WaveList
    {
    public:
 
+      /// \name Construction, Destruction and Initialization
+      ///@{ 
+
       /**
       * Constructor.
       *
-      * \param isRealField  Will this WaveList be used for real-valued fields?
+      * \param isRealField  Will this object be used for real-valued fields?
       */
       WaveList(bool isRealField = true);
 
@@ -73,16 +80,24 @@ namespace Cuda {
       */
       void allocate(Mesh<D> const & m, UnitCell<D> const & c);
 
+      ///@}
+      /// \name Computation
+      ///@{ 
+
       /**
       * Clear all internal data that depends on lattice parameters.
       *
       * Sets hasKSq_ and hasdKSq_ to false, and sets hasMinImages_ to
-      * false if the crystall lattice type has variable angles.
+      * false only if the unit cell type has variable angles.
       */
       void clearUnitCellData();
 
       /**
-      * Compute minimum images of wavevectors. (Also calculates kSq.)
+      * Compute minimum images of wavevectors, and also calculate kSq.
+      *
+      * This function recomputes the minimum images of all wavevectors if
+      * necessary (i.e., if hasMinImages() == false), but does nothing if
+      * the minimum images are up to date (if hasMinImages() == true).
       *
       * The minimum images may change if a lattice angle in the unit cell
       * is changed, so this method should be called whenever such changes
@@ -99,15 +114,26 @@ namespace Cuda {
       /**
       * Compute square norm |k|^2 for all wavevectors.
       *
-      * This function uses existing mininum images if they are valid, or
-      * recomputes them if necessary.
+      * This function recomputes values of the square norm for all 
+      * wavevectors if necessary (i.e., if hasKSq() == false), and does
+      * nothing if these values are up to date (if hasKSq() ==  true).
+      * Mininum image values are updated if necessary. 
       */
       void computeKSq();
 
       /**
       * Compute derivatives of |k|^2 w/ respect to unit cell parameters.
+      *
+      * This function computes values of the derivatives of wavevector
+      * square norms with respect to unit cell parameters if necessary
+      * (i.e., if hasdKSq() == false), and does nothing if these values
+      * are up to date. Minimum images are updated if necessary.
       */
       void computedKSq();
+
+      ///@}
+      /// \name Data Access
+      ///@{ 
 
       /**
       * Get the array of minimum images on the device by reference.
@@ -124,9 +150,10 @@ namespace Cuda {
       /**
       * Get minimum images as IntVec<D> objects on the host.
       *
-      * The array has size kSize, and each element is an IntVec<D>.
-      * If isRealField is true, kSize is smaller than the size of the
-      * real-space mesh. Otherwise, it is equal.
+      * This function returns an array of kSize elements in which each
+      * element is an IntVec<D> containing the integer coordinates of 
+      * the minimum image of one wavevector in the k-space mesh used
+      * for discrete Fourier transforms.
       */
       HostDArray< IntVec<D> > const & minImages_h() const;
 
@@ -174,6 +201,29 @@ namespace Cuda {
       DeviceArray<bool> const & implicitInverse() const;
 
       /**
+      * Return the dimensions of the k-space mesh.
+      *
+      * If isRealField() == true, the reciprocal-space grid is smaller
+      * than the real-space grid. Otherwise, the two grids are identical.
+      */
+      IntVec<D> const & kMeshDimensions() const
+      {  return kMeshDimensions_; }
+
+      /**
+      * Return the number of points in the k-space mesh.
+      *
+      * If isRealField() == true, kSize is approximately half the size
+      * of the real-space grid.  Otherwise, the two grids are identical.
+      * 
+      */
+      int kSize() const
+      {  return kSize_; }
+
+      ///@}
+      /// \name Boolean Queries
+      ///@{ 
+
+      /**
       * Has memory been allocated for arrays?
       */
       bool isAllocated() const
@@ -202,6 +252,8 @@ namespace Cuda {
       */
       bool isRealField() const
       {  return isRealField_; }
+
+      ///@}
 
    private:
 

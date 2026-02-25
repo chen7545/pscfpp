@@ -27,34 +27,41 @@ namespace Cpu {
    using namespace Util;
 
    /**
-   * Class to calculate and store properties of wavevectors.
-   * 
-   * In particular, minimum images, square norms of wavevectors (kSq), and 
-   * derivatives of the square norms of wavevectors with respect to the 
-   * lattice parameters (dKSq) are calculated and stored by this class. 
+   * Class to compute and store properties associated with wavevectors.
    *
-   * Any time the lattice parameters change the clearUnitCellData() method 
-   * should be called, which will effectively reset the WaveList object so
-   * that the wavevector properties will need to be recalculated before 
-   * being used.
-   * 
-   * This object calculates these wavevector properties for a mesh of grid
-   * points in k-space. If a calculation only requires real-valued fields, 
-   * PSCF uses a reduced-size k-space mesh, as output by FFTW. However, a 
-   * full-sized k-space mesh (the same size as the real-space mesh) is 
-   * necessary when dealing with complex-valued fields. The k-space mesh
-   * used by a WaveList object is determined by the parameter isRealField,
-   * which is assigned in the constructor and cannot later be changed. 
+   * A WaveList computes and stores minimum images of wavevectors,
+   * square norms of wavevectors (kSq), and derivatives of the square
+   * norms with respect to the unit cell parameters (dKSq).
+   *
+   * Any time the lattice parameters change the clearUnitCellData() method
+   * should be called. This function sets internal flags that mark some
+   * properties as being outdated, indicating that they should recalculated
+   * before the next use.
+   *
+   * A WaveList computes these properties for a mesh of grid points
+   * in k-space. If a calculation only involves real-valued fields,
+   * PSCF uses a reduced-size k-space mesh, as output by FFTW for the
+   * result of a real-to-complex discrete Fourier transform. However, a
+   * full-sized k-space mesh (the same size as the real-space mesh) is
+   * necessary when dealing with complex-valued fields. The choice of
+   * which k-space mesh used by a WaveList object is determined by the
+   * bool parameter isRealField that is passed to the constructor, which
+   * cannot be changed after construction.
+   *
+   * \ingroup Prdc_Cpu_Module
    */
    template <int D>
    class WaveList
    {
    public:
 
+      /// \name Construction, Destruction and Initialization
+      ///@{
+
       /**
       * Constructor.
-      * 
-      * \param isRealField  Will this WaveList be used for real-valued fields?
+      *
+      * \param isRealField  Will this object be used for real-valued fields?
       */
       WaveList(bool isRealField = true);
 
@@ -64,53 +71,76 @@ namespace Cpu {
       ~WaveList();
 
       /**
-      * Allocate memory and set association with a Mesh and UnitCell object. 
+      * Allocate memory and set association with a Mesh and UnitCell object.
       *
       * \param m  spatial discretization mesh (input)
       * \param c  crystallographic unit cell (input)
       */
       void allocate(Mesh<D> const & m, UnitCell<D> const & c);
 
+      ///@}
+      /// \name Computation
+      ///@{
+
       /**
       * Clear all internal data that depends on lattice parameters.
-      * 
+      *
       * Sets hasKSq_ and hasdKSq_ to false. Sets hasMinImages_ to
       * false only if the unit cell type has variable angles.
       */
       void clearUnitCellData();
 
       /**
-      * Compute minimum images of wavevectors. (Also calculates kSq.)
+      * Compute minimum images of wavevectors, and also calculates kSq.
       *
-      * The minimum images may change if a lattice angle in the unit cell 
+      * This function recomputes the minimum images of all wavevectors if
+      * necessary (i.e., if hasMinImages() == false), but does nothing if
+      * if minimum images are up to date (if hasMinImages() == true).
+      *
+      * The minimum images may change if a lattice angle in the unit cell
       * is changed, so this method should be called whenever such changes
-      * occur. 
-      * 
+      * occur.
+      *
       * In the process of computing the minimum images, the square norm
-      * |k|^2 for all wavevectors is also calculated and stored, so it 
-      * is not necessary to call computeKSq after calling this method. 
-      * computeKSq is provided to allow calculation of kSq without 
+      * |k|^2 for all wavevectors is also calculated and stored, so it
+      * is not necessary to call computeKSq after calling this method.
+      * computeKSq is provided to allow calculation of kSq without
       * recalculating minimum images.
       */
       void computeMinimumImages();
 
       /**
-      * Compute sq. norm |k|^2 for all wavevectors, using existing min images.
+      * Compute square norm |k|^2 for all wavevectors.
+      *
+      * This function recomputes values of the square norm for all
+      * wavevectors if necessary (i.e., if hasKSq() == false), and does
+      * nothing if these values are up to date (if hasKSq() == true).
+      * Minimum image values are updated if necessary.
       */
       void computeKSq();
 
       /**
       * Compute derivatives of |k|^2 w/ respect to unit cell parameters.
+      *
+      * This function computes values of the derivatives of wavevector
+      * square norms with respect to unit cell parameters if necessary
+      * (i.e., if hasdKSq() == false), and does nothing if these values
+      * are up to date. Minimum images are updated if necessary.
       */
       void computedKSq();
 
+      ///@}
+      /// \name Data Access
+      ///@{
+
       /**
       * Get the array of minimum image vectors by const reference.
-      * 
-      * This function returns an array in which each element is an IntVec<D>
-      * containing the integer coordinates of the minimum image of one 
-      * wavevector in the k-space mesh used for the DFT. If isRealField is
-      * true, this k-space mesh is smaller than the real-space mesh. 
+      *
+      * This function returns an array of kSize elementw in which each 
+      * element is an IntVec<D> containing the integer coordinates of 
+      * the minimum image of one wavevector in the k-space mesh used 
+      * for discrete Fourier transforms. If isRealField is
+      * true, this k-space mesh is smaller than the real-space mesh.
       * Otherwise, it is the same size.
       */
       DArray< IntVec<D> > const & minImages() const;
@@ -119,8 +149,8 @@ namespace Cpu {
       * Get the kSq array on the device by const reference.
       *
       * This function returns an array in which each element is the square
-      * magnitude |k|^2 of a wavevector k in the k-space mesh used for the 
-      * DFT. If isRealField is true, this k-space mesh is smaller than the 
+      * magnitude |k|^2 of a wavevector k in the k-space mesh used for the
+      * DFT. If isRealField is true, this k-space mesh is smaller than the
       * real-space mesh. Otherwise, it is the same size.
       */
       RField<D> const & kSq() const;
@@ -133,9 +163,9 @@ namespace Cpu {
       * prefactor is 2.0 for waves that have an implicit inverse and 1.0
       * otherwise. The choice of prefactor is designed to simplify use
       * of the array to compute stress.
-      * 
-      * Each element corresponds to one wavevector k in the k-space mesh 
-      * used for the DFT. If isRealField is true, this k-space mesh is 
+      *
+      * Each element corresponds to one wavevector k in the k-space mesh
+      * used for the DFT. If isRealField is true, this k-space mesh is
       * smaller than the real-space mesh. Otherwise, it is the same size.
       * In the latter case, there are no implicit waves, so the prefactor
       * is always 1.0.
@@ -146,54 +176,78 @@ namespace Cpu {
 
       /**
       * Get all derivatives of kSq with respect to unit cell parameters.
-      * 
+      *
       * Element i of the DArray is the RField<D> that can also be obtained
-      * from member function dKSq(int i). 
+      * from member function dKSq(int i).
       */
       DArray< RField<D> > const & dKSq() const;
 
       /**
       * Get the implicitInverse array by reference.
-      * 
-      * This array is defined on a k-grid mesh, with a boolean value for 
+      *
+      * This array is defined on a k-grid mesh, with a boolean value for
       * each gridpoint. The boolean represents whether the inverse of the
       * wave at the given gridpoint is an implicit wave. Implicit here is
       * used to mean any wave that is outside the bounds of the k-grid.
-      * 
+      *
       * This method will throw an error if isRealField == false, because
       * there are no implicit inverses in such a case.
       */
       DArray<bool> const & implicitInverse() const;
 
       /**
+      * Return the dimensions of the k-grid mesh.
+      * 
+      * If isRealField() == true, the reciprocal-space grid is smaller 
+      * than the real-space grid. Otherwise, the two grids are identical.
+      */
+      IntVec<D> const & kMeshDimensions() const
+      {  return kMeshDimensions_; }
+
+      /**
+      * Return the number of points in the k-grid mesh.
+      *
+      * If isRealField() == true, kSize is approximately half the size
+      * of the real-space grid.  Otherwise, the two grids are identical.
+      */
+      int kSize() const
+      {  return kSize_; }
+
+      ///@}
+      /// \name Boolean Queries
+      ///@{
+
+      /**
       * Has memory been allocated for arrays?
-      */ 
+      */
       bool isAllocated() const
       {  return isAllocated_; }
 
       /**
-      * Have minimum images been computed?
-      */ 
+      * Are minimum images up to date ?
+      */
       bool hasMinImages() const
       {  return hasMinImages_; }
 
       /**
-      * Has the kSq array been computed?
-      */ 
+      * Are values of kSq up-to-date ?
+      */
       bool hasKSq() const
       {  return hasKSq_; }
 
       /**
-      * Has the dKSq array been computed?
-      */ 
+      * Are values of dKSq up-to-date?
+      */
       bool hasdKSq() const
       {  return hasdKSq_; }
 
       /**
       * Does this WaveList correspond to real-valued fields?
-      */ 
+      */
       bool isRealField() const
       {  return isRealField_; }
+
+      ///@}
 
    private:
 
@@ -211,20 +265,20 @@ namespace Cpu {
 
       /**
       * Dimensions of the mesh in reciprocal space.
-      * 
-      * If isRealField_, the reciprocal-space grid is smaller than the 
-      * real-space grid, as output by FFTW. Otherwise, the two grids
-      * are the same size.
-      */ 
+      *
+      * If isRealField_, the reciprocal-space grid is smaller 
+      * than the real-space grid, as output by FFTW. Otherwise, the two 
+      * grids are identical.
+      */
       IntVec<D> kMeshDimensions_;
 
       /**
       * Number of grid points in reciprocal space.
-      * 
-      * If isRealField_, the reciprocal-space grid is smaller than the 
+      *
+      * If isRealField_, the reciprocal-space grid is smaller than the
       * real-space grid, as output by cuFFT. Otherwise, the two grids
       * are the same size.
-      */ 
+      */
       int kSize_;
 
       /// Has memory been allocated for arrays?
@@ -260,45 +314,45 @@ namespace Cpu {
 
    // Get the array of minimum images on the device by reference.
    template <int D>
-   inline 
+   inline
    DArray< IntVec<D> > const & WaveList<D>::minImages() const
    {
       UTIL_CHECK(hasMinImages_);
-      return minImages_; 
-   }
-   
-   // Get the kSq array on the device by reference.
-   template <int D>
-   inline 
-   RField<D> const & WaveList<D>::kSq() const
-   {  
-      UTIL_CHECK(hasKSq_);
-      return kSq_; 
+      return minImages_;
    }
 
-   // Get dKSq for unit cell parameter array i. 
+   // Get the kSq array on the device by reference.
    template <int D>
-   inline 
+   inline
+   RField<D> const & WaveList<D>::kSq() const
+   {
+      UTIL_CHECK(hasKSq_);
+      return kSq_;
+   }
+
+   // Get dKSq for unit cell parameter array i.
+   template <int D>
+   inline
    RField<D> const & WaveList<D>::dKSq(int i) const
-   {  
+   {
       UTIL_CHECK(hasdKSq_);
       return dKSq_[i];
    }
 
    // Get entire dKSq container.
    template <int D>
-   inline 
+   inline
    DArray< RField<D> > const & WaveList<D>::dKSq() const
-   {  
+   {
       UTIL_CHECK(hasdKSq_);
       return dKSq_;
    }
 
    // Get the implicitInverse array by reference.
    template <int D>
-   inline 
+   inline
    DArray<bool> const & WaveList<D>::implicitInverse() const
-   {  
+   {
       UTIL_CHECK(isAllocated_);
       UTIL_CHECK(isRealField_);
       return implicitInverse_;

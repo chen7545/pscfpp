@@ -85,7 +85,7 @@ namespace Rpg {
       void setSystem(System<D>& system);
 
       /**
-      * Return parent system by const reference..
+      * Return parent system by const reference.
       */
       System<D> const & system() const;
       
