@@ -10,8 +10,8 @@
 
 #include "ForceBiasMove.h"
 #include <util/param/ParamComposite.h>
-#include <util/mesh/Mesh.h>
-#include <util/math/IntVec.h>
+#include <pscf/mesh/Mesh.h>
+#include <pscf/math/IntVec.h>
 #include <util/random/Random.h>
 
 namespace Pscf {
