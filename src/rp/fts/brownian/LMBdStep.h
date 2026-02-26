@@ -34,6 +34,16 @@ namespace Rp {
    *   B. Leimkuhler and C. Matthews, J. Chemical Physics,
    *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ]
    *
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, both also named LmBdStep, 
+   * that are defined in Rpc and Rpg namespaces and used in the pscf_rpc
+   * and pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *    - D : dimension
+   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *
    * \see \ref rp_LMBdStep_page "Manual Page"
    * \ingroup Rp_Fts_Brownian_Module
    */
