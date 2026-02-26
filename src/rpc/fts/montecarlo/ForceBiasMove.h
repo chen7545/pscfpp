@@ -8,12 +8,17 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "McMove.h"                          // base class
-#include <prdc/cpu/RField.h>                 // member
-#include <util/containers/DArray.h>          // member
+#include <rp/fts/montecarlo/ForceBiasMove.h> // direct base class template
+#include <rpc/system/Types.h>                // direct base argument
+#include <prdc/cpu/RField.h>                // direct base member
+#include <util/containers/DArray.h>          // direct base member
+#include "McMove.h"                          // indirect base class
 
 namespace Pscf {
 namespace Rpc {
+
+   // Forward declaration
+   template <int D> class McSimulator;
 
    using namespace Util;
    using namespace Prdc;
@@ -35,7 +40,7 @@ namespace Rpc {
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>
-   class ForceBiasMove : public McMove<D>
+   class ForceBiasMove : public Rp::ForceBiasMove<D, Types<D> >
    {
 
    public:
@@ -47,73 +52,7 @@ namespace Rpc {
       */
       ForceBiasMove(McSimulator<D>& simulator);
 
-      /**
-      * Destructor.
-      */
-      ~ForceBiasMove();
-
-      /**
-      * Read body of parameter file block and allocate memory.
-      *
-      * \param in  input parameter file stream
-      */
-      void readParameters(std::istream &in) override;
-
-      /**
-      * Output statistics for this move (at the end of simulation)
-      */
-      void output() override;
-
-      /**
-      * Setup before the beginning of each simulation run
-      */
-      void setup() override;
-
-      /**
-      * Attempt and accept or reject a force bias Monte-Carlo move.
-      *
-      * \return true if accepted, false if rejected
-      */
-      bool move() override;
-
-      /**
-      * Return move time contributions.
-      */
-      void outputTimers(std::ostream& out) override;
-
-      /**
-      * Specify if dc fields need to be saved (returns true).
-      */
-      bool needsDc() override;
-
-   protected:
-
-      /// Alias for McMove base class.
-      using McMoveT = McMove<D>;
-
-      // Protected inherited member functions
-      using McMoveT::system;
-      using McMoveT::simulator;
-
    private:
-
-      /// Local copy of w fields
-      DArray< RField<D> > w_;
-
-      /// Copy of initial dc field
-      DArray< RField<D> > dc_;
-
-      /// Change in wc
-      DArray<RField<D> >  dwc_;
-
-      /// Normal-distributed random field
-      RField<D> eta_;
-
-      /// Field used to compute bias for Metropolis criterion
-      RField<D> biasField_;
-
-      /// Prefactor of -dc_ in deterministic drift term
-      double mobility_;
 
       /**
       * Compute force bias field.
@@ -126,20 +65,20 @@ namespace Rpc {
 
    };
 
-   // Public inline methods
-
-   /*
-   * Specify if dc fields need to be saved.
-   */
-   template <int D>
-   inline bool ForceBiasMove<D>::needsDc()
-   {  return true; }
-
-   // Explicit instantiation declarations
-   extern template class ForceBiasMove<1>;
-   extern template class ForceBiasMove<2>;
-   extern template class ForceBiasMove<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class ForceBiasMove<1, Rpc::Types<1> >;
+      extern template class ForceBiasMove<2, Rpc::Types<2> >;
+      extern template class ForceBiasMove<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      extern template class ForceBiasMove<1>;
+      extern template class ForceBiasMove<2>;
+      extern template class ForceBiasMove<3>;
+   }
 }
 #endif
