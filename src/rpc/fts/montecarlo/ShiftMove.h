@@ -21,7 +21,7 @@ namespace Rpc {
    /**
    * ShiftMove shifts field.
    *
-   * \see \ref rp_ShiftMove_page "Manual Page". 
+   * \see \ref rp_ShiftMove_page "Manual Page".
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>
@@ -50,22 +50,22 @@ namespace Rpc {
       * \param in input stream
       */
       void readParameters(std::istream &in);
-      
+
       /**
       * Output statistics for this move (at the end of simulation)
       */
       void output();
-      
+
       /**
       * Setup before the beginning of each simulation run
       */
       void setup();
-      
+
       /**
       * Return field shift move times contributions.
       */
       void outputTimers(std::ostream& out);
-      
+
       // Inherited public member function
       using McMove<D>::move;
       using McMove<D>::readProbability;
@@ -74,7 +74,7 @@ namespace Rpc {
       using ParamComposite::setClassName;
 
    protected:
-      
+
       using McMove<D>::system;
       using McMove<D>::simulator;
       using McMove<D>::random;
@@ -89,21 +89,21 @@ namespace Rpc {
       void attemptMove();
 
    private:
-      
+
       // Initial field values
       DArray< RField<D> > w0_;
 
       // New field values after shift
       DArray< RField<D> > w_;
-      
+
       // The shift range
       int maxShift_;
-      
+
       // Has the variable been allocated?
       bool isAllocated_;
-   
+
    };
-      
+
    // Explicit instantiation declarations
    extern template class ShiftMove<1>;
    extern template class ShiftMove<2>;

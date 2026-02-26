@@ -9,7 +9,7 @@
 */
 
 #include "ShiftMove.h"
-#include "McMove.h" 
+#include "McMove.h"
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
 #include <rpc/fts/montecarlo/McSimulator.h>
@@ -28,7 +28,7 @@ namespace Rpc {
    * Constructor.
    */
    template <int D>
-   ShiftMove<D>::ShiftMove(McSimulator<D>& simulator) 
+   ShiftMove<D>::ShiftMove(McSimulator<D>& simulator)
     : McMove<D>(simulator),
       maxShift_(0),
       isAllocated_(false)
@@ -58,10 +58,10 @@ namespace Rpc {
          UTIL_CHECK(maxShift_ < meshDimensions[i]);
       }
    }
-   
+
    template <int D>
    void ShiftMove<D>::setup()
-   {  
+   {
       McMove<D>::setup();
       const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & meshDimensions = system().domain().mesh().dimensions();
@@ -76,7 +76,7 @@ namespace Rpc {
          isAllocated_ = true;
       }
    }
-   
+
    /*
    * Attempt unconstrained move
    */
@@ -105,12 +105,14 @@ namespace Rpc {
       for (int j = 0; j< nMonomer; ++j){
          for (int i = 0; i < meshSize; ++i) {
             position = mesh.position(i);
-         
+
             for (int d = 0; d < D; ++d){
-               if (shift[d]>= 0){
-                  shiftPosition[d] = (position[d] + shift[d]) % meshDimensions[d];
+               if (shift[d] >= 0){
+                  shiftPosition[d]
+                    = (position[d] + shift[d]) % meshDimensions[d];
                }  else{
-                  shiftPosition[d] = (position[d] + shift[d] + meshDimensions[d]) % meshDimensions[d];
+                  shiftPosition[d]
+                    = (position[d] + shift[d] + meshDimensions[d]) % meshDimensions[d];
                }
             }
             w_[j][mesh.rank(shiftPosition)] = w0_[j][mesh.rank(position)];
@@ -127,7 +129,7 @@ namespace Rpc {
    template <int D>
    void ShiftMove<D>::output()
    {}
-   
+
    template<int D>
    void ShiftMove<D>::outputTimers(std::ostream& out)
    {

@@ -18,19 +18,7 @@ namespace VecOpFts {
 
    // CUDA kernels: 
    // (defined in anonymous namespace, used only in this file)
-
    namespace {
-
-      // Rescale array a from [0,1] to [-b, b]
-      __global__ 
-      void _mcftsScale(cudaReal* a, cudaReal const b, const int n)
-      {
-         int nThreads = blockDim.x * gridDim.x;
-         int startID = blockIdx.x * blockDim.x + threadIdx.x;
-         for (int i = startID; i < n; i += nThreads) {
-            a[i] = a[i] * 2 * b - b;
-         }
-      }
 
       // Shift w Field
       template <int D>
@@ -69,7 +57,7 @@ namespace VecOpFts {
                   shiftPosition[d] = (position[d] + shift[d]) % meshDims[d];
                }  else{
                   shiftPosition[d] 
-                      = (position[d] + shift[d] + meshDims[d]) % meshDims[d];
+                     = (position[d] + shift[d] + meshDims[d]) % meshDims[d];
                }
             }
 
@@ -84,24 +72,6 @@ namespace VecOpFts {
          }
       }
 
-
-   }
-
-   // Kernel wrappers:
-
-   /*
-   * Rescale array a from [0,1] to [-b, b], GPU kernel wrapper.
-   */
-   void mcftsScale(DeviceArray<cudaReal>& a, cudaReal const b)
-   {
-      const int n = a.capacity();
-      
-      // GPU resources
-      int nBlocks, nThreads;
-      ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
-
-      // Launch kernel
-      _mcftsScale<<<nBlocks, nThreads>>>(a.cArray(), b, n);
    }
 
    /**
@@ -134,8 +104,9 @@ namespace VecOpFts {
       ThreadArray::setThreadsLogical(n, nBlocks, nThreads);
 
       // Launch kernel
-      _shiftWField<D><<<nBlocks, nThreads>>>(wshift.cArray(), w0.cArray(), 
-                                             meshDims_d.cArray(), shift_d.cArray(), n);
+      _shiftWField<D><<<nBlocks, nThreads>>>(
+                          wshift.cArray(), w0.cArray(), 
+                          meshDims_d.cArray(), shift_d.cArray(), n);
 
    }
 

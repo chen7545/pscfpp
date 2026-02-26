@@ -9,7 +9,7 @@
 */
 
 #include "ShiftMove.h"
-#include "McMove.h" 
+#include "McMove.h"
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
 #include <rpg/fts/montecarlo/McSimulator.h>
@@ -32,7 +32,7 @@ namespace Rpg {
    * Constructor.
    */
    template <int D>
-   ShiftMove<D>::ShiftMove(McSimulator<D>& simulator) 
+   ShiftMove<D>::ShiftMove(McSimulator<D>& simulator)
     : McMove<D>(simulator),
       maxShift_(0),
       isAllocated_(false)
@@ -62,10 +62,10 @@ namespace Rpg {
          UTIL_CHECK(maxShift_ < meshDimensions[i]);
       }
    }
-   
+
    template <int D>
    void ShiftMove<D>::setup()
-   {  
+   {
       McMove<D>::setup();
       const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & meshDimensions = system().domain().mesh().dimensions();
@@ -80,7 +80,7 @@ namespace Rpg {
          isAllocated_ = true;
       }
    }
-   
+
    /*
    * Attempt unconstrained move
    */
@@ -119,7 +119,7 @@ namespace Rpg {
    template <int D>
    void ShiftMove<D>::output()
    {}
-   
+
    template<int D>
    void ShiftMove<D>::outputTimers(std::ostream& out)
    {

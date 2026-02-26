@@ -33,15 +33,6 @@ namespace Rpg {
 namespace VecOpFts {
 
    /**
-   * Rescale array a from [0,1] to [-b, b], GPU kernel wrapper.
-   *
-   * \param a  array containing data between 0 and 1 (LHS)
-   * \param b  scalar bound for rescaled array (RHS)
-   */
-   void mcftsScale(DeviceArray<cudaReal>& a, 
-                   cudaReal const b);
-
-   /**
    * Shift w Field
    */
    template <int D>
