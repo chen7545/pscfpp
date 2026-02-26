@@ -1,5 +1,5 @@
-#ifndef RPG_FORCE_BIAS_MOVE_H
-#define RPG_FORCE_BIAS_MOVE_H
+#ifndef RP_FORCE_BIAS_MOVE_H
+#define RP_FORCE_BIAS_MOVE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,16 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "McMove.h"                          // base class
-#include <prdc/cuda/RField.h>
-#include <util/containers/DArray.h>
+#include <util/containers/DArray.h>          // member
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * ForceBiasMove attempts a Brownian dynamics move.
@@ -32,10 +28,10 @@ namespace Rpg {
    * probabilities.
    *
    * \see \ref rp_ForceBiasMove_page "Manual Page"
-   * \ingroup Rpc_Fts_MonteCarlo_Module
+   * \ingroup Rp_Fts_MonteCarlo_Module
    */
-   template <int D>
-   class ForceBiasMove : public McMove<D>
+   template <int D, class T>
+   class ForceBiasMove : public T::McMove
    {
 
    public:
@@ -45,7 +41,7 @@ namespace Rpg {
       *
       * \param simulator  parent McSimulator
       */
-      ForceBiasMove(McSimulator<D>& simulator);
+      ForceBiasMove(typename T::McSimulator& simulator);
 
       /**
       * Destructor.
@@ -60,11 +56,6 @@ namespace Rpg {
       void readParameters(std::istream &in) override;
 
       /**
-      * Output statistics for this move (at the end of simulation)
-      */
-      void output() override;
-
-      /**
       * Setup before the beginning of each simulation run
       */
       void setup() override;
@@ -75,6 +66,11 @@ namespace Rpg {
       * \return true if accepted, false if rejected
       */
       bool move() override;
+
+      /**
+      * Output statistics for this move (at the end of simulation)
+      */
+      void output() override;
 
       /**
       * Return move time contributions.
@@ -89,7 +85,7 @@ namespace Rpg {
    protected:
 
       /// Alias for McMove base class.
-      using McMoveT = McMove<D>;
+      using McMoveT = typename T::McMove;
 
       // Protected inherited member functions
       using McMoveT::system;
@@ -97,20 +93,23 @@ namespace Rpg {
 
    private:
 
+      /// Alias for RField type.
+      using RFieldT = typename T::RField;
+
       /// Local copy of w fields
-      DArray< RField<D> > w_;
+      DArray< RFieldT > w_;
 
       /// Copy of initial dc field
-      DArray< RField<D> > dc_;
+      DArray< RFieldT > dc_;
 
       /// Change in wc
-      DArray<RField<D> >  dwc_;
+      DArray<RFieldT >  dwc_;
 
       /// Normal-distributed random field
-      RField<D> eta_;
+      RFieldT eta_;
 
       /// Field used to compute bias for Metropolis criterion
-      RField<D> biasField_;
+      RFieldT biasField_;
 
       /// Prefactor of -dc_ in deterministic drift term
       double mobility_;
@@ -118,11 +117,12 @@ namespace Rpg {
       /**
       * Compute force bias field.
       */
-      void computeForceBias(RField<D>& result,
-                            RField<D> const & di,
-                            RField<D> const & df,
-                            RField<D> const & dwc,
-                            double mobility);
+      virtual
+      void computeForceBias(RFieldT& result,
+                            RFieldT const & di,
+                            RFieldT const & df,
+                            RFieldT const & dwc,
+                            double mobility) = 0;
 
    };
 
@@ -131,14 +131,9 @@ namespace Rpg {
    /*
    * Specify if dc fields need to be saved.
    */
-   template <int D>
-   inline bool ForceBiasMove<D>::needsDc()
+   template <int D, class T>
+   inline bool ForceBiasMove<D,T>::needsDc()
    {  return true; }
-
-   // Explicit instantiation declarations
-   extern template class ForceBiasMove<1>;
-   extern template class ForceBiasMove<2>;
-   extern template class ForceBiasMove<3>;
 
 }
 }

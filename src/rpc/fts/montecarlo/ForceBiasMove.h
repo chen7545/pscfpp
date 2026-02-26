@@ -16,18 +16,19 @@ namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * ForceBiasMove attempts a Brownian dynamics move.
    *
    * This class implements a Monte Carlo move in which the unconstrained
-   * attempted move is created by an explicit Euler Brownian dynamics
-   * step. 
-   * 
+   * attempted move is created by an explicit Euler-Maruyama Brownian
+   * dynamics step.
+   *
    * Because the probability of attempting a move is not equal to that
    * of generating the reverse move, the acceptance criterion used in
-   * the move() function must take into account the ratio of generation 
+   * the move() function must take into account the ratio of generation
    * probabilities.
    *
    * \see \ref rp_ForceBiasMove_page "Manual Page"
@@ -42,54 +43,52 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param simulator parent McSimulator
+      * \param simulator  parent McSimulator
       */
       ForceBiasMove(McSimulator<D>& simulator);
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       ~ForceBiasMove();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block and allocate memory.
       *
-      * \param in input stream
+      * \param in  input parameter file stream
       */
-      void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
       * Output statistics for this move (at the end of simulation)
       */
-      void output();
+      void output() override;
 
       /**
       * Setup before the beginning of each simulation run
       */
-      void setup();
+      void setup() override;
 
       /**
-      * Attempt and accept or reject force bias Monte-Carlo move.
+      * Attempt and accept or reject a force bias Monte-Carlo move.
       *
       * \return true if accepted, false if rejected
       */
-      bool move();
+      bool move() override;
 
       /**
-      * Return real move times contributions.
+      * Return move time contributions.
       */
-      void outputTimers(std::ostream& out);
-      
+      void outputTimers(std::ostream& out) override;
+
       /**
-      * Decide whether dc fields need to be saved for move
+      * Specify if dc fields need to be saved (returns true).
       */
-      bool needsDc();
+      bool needsDc() override;
 
    protected:
 
-      // Alias for McMove base class
+      /// Alias for McMove base class.
       using McMoveT = McMove<D>;
 
       // Protected inherited member functions
@@ -101,7 +100,7 @@ namespace Rpc {
       /// Local copy of w fields
       DArray< RField<D> > w_;
 
-      /// Copy of initial dc field 
+      /// Copy of initial dc field
       DArray< RField<D> > dc_;
 
       /// Change in wc
@@ -117,20 +116,20 @@ namespace Rpc {
       double mobility_;
 
       /**
-      * Compute force bias
+      * Compute force bias field.
       */
-      void computeForceBias(RField<D>& result, 
-                            RField<D> const & di, 
-                            RField<D> const & df, 
-                            RField<D> const & dwc, 
+      void computeForceBias(RField<D>& result,
+                            RField<D> const & di,
+                            RField<D> const & df,
+                            RField<D> const & dwc,
                             double mobility);
 
    };
-   
+
    // Public inline methods
 
    /*
-   * Return whether dc fields need to be saved for ForceBiasMove.
+   * Specify if dc fields need to be saved.
    */
    template <int D>
    inline bool ForceBiasMove<D>::needsDc()

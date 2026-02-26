@@ -1,5 +1,5 @@
-#ifndef RPC_FORCE_BIAS_MOVE_TPP
-#define RPC_FORCE_BIAS_MOVE_TPP
+#ifndef RP_FORCE_BIAS_MOVE_TPP
+#define RP_FORCE_BIAS_MOVE_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,32 +9,21 @@
 */
 
 #include "ForceBiasMove.h"
-#include "McMove.h"
-#include <rpc/fts/montecarlo/McSimulator.h>
-#include <rpc/system/System.h>
-#include <rpc/fts/compressor/Compressor.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/field/Domain.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/Reduce.h>
-#include <pscf/cpu/CpuVecRandom.h>
 #include <util/param/ParamComposite.h>
 #include <util/mesh/Mesh.h>
 #include <util/math/IntVec.h>
 #include <util/random/Random.h>
 
-
-
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   ForceBiasMove<D>::ForceBiasMove(McSimulator<D>& simulator)
+   template <int D, class T>
+   ForceBiasMove<D,T>::ForceBiasMove(typename T::McSimulator& simulator)
     : McMoveT(simulator),
       w_(),
       dwc_(),
@@ -44,15 +33,15 @@ namespace Rpc {
    /*
    * Destructor, empty default implementation.
    */
-   template <int D>
-   ForceBiasMove<D>::~ForceBiasMove()
+   template <int D, class T>
+   ForceBiasMove<D,T>::~ForceBiasMove()
    {}
 
    /*
    * Read body of parameter file block and allocate memory.
    */
-   template <int D>
-   void ForceBiasMove<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void ForceBiasMove<D,T>::readParameters(std::istream &in)
    {
       McMoveT::readProbability(in);
       ParamComposite::read(in, "mobility", mobility_);
@@ -77,8 +66,8 @@ namespace Rpc {
    /*
    * Setup before entering main simulation loop.
    */
-   template <int D>
-   void ForceBiasMove<D>::setup()
+   template <int D, class T>
+   void ForceBiasMove<D,T>::setup()
    {
       // Check array capacities
       int meshSize = system().domain().mesh().size();
@@ -100,8 +89,8 @@ namespace Rpc {
    /*
    * Attempt and accept or reject MC move
    */
-   template <int D>
-   bool ForceBiasMove<D>::move()
+   template <int D, class T>
+   bool ForceBiasMove<D,T>::move()
    {
       McMoveT::totalTimer_.start();
       McMoveT::incrementNAttempt();
@@ -199,8 +188,8 @@ namespace Rpc {
          // Compute force bias used in acceptance criterion
          double bias = 0.0;
          for (j = 0; j < nMonomer - 1; ++j) {
-            RField<D> const & di = dc_[j];
-            RField<D> const & df = simulator().dc(j);
+            RFieldT const & di = dc_[j];
+            RFieldT const & df = simulator().dc(j);
             computeForceBias(biasField_, di, df, dwc_[j], mobility_);
             bias += Reduce::sum(biasField_);
          }
@@ -228,46 +217,19 @@ namespace Rpc {
    /*
    * Output data to log file (do-nothing implementation).
    */
-   template <int D>
-   void ForceBiasMove<D>::output()
+   template <int D, class T>
+   void ForceBiasMove<D,T>::output()
    {}
 
    /*
    * Output timing results to a file.
    */
-   template<int D>
-   void ForceBiasMove<D>::outputTimers(std::ostream& out)
+   template <int D, class T>
+   void ForceBiasMove<D,T>::outputTimers(std::ostream& out)
    {
       out << "\n";
       out << "ForceBiasMove time contributions:\n";
       McMoveT::outputTimers(out);
-   }
-
-   // Private member function
-
-   /*
-   * Compute force bias field for use in Metropolis acceptance test.
-   */
-   template<int D>
-   void ForceBiasMove<D>::computeForceBias(
-                               RField<D>& result,
-                               RField<D> const & di,
-                               RField<D> const & df,
-                               RField<D> const & dwc,
-                               double mobility)
-   {
-      const int n = system().domain().mesh().size();
-      UTIL_CHECK(result.capacity() == n);
-      UTIL_CHECK(di.capacity() == n);
-      UTIL_CHECK(df.capacity() == n);
-      UTIL_CHECK(dwc.capacity() == n);
-
-      double dp, dm;
-      for (int k = 0; k < n; ++k) {
-         dp = 0.5*(di[k] + df[k]);
-         dm = 0.5*(di[k] - df[k]);
-         result[k] = dp*( dwc[k] + mobility*dm );
-      }
    }
 
 }
