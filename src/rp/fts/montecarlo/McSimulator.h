@@ -30,8 +30,17 @@ namespace Rp {
    * McSimulator has an McMoveManager and an AnalyzerManager, in addition
    * data members inherited from the Simulator class.
    *
-   * \see \ref rp_McSimulator_page (Manual Page)
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named McSimulator, that
+   * are defined in Rpc and Rpg namespaces and used in the pscf_rpc and
+   * pscf_rpg programs, respectively.
    *
+   * Template parameters:
+   *
+   *    - D : dimension
+   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *
+   * \see \ref rp_McSimulator_page "Manual Page"
    * \ingroup Rp_Fts_MonteCarlo_Module
    */
    template <int D, class T>

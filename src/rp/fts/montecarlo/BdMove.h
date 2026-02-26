@@ -22,6 +22,17 @@ namespace Rp {
    * Brownian dynamics (BD) simulation, and always accepts the result.
    * This implementation uses the Leimkuhler-Matthews BD step algorithm.
    *
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named BdMove, that are
+   * defined in Rpc and Rpg namespaces and used in the pscf_rpc pscf_rpg 
+   * programs, respectively.
+   *
+   * Template parameters:
+   *
+   *    - D : dimension
+   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *
+   * \see \ref rpc_BdMove_page "Manual Page"
    * \ingroup Rp_Fts_MonteCarlo_Module
    */
    template <int D, class T>
