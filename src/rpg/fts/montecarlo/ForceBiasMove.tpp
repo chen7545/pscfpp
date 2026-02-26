@@ -15,8 +15,6 @@
 #include <rpg/fts/compressor/Compressor.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <rpg/fts/VecOpFts.h>
-#include <prdc/cuda/resources.h>
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
 #include <pscf/cuda/CudaVecRandom.h>

@@ -13,11 +13,11 @@
 #include <rpg/fts/compressor/AmCompressor.h>
 #include <rpg/fts/compressor/LrCompressor.h>
 #include <rpg/fts/compressor/LrAmCompressor.h>
-#include <rpg/fts/VecOpFts.h>
 
 #include <prdc/cuda/RFieldComparison.h>
 #include <prdc/cuda/resources.h>
 
+#include <pscf/cuda/VecOp.h> 
 #include <pscf/cuda/CudaVecRandom.h> 
 
 #include <util/tests/LogFileUnitTest.h>
@@ -81,7 +81,8 @@ public:
          vecRandom.uniform(randomField);
 
          // Generate random numbers between [-stepSize_,stepSize_]
-         VecOpFts::mcftsScale(randomField, stepSize);
+	 VecOp::mulEqS(randomField, 2.0 * stepSize);
+	 VecOp::addEqS(randomField, -1.0 * stepSize);
 
          // Change the w field configuration
          VecOp::addVV(w2[i], w[i], randomField);
@@ -114,7 +115,8 @@ public:
       vecRandom.setSeed(0);
       vecRandom.uniform(randomField);
       double stepSize = 1e-1;
-      VecOpFts::mcftsScale(randomField, stepSize);
+      VecOp::mulEqS(randomField, 2.0 * stepSize);
+      VecOp::addEqS(randomField, -1.0 * stepSize);
       
       // For multi-component copolymer
       for (int i = 0; i < nMonomer; i++) {

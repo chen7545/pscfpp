@@ -116,6 +116,15 @@ namespace Rpc {
       /// Prefactor of -dc_ in deterministic drift term
       double mobility_;
 
+      /**
+      * Compute force bias
+      */
+      void computeForceBias(RField<D>& result, 
+                            RField<D> const & di, 
+                            RField<D> const & df, 
+                            RField<D> const & dwc, 
+                            double mobility);
+
    };
    
    // Public inline methods

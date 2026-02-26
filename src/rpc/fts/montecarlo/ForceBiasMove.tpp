@@ -109,7 +109,7 @@ namespace Rpc {
       UTIL_CHECK(simulator().hasDc());
       UTIL_CHECK(simulator().hasHamiltonian());
 
-      // Array sizes and indices
+      // Array sizes and index variables
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       int i, j;
@@ -120,7 +120,7 @@ namespace Rpc {
       // Save current state
       simulator().saveState();
 
-      // Clear both eigen-components of the fields and hamiltonian
+      // Clear eigen-components of the fields and Hamiltonian
       simulator().clearData();
 
       McMoveT::attemptMoveTimer_.start();
@@ -130,7 +130,7 @@ namespace Rpc {
          VecOp::eqV(w_[i], system().w().rgrid(i));
       }
 
-      // Copy current derivative fields into member variable dc_
+      // Copy derivative fields into dc_
       for (i = 0; i < nMonomer - 1; ++i) {
          VecOp::eqV(dc_[i], simulator().dc(i));
       }
@@ -145,7 +145,6 @@ namespace Rpc {
 
       // Modify local variables dwc_ and w_
       // Loop over eigenvectors of projected chi matrix
-      double  evec;
       for (j = 0; j < nMonomer - 1; ++j) {
 
          // Generate a vector of normal distributed random numbers
@@ -156,7 +155,7 @@ namespace Rpc {
 
          // Loop over monomer types to add to w_
          for (i = 0; i < nMonomer; ++i) {
-            evec = simulator().chiEvecs(j,i);
+            double evec = simulator().chiEvecs(j,i);
             VecOp::addEqVc(w_[i], dwc_[j], evec);
          }
 
@@ -195,16 +194,10 @@ namespace Rpc {
 
          // Compute force bias
          double bias = 0.0;
-         double dp, dm;
          for (j = 0; j < nMonomer - 1; ++j) {
             RField<D> const & di = dc_[j];
             RField<D> const & df = simulator().dc(j);
-            RField<D> const & dwc = dwc_[j];
-            for (int k=0; k < meshSize; ++k) {
-               dp = 0.5*(di[k] + df[k]);
-               dm = 0.5*(di[k] - df[k]);
-               biasField_[k] = dp*( dwc[k] + mobility_*dm );
-            }
+            computeForceBias(biasField_, di, df, dwc_[j], mobility_);
             bias += Reduce::sum(biasField_);
          }
          bias *= vNode;
@@ -242,6 +235,33 @@ namespace Rpc {
       out << "\n";
       out << "ForceBiasMove time contributions:\n";
       McMove<D>::outputTimers(out);
+   }
+
+   // Private member function
+
+   /*
+   * Compute force bias field for use in Metropolis acceptance test.
+   */
+   template<int D>
+   void ForceBiasMove<D>::computeForceBias(
+                               RField<D>& result, 
+                               RField<D> const & di, 
+                               RField<D> const & df, 
+                               RField<D> const & dwc, 
+                               double mobility)
+   {
+      const int n = system().domain().mesh().size();
+      UTIL_CHECK(result.capacity() == n);
+      UTIL_CHECK(di.capacity() == n);
+      UTIL_CHECK(df.capacity() == n);
+      UTIL_CHECK(dwc.capacity() == n);
+
+      double dp, dm;
+      for (int k = 0; k < n; ++k) {
+         dp = 0.5*(di[k] + df[k]);
+         dm = 0.5*(di[k] - df[k]);
+         result[k] = dp*( dwc[k] + mobility*dm );
+      }
    }
 
 }

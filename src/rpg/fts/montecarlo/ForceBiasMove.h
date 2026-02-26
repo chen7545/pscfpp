@@ -114,7 +114,7 @@ namespace Rpg {
                             RField<D> const & di, 
                             RField<D> const & df, 
                             RField<D> const & dwc, 
-                            cudaReal mobility);
+                            double mobility);
 
    };
 
