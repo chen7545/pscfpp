@@ -26,7 +26,7 @@ public:
 
    void setUp()
    {  setVerbose(0); }
-   
+
    template <int D>
    void initSystem(System<D>& system, std::string filename)
    {
@@ -39,7 +39,7 @@ public:
       in.close();
 
    }
-   
+
    template <int D>
    void initSimulator(McSimulator<D>& simulator, std::string filename)
    {
@@ -52,7 +52,7 @@ public:
       in.close();
    }
 
-      /*
+   /*
    * Allocate an array of rgrid fields.
    */
    template <int D>
@@ -79,7 +79,7 @@ public:
          UTIL_CHECK(fields[i].capacity() == meshSize);
       }
    }
-   
+
    /*
    * Read r-grid fields into an array.
    */
@@ -93,18 +93,18 @@ public:
       FieldIo<D> const & fieldIo = system.domain().fieldIo();
       fieldIo.readFieldsRGrid(filename, fields, unitCell);
    }
-   
+
    void testMcSimulateDiblocks()
    {
       printMethod(TEST_FUNC);
       openLogFile("out/testMcSimulateDiblocks.log");
-      
+
       System<3> system;
       initSystem(system, "in/param_system_disordered");
-      
+
       McSimulator<3> simulator(system);
       initSimulator(simulator, "in/param_McSimulator");
-      
+
       system.w().readRGrid("in/w_dis.rf");
       simulator.compressor().compress();
       simulator.simulate(50);
@@ -126,13 +126,13 @@ public:
    {
       printMethod(TEST_FUNC);
       openLogFile("out/testMcSimulateShiftDiblocks.log");
-      
+
       System<3> system;
       initSystem(system, "in/param_system_disordered");
-      
+
       McSimulator<3> simulator(system);
       initSimulator(simulator, "in/param_McSimulator_Shift");
-      
+
       system.w().readRGrid("in/w_dis.rf");
       simulator.compressor().compress();
       simulator.simulate(50);
@@ -149,18 +149,18 @@ public:
       TEST_ASSERT(comparison.maxDiff() < 1.0E-7);
 
    }
-   
+
    void testMcSimulateTriblocks()
    {
       printMethod(TEST_FUNC);
       openLogFile("out/testMcSimulateTriblocks.log");
-      
+
       System<3> system;
       initSystem(system, "in/param_system_triblock");
-      
+
       McSimulator<3> simulator(system);
       initSimulator(simulator, "in/param_triblock_McSimulator");
-      
+
       system.w().readRGrid("in/w_triblock.rf");
       simulator.compressor().compress();
       simulator.simulate(50);

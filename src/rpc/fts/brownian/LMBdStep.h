@@ -28,7 +28,6 @@ namespace Rpc {
    * from this base class.  See the documentation of this base class 
    * template for details. 
    *
-   * \see \ref rp_Class_page "Manual Page"
    * \see Rp::LMBdStep
    * \see \ref rp_LMBdStep_page "Manual Page"
    * \ingroup Rpc_Fts_Brownian_Module

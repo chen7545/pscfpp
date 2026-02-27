@@ -127,7 +127,7 @@ namespace Rpc {
    }
 
    /*
-   * Write type enum value
+   * Write type enum value.
    */
    template <int D>
    void RampParameter<D>::writeParamType(std::ostream& out) const
@@ -181,6 +181,9 @@ namespace Rpc {
       }
    }
 
+   /*
+   * Return current value of this parameter.
+   */
    template <int D>
    double RampParameter<D>::get_()
    {
@@ -213,32 +216,28 @@ namespace Rpc {
       }
    }
 
+   /*
+   * Modify system to set the value of this parameter.
+   */
    template <int D>
    void RampParameter<D>::set_(double newVal)
    {
       if (type_ == Chi) {
          systemPtr_->interaction().setChi(id(0), id(1), newVal);
       } else if (type_ == Kuhn) {
-         //systemPtr_->mixture().setKuhn(id(0), newVal);
          systemPtr_->mixtureModifier().setKuhn(id(0), newVal);
       } else if (type_ == Phi_Polymer) {
-         //systemPtr_->mixture().polymer(id(0)).setPhi(newVal);
          systemPtr_->mixtureModifier().setPhiPolymer(id(0), newVal);
       } else if (type_ == Mu_Polymer) {
-         //systemPtr_->mixture().polymer(id(0)).setMu(newVal);
          systemPtr_->mixtureModifier().setMuPolymer(id(0), newVal);
       } else if (type_ == Block) {
          UTIL_CHECK(PolymerModel::isThread());
-         //systemPtr_->mixture().polymer(id(0)).block(id(1)).setLength(newVal);
          systemPtr_->mixtureModifier().setBlockLength(id(0), id(1), newVal);
       } else if (type_ == Phi_Solvent) {
-         //systemPtr_->mixture().solvent(id(0)).setPhi(newVal);
          systemPtr_->mixtureModifier().setPhiSolvent(id(0), newVal);
       } else if (type_ == Mu_Solvent) {
-         //systemPtr_->mixture().solvent(id(0)).setMu(newVal);
          systemPtr_->mixtureModifier().setMuSolvent(id(0), newVal);
       } else if (type_ == Solvent) {
-         //systemPtr_->mixture().solvent(id(0)).setSize(newVal);
          systemPtr_->mixtureModifier().setSolventSize(id(0), newVal);
       } else if (type_ == Cell_Param) {
          FSArray<double,6> params 

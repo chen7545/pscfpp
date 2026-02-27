@@ -20,21 +20,15 @@ namespace Rpc {
    /**
    * Class for storing data about an individual ramp parameter.
    *
-   * \see 
-   * <ul>
-   *   <li> LinearRamp </li>
-   *   <li> \ref rpc_LinearRamp_page "Manual Page" </li>
-   * </ul>
-   *
-   * This class stores the information required to ramp a single 
+   * This class stores the information required to ramp a single
    * parameter value of any of several types.  The type of parameter
    * is indicated in the public interface and parameter file format
    * by a string identifier with any of several allowed values.
-   * Most types of parameter are also identified by one or two associated 
-   * index values, denoted here by id(0) and id(1), that specify the 
-   * index or indices for a subobject or array element with which the 
-   * parameter is associated applied. Allowed string representations 
-   * and meanings of parameter types are given below, along with the 
+   * Most types of parameter are also identified by one or two associated
+   * index values, denoted here by id(0) and id(1), that specify the
+   * index or indices for a subobject or array element with which the
+   * parameter is associated applied. Allowed string representations
+   * and meanings of parameter types are given below, along with the
    * meaning of any associated index value or pair of values.
    * To indicate the meaning of index values, we use mId to denote a
    * monomer type index, pId to denote a polymer species index, bId
@@ -61,30 +55,32 @@ namespace Rpc {
    * chi(i, j) automatically also update chi(j, i) for i !\ j, thus
    * maintaining the symmetry of the matrix.
    *
-   * Each RampParameter also has a "change" value that gives the 
-   * intended difference between the final and initial value of the 
+   * Each RampParameter also has a "change" value that gives the
+   * intended difference between the final and initial value of the
    * parameter over the course of a ramp, corresponding to a change
-   * ramp parameter s over the range [0,1]. The initial value of each 
-   * parameter is obtained from a query of the state of the parent 
-   * system at the beginning of a ramp, and thus does not need to 
+   * ramp parameter s over the range [0,1]. The initial value of each
+   * parameter is obtained from a query of the state of the parent
+   * system at the beginning of a ramp, and thus does not need to
    * be supplied as part of the text format for a RampParameter.
    *
    * A RampParameter<D> object is initialized by reading the parameter
-   * type, index or indices (if any) and change value from a parameter 
-   * file as a a single line.  An overloaded >> operator is defined that 
-   * allows a RampParameter<D> object named "parameter" to be read from 
-   * an istream named "in" using the syntax "in >> parameter". 
+   * type, index or indices (if any) and change value from a parameter
+   * file as a a single line.  An overloaded >> operator is defined that
+   * allows a RampParameter<D> object named "parameter" to be read from
+   * an istream named "in" using the syntax "in >> parameter".
    *
    * The text format for a parameter of a type that requires a single
    * index id(0) is:
    *
-   *    type id(0) change 
+   *    type id(0) change
    *
    * where type indicates a type string, id(0) is an integer index value,
    * and change is the a floating point value for the change in parameter
-   * value. The corresponding format for a parameter that requires two 
+   * value. The corresponding format for a parameter that requires two
    * indices (e.g., block or chi) is instead: "type id(0) id(1) change".
    *
+   * \see LinearRamp
+   * \see \ref rpc_LinearRamp_page "Manual Page"
    * \ingroup Rpc_Fts_Ramp_Module
    */
    template <int D>
@@ -108,7 +104,7 @@ namespace Rpc {
       /**
       * Set the simulator and system associated with this object.
       *
-      * Invoke this function on objects created with the default 
+      * Invoke this function on objects created with the default
       * constructor to create an association with a parent simulator
       * and system.
       *
@@ -132,7 +128,7 @@ namespace Rpc {
       void update(double newVal);
 
       /**
-      * Return a string representation of the parameter type. 
+      * Return a string representation of the parameter type.
       */
       std::string type() const;
 
@@ -146,20 +142,20 @@ namespace Rpc {
       /**
       * Get id for a sub-object or element to which this is applied.
       *
-      * This function returns a value from the id_ array. Elements of 
+      * This function returns a value from the id_ array. Elements of
       * array store indices associating with a parameter value, which
-      * may, for example, identify a molecule type index, one or more 
-      * monomer type indices or a unit cell parameter index. 
-      * 
-      * Different types of parameters require either 1 or 2 such 
-      * identifiers.  The number of required identifiers is returned 
-      * by the function nId(). 
+      * may, for example, identify a molecule type index, one or more
+      * monomer type indices or a unit cell parameter index.
+      *
+      * Different types of parameters require either 1 or 2 such
+      * identifiers.  The number of required identifiers is returned
+      * by the function nId().
       *
       * \param i array index to access
       */
       int id(int i) const
       {
-         UTIL_CHECK(i < nId_);  
+         UTIL_CHECK(i < nId_);
          return id_[i];
       }
 
@@ -202,7 +198,7 @@ namespace Rpc {
 
       /// Enumeration of allowed parameter types.
       enum ParamType { Block, Chi, Kuhn, Phi_Polymer, Phi_Solvent,
-                       Mu_Polymer, Mu_Solvent, Solvent, Cell_Param, 
+                       Mu_Polymer, Mu_Solvent, Solvent, Cell_Param,
                        Lambda_Pert, Vmonomer, Null};
 
       /// Type of parameter associated with an object of this class
@@ -264,7 +260,7 @@ namespace Rpc {
    * \param param  RampParameter<D> object to read
    */
    template <int D>
-   std::istream& operator >> (std::istream& in, 
+   std::istream& operator >> (std::istream& in,
                               RampParameter<D>& param);
 
    /**
@@ -274,7 +270,7 @@ namespace Rpc {
    * \param param  RampParameter<D> object to write
    */
    template <int D>
-   std::ostream& operator << (std::ostream& out, 
+   std::ostream& operator << (std::ostream& out,
                               RampParameter<D> const & param);
 
 }
