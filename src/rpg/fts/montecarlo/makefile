@@ -8,14 +8,14 @@ include $(SRC_DIR)/rpg/patterns.mk
 #--------------------------------------------------------------------
 # Main targets 
 
-all: $(rpg_fts_mcmove_OBJS) 
+all: $(rpg_fts_montecarlo_OBJS) 
 
 clean:
-	rm -f $(rpg_fts_mcmove_OBJS) $(rpg_fts_mcmove_OBJS:.o=.d) 
+	rm -f $(rpg_fts_montecarlo_OBJS) $(rpg_fts_montecarlo_OBJS:.o=.d) 
 
 .PHONY: all clean
 
 #--------------------------------------------------------------------
 # Include dependency files
 
--include $(rpg_fts_mcmove_OBJS:.o=.d)
+-include $(rpg_fts_montecarlo_OBJS:.o=.d)

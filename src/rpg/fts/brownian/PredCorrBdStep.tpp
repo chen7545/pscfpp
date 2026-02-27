@@ -17,14 +17,13 @@
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/CudaVecRandom.h>
 #include <pscf/math/IntVec.h>
-#include <util/random/Random.h>
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /*
    * Constructor.
@@ -67,7 +66,7 @@ namespace Rpg {
       }
       dci_.allocate(nMonomer-1);
       eta_.allocate(nMonomer-1);
-      for (int i=0; i < nMonomer - 1; ++i) {
+      for (int i = 0; i < nMonomer - 1; ++i) {
          dci_[i].allocate(meshDimensions);
          eta_[i].allocate(meshDimensions);
       }
@@ -106,51 +105,41 @@ namespace Rpg {
    template <int D>
    bool PredCorrBdStep<D>::step()
    {
+      // Save initial state
+      simulator().saveState();
+
       // Array sizes and indices
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       int i, j;
 
-      // Save current state
-      simulator().saveState();
-
-      // Copy current W fields from parent system
+      // Copy initial w monomer fields into wp_ and wf_
       for (i = 0; i < nMonomer; ++i) {
-         // VecOp::eqVPair(wp_[i], wf_[i], system().w().rgrid(i));
          wp_[i] = system().w().rgrid(i);
          wf_[i] = wp_[i];
       }
 
-      // Store initial value of pressure field
-      //VecOp::eqV(dwp_, simulator().wc(nMonomer-1));
+      // Copy initial value of pressure field as dwp_
       dwp_ = simulator().wc(nMonomer-1);
 
       // Constants used for step
       const double vSystem = system().domain().unitCell().volume();
-      double a = -1.0*mobility_;
-      double b = sqrt(2.0*mobility_*double(meshSize)/vSystem);
+      const double a = -1.0 * mobility_;
+      const double stddev = sqrt(2.0*mobility_*double(meshSize)/vSystem);
+      const double mean = 0.0;
 
-      // Constants for normal distribution
-      double stddev = 1.0;
-      double mean = 0;
-
-      // Construct all random displacement components
+      // Generate all random displacement components
       for (j = 0; j < nMonomer - 1; ++j) {
-         // vecRandom().normal(eta_[j], stddev, mean);
-         // VecOp::mulEqS(eta_[j], b);
-         vecRandom().normal(eta_[j], b, mean);
+         BdStep<D>::vecRandom().normal(eta_[j], stddev, mean);
       }
 
-      // Compute predicted state wp_, and store initial force dci_
+      // Compute predicted state wp_, and store initial force as dci_
 
-      // Loop over eigenvectors of projected chi matrix
+      // Loop over composition eigenvectors of projected chi matrix
       for (j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & dc = simulator().dc(j);
-         RField<D> const & eta = eta_[j];
-         RField<D> & dci = dci_[j];
-         VecOp::addVcVc(dwc_, dc, a, eta, 1.0);
-         VecOp::eqV(dci, dc);
-
+         VecOp::addVcVc(dwc_, dc, a, eta_[j], 1.0);
+         VecOp::eqV(dci_[j], dc);
          // Loop over monomer types
          for (i = 0; i < nMonomer; ++i) {
             double evec = simulator().chiEvecs(j,i);
@@ -158,73 +147,66 @@ namespace Rpg {
          }
       }
 
-      // Set modified fields at predicted state wp_
+      // Set system fields to predicted state wp_
       system().w().setRGrid(wp_);
-
-      // Set function return value to indicate failure by default
-      bool isConverged = false;
 
       // Apply compressor after predictor step
       int compress = simulator().compressor().compress();
-
       if (compress != 0){
          simulator().restoreState();
-      } else {
-         UTIL_CHECK(system().c().hasData());
-
-         // Compute components and derivatives at wp_
-         simulator().clearData();
-         simulator().computeWc();
-         simulator().computeCc();
-         simulator().computeDc();
-
-         // Compute change dwp_ in pressure field
-         RField<D> const & wp = simulator().wc(nMonomer-1);
-         VecOp::subVV(dwp_, wp, dwp_);
-
-         // Adjust predicted pressure field
-         for (i = 0; i < nMonomer; ++i) {
-            VecOp::addEqV(wf_[i], dwp_);
-         }
-
-         // Full step (corrector) change
-         double ha = 0.5*a;
-         for (j = 0; j < nMonomer - 1; ++j) {
-            RField<D> const & dcp = simulator().dc(j);
-            RField<D> const & dci = dci_[j];
-            RField<D> const & eta = eta_[j];
-
-            // dwc_[k] = ha*( dci[k] + dcp[k]) + eta[k];
-            VecOp::addVcVcVc(dwc_, dci, ha, dcp, ha, eta, 1.0);
-
-            for (i = 0; i < nMonomer; ++i) {
-               evec = simulator().chiEvecs(j,i);
-               VecOp::addEqVc(wf_[i], dwc_, evec);
-            }
-         }
-
-         // Set system fields after corrector step
-         system().w().setRGrid(wf_);
-
-         // Apply compressor to final state
-         int compress2 = simulator().compressor().compress();
-         if (compress2 != 0){
-            simulator().restoreState();
-         }  else {
-            isConverged = true;
-            UTIL_CHECK(system().c().hasData());
-
-            // Compute components and derivatives at final point
-            simulator().clearState();
-            simulator().clearData();
-            simulator().computeWc();
-            simulator().computeCc();
-            simulator().computeDc();
-         }
-
+         bool isConverged = false;
+         return isConverged;
       }
 
-      // True iff compressor converged after predictor and corrector
+      // Compute components and derivatives at wp_
+      UTIL_CHECK(system().c().hasData());
+      simulator().clearData();
+      simulator().computeWc();
+      simulator().computeCc();
+      simulator().computeDc();
+
+      // Compute change dwp_ in pressure field
+      // Note: On entry dwp_ is the old pressure field
+      RField<D> const & wp = simulator().wc(nMonomer-1);
+      VecOp::subVV(dwp_, wp, dwp_);
+
+      // Adjust predicted pressure field
+      for (i = 0; i < nMonomer; ++i) {
+         VecOp::addEqV(wf_[i], dwp_);
+      }
+
+      // Compute corrected state wf_
+      double ha = 0.5*a;
+      for (j = 0; j < nMonomer - 1; ++j) {
+         RField<D> const & dcp = simulator().dc(j);
+         VecOp::addVcVcVc(dwc_, dci_[j], ha, dcp, ha, eta_[j], 1.0);
+         for (i = 0; i < nMonomer; ++i) {
+            double evec = simulator().chiEvecs(j,i);
+            VecOp::addEqVc(wf_[i], dwc_, evec);
+         }
+      }
+
+      // Set system fields after corrector step
+      system().w().setRGrid(wf_);
+
+      // Apply compressor to final state
+      int compress2 = simulator().compressor().compress();
+      if (compress2 != 0){
+         simulator().restoreState();
+         bool isConverged = false;
+         return isConverged;
+      }
+
+      // Compute components and derivatives in final state
+      UTIL_CHECK(system().c().hasData());
+      simulator().clearState();
+      simulator().clearData();
+      simulator().computeWc();
+      simulator().computeCc();
+      simulator().computeDc();
+
+      // Success
+      bool isConverged = true;
       return isConverged;
    }
 

@@ -1,4 +1,4 @@
-rpg_fts_mcmove_= \
+rpg_fts_montecarlo_= \
   rpg/fts/montecarlo/McSimulator.cu \
   rpg/fts/montecarlo/McMove.cu \
   rpg/fts/montecarlo/McMoveFactory.cu \
@@ -8,6 +8,6 @@ rpg_fts_mcmove_= \
   rpg/fts/montecarlo/BdMove.cu \
   rpg/fts/montecarlo/ShiftMove.cu
   
-rpg_fts_mcmove_OBJS=\
-     $(addprefix $(BLD_DIR)/, $(rpg_fts_mcmove_:.cu=.o))
+rpg_fts_montecarlo_OBJS=\
+     $(addprefix $(BLD_DIR)/, $(rpg_fts_montecarlo_:.cu=.o))
 

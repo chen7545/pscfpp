@@ -8,13 +8,13 @@ include $(SRC_DIR)/rpg/patterns.mk
 #--------------------------------------------------------------------
 # Main targets 
 
-all: $(rpg_fts_bdstep_OBJS) 
+all: $(rpg_fts_brownian_OBJS) 
 
 includes:
 	echo $(INCLUDES)
 
 clean:
-	rm -f $(rpg_fts_bdstep_OBJS) $(rpg_fts_bdstep_OBJS:.o=.d) 
+	rm -f $(rpg_fts_brownian_OBJS) $(rpg_fts_brownian_OBJS:.o=.d) 
 
 #--------------------------------------------------------------------
 # Include dependency files
