@@ -22,6 +22,13 @@ namespace Rpc {
    /**
    * Leimkuhler-Mathews Brownian dynamics time stepper.
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::LMBdStep, and inherit
+   * their entire public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * template for details. 
+   *
+   * \see \ref rp_Class_page "Manual Page"
    * \see Rp::LMBdStep
    * \see \ref rp_LMBdStep_page "Manual Page"
    * \ingroup Rpc_Fts_Brownian_Module

@@ -22,6 +22,12 @@ namespace Rpc {
    /**
    * Predictor-corrector Brownian dynamics time stepper.
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::PredCorrBdStep, and
+   * inherit their public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * template for details. 
+   *
    * \see Rp::PredCorrBdStep
    * \see \ref rp_PredCorrBdStep_page "Manual Page"
    * \ingroup Rpc_Fts_Brownian_Module
