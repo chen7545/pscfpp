@@ -19,10 +19,6 @@ namespace Rpc {
    // Forward declaration
    template <int D> class BdSimulator;
 
-   using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
-
    /**
    * Explicit Euler-Maruyama Brownian dynamics step.
    *

@@ -16,6 +16,9 @@
 namespace Pscf {
 namespace Rpc {
 
+   // Forward declaration
+   template <int D> class System;
+
    /**
    * Brownian dynamics simulator for PS-FTS.
    *
@@ -25,7 +28,6 @@ namespace Rpc {
    * of the base class for details.
    *
    * \see \ref rp_BdSimulator_page (manual page)
-   *
    * \ingroup Rpc_Fts_Brownian_Module
    */
    template <int D>

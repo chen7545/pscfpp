@@ -16,6 +16,7 @@
 namespace Pscf {
 namespace Rpc {
 
+   // Forward declaration
    template <int D> class BdSimulator;
 
    using namespace Util;
@@ -34,7 +35,7 @@ namespace Rpc {
       /**
       * Constructor.
       *
-      * \param simulator parent BdSimulator<D> object
+      * \param simulator  parent BdSimulator<D> object
       */
       BdStepFactory(BdSimulator<D>& simulator);
 

@@ -6,7 +6,6 @@
 */
 
 #include "BdSimulator.h"
-
 #include <rpc/fts/brownian/BdStep.h>
 #include <rpc/fts/brownian/BdStepFactory.h>
 #include <rpc/fts/analyzer/AnalyzerManager.h>
@@ -26,9 +25,7 @@
 namespace Pscf {
    namespace Rpc {
    
-      /*
-      * Constructor.
-      */
+      // Constructor.
       template <int D>
       BdSimulator<D>::BdSimulator(System<D>& system)
        : Rp::BdSimulator<D, Types<D> >(system, *this)

@@ -14,7 +14,8 @@
 namespace Pscf {
 namespace Rpc {
 
-   using namespace Util;
+   // Forward declaration
+   template <int D> class BdSimulator;
 
    /**
    * BdStep is an abstract base class for Brownian dynamics steps.

@@ -10,18 +10,14 @@
 
 #include <rp/fts/brownian/LMBdStep.h>     // base class template
 #include <rpc/system/Types.h>             // base class template argument 
-#include <rpc/fts/brownian/BdStep.h>      // indirect base class
 #include <prdc/cpu/RField.h>              // base class member
+#include <rpc/fts/brownian/BdStep.h>      // indirect base class
 
 namespace Pscf {
 namespace Rpc {
 
    // Forward declaration
    template <int D> class BdSimulator;
-
-   using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
    * Leimkuhler-Mathews Brownian dynamics time stepper.
