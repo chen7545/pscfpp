@@ -1,5 +1,5 @@
-#ifndef RPC_PRED_CORR_BD_STEP_TPP
-#define RPC_PRED_CORR_BD_STEP_TPP
+#ifndef RP_PRED_CORR_BD_STEP_TPP
+#define RP_PRED_CORR_BD_STEP_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,29 +9,19 @@
 */
 
 #include "PredCorrBdStep.h"
-#include <rpc/fts/brownian/BdSimulator.h>
-#include <rpc/fts/compressor/Compressor.h>
-#include <rpc/system/System.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/field/Domain.h>
-#include <pscf/cpu/VecOp.h>
-#include <pscf/cpu/CpuVecRandom.h>
 #include <pscf/math/IntVec.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /*
    * Constructor.
    */
-   template <int D>
-   PredCorrBdStep<D>::PredCorrBdStep(BdSimulator<D>& simulator)
-    : BdStep<D>(simulator),
-      wp_(),
+   template <int D, class T>
+   PredCorrBdStep<D,T>::PredCorrBdStep(typename T::BdSimulator& simulator)
+    : BdStepT(simulator),
       wf_(),
       dci_(),
       eta_(),
@@ -43,15 +33,15 @@ namespace Rpc {
    /*
    * Destructor.
    */
-   template <int D>
-   PredCorrBdStep<D>::~PredCorrBdStep()
+   template <int D, class T>
+   PredCorrBdStep<D,T>::~PredCorrBdStep()
    {}
 
    /*
    * Read body of parameter file block and initialize.
    */
-   template <int D>
-   void PredCorrBdStep<D>::readParameters(std::istream &in)
+   template <int D, class T>
+   void PredCorrBdStep<D,T>::readParameters(std::istream &in)
    {
       ParamComposite::read(in, "mobility", mobility_);
 
@@ -77,8 +67,8 @@ namespace Rpc {
    /*
    * Setup before entering main simulation loop.
    */
-   template <int D>
-   void PredCorrBdStep<D>::setup()
+   template <int D, class T>
+   void PredCorrBdStep<D,T>::setup()
    {
       // Check array capacities
       const int meshSize = system().domain().mesh().size();
@@ -102,8 +92,8 @@ namespace Rpc {
    /*
    * Take one BD step.
    */
-   template <int D>
-   bool PredCorrBdStep<D>::step()
+   template <int D, class T>
+   bool PredCorrBdStep<D,T>::step()
    {
       // Save initial state
       simulator().saveState();
@@ -130,14 +120,14 @@ namespace Rpc {
 
       // Generate all random displacement components
       for (j = 0; j < nMonomer - 1; ++j) {
-         BdStep<D>::vecRandom().normal(eta_[j], stddev, mean);
+         BdStepT::vecRandom().normal(eta_[j], stddev, mean);
       }
 
       // Compute predicted state wp_, and store initial force as dci_
 
       // Loop over composition eigenvectors of projected chi matrix
       for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & dc = simulator().dc(j);
+         RFieldT const & dc = simulator().dc(j);
          VecOp::addVcVc(dwc_, dc, a, eta_[j], 1.0);
          VecOp::eqV(dci_[j], dc);
          // Loop over monomer types
@@ -167,7 +157,7 @@ namespace Rpc {
 
       // Compute change dwp_ in pressure field
       // Note: On entry, dwp_ is the old pressure field
-      RField<D> const & wp = simulator().wc(nMonomer-1);
+      RFieldT const & wp = simulator().wc(nMonomer-1);
       VecOp::subVV(dwp_, wp, dwp_);
 
       // Adjust predicted pressure field
@@ -178,7 +168,7 @@ namespace Rpc {
       // Compute corrected state wf_
       const double ha = 0.5*a;
       for (j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & dcp = simulator().dc(j);
+         RFieldT const & dcp = simulator().dc(j);
          VecOp::addVcVcVc(dwc_, dci_[j], ha, dcp, ha, eta_[j], 1.0);
          for (i = 0; i < nMonomer; ++i) {
             double evec = simulator().chiEvecs(j,i);

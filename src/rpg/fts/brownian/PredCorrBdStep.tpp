@@ -166,7 +166,7 @@ namespace Rpg {
       simulator().computeDc();
 
       // Compute change dwp_ in pressure field
-      // Note: On entry dwp_ is the old pressure field
+      // Note: On entry, dwp_ is the old pressure field
       RField<D> const & wp = simulator().wc(nMonomer-1);
       VecOp::subVV(dwp_, wp, dwp_);
 
@@ -176,7 +176,7 @@ namespace Rpg {
       }
 
       // Compute corrected state wf_
-      double ha = 0.5*a;
+      const double ha = 0.5*a;
       for (j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & dcp = simulator().dc(j);
          VecOp::addVcVcVc(dwc_, dci_[j], ha, dcp, ha, eta_[j], 1.0);

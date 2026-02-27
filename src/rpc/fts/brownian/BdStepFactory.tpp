@@ -1,10 +1,10 @@
 #ifndef RPC_BD_STEP_FACTORY_TPP
 #define RPC_BD_STEP_FACTORY_TPP
 
-#include "BdStepFactory.h"  
+#include "BdStepFactory.h"
 #include <rpc/fts/brownian/BdSimulator.h>
 
-// Subclasses of BdStep 
+// Subclasses of BdStep
 #include "ExplicitBdStep.h"
 #include "PredCorrBdStep.h"
 #include "LMBdStep.h"
@@ -22,7 +22,7 @@ namespace Rpc {
     : simulatorPtr_(&simulator)
    {}
 
-   /* 
+   /*
    * Return a pointer to a instance of BdStep subclass className.
    */
    template <int D>
@@ -34,7 +34,6 @@ namespace Rpc {
       ptr = trySubfactories(className);
       if (ptr) return ptr;
 
-      
       // Try to match classname
       if (className == "ExplicitBdStep" || className == "BdStep") {
          ptr = new ExplicitBdStep<D>(*simulatorPtr_);

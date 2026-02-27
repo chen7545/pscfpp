@@ -1,5 +1,5 @@
-#ifndef RPG_PRED_CORR_BD_STEP_H
-#define RPG_PRED_CORR_BD_STEP_H
+#ifndef RP_PRED_CORR_BD_STEP_H
+#define RP_PRED_CORR_BD_STEP_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,25 +9,21 @@
 */
 
 
-#include "BdStep.h"                    // base class
-#include <prdc/cuda/RField.h>          // member
-#include <util/containers/DArray.h>    // member
+#include <util/containers/DArray.h>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Predictor-corrector Brownian dynamics stepper.
    *
    * \see \ref rp_PredCorrBdStep_page "Manual Page"
-   * \ingroup Rpg_Fts_Brownian_Module
+   * \ingroup Rp_Fts_Brownian_Module
    */
-   template <int D>
-   class PredCorrBdStep : public BdStep<D>
+   template <int D, class T>
+   class PredCorrBdStep : public T::BdStep
    {
 
    public:
@@ -37,7 +33,7 @@ namespace Rpg {
       *
       * \param simulator  parent BdSimulator object
       */
-      PredCorrBdStep(BdSimulator<D>& simulator);
+      PredCorrBdStep(typename T::BdSimulator& simulator);
 
       /**
       * Destructor.
@@ -65,38 +61,38 @@ namespace Rpg {
 
    protected:
 
-      using BdStep<D>::system;
-      using BdStep<D>::simulator;
+      using BdStepT = typename T::BdStep;
+
+      // Protected inherited member functions
+      using BdStepT::system;
+      using BdStepT::simulator;
 
    private:
 
+      using RFieldT = typename T::RField;
+
       // Predicted values of fields (monomer fields)
-      DArray< RField<D> > wp_;
+      DArray< RFieldT > wp_;
 
       // Corrected (final) values of fields (monomer fields)
-      DArray< RField<D> > wf_;
+      DArray< RFieldT > wf_;
 
       // Initial deterministic forces (eigenvector components)
-      DArray< RField<D> > dci_;
+      DArray< RFieldT > dci_;
 
       // Random displacement components (eigenvector components)
-      DArray< RField<D> > eta_;
+      DArray< RFieldT > eta_;
 
       // Change in one component of wc
-      RField<D> dwc_;
+      RFieldT dwc_;
 
       // Change in pressure field component
-      RField<D> dwp_;
+      RFieldT dwp_;
 
       // Prefactor of -dc_ in deterministic drift term
       double mobility_;
 
    };
-
-   // Explicit instantiation declarations
-   extern template class PredCorrBdStep<1>;
-   extern template class PredCorrBdStep<2>;
-   extern template class PredCorrBdStep<3>;
 
 }
 }

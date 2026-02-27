@@ -59,7 +59,7 @@ namespace Rpc {
       /**
       * Take a single Brownian dynamics step.
       *
-      * \return true if converged, false if failed to converge.
+      * \return true if converged, false if failed to converge
       */
       bool step() override;
 
@@ -67,13 +67,10 @@ namespace Rpc {
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
-      using BdStep<D>::vecRandom;
-      using BdStep<D>::random;
-      using ParamComposite::read;
 
    private:
 
-      // Predictor value of fields (monomer fields)
+      // Predicted values of fields (monomer fields)
       DArray< RField<D> > wp_;
 
       // Corrected (final) values of fields (monomer fields)
