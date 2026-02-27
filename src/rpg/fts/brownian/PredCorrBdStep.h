@@ -17,8 +17,8 @@ namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * Predictor-corrector Brownian dynamics stepper.
@@ -45,23 +45,23 @@ namespace Rpg {
       virtual ~PredCorrBdStep();
 
       /**
-      * Read body of parameter file block.
+      * Read body of parameter file block and initialize.
       *
       * \param in  input parameter file stream
       */
-      virtual void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
       * Setup before simulation.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
       * Take a single Brownian dynamics step.
-      * 
+      *
       * \return true if converged, false if failed to converge
       */
-      virtual bool step();
+      bool step() override;
 
    protected:
 
@@ -75,19 +75,19 @@ namespace Rpg {
       // Predictor value of fields (monomer fields)
       DArray< RField<D> > wp_;
 
-      // Correctd (new) values of fields (monomer fields)
+      // Corrected (new) values of fields (monomer fields)
       DArray< RField<D> > wf_;
 
-      // Initial deterministic forces (components)
+      // Initial deterministic forces (eigenvector components)
       DArray< RField<D> > dci_;
 
-      // Random displacement components (components)
+      // Random displacement components (eigenvector components)
       DArray< RField<D> > eta_;
 
-      // Change in one component of wc 
+      // Change in one component of wc
       RField<D> dwc_;
 
-      // Change in pressure field component 
+      // Change in pressure field component
       RField<D> dwp_;
 
       // Prefactor of -dc_ in deterministic drift term

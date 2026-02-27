@@ -393,6 +393,22 @@ namespace Pscf {
                    Array<double> const & b2, const double c2,
                    const double s);
 
+      /**
+      * Add scaled vectors, a[i] = b1[i]*c1 + b2[i]*c2 + b3[i]*c3 (real).
+      *
+      * \param a  real array (LHS)
+      * \param b1  1st real input array (RHS)
+      * \param c1  real coefficient of b1 (RHS)
+      * \param b2  2nd real input array (RHS)
+      * \param c2  real coefficient of b2 (RHS)
+      * \param b3  3rd real input array (RHS)
+      * \param c3  real coefficient of b3 (RHS)
+      */
+      void addVcVcVc(Array<double>& a,
+                     Array<double> const & b1, const double c1,
+                     Array<double> const & b2, const double c2,
+                     Array<double> const & b3, const double c3);
+
       // Pair operations (two output arrays and a shared input)
 
       /**

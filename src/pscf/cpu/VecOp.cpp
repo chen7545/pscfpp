@@ -388,12 +388,12 @@ namespace VecOp {
    }
 
    /*
-   * Add 2 scaled vectors & scalar, a[i] = b1[i]*c1 + b2[2]*c2 + s (real).
+   * Add 2 scaled vectors & scalar, a[i] = b1[i]*c1 + b2[i]*c2 + s (real).
    */
    void addVcVcS(Array<double>& a,
-                Array<double> const & b1, const double c1,
-                Array<double> const & b2, const double c2,
-                const double s)
+                 Array<double> const & b1, const double c1,
+                 Array<double> const & b2, const double c2,
+                 const double s)
    {
       const int n = a.capacity();
       UTIL_CHECK(n > 0);
@@ -401,6 +401,24 @@ namespace VecOp {
       UTIL_CHECK(b2.capacity() >= n);
       for (int i = 0; i < n; ++i) {
          a[i] = b1[i]*c1 + b2[i]*c2 + s;
+      }
+   }
+
+   /*
+   * Add 3 scaled vectors, a[i] = b1[i]*c1 + b2[i]*c2 + b3[i]*c3 (real).
+   */
+   void addVcVcVc(Array<double>& a,
+                  Array<double> const & b1, const double c1,
+                  Array<double> const & b2, const double c2,
+                  Array<double> const & b3, const double c3)
+   {
+      const int n = a.capacity();
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(b1.capacity() >= n);
+      UTIL_CHECK(b2.capacity() >= n);
+      UTIL_CHECK(b3.capacity() >= n);
+      for (int i = 0; i < n; ++i) {
+         a[i] = b1[i]*c1 + b2[i]*c2 + b3[i]*c3;
       }
    }
 

@@ -10,22 +10,20 @@
 
 
 #include "BdStep.h"
-
 #include <prdc/cpu/RField.h>
-#include <util/containers/DArray.h>
 #include <util/containers/DArray.h>
 
 namespace Pscf {
 namespace Rpc {
 
    using namespace Util;
+   using namespace Prdc;
    using namespace Prdc::Cpu;
 
    /**
    * Predictor-corrector Brownian dynamics stepper.
    *
    * \see \ref rp_PredCorrBdStep_page "Manual Page"
-   *
    * \ingroup Rpc_Fts_Brownian_Module
    */
    template <int D>
@@ -43,34 +41,33 @@ namespace Rpc {
 
       /**
       * Destructor.
-      *
-      * Empty default implementation.
       */
       virtual ~PredCorrBdStep();
 
       /**
-      * Read required parameters from file.
+      * Read body of parameter file block and initialize.
       *
-      * Empty default implementation.
+      * \param in  input parameter file stream
       */
-      virtual void readParameters(std::istream &in);
+      void readParameters(std::istream &in) override;
 
       /**
       * Setup before simulation.
       */
-      virtual void setup();
+      void setup() override;
 
       /**
       * Take a single Brownian dynamics step.
-      * 
+      *
       * \return true if converged, false if failed to converge.
       */
-      virtual bool step();
-   
+      bool step() override;
+
    protected:
 
       using BdStep<D>::system;
       using BdStep<D>::simulator;
+      using BdStep<D>::vecRandom;
       using BdStep<D>::random;
       using ParamComposite::read;
 
@@ -88,16 +85,17 @@ namespace Rpc {
       // Random displacement components (eigenvector components)
       DArray< RField<D> > eta_;
 
-      // Change in one component of wc 
+      // Change in one component of wc
       RField<D> dwc_;
 
-      // Change in pressure field component 
+      // Change in pressure field component
       RField<D> dwp_;
 
       // Prefactor of -dc_ in deterministic drift term
-      double mobility_;   
+      double mobility_;
+
    };
-   
+
    // Explicit instantiation declarations
    extern template class PredCorrBdStep<1>;
    extern template class PredCorrBdStep<2>;

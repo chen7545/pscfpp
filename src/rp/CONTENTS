@@ -1,3 +1,5 @@
+Class Templates:
+
 This directory contains a set of class templates that are defined in 
 namespace Pscf::Rp and are used in the program-level namespaces Pscf::Rpc 
 and Rpg to create closely analogous pairs of classes used in different 
@@ -10,36 +12,40 @@ instantiation of the template <int D> class Pscf::Rpc::System with an
 integer value D=1, 2, or 3 is derived from an instantiation of a class 
 template defined in the Pscf::Rp namespace that is also named "System". 
 
+Types classes as template arguments:
+
 All of the templates defined in namespace Pscf::Rp take the dimension D of 
 space as an integer template parameter. Most also take a class parameter 
 named "T" as an additional parameter. In instantiations of such templates,
-the argument associated with parameter T should be an instantiation of 
-either the class template Pscf::Rpc::Types (file src/rpc/system/Types.h), 
-for instantiations used in namespace Pscf::Rpc, or an instantiation of 
-class template Pscf::Rpg::Types (file src/rpg/system/Types.h) for 
-instantiations used in namespace Pscf::Rpg.  The "Types" class template 
-defined in each of these two program-level namespaces takes the spatial 
-dimension D as its only template parameter, and defines a set of typename
-aliases for classes used only in that program-level namespace (Pscf::Rpc 
-or Pscf:Rpg) for the specified value of D. Typename aliases defined in 
-each such "Types" class are referred to in the implementation of class 
-templates defined in Pscf::Rp to create generic class definitions that
-can be adapted for use in either pscf_rpc or pscf_rpg by simply using 
-different "Types" classes as template arguments. As an example, consider
-the class template instantiation Pscf::Rpc::System<3>, which is the type
-of the main system object used in the pscf_rpc CPU program for problems 
-involving three-dimensional fields. This class is derived from an the 
-instantiation Pscf::Rp::System<3, Pscf::Rpc::Types<3> > of the System 
-class template defined in namespace Rp. 
-
-The src/rp directory has the subjectory structure shown below, which
-is generally analogous to that of the src/rpc and src/rpg directories:
+the argument associated with parameter T should either be a class template
+instantiation Pscf::Rpc::Types<D> of the template defined in file 
+src/rpc/system/Types.h, for instantiations used in namespace Pscf::Rpc, 
+or an instantiation Pscf::Rpg::Types<D> of the template defined in file 
+src/rpg/system/Types.h, for instantiations used in namespace Pscf::Rpg.  
+The "Types" class templates defined in the Pscf::Rpc and Pscf::Rpg 
+program-level namespaces each take the spatial dimension D as a single
+template parameter, and define a set of typename aliases for classes used 
+only in the enclosing program-level namespace for the specified value of 
+D. Typename aliases defined in each such "Types" class are referred to 
+in the implementation of class templates defined in Pscf::Rp to create 
+generic class definitions that can be adapted for use in either pscf_rpc 
+or pscf_rpg by simply using a different "Types" class as a template 
+argument. As an example, consider the class template instantiation 
+Pscf::Rpc::System<3>, which is the type of the main system object used 
+in the pscf_rpc CPU program for problems involving three-dimensional 
+fields. The required class is derived from the instantiation 
+Pscf::Rp::System<3, Pscf::Rpc::Types<3> > of the System class template 
+defined in namespace Rp, using an argument T=Pscf::Rpc::Types<3>.
 
 Subdirectories:
+
+The src/rp directory has the subjectories listed below, given a 
+structure analogous to that of the src/rpc and src/rpg directories:
+
   
-field/       - fields and spatial domain
-fts/         - partial saddle-point field theoretic simulation (PS-FTS)
-scft/        - self-consistent field theory (SCFT)
-solvers/     - modified diffusion equation (MDE) solvers
-system/      - main System class template
+field/      - fields and spatial domain
+fts/        - partial saddle-point field theoretic simulation (PS-FTS)
+scft/       - self-consistent field theory (SCFT)
+solvers/    - modified diffusion equation (MDE) solvers
+system/     - main System class template
 

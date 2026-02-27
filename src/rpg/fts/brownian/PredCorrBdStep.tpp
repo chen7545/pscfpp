@@ -9,7 +9,6 @@
 */
 
 #include "PredCorrBdStep.h"
-
 #include <rpg/fts/brownian/BdSimulator.h>
 #include <rpg/fts/compressor/Compressor.h>
 #include <rpg/system/System.h>
@@ -50,7 +49,7 @@ namespace Rpg {
    {}
 
    /*
-   * ReadParameters, empty default implementation.
+   * Read body of parameter file block and initialize.
    */
    template <int D>
    void PredCorrBdStep<D>::readParameters(std::istream &in)
@@ -62,7 +61,7 @@ namespace Rpg {
       IntVec<D> meshDimensions = system().domain().mesh().dimensions();
       wp_.allocate(nMonomer);
       wf_.allocate(nMonomer);
-      for (int i=0; i < nMonomer; ++i) {
+      for (int i = 0; i < nMonomer; ++i) {
          wp_[i].allocate(meshDimensions);
          wf_[i].allocate(meshDimensions);
       }
@@ -83,16 +82,16 @@ namespace Rpg {
    void PredCorrBdStep<D>::setup()
    {
       // Check array capacities
-      int meshSize = system().domain().mesh().size();
-      int nMonomer = system().mixture().nMonomer();
+      const int meshSize = system().domain().mesh().size();
+      const int nMonomer = system().mixture().nMonomer();
       UTIL_CHECK(wp_.capacity() == nMonomer);
       UTIL_CHECK(wf_.capacity() == nMonomer);
-      for (int i=0; i < nMonomer; ++i) {
+      for (int i = 0; i < nMonomer; ++i) {
          UTIL_CHECK(wp_[i].capacity() == meshSize);
          UTIL_CHECK(wf_[i].capacity() == meshSize);
       }
-      UTIL_CHECK(dci_.capacity() == nMonomer-1);
-      UTIL_CHECK(eta_.capacity() == nMonomer-1);
+      UTIL_CHECK(dci_.capacity() == nMonomer - 1);
+      UTIL_CHECK(eta_.capacity() == nMonomer - 1);
       for (int i=0; i < nMonomer - 1; ++i) {
          UTIL_CHECK(dci_[i].capacity() == meshSize);
          UTIL_CHECK(eta_[i].capacity() == meshSize);
@@ -111,62 +110,63 @@ namespace Rpg {
       const int nMonomer = system().mixture().nMonomer();
       const int meshSize = system().domain().mesh().size();
       int i, j;
-      
+
       // Save current state
       simulator().saveState();
-      
+
       // Copy current W fields from parent system
       for (i = 0; i < nMonomer; ++i) {
-         // wp_[i] and wf_[i] set equal to w-field i
-         VecOp::eqVPair(wp_[i], wf_[i], system().w().rgrid(i));
+         // VecOp::eqVPair(wp_[i], wf_[i], system().w().rgrid(i));
+         wp_[i] = system().w().rgrid(i);
+         wf_[i] = wp_[i];
       }
 
       // Store initial value of pressure field
-      VecOp::eqV(dwp_, simulator().wc(nMonomer-1));
+      //VecOp::eqV(dwp_, simulator().wc(nMonomer-1));
+      dwp_ = simulator().wc(nMonomer-1);
 
-      // Constants for dynamics
+      // Constants used for step
       const double vSystem = system().domain().unitCell().volume();
       double a = -1.0*mobility_;
       double b = sqrt(2.0*mobility_*double(meshSize)/vSystem);
-      
+
       // Constants for normal distribution
       double stddev = 1.0;
       double mean = 0;
-      
+
       // Construct all random displacement components
       for (j = 0; j < nMonomer - 1; ++j) {
-         vecRandom().normal(eta_[j], stddev, mean);
-         VecOp::mulEqS(eta_[j], b);
+         // vecRandom().normal(eta_[j], stddev, mean);
+         // VecOp::mulEqS(eta_[j], b);
+         vecRandom().normal(eta_[j], b, mean);
       }
 
       // Compute predicted state wp_, and store initial force dci_
 
       // Loop over eigenvectors of projected chi matrix
-      double evec;
       for (j = 0; j < nMonomer - 1; ++j) {
          RField<D> const & dc = simulator().dc(j);
          RField<D> const & eta = eta_[j];
          RField<D> & dci = dci_[j];
-         
-         // dwc_[k] = a*dc[k] + eta[k];
          VecOp::addVcVc(dwc_, dc, a, eta, 1.0);
-         
-         // dci[k] = dc[k];
          VecOp::eqV(dci, dc);
 
          // Loop over monomer types
          for (i = 0; i < nMonomer; ++i) {
-            evec = simulator().chiEvecs(j,i);
+            double evec = simulator().chiEvecs(j,i);
             VecOp::addEqVc(wp_[i], dwc_, evec);
          }
       }
 
       // Set modified fields at predicted state wp_
       system().w().setRGrid(wp_);
-      
-      // Enforce incompressibility (also solves MDE repeatedly)
+
+      // Set function return value to indicate failure by default
       bool isConverged = false;
+
+      // Apply compressor after predictor step
       int compress = simulator().compressor().compress();
+
       if (compress != 0){
          simulator().restoreState();
       } else {
@@ -177,25 +177,23 @@ namespace Rpg {
          simulator().computeWc();
          simulator().computeCc();
          simulator().computeDc();
-         
-         // Compute change in pressure field
+
+         // Compute change dwp_ in pressure field
          RField<D> const & wp = simulator().wc(nMonomer-1);
-         
-         // dwp_[k] = wp[k] - dwp_[k]
          VecOp::subVV(dwp_, wp, dwp_);
 
-         // Adjust pressure field
+         // Adjust predicted pressure field
          for (i = 0; i < nMonomer; ++i) {
             VecOp::addEqV(wf_[i], dwp_);
          }
-         
-         // Full step (corrector)
+
+         // Full step (corrector) change
          double ha = 0.5*a;
          for (j = 0; j < nMonomer - 1; ++j) {
             RField<D> const & dcp = simulator().dc(j);
             RField<D> const & dci = dci_[j];
             RField<D> const & eta = eta_[j];
-            
+
             // dwc_[k] = ha*( dci[k] + dcp[k]) + eta[k];
             VecOp::addVcVcVc(dwc_, dci, ha, dcp, ha, eta, 1.0);
 
@@ -204,11 +202,11 @@ namespace Rpg {
                VecOp::addEqVc(wf_[i], dwc_, evec);
             }
          }
-         
-         // Set fields at final point
+
+         // Set system fields after corrector step
          system().w().setRGrid(wf_);
-         
-         // Enforce incompressibility for final point
+
+         // Apply compressor to final state
          int compress2 = simulator().compressor().compress();
          if (compress2 != 0){
             simulator().restoreState();
@@ -222,10 +220,11 @@ namespace Rpg {
             simulator().computeWc();
             simulator().computeCc();
             simulator().computeDc();
-            
          }
+
       }
-      
+
+      // True iff compressor converged after predictor and corrector
       return isConverged;
    }
 
