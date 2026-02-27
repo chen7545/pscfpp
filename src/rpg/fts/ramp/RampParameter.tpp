@@ -82,6 +82,7 @@ namespace Rpg {
                      buffer.begin(), ::tolower);
 
       if (buffer == "block" || buffer == "block_length") {
+         UTIL_CHECK(PolymerModel::isThread());
          type_ = Block;
          nId_ = 2; // polymer and block identifiers
       } else if (buffer == "chi") {
@@ -126,7 +127,7 @@ namespace Rpg {
    }
 
    /*
-   * Write type enum value
+   * Write type enum value.
    */
    template <int D>
    void RampParameter<D>::writeParamType(std::ostream& out) const
@@ -153,6 +154,7 @@ namespace Rpg {
    std::string RampParameter<D>::type() const
    {
       if (type_ == Block) {
+         UTIL_CHECK(PolymerModel::isThread());
          return "block";
       } else if (type_ == Chi) {
          return "chi";
@@ -179,10 +181,14 @@ namespace Rpg {
       }
    }
 
+   /*
+   * Return current value of this parameter.
+   */
    template <int D>
    double RampParameter<D>::get_()
    {
       if (type_ == Block) {
+         UTIL_CHECK(PolymerModel::isThread());
          return systemPtr_->mixture().polymer(id(0)).block(id(1)).length();
       } else if (type_ == Chi) {
          return systemPtr_->interaction().chi(id(0), id(1));
@@ -210,6 +216,9 @@ namespace Rpg {
       }
    }
 
+   /*
+   * Modify system to set the value of this parameter.
+   */
    template <int D>
    void RampParameter<D>::set_(double newVal)
    {
@@ -222,6 +231,7 @@ namespace Rpg {
       } else if (type_ == Mu_Polymer) {
          systemPtr_->mixtureModifier().setMuPolymer(id(0), newVal);
       } else if (type_ == Block) {
+         UTIL_CHECK(PolymerModel::isThread());
          systemPtr_->mixtureModifier().setBlockLength(id(0), id(1), newVal);
       } else if (type_ == Phi_Solvent) {
          systemPtr_->mixtureModifier().setPhiSolvent(id(0), newVal);
@@ -231,25 +241,10 @@ namespace Rpg {
          systemPtr_->mixtureModifier().setSolventSize(id(0), newVal);
       } else if (type_ == Vmonomer) {
          systemPtr_->mixtureModifier().setVMonomer(newVal);
-      #if 0
-      } else if (type_ == Kuhn) {
-         systemPtr_->mixture().setKuhn(id(0), newVal);
-      } else if (type_ == Phi_Polymer) {
-         systemPtr_->mixture().polymer(id(0)).setPhi(newVal);
-      } else if (type_ == Phi_Solvent) {
-         systemPtr_->mixture().solvent(id(0)).setPhi(newVal);
-      } else if (type_ == Mu_Polymer) {
-         systemPtr_->mixture().polymer(id(0)).setMu(newVal);
-      } else if (type_ == Mu_Solvent) {
-         systemPtr_->mixture().solvent(id(0)).setMu(newVal);
-      } else if (type_ == Block) {
-         systemPtr_->mixture().polymer(id(0)).block(id(1)).setLength(newVal);
-      } else if (type_ == Solvent) {
-         systemPtr_->mixture().solvent(id(0)).setSize(newVal);
-      #endif
       } else if (type_ == Cell_Param) {
          FSArray<double,6> params;
          params = systemPtr_->domain().unitCell().parameters();
+         UTIL_CHECK(id(0) < params.size());
          params[id(0)] = newVal;
          systemPtr_->setUnitCell(params);
       } else if (type_ == Lambda_Pert) {
