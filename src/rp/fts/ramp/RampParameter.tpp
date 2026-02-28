@@ -14,12 +14,9 @@
 #include <pscf/chem/PolymerModel.h>
 #include <pscf/interaction/Interaction.h>
 #include <util/containers/FSArray.h>
-#include <util/global.h>
-
-#include <algorithm>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
    using namespace Pscf::Prdc;
@@ -245,67 +242,6 @@ namespace Rpc {
       } else {
          UTIL_THROW("This should never happen.");
       }
-   }
-
-   template <int D, class T>
-   template <class Archive>
-   void RampParameter<D,T>::serialize(Archive ar, 
-                                      const unsigned int version)
-   {
-      serializeEnum(ar, type_, version);
-      ar & nId_;
-      if (nId_ > 0) {
-         for (int i = 0; i < nId_; ++i) {
-            ar & id_[i];
-         }
-      }
-      ar & initial_;
-      ar & change_;
-   }
-
-   // Definitions of operators, with no explicit instantiations.
-
-   /*
-   * Inserter for reading a RampParameter from an istream.
-   */
-   template <int D, class T>
-   std::istream& operator >> (std::istream& in,
-                              RampParameter<D,T>& param)
-   {
-      // Read the parameter type identifier string
-      param.readParamType(in);
-
-      // Read the identifiers associated with this parameter type.
-      if (param.nId_ > 0) {
-         for (int i = 0; i < param.nId_; ++i) {
-            in >> param.id_[i];
-         }
-      }
-
-      // Read in the range in the parameter to sweep over
-      in >> param.change_;
-
-      return in;
-   }
-
-   /*
-   * Extractor for writing a RampParameter to ostream.
-   */
-   template <int D, class T>
-   std::ostream& operator << (std::ostream& out,
-                              RampParameter<D,T> const & param)
-   {
-      param.writeParamType(out);
-      out << "  ";
-      if (param.nId_ > 0) {
-         for (int i = 0; i < param.nId_; ++i) {
-            out << param.id(i);
-            out << " ";
-         }
-      }
-      out << param.change_;
-
-      return out;
    }
 
 }

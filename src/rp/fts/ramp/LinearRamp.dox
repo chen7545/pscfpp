@@ -2,7 +2,7 @@ namespace Pscf{
 namespace Rpc{
 
 /*! 
-\page rpc_LinearRamp_page LinearRamp
+\page rp_LinearRamp_page LinearRamp
 
 A LinearRamp allows a user to vary a set of one or more parameters over 
 the course of a simulation, such that each of the chosen parameters varies 
@@ -20,7 +20,7 @@ generic label "Ramp" in the appropriate location within a
   <li> \ref psfts_ramp_page "Ramp page" </li>
 </ul>
 
-\section rpc_LinearRamp_param_sec Parameter File Format
+\section rp_LinearRamp_param_sec Parameter File Format
 
 The parameter file format for a LinearRamp is closely analogous to that
 used for SCFT calculations by the \ref scft_sweep_page "LinearSweep" 
@@ -191,7 +191,7 @@ The parameter types v_monomer and lambda_pert are global values that
 are not associated with any indices. All other parameter types are
 identified by at least one associated index.
 
-\section rpc_LinearRamp_perturbation_sec Perturbation Parameter
+\section rp_LinearRamp_perturbation_sec Perturbation Parameter
 
 The parameter type "lambda_pert" is designed specifically for use with 
 a \ref psfts_perturb_page "Perturbation", and allows the user to ramp 

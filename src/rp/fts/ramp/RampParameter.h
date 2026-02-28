@@ -17,10 +17,7 @@
 namespace Pscf {
 namespace Rp {
 
-   template <int D> class Simulator;
-   template <int D> class System;
-
-   using namespace Util
+   using namespace Util;
 
    /**
    * Class for storing data about an individual linear ramp parameter.
