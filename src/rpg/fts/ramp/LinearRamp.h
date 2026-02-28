@@ -15,6 +15,8 @@ namespace Rpg {
    /**
    * Linear ramp - parameters vary linearly with step index.
    *
+   * \see \ref rp_LinearRamp_page "Manual Page"
+   * \see \ref psfts_ramp_page "Manual Page"
    * \ingroup Rpg_Fts_Ramp_Module
    */
    template <int D>
@@ -25,6 +27,8 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param simulator  parent Simulator object
       */
       LinearRamp(Simulator<D>& simulator);
 
@@ -36,9 +40,9 @@ namespace Rpg {
       /**
       * Read parameters from parameter file input stream.
       *
-      * \param in input parameter stream
+      * \param in input parameter file stream
       */
-      virtual void readParameters(std::istream& in);
+      void readParameters(std::istream& in) override;
 
       /**
       * Set nStep and complete initialization.
@@ -48,23 +52,24 @@ namespace Rpg {
       *
       * \param nStep number of steps planned for this simulation
       */
-      virtual void setup(int nStep);
+      void setup(int nStep) override;
 
       /**
       * Set new parameters values in associated System and Simulator.
-      * 
+      *
       * \param iStep  current simulation step index
       */
-      virtual void setParameters(int iStep);
-      
+      void setParameters(int iStep) override;
+
       /**
-      * Output initial and final parameter values of linear ramp
-      * at the end of the simulation.
+      * Output information at the end of a simulation.
       */
-      virtual void output();
+      void output() override;
 
    protected:
 
+      using RampT = Ramp<D>;
+      using RampParameterT = RampParameter<D>;
       using Ramp<D>::nStep_;
       using Ramp<D>::simulator;
 
@@ -74,7 +79,7 @@ namespace Rpg {
       int nParameter_;
 
       // Array of variable parameters
-      DArray< RampParameter<D> > parameters_;
+      DArray< RampParameterT > parameters_;
 
    };
 

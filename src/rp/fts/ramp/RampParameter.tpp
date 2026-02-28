@@ -15,6 +15,8 @@
 #include <pscf/interaction/Interaction.h>
 #include <util/containers/FSArray.h>
 
+#include <algorithm>
+
 namespace Pscf {
 namespace Rp {
 

@@ -1,14 +1,10 @@
-#ifndef RPC_LINEAR_RAMP_H
-#define RPC_LINEAR_RAMP_H
+#ifndef RP_LINEAR_RAMP_H
+#define RP_LINEAR_RAMP_H
 
-#include <rpc/fts/ramp/Ramp.h>           // base class
-#include <rpc/fts/ramp/RampParameter.h>  // member (templ parameter)
-#include <util/containers/DArray.h>      // member (template)
+#include <util/containers/DArray.h>      // member
 
 namespace Pscf {
-namespace Rpc {
-
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
 
@@ -17,10 +13,10 @@ namespace Rpc {
    * 
    * \see \ref rp_LinearRamp_page "Manual Page"
    * \see \ref psfts_ramp_page "Manual Page"
-   * \ingroup Rpc_Fts_Ramp_Module
+   * \ingroup Rp_Fts_Ramp_Module
    */
-   template <int D>
-   class LinearRamp : public Ramp<D>
+   template <int D, class T>
+   class LinearRamp : public T::Ramp
    {
 
    public:
@@ -30,7 +26,7 @@ namespace Rpc {
       *
       * \param simulator  parent Simulator object
       */
-      LinearRamp(Simulator<D>& simulator);
+      LinearRamp(typename T::Simulator& simulator);
 
       /**
       * Destructor.
@@ -68,8 +64,8 @@ namespace Rpc {
 
    protected:
 
-      using RampT = Ramp<D>;
-      using RampParameterT = RampParameter<D>;
+      using RampT = typename T::Ramp;
+      using RampParameterT = typename T::RampParameter;
 
    private:
 
@@ -80,12 +76,6 @@ namespace Rpc {
       DArray< RampParameterT > parameters_;
 
    };
-
-
-   // Explicit instantiation declarations
-   extern template class LinearRamp<1>;
-   extern template class LinearRamp<2>;
-   extern template class LinearRamp<3>;
 
 }
 }

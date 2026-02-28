@@ -1,33 +1,31 @@
-#ifndef RPC_LINEAR_RAMP_TPP
-#define RPC_LINEAR_RAMP_TPP
+#ifndef RP_LINEAR_RAMP_TPP
+#define RP_LINEAR_RAMP_TPP
 
 #include "LinearRamp.h"
-#include <rpc/fts/simulator/Simulator.h>
-#include <util/containers/DArray.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   LinearRamp<D>::LinearRamp(Simulator<D>& simulator)
+   template <int D, class T>
+   LinearRamp<D,T>::LinearRamp(Simulator<D>& simulator)
     : RampT(simulator)
    {  ParamComposite::setClassName("LinearRamp"); }
 
    /*
    * Destructor.
    */
-   template <int D>
-   LinearRamp<D>::~LinearRamp()
+   template <int D, class T>
+   LinearRamp<D,T>::~LinearRamp()
    {}
 
-   template <int D>
-   void LinearRamp<D>::readParameters(std::istream& in)
+   template <int D, class T>
+   void LinearRamp<D,T>::readParameters(std::istream& in)
    {
       // Read the number of ramp parameters, allocate parameters_ array
       ParamComposite::read(in, "nParameter", nParameter_);
@@ -47,12 +45,12 @@ namespace Rpc {
             sum += parameters_[i].change();
          }
       }
-      UTIL_CHECK(sum > -0.000001);
-      UTIL_CHECK(sum < 0.000001);
+      UTIL_CHECK(sum > -0.0000001);
+      UTIL_CHECK(sum < 0.0000001);
    }
 
-   template <int D>
-   void LinearRamp<D>::setup(int nStep)
+   template <int D, class T>
+   void LinearRamp<D,T>::setup(int nStep)
    {
       RampT::nStep_ = nStep;
 
@@ -63,8 +61,8 @@ namespace Rpc {
       }
    }
 
-   template <int D>
-   void LinearRamp<D>::setParameters(int iStep)
+   template <int D, class T>
+   void LinearRamp<D,T>::setParameters(int iStep)
    {
       // Compute a ramp parameter in the range [0,1]
       double s = double(iStep)/double(RampT::nStep_);
@@ -83,26 +81,15 @@ namespace Rpc {
       }
    }
 
-   template <int D>
-   void LinearRamp<D>::output()
+   template <int D, class T>
+   void LinearRamp<D,T>::output()
    {
       for (int i = 0; i < nParameter_; ++i) {
-
-         // Output parameter type
-         Log::file()<< "Linear Ramp parameter: "
-                    << parameters_[i].type() << std::endl;
-
-         // Output initial value
-         Log::file()<< "The initial value is: "
-                    << parameters_[i].initial() << " ";
-
-         // Output final value
-         Log::file()<< "The final value is: "
-                    << parameters_[i].initial() + parameters_[i].change()
-                    << std::endl;
-
-         // Output the magnitude of change
-         Log::file()<< "The change is: "
+         Log::file() << "Parameter type: "
+                     << parameters_[i].type() << std::endl;
+         Log::file() << "Initial: "
+                     << parameters_[i].initial() << " ";
+         Log::file()<< "Change: "
                     << parameters_[i].change() << std::endl;
       }
    }
