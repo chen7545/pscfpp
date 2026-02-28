@@ -12,8 +12,8 @@ rpg_fts_= \
   rpg/fts/VecOpFts.cu \
   $(rpg_fts_simulator_) \
   $(rpg_fts_compressor_) \
-  $(rpg_fts_mcmove_) \
-  $(rpg_fts_bdstep_) \
+  $(rpg_fts_montecarlo_) \
+  $(rpg_fts_brownian_) \
   $(rpg_fts_perturbation_) \
   $(rpg_fts_ramp_) \
   $(rpg_fts_trajectory_) \

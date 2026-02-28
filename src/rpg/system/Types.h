@@ -54,6 +54,7 @@ namespace Pscf {
       template <int D> class Perturbation;
       template <int D> class PerturbationFactory;
       template <int D> class Ramp;
+      template <int D> class RampParameter;
       template <int D> class RampFactory;
       template <int D> class Analyzer;
       template <int D> class AnalyzerFactory;
@@ -125,6 +126,7 @@ namespace Rpg {
       using PerturbationFactory = Rpg::PerturbationFactory<D>;
 
       using Ramp = Rpg::Ramp<D>;
+      using RampParameter = Rpg::RampParameter<D>;
       using RampFactory = Rpg::RampFactory<D>;
 
       using Analyzer = Rpg::Analyzer<D>;

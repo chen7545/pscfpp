@@ -1,5 +1,6 @@
 rpg_fts_ramp_= \
   rpg/fts/ramp/Ramp.cu \
+  rpg/fts/ramp/RampParameter.cu \
   rpg/fts/ramp/LinearRamp.cu \
   rpg/fts/ramp/RampFactory.cu 
   

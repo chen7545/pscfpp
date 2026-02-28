@@ -1,26 +1,41 @@
 #ifndef RPG_LINEAR_RAMP_H
 #define RPG_LINEAR_RAMP_H
 
-#include <rpg/fts/ramp/Ramp.h>           // base class
-#include <rpg/fts/ramp/RampParameter.h>  // member (templ parameter)
-#include <util/containers/DArray.h>      // member (template)
+/*
+* PSCF - Polymer Self-Consistent Field
+*
+* Copyright 2015 - 2025, The Regents of the University of Minnesota
+* Distributed under the terms of the GNU General Public License.
+*/
+
+#include <rp/fts/ramp/LinearRamp.h>      // direct base class template
+#include <rpg/system/Types.h>            // base class template argument
+#include <rpg/fts/ramp/RampParameter.h>  // base class member
+#include <rpg/fts/ramp/Ramp.h>           // indirect base class
 
 namespace Pscf {
 namespace Rpg {
 
-   using namespace Util;
-
+   // Forward declaration
    template <int D> class Simulator;
 
+   using namespace Util;
+
    /**
-   * Linear ramp - parameters vary linearly with step index.
+   * Ramp that varies parameters linearly with index.
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::LinearRamp, and
+   * inherit their public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * template for details. 
+   *
+   * \see \ref Rp::LinearRamp
    * \see \ref rp_LinearRamp_page "Manual Page"
-   * \see \ref psfts_ramp_page "Manual Page"
    * \ingroup Rpg_Fts_Ramp_Module
    */
    template <int D>
-   class LinearRamp : public Ramp<D>
+   class LinearRamp : public Rp::LinearRamp<D, Types<D> >
    {
 
    public:
@@ -28,66 +43,26 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param simulator  parent Simulator object
+      * \param simulator  parent Simulator
       */
       LinearRamp(Simulator<D>& simulator);
 
-      /**
-      * Destructor.
-      */
-      virtual ~LinearRamp();
-
-      /**
-      * Read parameters from parameter file input stream.
-      *
-      * \param in input parameter file stream
-      */
-      void readParameters(std::istream& in) override;
-
-      /**
-      * Set nStep and complete initialization.
-      *
-      * This method is called just before the beginning of the main
-      * simulation loop.
-      *
-      * \param nStep number of steps planned for this simulation
-      */
-      void setup(int nStep) override;
-
-      /**
-      * Set new parameters values in associated System and Simulator.
-      *
-      * \param iStep  current simulation step index
-      */
-      void setParameters(int iStep) override;
-
-      /**
-      * Output information at the end of a simulation.
-      */
-      void output() override;
-
-   protected:
-
-      using RampT = Ramp<D>;
-      using RampParameterT = RampParameter<D>;
-      using Ramp<D>::nStep_;
-      using Ramp<D>::simulator;
-
-   private:
-
-      // Number of variable parameters
-      int nParameter_;
-
-      // Array of variable parameters
-      DArray< RampParameterT > parameters_;
-
    };
 
-   // Explicit instantiation declarations
-   extern template class LinearRamp<1>;
-   extern template class LinearRamp<2>;
-   extern template class LinearRamp<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class LinearRamp<1, Rpg::Types<1> >;
+      extern template class LinearRamp<2, Rpg::Types<2> >;
+      extern template class LinearRamp<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class LinearRamp<1>;
+      extern template class LinearRamp<2>;
+      extern template class LinearRamp<3>;
+   }
 }
 #endif
