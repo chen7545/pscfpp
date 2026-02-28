@@ -1,5 +1,5 @@
-#ifndef RPC_RAMP_PARAMETER_TPP
-#define RPC_RAMP_PARAMETER_TPP
+#ifndef RP_RAMP_PARAMETER_TPP
+#define RP_RAMP_PARAMETER_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,17 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rpc/system/System.h>
-#include <rpc/fts/simulator/Simulator.h>
-#include <rpc/fts/perturbation/Perturbation.h>
-#include <rpc/solvers/Mixture.h>
-#include <rpc/solvers/MixtureModifier.h>
-#include <rpc/solvers/Polymer.h>
-#include <rpc/solvers/Solvent.h>
-#include <rpc/solvers/Block.h>
-#include <rpc/field/Domain.h>
 #include <prdc/crystal/UnitCell.h>
 #include <pscf/chem/Monomer.h>
+#include <pscf/chem/PolymerModel.h>
 #include <pscf/interaction/Interaction.h>
 #include <util/containers/FSArray.h>
 #include <util/global.h>
@@ -34,9 +26,9 @@ namespace Rpc {
    /*
    * Default constructor.
    */
-   template <int D>
-   RampParameter<D>::RampParameter()
-    : type_(RampParameter<D>::Null),
+   template <int D, class T>
+   RampParameter<D,T>::RampParameter()
+    : type_(RampParameter<D,T>::Null),
       nId_(0),
       id_(),
       initial_(0.0),
@@ -48,9 +40,9 @@ namespace Rpc {
    /*
    * Constructor, creates association with simulator and system.
    */
-   template <int D>
-   RampParameter<D>::RampParameter(Simulator<D>& simulator)
-    : type_(RampParameter<D>::Null),
+   template <int D, class T>
+   RampParameter<D,T>::RampParameter(typename T::Simulator& simulator)
+    : type_(RampParameter<D,T>::Null),
       nId_(0),
       id_(),
       initial_(0.0),
@@ -59,12 +51,11 @@ namespace Rpc {
       systemPtr_(&(simulator.system()))
    {}
 
-
    /*
    * Set the simulator and system associated with this object.
    */
-   template <int D>
-   void RampParameter<D>::setSimulator(Simulator<D>& simulator)
+   template <int D, class T>
+   void RampParameter<D,T>::setSimulator(typename T::Simulator& simulator)
    {
       simulatorPtr_ = &simulator;
       systemPtr_ = &(simulator.system());
@@ -73,8 +64,8 @@ namespace Rpc {
    /*
    * Read type, set nId and allocate id_ array.
    */
-   template <int D>
-   void RampParameter<D>::readParamType(std::istream& in)
+   template <int D, class T>
+   void RampParameter<D,T>::readParamType(std::istream& in)
    {
       std::string buffer;
       in >> buffer;
@@ -129,29 +120,29 @@ namespace Rpc {
    /*
    * Write type enum value.
    */
-   template <int D>
-   void RampParameter<D>::writeParamType(std::ostream& out) const
+   template <int D, class T>
+   void RampParameter<D,T>::writeParamType(std::ostream& out) const
    {  out << type(); }
 
    /*
    * Get initial (current) values of swept parameters from parent system.
    */
-   template <int D>
-   void RampParameter<D>::getInitial()
+   template <int D, class T>
+   void RampParameter<D,T>::getInitial()
    {  initial_ = get_(); }
 
    /*
    * Set new values of swept parameters in the parent system.
    */
-   template <int D>
-   void RampParameter<D>::update(double newVal)
+   template <int D, class T>
+   void RampParameter<D,T>::update(double newVal)
    {  set_(newVal); }
 
    /*
    * Get string representation of type enum value.
    */
-   template <int D>
-   std::string RampParameter<D>::type() const
+   template <int D, class T>
+   std::string RampParameter<D,T>::type() const
    {
       if (type_ == Block) {
          UTIL_CHECK(PolymerModel::isThread());
@@ -184,8 +175,8 @@ namespace Rpc {
    /*
    * Return current value of this parameter.
    */
-   template <int D>
-   double RampParameter<D>::get_()
+   template <int D, class T>
+   double RampParameter<D,T>::get_()
    {
       if (type_ == Block) {
          UTIL_CHECK(PolymerModel::isThread());
@@ -204,14 +195,14 @@ namespace Rpc {
          return systemPtr_->mixture().solvent(id(0)).mu();
       } else if (type_ == Solvent) {
          return systemPtr_->mixture().solvent(id(0)).size();
+      } else if (type_ == Vmonomer) {
+         return systemPtr_->mixture().vMonomer();
       } else if (type_ == Cell_Param) {
          return systemPtr_->domain().unitCell().parameter(id(0));
       } else if (type_ == Lambda_Pert) {
          UTIL_CHECK(simulatorPtr_->hasPerturbation());
          return simulatorPtr_->perturbation().lambda();
-      } else if (type_ == Vmonomer) {
-         return systemPtr_->mixture().vMonomer();
-      }else {
+      } else {
          UTIL_THROW("This should never happen.");
       }
    }
@@ -219,8 +210,8 @@ namespace Rpc {
    /*
    * Modify system to set the value of this parameter.
    */
-   template <int D>
-   void RampParameter<D>::set_(double newVal)
+   template <int D, class T>
+   void RampParameter<D,T>::set_(double newVal)
    {
       if (type_ == Chi) {
          systemPtr_->interaction().setChi(id(0), id(1), newVal);
@@ -255,9 +246,10 @@ namespace Rpc {
       }
    }
 
-   template <int D>
+   template <int D, class T>
    template <class Archive>
-   void RampParameter<D>::serialize(Archive ar, const unsigned int version)
+   void RampParameter<D,T>::serialize(Archive ar, 
+                                      const unsigned int version)
    {
       serializeEnum(ar, type_, version);
       ar & nId_;
@@ -275,9 +267,9 @@ namespace Rpc {
    /*
    * Inserter for reading a RampParameter from an istream.
    */
-   template <int D>
+   template <int D, class T>
    std::istream& operator >> (std::istream& in,
-                              RampParameter<D>& param)
+                              RampParameter<D,T>& param)
    {
       // Read the parameter type identifier string
       param.readParamType(in);
@@ -298,9 +290,9 @@ namespace Rpc {
    /*
    * Extractor for writing a RampParameter to ostream.
    */
-   template <int D>
+   template <int D, class T>
    std::ostream& operator << (std::ostream& out,
-                              RampParameter<D> const & param)
+                              RampParameter<D,T> const & param)
    {
       param.writeParamType(out);
       out << "  ";

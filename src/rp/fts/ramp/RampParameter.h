@@ -1,5 +1,5 @@
-#ifndef RPG_RAMP_PARAMETER_H
-#define RPG_RAMP_PARAMETER_H
+#ifndef RP_RAMP_PARAMETER_H
+#define RP_RAMP_PARAMETER_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -12,7 +12,7 @@
 #include <string>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    template <int D> class Simulator;
    template <int D> class System;
@@ -79,11 +79,10 @@ namespace Rpg {
    * value. The corresponding format for a parameter that requires two
    * indices (e.g., block or chi) is instead: "type id(0) id(1) change".
    *
-   * \see LinearRamp
-   * \see \ref rpg_LinearRamp_page "Manual Page"
-   * \ingroup Rpg_Fts_Ramp_Module
+   * \see \ref rp_LinearRamp_page "Manual Page"
+   * \ingroup Rp_Fts_Ramp_Module
    */
-   template <int D>
+   template <int D, class T>
    class RampParameter
    {
 
@@ -99,7 +98,7 @@ namespace Rpg {
       *
       * \param simulator  parent Simulator
       */
-      RampParameter(Simulator<D>& simulator);
+      RampParameter(typename T::Simulator& simulator);
 
       /**
       * Set the simulator and system associated with this object.
@@ -110,7 +109,7 @@ namespace Rpg {
       *
       * \param simulator  parent simulator
       */
-      void setSimulator(Simulator<D>& simulator);
+      void setSimulator(typename T::Simulator& simulator);
 
       /**
       * Get and store initial value this parameters.
@@ -217,10 +216,10 @@ namespace Rpg {
       double change_;
 
       /// Pointer to the parent simulator
-      Simulator<D>* simulatorPtr_;
+      typename T::Simulator* simulatorPtr_;
 
       /// Pointer to the parent system
-      System<D>* systemPtr_;
+      typename T::System* systemPtr_;
 
       /**
       * Read type of parameter being swept, and set number of identifiers.
@@ -243,13 +242,13 @@ namespace Rpg {
 
    // friends:
 
-      template <int U>
+      template <int U, class V>
       friend
-      std::istream& operator >> (std::istream&, RampParameter<U>&);
+      std::istream& operator >> (std::istream&, RampParameter<U,V>&);
 
-      template <int U>
+      template <int U, class V>
       friend
-      std::ostream& operator << (std::ostream&, RampParameter<U> const&);
+      std::ostream& operator << (std::ostream&, RampParameter<U,V> const&);
 
    };
 
@@ -259,9 +258,9 @@ namespace Rpg {
    * \param in  input stream
    * \param param  RampParameter<D> object to read
    */
-   template <int D>
+   template <int D, class T>
    std::istream& operator >> (std::istream& in,
-                              RampParameter<D>& param);
+                              RampParameter<D,T>& param);
 
    /**
    * Extractor for writing a RampParameter to ostream.
@@ -269,9 +268,9 @@ namespace Rpg {
    * \param out  output stream
    * \param param  RampParameter<D> object to write
    */
-   template <int D>
+   template <int D, class T>
    std::ostream& operator << (std::ostream& out,
-                              RampParameter<D> const & param);
+                              RampParameter<D,T> const & param);
 
 }
 }
