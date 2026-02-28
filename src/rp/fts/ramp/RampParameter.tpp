@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include "RampParameter.h"
 #include <prdc/crystal/UnitCell.h>
 #include <pscf/chem/Monomer.h>
 #include <pscf/chem/PolymerModel.h>

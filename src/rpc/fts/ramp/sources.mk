@@ -1,5 +1,6 @@
 rpc_fts_ramp_= \
   rpc/fts/ramp/Ramp.cpp \
+  rpc/fts/ramp/RampParameter.cpp \
   rpc/fts/ramp/LinearRamp.cpp \
   rpc/fts/ramp/RampFactory.cpp 
   

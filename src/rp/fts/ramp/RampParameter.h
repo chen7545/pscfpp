@@ -8,6 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <util/containers/DArray.h>
+#include <util/global.h>
+
 #include <iostream>
 #include <string>
 
@@ -17,24 +20,28 @@ namespace Rp {
    template <int D> class Simulator;
    template <int D> class System;
 
+   using namespace Util
+
    /**
-   * Class for storing data about an individual ramp parameter.
+   * Class for storing data about an individual linear ramp parameter.
    *
    * This class stores the information required to ramp a single
-   * parameter value of any of several types.  The type of parameter
-   * is indicated in the public interface and parameter file format
-   * by a string identifier with any of several allowed values.
-   * Most types of parameter are also identified by one or two associated
-   * index values, denoted here by id(0) and id(1), that specify the
-   * index or indices for a subobject or array element with which the
-   * parameter is associated applied. Allowed string representations
-   * and meanings of parameter types are given below, along with the
-   * meaning of any associated index value or pair of values.
-   * To indicate the meaning of index values, we use mId to denote a
-   * monomer type index, pId to denote a polymer species index, bId
-   * to denote the index of a block within a polymer, sId to denote a
-   * solvent species index, and lId to denote a lattice parameter index.
-   * The lambda_pert and vMonomer parameter types do not take an index.
+   * parameter value of any of several types.  The parameter type is
+   * indicated in the public interface and parameter file format by a
+   * string identifier with any of several allowed values. Most types
+   * of parameter are also identified by one or two associated index
+   * values, denoted here by id(0) and id(1), that specify the index
+   * or indices for a sub-object or array element with which the
+   * parameter is associated. 
+   * 
+   * Allowed string representations and meanings of parameter types are 
+   * specified below, along with the meaning of any associated index 
+   * value or pair of values. To indicate the meaning of index values, 
+   * we use mId to denote a monomer type index, pId to denote a polymer 
+   * species index, bId to denote the index of a block within a polymer, 
+   * sId to denote a solvent species index, and lId to denote a lattice 
+   * parameter index.  The lambda_pert and vMonomer parameter types do 
+   * not take an index.
    * \code
    *  | Type        | Meaning                            | id(0) | id(1)
    *  | ----------- | ---------------------------------- | ----- | -----
@@ -51,9 +58,9 @@ namespace Rp {
    *  | lambda_pert | perturbation parameter             |  -    |
    * \endcode
    * The two indices for a Flory-Huggins chi parameter refer to indices
-   * in the chi matrix maintained by Interaction. Changes to element
+   * in the chi matrix maintained by an Interaction. Changes to element
    * chi(i, j) automatically also update chi(j, i) for i !\ j, thus
-   * maintaining the symmetry of the matrix.
+   * maintaining the symmetry of the chi matrix.
    *
    * Each RampParameter also has a "change" value that gives the
    * intended difference between the final and initial value of the
@@ -272,7 +279,67 @@ namespace Rp {
    std::ostream& operator << (std::ostream& out,
                               RampParameter<D,T> const & param);
 
+   // Function definitions (implicitly instantiated)
+
+   template <int D, class T>
+   template <class Archive>
+   void RampParameter<D,T>::serialize(Archive ar, 
+                                      const unsigned int version)
+   {
+      serializeEnum(ar, type_, version);
+      ar & nId_;
+      if (nId_ > 0) {
+         for (int i = 0; i < nId_; ++i) {
+            ar & id_[i];
+         }
+      }
+      ar & initial_;
+      ar & change_;
+   }
+
+   /*
+   * Inserter for reading a RampParameter from an istream.
+   */
+   template <int D, class T>
+   std::istream& operator >> (std::istream& in,
+                              RampParameter<D,T>& param)
+   {
+      // Read the parameter type identifier string
+      param.readParamType(in);
+
+      // Read the identifiers associated with this parameter type.
+      if (param.nId_ > 0) {
+         for (int i = 0; i < param.nId_; ++i) {
+            in >> param.id_[i];
+         }
+      }
+
+      // Read in the range in the parameter to sweep over
+      in >> param.change_;
+
+      return in;
+   }
+
+   /*
+   * Extractor for writing a RampParameter to ostream.
+   */
+   template <int D, class T>
+   std::ostream& operator << (std::ostream& out,
+                              RampParameter<D,T> const & param)
+   {
+      param.writeParamType(out);
+      out << "  ";
+      if (param.nId_ > 0) {
+         for (int i = 0; i < param.nId_; ++i) {
+            out << param.id(i);
+            out << " ";
+         }
+      }
+      out << param.change_;
+
+      return out;
+   }
+
 }
 }
-#include "RampParameter.tpp"
 #endif
