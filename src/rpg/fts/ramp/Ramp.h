@@ -1,22 +1,39 @@
 #ifndef RPG_RAMP_H
 #define RPG_RAMP_H
 
-#include <util/param/ParamComposite.h>      // base class
+/*
+* PSCF - Polymer Self-Consistent Field
+*
+* Copyright 2015 - 2025, The Regents of the University of Minnesota
+* Distributed under the terms of the GNU General Public License.
+*/
+
+#include <rp/fts/ramp/Ramp.h>            // base class template
+#include <rpg/system/Types.h>            // base class template argument
 
 namespace Pscf {
 namespace Rpg {
 
+   // Forward declaration
    template <int D> class Simulator;
 
    using namespace Util;
 
    /**
-   * Class that varies parameters during a simulation (abstract).
+   * Ramp that varies parameters linearly with index.
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::Ramp, and inherit their 
+   * entire public interface and almost all of their source code from this
+   * base class.  See the documentation of this base class template for 
+   * details. 
+   *
+   * \see \ref Rp::Ramp
+   * \see \ref psfts_ramp_page
    * \ingroup Rpg_Fts_Ramp_Module
    */
    template <int D>
-   class Ramp : public ParamComposite
+   class Ramp : public Rp::Ramp<D, Types<D> >
    {
 
    public:
@@ -24,90 +41,26 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param simulator parent Simulator
+      * \param simulator  parent Simulator
       */
       Ramp(Simulator<D>& simulator);
 
-      /**
-      * Destructor.
-      */
-      virtual ~Ramp();
-
-      /**
-      * Final setup before simulation loop, set value of nStep.
-      *
-      * This method must be called just before the beginning of the main
-      * simulation loop, after an initial configuration is known. It must
-      * set and store the value of nStep (the number of steps planned for
-      * the simulation) and complete any initialization that cannot be
-      * completed in the readParam method.
-      *
-      * The default implementation simply stores a value of nStep.
-      *
-      * \param nStep number of steps planned for this simulation
-      */
-      virtual void setup(int nStep);
-
-      /**
-      * Set new parameters values in associated System and Simulator.
-      * 
-      * \param iStep  current simulation step index
-      */
-      virtual void setParameters(int iStep) = 0;
-      
-      /**
-      * Output any results at the end of the simulation.
-      *
-      * The default implementation is an empty function.
-      */
-      virtual void output()
-      {}
-
-      /**
-      * Get parent Simulator<D> by const reference.
-      */
-      Simulator<D> const & simulator() const;
-
-   protected:
-
-      /**
-      * Get parent Simulator<D> by non-const reference.
-      */
-      Simulator<D>& simulator();
-
-      /// Number of steps planned for this simulation (set in setup).
-      int nStep_;
-
-   private:
-
-      /// Pointer to parent Simulator.
-      Simulator<D>* simulatorPtr_;
-
    };
 
-   // Inline methods
-
-   // Return parent simulator by const reference.
-   template <int D>
-   inline Simulator<D> const & Ramp<D>::simulator() const
-   {
-      assert(simulatorPtr_);  
-      return *simulatorPtr_; 
-   }
-
-   // Return parent simulator by non-const reference.
-   template <int D>
-   inline Simulator<D> & Ramp<D>::simulator() 
-   {  
-      assert(simulatorPtr_);
-      return *simulatorPtr_; 
-   }
-
-   // Explicit instantiation declarations
-   extern template class Ramp<1>;
-   extern template class Ramp<2>;
-   extern template class Ramp<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class Ramp<1, Rpg::Types<1> >;
+      extern template class Ramp<2, Rpg::Types<2> >;
+      extern template class Ramp<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class Ramp<1>;
+      extern template class Ramp<2>;
+      extern template class Ramp<3>;
+   }
 }
 #endif

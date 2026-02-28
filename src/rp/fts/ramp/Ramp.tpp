@@ -6,15 +6,15 @@
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpc {
+namespace Rp {
 
    using namespace Util;
 
    /* 
    * Constructor.
    */
-   template <int D>
-   Ramp<D>::Ramp(typename T::Simulator& simulator)
+   template <int D, class T>
+   Ramp<D,T>::Ramp(typename T::Simulator& simulator)
     : ParamComposite(),
       simulatorPtr_(&simulator)
    {}
@@ -22,15 +22,15 @@ namespace Rpc {
    /* 
    * Destructor.
    */
-   template <int D>
-   Ramp<D>::~Ramp()
+   template <int D, class T>
+   Ramp<D,T>::~Ramp()
    {}
 
    /* 
    * Setup before simulation - sets the nStep member variable. 
    */
-   template <int D>
-   void Ramp<D>::setup(int nStep)
+   template <int D, class T>
+   void Ramp<D,T>::setup(int nStep)
    {  nStep_ = nStep; }
 
 }

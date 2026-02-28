@@ -11,8 +11,8 @@ namespace Rp {
    /**
    * Linear ramp - parameters vary linearly with step index.
    * 
-   * \see \ref rp_LinearRamp_page "Manual Page"
-   * \see \ref psfts_ramp_page "Manual Page"
+   * \see \ref rp_LinearRamp_page "Manual Page (Linear Ramp)"
+   * \see \ref psfts_ramp_page "Manual Page" (Ramp)"
    * \ingroup Rp_Fts_Ramp_Module
    */
    template <int D, class T>

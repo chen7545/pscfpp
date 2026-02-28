@@ -8,7 +8,7 @@ namespace Rp {
 
    using namespace Util;
 
-   template <int D> class Simulator;
+   template <int D, class T> class Simulator;
 
    /**
    * Class that varies parameters during a simulation (abstract).
@@ -16,7 +16,7 @@ namespace Rp {
    * \see \ref psfts_ramp_page "Manual Page"
    * \ingroup Rp_Fts_Ramp_Module
    */
-   template <int D>
+   template <int D, class T>
    class Ramp : public ParamComposite
    {
 
@@ -89,16 +89,16 @@ namespace Rp {
    // Inline methods
 
    // Return parent simulator by const reference.
-   template <int D> inline 
-   typename T::Simulator const & Ramp<D>::simulator() const
+   template <int D, class T> inline 
+   typename T::Simulator const & Ramp<D,T>::simulator() const
    {
       assert(simulatorPtr_);  
       return *simulatorPtr_; 
    }
 
    // Return parent simulator by non-const reference.
-   template <int D> inline 
-   typename T::Simulator & Ramp<D>::simulator() 
+   template <int D, class T> inline 
+   typename T::Simulator & Ramp<D,T>::simulator() 
    {  
       assert(simulatorPtr_);
       return *simulatorPtr_; 
