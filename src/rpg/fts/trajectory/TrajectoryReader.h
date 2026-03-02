@@ -8,18 +8,16 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/ParamComposite.h>    
-#include <iostream>
-
+#include <string>
 
 namespace Pscf {
 namespace Rpg {
 
+   // Forward declaration
    template <int D> class System;
-   using namespace Util;
 
    /**
-   * Trajectory file reader.
+   * Trajectory file reader (base class).
    *
    * \ingroup Rpg_Fts_Trajectory_Module
    */
@@ -31,8 +29,10 @@ namespace Rpg {
 
       /**
       * Constructor.
+      *
+      * \param system  parent System object
       */
-       TrajectoryReader<D>(System<D>& system);
+      TrajectoryReader<D>(System<D>& system);
 
       /**
       * Destructor.
@@ -43,55 +43,57 @@ namespace Rpg {
       * Open trajectory file and read header, if any.
       *
       * By convention, this function treats the trajectory filename
-      * as the name of an input file, and opens the file using the 
-      * FileMaster:openInutFile function. This function prepends the 
-      * input prefix (if any) to the file path. If compiled with MPI 
-      * enabled, so that each processor simulates a different system, 
-      * it also prepends a processor id prefix before the input prefix.
+      * as the name of an input file, and opens the file using the
+      * FileMaster:openInutFile function. This function prepends the
+      * input prefix (if any) to the file path.
       *
       * \param filename trajectory input file name.
       */
       virtual void open(std::string filename) = 0;
 
       /**
-      * Read a single frame. Frames are assumed to be read consecutively. 
+      * Read header of trajectory file (if any).
+      *
+      * Empty default implementation.
+      */
+      virtual void readHeader(){};
+
+      /**
+      * Read a single frame.
       *
       * This function reads a frame from the trajectory file that was
       * opened by the open() function.
       *
       * \return true if a frame is avaiable, false if at end of file
       */
-       virtual bool readFrame() = 0;
+      virtual bool readFrame() = 0;
 
       /**
       * Close the trajectory file.
       */
       virtual void close() = 0;
-      
-      virtual void readHeader(){};
-      
+
    protected:
 
-      /** 
+      /**
       * Return reference to parent system.
       */
       System<D>& system();
-   
+
    private:
-     
+
       /**
       * Pointer to the parent system.
       */
       System<D>* systemPtr_;
 
-
-   }; 
+   };
 
    // Get the parent system.
-   template <int D> inline 
+   template <int D> inline
    System<D>& TrajectoryReader<D>::system()
    {  return *systemPtr_; }
-   
+
    // Explicit instantiation declarations
    extern template class TrajectoryReader<1>;
    extern template class TrajectoryReader<2>;

@@ -13,6 +13,7 @@
 namespace Pscf {
 namespace Rpc {
 
+   // Forward declaration
    template <int D> class System;
 
    /**
@@ -28,6 +29,8 @@ namespace Rpc {
 
       /**
       * Constructor.
+      *
+      * \param system  parent System object
       */
       TrajectoryReader<D>(System<D>& system);
 
@@ -40,18 +43,23 @@ namespace Rpc {
       * Open trajectory file and read header, if any.
       *
       * By convention, this function treats the trajectory filename
-      * as the name of an input file, and opens the file using the 
-      * FileMaster:openInutFile function. This function prepends the 
-      * input prefix (if any) to the file path. If compiled with MPI 
-      * enabled, so that each processor simulates a different system, 
-      * it also prepends a processor id prefix before the input prefix.
+      * as the name of an input file, and opens the file using the
+      * FileMaster:openInutFile function. This function prepends the
+      * input prefix (if any) to the file path.
       *
       * \param filename trajectory input file name.
       */
       virtual void open(std::string filename) = 0;
 
       /**
-      * Read a single frame. Frames are assumed to be read consecutively. 
+      * Read header of trajectory file (if any).
+      *
+      * Empty default implementation.
+      */
+      virtual void readHeader(){};
+
+      /**
+      * Read a single frame.
       *
       * This function reads a frame from the trajectory file that was
       * opened by the open() function.
@@ -64,28 +72,26 @@ namespace Rpc {
       * Close the trajectory file.
       */
       virtual void close() = 0;
-      
-      virtual void readHeader(){};
-      
+
    protected:
 
-      /** 
+      /**
       * Return reference to parent system.
       */
       System<D>& system();
-      
+
    private:
-  
+
       /**
       * Pointer to the parent system.
       */
       System<D>* systemPtr_;
 
-   }; // end class TrajectoryReader
+   };
 
    // Get the parent system.
-   template <int D>
-   inline System<D>& TrajectoryReader<D>::system()
+   template <int D> inline
+   System<D>& TrajectoryReader<D>::system()
    {  return *systemPtr_; }
 
    // Explicit instantiation declarations

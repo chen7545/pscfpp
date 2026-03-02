@@ -8,22 +8,22 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "TrajectoryReader.h"              // base class
-
-#include <prdc/cpu/RField.h>               // member
-#include <pscf/math/IntVec.h>              // member
-#include <util/containers/DArray.h>        // member
-
+#include "TrajectoryReader.h"           // base class
+#include <prdc/cpu/RField.h>            // member
+#include <pscf/math/IntVec.h>           // member
+#include <util/containers/DArray.h>     // member
+#include <fstream>                      // member
 #include <string>
-#include <iostream>
 
 namespace Pscf {
 namespace Rpc {
 
+   // Forward declaration
    template <int D> class System;
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu; 
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * Trajectory file reader.
@@ -38,6 +38,8 @@ namespace Rpc {
 
       /**
       * Constructor.
+      *
+      * \param system  parent System object
       */
       RGridTrajectoryReader<D>(System<D>& system);
 
@@ -50,60 +52,56 @@ namespace Rpc {
       * Open trajectory file and read header, if any.
       *
       * By convention, this function treats the trajectory filename
-      * as the name of an input file, and opens the file using the 
-      * FileMaster:openInutFile function. This function prepends the 
+      * as the name of an input file, and opens the file using the
+      * FileMaster:openInutFile function. This function prepends the
       * input prefix (if any) to the file path.
       *
-      * \param filename trajectory input file name.
+      * \param filename  trajectory input file name
       */
-      void open(std::string filename);
+      void open(std::string filename) override;
 
       /**
-      * Read a single frame. Frames are assumed to be read consecutively. 
-      *
-      * This function reads a frame from the trajectory file that was
-      * opened by the open() function.
+      * Read header of trajectory file (if any).
+      */
+      void readHeader() override;
+
+      /**
+      * Read a single frame from the trajectory file.
       *
       * \return true if a frame is avaiable, false if at end of file
       */
-      bool readFrame();
+      bool readFrame() override;
 
       /**
       * Close the trajectory file.
       */
-      void close();
- 
-      /**
-      * Read header of trajectory file.
-      */
-      void readHeader();
-      
-      void readFieldsRGrid(std::istream &in, DArray<RField<D> >& fields);
+      void close() override;
 
    protected:
 
-      /**
-      * Allocate memory required by trajectory reader
-      */
-      void allocate();
-
-      using TrajectoryReader<D>::system;
+      using TrajectoryReaderT = TrajectoryReader<D>;
+      using TrajectoryReaderT::system;
 
    private:
 
-      // Field configuration  
+      // Field configuration
       DArray< RField<D> > wField_;
-      
+
       // Dimensions of computational mesh (# of points in each direction)
       IntVec<D> meshDimensions_;
-  
-      // Trajectory file input stream
+
+      // Trajectory file.
       std::ifstream inputfile_;
-      
+
       // Has wField_ been allocated?
       bool isAllocated_;
 
-   }; 
+      /**
+      * Allocate required memory.
+      */
+      void allocate();
+
+   };
 
    // Explicit instantiation declarations
    extern template class RGridTrajectoryReader<1>;

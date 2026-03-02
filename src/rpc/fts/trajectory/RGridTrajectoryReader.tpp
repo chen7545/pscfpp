@@ -9,17 +9,11 @@
 */
 
 #include "RGridTrajectoryReader.h"
-
 #include <rpc/system/System.h>
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
-#include <pscf/mesh/MeshIterator.h>
 #include <util/misc/ioUtil.h>
 #include <util/misc/FileMaster.h>
-
-#include <sstream>
-#include <iostream>
-#include <string>
 
 namespace Pscf {
 namespace Rpc {
@@ -31,16 +25,18 @@ namespace Rpc {
    */
    template <int D>
    RGridTrajectoryReader<D>::RGridTrajectoryReader(System<D>& system)
-    : TrajectoryReader<D>(system),
+    : TrajectoryReaderT(system),
       isAllocated_(false)
    {}
 
+   /*
+   * Allocate required memory.
+   */
    template <int D>
    void RGridTrajectoryReader<D>::allocate()
    {
       const int nMonomer = system().mixture().nMonomer();
       UTIL_CHECK(nMonomer > 0);
-
       meshDimensions_ = system().domain().mesh().dimensions();
       if (!isAllocated_){
          wField_.allocate(nMonomer);
@@ -52,7 +48,7 @@ namespace Rpc {
    }
 
    /*
-   * Open file and setup memory.
+   * Open file and allocate memory if necessary.
    */
    template <int D>
    void RGridTrajectoryReader<D>::open(std::string filename)
@@ -61,10 +57,12 @@ namespace Rpc {
       allocate();
    }
 
+   /*
+   * Read trajectory file header section.
+   */
    template <int D>
    void RGridTrajectoryReader<D>::readHeader()
    {
-      // Read Header
       int nMonomer = system().mixture().nMonomer();
       FieldIo<D> const & fieldIo = system().domain().fieldIo();
       UnitCell<D> tmpUnitCell;
@@ -76,14 +74,14 @@ namespace Rpc {
    }
 
    /*
-   * Read frame, return false if end-of-file
+   * Read frame, return false if end-of-file.
    */
    template <int D>
    bool RGridTrajectoryReader<D>::readFrame()
    {
       // Preconditions
       if (!isAllocated_) {
-         UTIL_THROW("R-grid Field is not allocated");
+         UTIL_THROW("Memory not allocated in RGridTrajectoryReader");
       }
 
       bool notEnd;
@@ -103,10 +101,10 @@ namespace Rpc {
       line >> value;
       int step;
       step = std::stoi(value);
-      Log::file()<< "step "<< step <<"\n";
+      Log::file() << "step " << step << "\n";
       #endif
 
-      // Read mesh dimensions 
+      // Read mesh dimensions
       notEnd = getNextLine(inputfile_, line);
       UTIL_CHECK(notEnd);
       checkString(line, "mesh");
@@ -115,12 +113,12 @@ namespace Rpc {
       notEnd = getNextLine(inputfile_, line);
       UTIL_CHECK(notEnd);
 
-      // Read w-field configuration in r-grid format
+      // Read a w-field configuration in r-grid format
       int nMonomer = system().mixture().nMonomer();
       FieldIo<D> const & fieldIo = system().domain().fieldIo();
       fieldIo.readFieldsRGridData(inputfile_, wField_, nMonomer);
 
-      // Update system r-grid field
+      // Update system r-grid w fields
       system().w().setRGrid(wField_);
 
       return true;
@@ -131,7 +129,7 @@ namespace Rpc {
    */
    template <int D>
    void RGridTrajectoryReader<D>::close()
-   {  inputfile_.close();}
+   {  inputfile_.close(); }
 
 }
 }

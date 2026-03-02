@@ -1,5 +1,6 @@
 #ifndef RPC_TRAJECTORY_READER_TPP
 #define RPC_TRAJECTORY_READER_TPP
+
 /*
 * PSCF - Polymer Self-Consistent Field
 *
@@ -10,8 +11,7 @@
 #include "TrajectoryReader.h"
 
 namespace Pscf {
-namespace Rpc 
-{
+namespace Rpc {
 
    /*
    * Constructor.
@@ -20,9 +20,7 @@ namespace Rpc
    TrajectoryReader<D>::TrajectoryReader(System<D>& system)
     : systemPtr_(&system)
    {}
-   
 
-  
 }
 }
 #endif

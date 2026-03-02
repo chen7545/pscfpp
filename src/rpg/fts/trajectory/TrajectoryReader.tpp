@@ -1,5 +1,6 @@
 #ifndef RPG_TRAJECTORY_READER_TPP
 #define RPG_TRAJECTORY_READER_TPP
+
 /*
 * PSCF - Polymer Self-Consistent Field
 *
@@ -10,10 +11,7 @@
 #include "TrajectoryReader.h"
 
 namespace Pscf {
-namespace Rpg 
-{
-
-   using namespace Util;
+namespace Rpg {
 
    /*
    * Constructor.
@@ -22,7 +20,7 @@ namespace Rpg
    TrajectoryReader<D>::TrajectoryReader(System<D>& system)
     : systemPtr_(&system)
    {}
-  
+
 }
 }
 #endif
