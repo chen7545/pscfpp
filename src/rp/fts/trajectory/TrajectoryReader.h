@@ -1,0 +1,98 @@
+#ifndef RP_TRAJECTORY_READER_H
+#define RP_TRAJECTORY_READER_H
+
+/*
+* PSCF - Polymer Self-Consistent Field
+*
+* Copyright 2015 - 2025, The Regents of the University of Minnesota
+* Distributed under the terms of the GNU General Public License.
+*/
+
+#include <string>
+
+namespace Pscf {
+namespace Rp {
+
+   /**
+   * Trajectory file reader (abstract base class).
+   *
+   * \ingroup Rp_Fts_Trajectory_Module
+   */
+   template <int D, class T>
+   class TrajectoryReader
+   {
+
+   public:
+
+      /**
+      * Constructor.
+      *
+      * \param system  parent System object
+      */
+      TrajectoryReader<D>(typename T::System& system)
+       : systemPtr_(&system)
+      {}
+
+      /**
+      * Destructor.
+      *
+      * Empty default implementation.
+      */
+      virtual ~TrajectoryReader()
+      {};
+
+      /**
+      * Open trajectory file and read header, if any.
+      *
+      * By convention, this function treats the trajectory filename
+      * as the name of an input file, and opens the file using the
+      * FileMaster:openInutFile function. This function prepends the
+      * input prefix (if any) to the file path.
+      *
+      * \param filename trajectory input file name.
+      */
+      virtual void open(std::string filename) = 0;
+
+      /**
+      * Read header of trajectory file (if any).
+      *
+      * Empty default implementation.
+      */
+      virtual void readHeader()
+      {};
+
+      /**
+      * Read a single frame.
+      *
+      * This function reads a frame from the trajectory file that was
+      * opened by the open() function.
+      *
+      * \return true if a frame is avaiable, false if at end of file
+      */
+      virtual bool readFrame() = 0;
+
+      /**
+      * Close the trajectory file.
+      */
+      virtual void close() = 0;
+
+   protected:
+
+      /**
+      * Return reference to parent system.
+      */
+      typename T::System& system();
+      {  return *systemPtr_; }
+
+   private:
+
+      /**
+      * Pointer to the parent system.
+      */
+      typename T::System* systemPtr_;
+
+   };
+
+}
+}
+#endif
