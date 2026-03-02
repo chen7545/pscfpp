@@ -10,6 +10,7 @@
 
 #include "Simulator.h"
 
+#include <pscf/interaction/Interaction.h>
 #include <pscf/chem/PolymerModel.h>
 #include <pscf/math/IntVec.h>
 #include <util/misc/Timer.h>

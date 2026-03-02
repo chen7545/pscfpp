@@ -25,13 +25,6 @@
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/Reduce.h>
 #include <pscf/cpu/CpuVecRandom.h>
-#include <pscf/interaction/Interaction.h>
-#include <pscf/math/IntVec.h>
-
-#include <util/misc/Timer.h>
-#include <util/random/Random.h>
-#include <util/global.h>
-#include <gsl/gsl_eigen.h>
 
 #include <rp/fts/simulator/Simulator.tpp>  // base class implementation
 

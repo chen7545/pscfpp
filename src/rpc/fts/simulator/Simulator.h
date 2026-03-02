@@ -22,18 +22,18 @@ namespace Rpc {
    /**
    * Field theoretic simulator (base class).
    *
-   * This class is basically a named instantiation of the base class 
-   * template Rp::Simulator, using aliases defined in Rpc::Types<D> to 
-   * specialize to types used in the Rpc namespace. See documentation 
-   * of the base class for details.
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::Simlator, and inherit
+   * their entire public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * template for details. 
    *
    * Instantiations of this template serve as as base classes for 
    * Rpc::BdSimulation<D> and Rpc::McSimulation<D>, for D=1, 2, and 3. 
    * For information about parameter file formats for subclasses, see:
    *
-   * \see \ref rp_BdSimulator_page (manual page)
-   * \see \ref rp_McSimulator_page (manual page)
-   *
+   * \see \ref rp_BdSimulator_page "MdSimulator manual page"
+   * \see \ref rp_McSimulator_page "McSimulator manual page"
    * \ingroup Rpc_Fts_Simulator_Module
    */
    template <int D>
