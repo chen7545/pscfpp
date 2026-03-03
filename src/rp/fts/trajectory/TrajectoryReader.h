@@ -42,7 +42,7 @@ namespace Rp {
       {};
 
       /**
-      * Open trajectory file and read header, if any.
+      * Open trajectory file and allocate memory if necessary.
       *
       * By convention, this function treats the trajectory filename
       * as the name of an input file, and opens the file using the
@@ -81,7 +81,7 @@ namespace Rp {
       /**
       * Return reference to parent system.
       */
-      typename T::System& system();
+      typename T::System& system()
       {  return *systemPtr_; }
 
    private:
