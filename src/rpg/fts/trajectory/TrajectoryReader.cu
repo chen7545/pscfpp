@@ -5,12 +5,32 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "TrajectoryReader.tpp"
+#include "TrajectoryReader.h"
 
 namespace Pscf {
 namespace Rpg {
-   template class TrajectoryReader<1>;
-   template class TrajectoryReader<2>;
-   template class TrajectoryReader<3>;
+
+   /*
+   * Constructor.
+   */
+   template <int D>
+   TrajectoryReader<D>::TrajectoryReader(System<D>& system)
+    : Rp::TrajectoryReader<D, Types<D> >(system)
+   {}
+
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      template class TrajectoryReader<1, Rpg::Types<1> >;
+      template class TrajectoryReader<2, Rpg::Types<2> >;
+      template class TrajectoryReader<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      template class TrajectoryReader<1>;
+      template class TrajectoryReader<2>;
+      template class TrajectoryReader<3>;
+   }
 }

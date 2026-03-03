@@ -5,12 +5,53 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "TrajectoryReaderFactory.tpp"
+#include "TrajectoryReaderFactory.h"
+
+// Subclasses of ConfigIo
+#include "RGridTrajectoryReader.h"
 
 namespace Pscf {
 namespace Rpg {
-   template class TrajectoryReaderFactory<1>;
-   template class TrajectoryReaderFactory<2>;
-   template class TrajectoryReaderFactory<3>;
+
+   using namespace Util;
+
+   /*
+   * Constructor
+   */
+   template <int D>
+   TrajectoryReaderFactory<D>::TrajectoryReaderFactory(System<D>& system)
+    : sysPtr_(&system)
+   {}
+
+   /*
+   * Return a pointer to a instance of TrajectoryReader subclass className.
+   */
+   template <int D>
+   TrajectoryReader<D>* 
+   TrajectoryReaderFactory<D>::factory(const std::string &className) const
+   {
+      TrajectoryReader<D> *ptr = 0;
+
+      // Try subfactories first
+      ptr = trySubfactories(className);
+      if (ptr) return ptr;
+
+      if (className == "RGridTrajectoryReader" 
+          || className == "TrajectoryReader") {
+        ptr = new RGridTrajectoryReader<D>(*sysPtr_);
+      } 
+      return ptr;
+   }
+
 }
 }
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rpg {
+      template class TrajectoryReaderFactory<1>;
+      template class TrajectoryReaderFactory<2>;
+      template class TrajectoryReaderFactory<3>;
+   }
+}
+

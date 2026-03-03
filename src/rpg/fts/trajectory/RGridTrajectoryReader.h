@@ -8,12 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "TrajectoryReader.h"           // base class
-#include <prdc/cuda/RField.h>           // member
-#include <pscf/math/IntVec.h>           // member
-#include <util/containers/DArray.h>     // member
-#include <fstream>                      // member
-#include <string>
+#include <rp/fts/trajectory/RGridTrajectoryReader.h> // direct base class 
+#include <rpg/system/Types.h>                        // base class argument
+#include <prdc/cuda/RField.h>                        // base class member
+#include <rpg/fts/trajectory/TrajectoryReader.h>     // indirect base class 
 
 namespace Pscf {
 namespace Rpg {
@@ -31,7 +29,8 @@ namespace Rpg {
    * \ingroup Rpg_Fts_Trajectory_Module
    */
    template <int D>
-   class RGridTrajectoryReader : public TrajectoryReader<D>
+   class RGridTrajectoryReader 
+    : public Rp::RGridTrajectoryReader<D, Types<D> >
    {
 
    public:
@@ -43,71 +42,22 @@ namespace Rpg {
       */
       RGridTrajectoryReader<D>(System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~RGridTrajectoryReader(){};
-
-      /**
-      * Open trajectory file and read header, if any.
-      *
-      * By convention, this function treats the trajectory filename
-      * as the name of an input file, and opens the file using the
-      * FileMaster:openInutFile function. This function prepends the
-      * input prefix (if any) to the file path.
-      *
-      * \param filename  trajectory input file name
-      */
-      void open(std::string filename) override;
-
-      /**
-      * Read header of trajectory file (if any).
-      */
-      void readHeader() override;
-
-      /**
-      * Read a single frame from the trajectory file.
-      *
-      * \return true if a frame is avaiable, false if at end of file
-      */
-      bool readFrame() override;
-
-      /**
-      * Close the trajectory file.
-      */
-      void close() override;
-
-   protected:
-
-      using TrajectoryReaderT = TrajectoryReader<D>;
-      using TrajectoryReaderT::system;
-
-   private:
-
-      // Field configuration
-      DArray< RField<D> > wField_;
-
-      // Dimensions of computational mesh (# of points in each direction)
-      IntVec<D> meshDimensions_;
-
-      // Trajectory file.
-      std::ifstream inputfile_;
-
-      // Has wField_ been allocated?
-      bool isAllocated_;
-
-      /**
-      * Allocate required memory.
-      */
-      void allocate();
-
    };
 
-   // Explicit instantiation declarations
-   extern template class RGridTrajectoryReader<1>;
-   extern template class RGridTrajectoryReader<2>;
-   extern template class RGridTrajectoryReader<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class RGridTrajectoryReader<1, Rpg::Types<1> >;
+      extern template class RGridTrajectoryReader<2, Rpg::Types<2> >;
+      extern template class RGridTrajectoryReader<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class RGridTrajectoryReader<1>;
+      extern template class RGridTrajectoryReader<2>;
+      extern template class RGridTrajectoryReader<3>;
+   }
 }
 #endif

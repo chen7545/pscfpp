@@ -8,7 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <string>
+#include <rp/fts/trajectory/TrajectoryReader.h>
+#include <rpg/system/Types.h>
 
 namespace Pscf {
 namespace Rpg {
@@ -19,10 +20,16 @@ namespace Rpg {
    /**
    * Trajectory file reader (base class).
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::TrajectoryReader, and
+   * inherit their public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * template for details. 
+   *
    * \ingroup Rpg_Fts_Trajectory_Module
    */
    template <int D>
-   class TrajectoryReader
+   class TrajectoryReader : public Rp::TrajectoryReader<D, Types<D> >
    {
 
    public:
@@ -34,71 +41,22 @@ namespace Rpg {
       */
       TrajectoryReader<D>(System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~TrajectoryReader(){};
-
-      /**
-      * Open trajectory file and read header, if any.
-      *
-      * By convention, this function treats the trajectory filename
-      * as the name of an input file, and opens the file using the
-      * FileMaster:openInutFile function. This function prepends the
-      * input prefix (if any) to the file path.
-      *
-      * \param filename trajectory input file name.
-      */
-      virtual void open(std::string filename) = 0;
-
-      /**
-      * Read header of trajectory file (if any).
-      *
-      * Empty default implementation.
-      */
-      virtual void readHeader(){};
-
-      /**
-      * Read a single frame.
-      *
-      * This function reads a frame from the trajectory file that was
-      * opened by the open() function.
-      *
-      * \return true if a frame is avaiable, false if at end of file
-      */
-      virtual bool readFrame() = 0;
-
-      /**
-      * Close the trajectory file.
-      */
-      virtual void close() = 0;
-
-   protected:
-
-      /**
-      * Return reference to parent system.
-      */
-      System<D>& system();
-
-   private:
-
-      /**
-      * Pointer to the parent system.
-      */
-      System<D>* systemPtr_;
-
    };
 
-   // Get the parent system.
-   template <int D> inline
-   System<D>& TrajectoryReader<D>::system()
-   {  return *systemPtr_; }
-
-   // Explicit instantiation declarations
-   extern template class TrajectoryReader<1>;
-   extern template class TrajectoryReader<2>;
-   extern template class TrajectoryReader<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class TrajectoryReader<1, Rpg::Types<1> >;
+      extern template class TrajectoryReader<2, Rpg::Types<2> >;
+      extern template class TrajectoryReader<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class TrajectoryReader<1>;
+      extern template class TrajectoryReader<2>;
+      extern template class TrajectoryReader<3>;
+   }
 }
 #endif
