@@ -29,7 +29,7 @@ namespace Rp {
       *
       * \param system  parent System object
       */
-      TrajectoryReader<D>(typename T::System& system)
+      TrajectoryReader(typename T::System& system)
        : systemPtr_(&system)
       {}
 
