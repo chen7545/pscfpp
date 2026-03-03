@@ -43,15 +43,11 @@ namespace Rpg {
       return ptr;
    }
 
-}
-}
+   // Explicit instantiation declarations
+   template class TrajectoryReaderFactory<1>;
+   template class TrajectoryReaderFactory<2>;
+   template class TrajectoryReaderFactory<3>;
 
-// Explicit instantiation declarations
-namespace Pscf {
-   namespace Rpg {
-      template class TrajectoryReaderFactory<1>;
-      template class TrajectoryReaderFactory<2>;
-      template class TrajectoryReaderFactory<3>;
-   }
+}
 }
 
