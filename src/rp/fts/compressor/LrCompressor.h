@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <pscf/math/IntVec.h>                     // member
 #include <util/containers/DArray.h>               // member
 #include <util/misc/Timer.h>                      // member
 

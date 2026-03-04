@@ -5,14 +5,41 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "LrCompressor.tpp"
+
+#include "LrCompressor.h"
+#include <rpc/system/System.h>
+#include <rpc/solvers/Mixture.h>
+#include <rpc/field/Domain.h>
+#include <prdc/crystal/shiftToMinimum.h>
+#include <pscf/cpu/VecOpCx.h>
+#include <pscf/cpu/Reduce.h>
+
+#include <rp/fts/compressor/LrCompressor.tpp>
 
 namespace Pscf {
 namespace Rpc {
 
-   template class LrCompressor<1>;
-   template class LrCompressor<2>;
-   template class LrCompressor<3>;
+   /*
+   * Constructor.
+   */
+   template <int D>
+   LrCompressor<D>::LrCompressor(System<D>& system)
+    : Rp::LrCompressor<D, Types<D> >(system)
+   {}
 
 }
+}
+
+// Explicit instantiation definitions
+namespace Pscf {
+   namespace Rp {
+      template class LrCompressor<1, Rpc::Types<1> >;
+      template class LrCompressor<2, Rpc::Types<2> >;
+      template class LrCompressor<3, Rpc::Types<3> >;
+   }
+   namespace Rpc {
+      template class LrCompressor<1>;
+      template class LrCompressor<2>;
+      template class LrCompressor<3>;
+   }
 }
