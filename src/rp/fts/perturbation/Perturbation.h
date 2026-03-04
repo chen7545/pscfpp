@@ -1,5 +1,5 @@
-#ifndef RPG_PERTURBATION_H
-#define RPG_PERTURBATION_H
+#ifndef RP_PERTURBATION_H
+#define RP_PERTURBATION_H
 
 #include <util/param/ParamComposite.h>      // base class
 
@@ -7,32 +7,19 @@
 namespace Util {
    template <typename T> class DArray;
 }
-namespace Pscf {
-   namespace Prdc {
-      namespace Cuda {
-         template <int D> class RField;
-      }
-   }
-   namespace Rpg {
-      template <int D> class System;
-      template <int D> class Simulator;
-   }
-}
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Base class for additive perturbations of standard FTS Hamiltonian.
    *
    * \see \ref psfts_perturb_page "Manual Page"
-   * \ingroup Rpg_Fts_Perturbation_Module
+   * \ingroup Rp_Fts_Perturbation_Module
    */
-   template <int D>
+   template <int D, class T>
    class Perturbation : public ParamComposite
    {
 
@@ -43,7 +30,7 @@ namespace Rpg {
       *
       * \param simulator  parent Simulator object
       */
-      Perturbation(Simulator<D>& simulator);
+      Perturbation(typename T::Simulator& simulator);
 
       /**
       * Destructor.
@@ -85,7 +72,7 @@ namespace Rpg {
       *
       * Empty default implementation.
       */
-      virtual void incrementDc(DArray< RField<D> >& dc);
+      virtual void incrementDc(DArray< typename T::RField >& dc);
 
       /**
       * Save any required internal state variables.
@@ -113,14 +100,14 @@ namespace Rpg {
       virtual double df();
 
       /**
-      * Get parent Simulator<D> by const reference.
+      * Get parent typename T::Simulator by const reference.
       */
-      Simulator<D> const & simulator() const;
+      typename T::Simulator const & simulator() const;
 
       /**
-      * Get parent System<D> by const reference.
+      * Get parent typename T::System by const reference.
       */
-      System<D> const & system() const;
+      typename T::System const & system() const;
 
       /**
       * Get the perturbation parameter.
@@ -141,14 +128,14 @@ namespace Rpg {
    protected:
 
       /**
-      * Get parent Simulator<D> by non-const reference.
+      * Get parent Simulator by non-const reference.
       */
-      Simulator<D>& simulator();
+      typename T::Simulator& simulator();
 
       /**
-      * Get parent system<D> by non-const reference.
+      * Get parent System by non-const reference.
       */
-      System<D>& system();
+      typename T::System& system();
 
       /**
       * Strength of the perturbation
@@ -158,51 +145,46 @@ namespace Rpg {
    private:
 
       /// Pointer to parent Simulator.
-      Simulator<D>* simulatorPtr_;
+      typename T::Simulator* simulatorPtr_;
 
       /// Pointer to parent System.
-      System<D>* systemPtr_;
+      typename T::System* systemPtr_;
 
    };
 
    // Inline methods
 
    // Return parent simulator by const reference.
-   template <int D>
-   inline Simulator<D> const & Perturbation<D>::simulator() const
+   template <int D, class T>
+   inline typename T::Simulator const & Perturbation<D,T>::simulator() const
    {
       assert(simulatorPtr_);
       return *simulatorPtr_;
    }
 
    // Return parent simulator by non-const reference.
-   template <int D>
-   inline Simulator<D> & Perturbation<D>::simulator()
+   template <int D, class T>
+   inline typename T::Simulator & Perturbation<D,T>::simulator()
    {
       assert(simulatorPtr_);
       return *simulatorPtr_;
    }
 
    // Return parent simulator by const reference.
-   template <int D>
-   inline System<D> const & Perturbation<D>::system() const
+   template <int D, class T>
+   inline typename T::System const & Perturbation<D,T>::system() const
    {
       assert(systemPtr_);
       return *systemPtr_;
    }
 
    // Return parent simulator by non-const reference.
-   template <int D>
-   inline System<D> & Perturbation<D>::system()
+   template <int D, class T>
+   inline typename T::System & Perturbation<D,T>::system()
    {
       assert(systemPtr_);
       return *systemPtr_;
    }
-
-   // Explicit instantiation declarations
-   extern template class Perturbation<1>;
-   extern template class Perturbation<2>;
-   extern template class Perturbation<3>;
 
 }
 }

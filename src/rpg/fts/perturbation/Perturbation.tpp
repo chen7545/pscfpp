@@ -13,7 +13,7 @@ namespace Rpg {
 
    using namespace Util;
 
-   /* 
+   /*
    * Constructor.
    */
    template <int D>
@@ -24,7 +24,7 @@ namespace Rpg {
       systemPtr_(&(simulator.system()))
    {}
 
-   /* 
+   /*
    * Destructor.
    */
    template <int D>
@@ -46,7 +46,7 @@ namespace Rpg {
    {}
 
    /*
-   * Compute and return perturbation, default implementation.
+   * Compute and return Hamiltonian perturbation, default implementation.
    */
    template <int D>
    double Perturbation<D>::hamiltonian(double unperturbedHamiltonian)
@@ -60,25 +60,25 @@ namespace Rpg {
    {}
 
    /*
-   * Save any internal variables.
+   * Save any internal state variables.
    */
    template <int D>
    void Perturbation<D>::saveState()
    {}
 
    /*
-   * Restored any saved internal variables.
+   * Restore any saved internal variables.
    */
    template <int D>
    void Perturbation<D>::restoreState()
    {}
-   
+
    /*
-   * Compute and return derivative of free energy 
-   */ 
+   * Compute and return derivative of free energy.
+   */
    template <int D>
    double Perturbation<D>::df()
-   { return 0.0; }
+   {  return 0.0; }
 
    /*
    * Set a new value for the lambda_ parameter.
@@ -89,4 +89,4 @@ namespace Rpg {
 
 }
 }
-#endif 
+#endif
