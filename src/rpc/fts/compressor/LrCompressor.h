@@ -8,12 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Compressor.h"
-#include <rpc/fts/compressor/IntraCorrelation.h>
-#include <prdc/cpu/RField.h>
-#include <prdc/cpu/RFieldDft.h>
-#include <util/containers/DArray.h>
-#include <util/misc/Timer.h>
+#include "Compressor.h"                           // base class
+#include <rpc/fts/compressor/IntraCorrelation.h>  // member
+#include <prdc/cpu/RField.h>                      // member
+#include <prdc/cpu/RFieldDft.h>                   // member
+#include <util/containers/DArray.h>               // member
+#include <util/misc/Timer.h>                      // member
 
 namespace Pscf {
 namespace Rpc {
@@ -21,7 +21,8 @@ namespace Rpc {
    template <int D> class System;
 
    using namespace Util;
-   using namespace Pscf::Prdc::Cpu;
+   using namespace Prdc;
+   using namespace Prdc::Cpu;
 
    /**
    * Linear response compressor.
@@ -88,12 +89,38 @@ namespace Rpc {
    protected:
 
       // Inherited protected members
+      using Compressor<D>::system;
       using Compressor<D>::mdeCounter_;
       using ParamComposite::read;
       using ParamComposite::readOptional;
       using ParamComposite::setClassName;
 
    private:
+
+      // IntraCorrelation object
+      IntraCorrelation<D> intra_;
+
+      // Template w Field used in update function
+      DArray< RField<D> > wFieldTmp_;
+
+      // Residual in real space
+      RField<D> resid_;
+
+      // Residual in Fourier space
+      RFieldDft<D> residK_;
+
+      // Intramolecular correlation in Fourier space
+      RField<D> intraCorrelationK_;
+
+      // Dimensions of wavevector mesh in real-to-complex transform
+      IntVec<D> kMeshDimensions_;
+
+      // Timers for analyzing performance
+      Timer timerTotal_;
+      Timer timerMDE_;
+
+      // Type of error criterion used to test convergence
+      std::string errorType_;
 
       // Error tolerance.
       double epsilon_;
@@ -107,55 +134,24 @@ namespace Rpc {
       // Total iteration counter.
       int totalItr_;
 
-      // Timers for analyzing performance.
-      Timer timerTotal_;
-      Timer timerMDE_;
-
-      // Type of error criterion used to test convergence
-      std::string errorType_;
-
       // Verbosity level.
       int verbose_;
 
-      /**
-      * Dimensions of wavevector mesh in real-to-complex transform
-      */
-      IntVec<D> kMeshDimensions_;
+      // Has required memory been allocated?
+      bool isAllocated_;
 
-      /**
-      * IntraCorrelation in fourier space calculated by IntraCorrlation class.
-      */
-      RField<D> intraCorrelationK_;
+      // Has the IntraCorrelation been calculated?
+      bool isIntraCalculated_;
 
-      /**
-      * Residual in real space used for linear response anderson mixing.
-      */
-      RField<D> resid_;
-
-      /**
-      * Residual in Fourier space used for linear response anderson mixing.
-      */
-      RFieldDft<D> residK_;
-
-      /**
-      * Current values of the fields
-      */
-      DArray< RField<D> > w0_;
-
-      /**
-      * Template w Field used in update function
-      */
-      DArray< RField<D> > wFieldTmp_;
+      // Private member functions
 
       /**
       * Compute the residual vector.
-      *
-      * \param resid current residual vector value
       */
-      void getResidual();
+      void computeResidual();
 
       /**
-      * Use homogenous linear respose analytic approximation to update wFields
+      * Update system w fields.
       */
       void updateWFields();
 
@@ -168,44 +164,12 @@ namespace Rpc {
       double computeError(int verbose);
 
       /**
-      * Find the maximum magnitude element of a residual field.
-      */
-      double maxAbs(RField<D> const & a);
-
-      /**
-      * Compute the inner product of two fields.
-      *
-      * \param a first field
-      * \param b second field
-      */
-      double dotProduct(RField<D> const & a, RField<D> const & b);
-
-      /**
-      * Compute L2 norm
-      */
-      double norm(RField<D> const & a);
-
-      /**
       * Outputs relevant system details to the iteration log.
       */
       void outputToLog();
-      
-      /**
-      * IntraCorrelation object
-      */
-      IntraCorrelation<D> intra_;
-      
-      // Has the IntraCorrelation been calculated?
-      bool isIntraCalculated_;
-      
-      // Has required memory been allocated.
-      bool isAllocated_;
-      
-      // Private inherited members
-      using Compressor<D>::system;
 
    };
-   
+
    // Explicit instantiation declarations
    extern template class LrCompressor<1>;
    extern template class LrCompressor<2>;

@@ -13,69 +13,75 @@
 #include <rpc/solvers/Mixture.h>
 #include <rpc/field/Domain.h>
 #include <prdc/crystal/shiftToMinimum.h>
+#include <pscf/cpu/VecOpCx.h>
+#include <pscf/cpu/Reduce.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/iterator/NanException.h>
-#include <util/global.h>
 #include <util/format/Dbl.h>
-
+#include <util/global.h>
 
 namespace Pscf {
-namespace Rpc{
+namespace Rpc {
 
    using namespace Util;
 
-   // Constructor
+   /*
+   * Constructor.
+   */
    template <int D>
    LrCompressor<D>::LrCompressor(System<D>& system)
     : Compressor<D>(system),
+      intra_(system),
+      errorType_("rms"),
       epsilon_(0.0),
       itr_(0),
       maxItr_(100),
       totalItr_(0),
-      errorType_("rms"),
       verbose_(0),
-      intra_(system),
-      isIntraCalculated_(false),
-      isAllocated_(false)
-   {  setClassName("LrCompressor"); }
+      isAllocated_(false),
+      isIntraCalculated_(false)
+   {  ParamComposite::setClassName("LrCompressor"); }
 
-   // Destructor
+   /*
+   * Destructor.
+   */
    template <int D>
    LrCompressor<D>::~LrCompressor()
    {}
 
-   // Read parameters from file
+   /*
+   * Read parameters from file.
+   */
    template <int D>
    void LrCompressor<D>::readParameters(std::istream& in)
    {
       // Default values
       maxItr_ = 100;
+      verbose_ = 0;
       errorType_ = "rms";
 
-      read(in, "epsilon", epsilon_);
-      readOptional(in, "maxItr", maxItr_);
-      readOptional(in, "verbose", verbose_);
-      readOptional(in, "errorType", errorType_);
+      // Read parameters
+      ParamComposite::read(in, "epsilon", epsilon_);
+      ParamComposite::readOptional(in, "maxItr", maxItr_);
+      ParamComposite::readOptional(in, "verbose", verbose_);
+      ParamComposite::readOptional(in, "errorType", errorType_);
    }
 
-   // Initialize just before entry to iterative loop.
+   /*
+   * Initialize just before entry to iterative loop.
+   */
    template <int D>
    void LrCompressor<D>::setup()
    {
-      const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-      for (int i = 0; i < D; ++i) {
-         if (i < D - 1) {
-            kMeshDimensions_[i] = dimensions[i];
-         } else {
-            kMeshDimensions_[i] = dimensions[i]/2 + 1;
-         }
-      }
-      
+      int kSize;
+      FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize);
+
       // Allocate memory required by AM algorithm if not done earlier.
-      if (!isAllocated_){
+      if (!isAllocated_) {
          resid_.allocate(dimensions);
          residK_.allocate(dimensions);
+         const int nMonomer = system().mixture().nMonomer();
          wFieldTmp_.allocate(nMonomer);
          intraCorrelationK_.allocate(kMeshDimensions_);
          for (int i = 0; i < nMonomer; ++i) {
@@ -122,7 +128,7 @@ namespace Rpc{
          }
 
          // Compute residual vector
-         getResidual();
+         computeResidual();
          double error;
          try {
             error = computeError(verbose_);
@@ -152,7 +158,7 @@ namespace Rpc{
             }
             //mdeCounter_ += itr_;
             totalItr_ += itr_;
-            
+
             return 0; // Success
 
          } else{
@@ -170,66 +176,64 @@ namespace Rpc{
 
       // Failure: iteration counter itr reached maxItr without converging
       timerTotal_.stop();
-
       Log::file() << "Iterator failed to converge.\n";
       return 1;
 
    }
 
    /*
-   * Compute the residual for the current system state
+   * Compute and store the residual for the current system state
    */
    template <int D>
-   void LrCompressor<D>::getResidual()
+   void LrCompressor<D>::computeResidual()
    {
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-
       // Initialize residuals
-      for (int i = 0 ; i < meshSize; ++i) {
-         resid_[i] = -1.0;
-      }
+      VecOp::eqS(resid_, -1.0);
 
        // Compute SCF residual vector elements
+      const int nMonomer = system().mixture().nMonomer();
       for (int j = 0; j < nMonomer; ++j) {
-        for (int k = 0; k < meshSize; ++k) {
-           resid_[k] += system().c().rgrid(j)[k];
-        }
+         VecOp::addEqV(resid_, system().c().rgrid(j));
       }
    }
 
-   // update system w field using linear response approximation
+   /*
+   * Update system w fields using linear response approximation.
+   */
    template <int D>
    void LrCompressor<D>::updateWFields()
    {
       const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
       const double vMonomer = system().mixture().vMonomer();
 
       // Convert residual to Fourier Space
       system().domain().fft().forwardTransform(resid_, residK_);
-      MeshIterator<D> iter;
-      iter.setDimensions(residK_.dftDimensions());
-      for (iter.begin(); !iter.atEnd(); ++iter) {
-         residK_[iter.rank()][0] *= 1.0 / (vMonomer * intraCorrelationK_[iter.rank()]);
-         residK_[iter.rank()][1] *= 1.0 / (vMonomer * intraCorrelationK_[iter.rank()]);
-      }
 
-      // Convert back to real Space (destroys residK_)
+      // Compute change in fields using estimated Jacobian
+      VecOp::divEqVc(residK_, intraCorrelationK_, vMonomer);
+
+      // Convert back to real space (destroys residK_)
       system().domain().fft().inverseTransformUnsafe(residK_, resid_);
 
-      for (int i = 0; i < nMonomer; i++){
-         for (int k = 0; k < meshSize; k++){
-            wFieldTmp_[i][k] = system().w().rgrid(i)[k] + resid_[k];
-         }
+      // Update new fields
+      for (int i = 0; i < nMonomer; i++) {
+         VecOp::addVV(wFieldTmp_[i], system().w().rgrid(i), resid_);
       }
+    
+      // Set system w fields
       system().w().setRGrid(wFieldTmp_);
    }
 
+   /*
+   * Output information to a log file (do-nothing implementation).
+   */
    template<int D>
    void LrCompressor<D>::outputToLog()
    {}
 
+   /*
+   * Output timing information to evaluate performance.
+   */
    template<int D>
    void LrCompressor<D>::outputTimers(std::ostream& out) const
    {
@@ -247,6 +251,9 @@ namespace Rpc{
       out << "\n";
    }
 
+   /*
+   * Clear all timers.
+   */
    template<int D>
    void LrCompressor<D>::clearTimers()
    {
@@ -256,51 +263,9 @@ namespace Rpc{
       totalItr_ = 0;
    }
 
-   template <int D>
-   double LrCompressor<D>::maxAbs(RField<D> const & a)
-   {
-      const int n = a.capacity();
-      double max = 0.0;
-      double value;
-      for (int i = 0; i < n; i++) {
-         value = a[i];
-         if (std::isnan(value)) { // if value is NaN, throw NanException
-            throw NanException("LrCompressor::dotProduct",__FILE__,__LINE__,0);
-         }
-         if (fabs(value) > max) {
-            max = fabs(value);
-         }
-      }
-      return max;
-   }
-
-   // Compute and return inner product of two vectors.
-   template <int D>
-   double LrCompressor<D>::dotProduct(RField<D> const & a,
-                                      RField<D> const & b)
-   {
-      const int n = a.capacity();
-      UTIL_CHECK(b.capacity() == n);
-      double product = 0.0;
-      for (int i = 0; i < n; i++) {
-         // if either value is NaN, throw NanException
-         if (std::isnan(a[i]) || std::isnan(b[i])) {
-            throw NanException("AmCompressor::dotProduct",__FILE__,__LINE__,0);
-         }
-         product += a[i] * b[i];
-      }
-      return product;
-   }
-
-   // Compute L2 norm of an RField
-   template <int D>
-   double LrCompressor<D>::norm(RField<D> const & a)
-   {
-      double normSq = dotProduct(a, a);
-      return sqrt(normSq);
-   }
-
-   // Compute and return the scalar error
+   /*
+   * Compute and return the scalar error.
+   */
    template <int D>
    double LrCompressor<D>::computeError(int verbose)
    {
@@ -308,9 +273,9 @@ namespace Rpc{
       double error = 0.0;
 
       // Find max residual vector element
-      double maxRes  = maxAbs(resid_);
+      double maxRes  = Reduce::maxAbs(resid_);
       // Find norm of residual vector
-      double normRes = norm(resid_);
+      double normRes = sqrt(Reduce::sumSq(resid_));
       // Find root-mean-squared residual element value
       double rmsRes = normRes/sqrt(meshSize);
       if (errorType_ == "max") {
