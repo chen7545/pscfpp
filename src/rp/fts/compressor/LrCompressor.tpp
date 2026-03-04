@@ -1,5 +1,5 @@
-#ifndef RPG_LR_COMPRESSOR_TPP
-#define RPG_LR_COMPRESSOR_TPP
+#ifndef RP_LR_COMPRESSOR_TPP
+#define RP_LR_COMPRESSOR_TPP
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -9,28 +9,23 @@
 */
 
 #include "LrCompressor.h"
-#include <rpg/system/System.h>
-#include <rpg/solvers/Mixture.h>
-#include <rpg/field/Domain.h>
 #include <prdc/crystal/shiftToMinimum.h>
-#include <pscf/cuda/VecOp.h>
-#include <pscf/cuda/Reduce.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/iterator/NanException.h>
 #include <util/format/Dbl.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
 
    /*
    * Constructor.
    */
-   template <int D>
-   LrCompressor<D>::LrCompressor(System<D>& system)
-    : Compressor<D>(system),
+   template <int D, class T>
+   LrCompressor<D,T>::LrCompressor(typename T::System& system)
+    : CompressorT(system),
       intra_(system),
       errorType_("rms"),
       epsilon_(0.0),
@@ -45,15 +40,15 @@ namespace Rpg {
    /*
    * Destructor.
    */
-   template <int D>
-   LrCompressor<D>::~LrCompressor()
+   template <int D, class T>
+   LrCompressor<D,T>::~LrCompressor()
    {}
 
    /*
    * Read parameters from file.
    */
-   template <int D>
-   void LrCompressor<D>::readParameters(std::istream& in)
+   template <int D, class T>
+   void LrCompressor<D,T>::readParameters(std::istream& in)
    {
       // Default values
       maxItr_ = 100;
@@ -70,12 +65,12 @@ namespace Rpg {
    /*
    * Initialize just before entry to iterative loop.
    */
-   template <int D>
-   void LrCompressor<D>::setup()
+   template <int D, class T>
+   void LrCompressor<D,T>::setup()
    {
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
       int kSize;
-      FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize);
+      FFTT::computeKMesh(dimensions, kMeshDimensions_, kSize);
 
       // Allocate memory required by AM algorithm if not done earlier.
       if (!isAllocated_) {
@@ -100,8 +95,8 @@ namespace Rpg {
    /*
    * Adjust pressure field to find partial saddle point.
    */
-   template <int D>
-   int LrCompressor<D>::compress()
+   template <int D, class T>
+   int LrCompressor<D,T>::compress()
    {
       // Initialization and allocate operations on entry to loop.
       setup();
@@ -113,7 +108,7 @@ namespace Rpg {
       // Solve MDE
       timerMDE_.start();
       system().compute();
-      ++mdeCounter_;
+      ++CompressorT::mdeCounter_;
       timerMDE_.stop();
 
       // Iterative loop
@@ -167,7 +162,7 @@ namespace Rpg {
             updateWFields();
             timerMDE_.start();
             system().compute();
-            ++mdeCounter_;
+            ++CompressorT::mdeCounter_;
             timerMDE_.stop();
 
          }
@@ -184,8 +179,8 @@ namespace Rpg {
    /*
    * Compute and store the residual for the current system state.
    */
-   template <int D>
-   void LrCompressor<D>::computeResidual()
+   template <int D, class T>
+   void LrCompressor<D,T>::computeResidual()
    {
       // Initialize resid_ to -1
       VecOp::eqS(resid_, -1.0);
@@ -200,8 +195,8 @@ namespace Rpg {
    /*
    * Update system w fields using linear response approximation.
    */
-   template <int D>
-   void LrCompressor<D>::updateWFields()
+   template <int D, class T>
+   void LrCompressor<D,T>::updateWFields()
    {
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();
@@ -227,15 +222,15 @@ namespace Rpg {
    /*
    * Output information to a log file (do-nothing implementation).
    */
-   template<int D>
-   void LrCompressor<D>::outputToLog()
+   template <int D, class T>
+   void LrCompressor<D,T>::outputToLog()
    {}
 
    /*
    * Output timing information to evaluate performance.
    */
-   template<int D>
-   void LrCompressor<D>::outputTimers(std::ostream& out) const
+   template <int D, class T>
+   void LrCompressor<D,T>::outputTimers(std::ostream& out) const
    {
       // Output timing results, if requested.
       double total = timerTotal_.time();
@@ -254,20 +249,20 @@ namespace Rpg {
    /*
    * Clear all timers.
    */
-   template<int D>
-   void LrCompressor<D>::clearTimers()
+   template <int D, class T>
+   void LrCompressor<D,T>::clearTimers()
    {
       timerTotal_.clear();
       timerMDE_.clear();
-      mdeCounter_ = 0;
+      CompressorT::mdeCounter_ = 0;
       totalItr_ = 0;
    }
 
    /*
    * Compute and return the scalar error.
    */
-   template <int D>
-   double LrCompressor<D>::computeError(int verbose)
+   template <int D, class T>
+   double LrCompressor<D,T>::computeError(int verbose)
    {
       const int meshSize = system().domain().mesh().size();
       double error = 0.0;

@@ -43,7 +43,7 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param system  parent System object 
+      * \param system  parent System object
       */
       LrCompressor(System<D>& system);
 
@@ -75,15 +75,16 @@ namespace Rpg {
       */
       int compress();
 
-      double subspacePercent(){return 0.0;};
-
-      double correctionPercent(){return 0.0;};
-
       /**
       * Return compressor times contributions.
+      *
+      * \param out  output stream
       */
       void outputTimers(std::ostream& out) const;
 
+      /**
+      * Clear all timers.
+      */
       void clearTimers();
 
    protected:
@@ -103,19 +104,19 @@ namespace Rpg {
       // Template w Field used in update function
       DArray< RField<D> > wFieldTmp_;
 
-      // Residual in real space 
+      // Residual in real space
       RField<D> resid_;
 
       // Residual in Fourier space
       RFieldDft<D> residK_;
 
-      // Intramolecular correlation in Fourier space.
+      // Intramolecular correlation in Fourier space
       RField<D> intraCorrelationK_;
 
-      // Dimensions of wavevector mesh in real-to-complex transform.
+      // Dimensions of wavevector mesh in real-to-complex transform
       IntVec<D> kMeshDimensions_;
 
-      // Timers for analyzing performance.
+      // Timers for analyzing performance
       Timer timerTotal_;
       Timer timerMDE_;
 
@@ -137,7 +138,7 @@ namespace Rpg {
       // Verbosity level
       int verbose_;
 
-      // Has memory been allocated?
+      // Has required memory been allocated?
       bool isAllocated_;
 
       // Has the IntraCorrelation been calculated?
@@ -151,7 +152,7 @@ namespace Rpg {
       void computeResidual();
 
       /**
-      * Update system w fields
+      * Update system w fields.
       */
       void updateWFields();
 

@@ -1,5 +1,5 @@
-#ifndef RPC_LR_COMPRESSOR_H
-#define RPC_LR_COMPRESSOR_H
+#ifndef RP_LR_COMPRESSOR_H
+#define RP_LR_COMPRESSOR_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,21 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Compressor.h"                           // base class
-#include <rpc/fts/compressor/IntraCorrelation.h>  // member
-#include <prdc/cpu/RField.h>                      // member
-#include <prdc/cpu/RFieldDft.h>                   // member
 #include <util/containers/DArray.h>               // member
 #include <util/misc/Timer.h>                      // member
 
 namespace Pscf {
-namespace Rpc {
-
-   template <int D> class System;
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cpu;
 
    /**
    * Linear response compressor.
@@ -32,10 +24,10 @@ namespace Rpc {
    * calculated linear response of a homogeneous liquid with the same
    * composition as the system of interest.
    *
-   * \ingroup Rpc_Fts_Compressor_Module
+   * \ingroup Rp_Fts_Compressor_Module
    */
-   template <int D>
-   class LrCompressor : public Compressor<D>
+   template <int D, class T>
+   class LrCompressor : public T::Compressor
    {
 
    public:
@@ -45,7 +37,7 @@ namespace Rpc {
       *
       * \param system  parent System object
       */
-      LrCompressor(System<D>& system);
+      LrCompressor(typename T::System& system);
 
       /**
       * Destructor.
@@ -90,28 +82,30 @@ namespace Rpc {
    protected:
 
       // Inherited protected members
-      using Compressor<D>::mdeCounter_;
-      using Compressor<D>::system;
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
-      using ParamComposite::setClassName;
+      using CompressorT = typename T::Compressor;
+      using CompressorT::mdeCounter_;
+      using CompressorT::system;
 
    private:
 
+      using RFieldT = typename T::RField;
+      using RFieldDftT = typename T::RFieldDft;
+      using FFTT = typename T::FFT;
+
       // IntraCorrelation object
-      IntraCorrelation<D> intra_;
+      typename T::IntraCorrelation intra_;
 
       // Template w Field used in update function
-      DArray< RField<D> > wFieldTmp_;
+      DArray< RFieldT > wFieldTmp_;
 
       // Residual in real space
-      RField<D> resid_;
+      RFieldT resid_;
 
       // Residual in Fourier space
-      RFieldDft<D> residK_;
+      RFieldDftT residK_;
 
       // Intramolecular correlation in Fourier space
-      RField<D> intraCorrelationK_;
+      RFieldT intraCorrelationK_;
 
       // Dimensions of wavevector mesh in real-to-complex transform
       IntVec<D> kMeshDimensions_;
@@ -171,11 +165,6 @@ namespace Rpc {
 
    };
 
-   // Explicit instantiation declarations
-   extern template class LrCompressor<1>;
-   extern template class LrCompressor<2>;
-   extern template class LrCompressor<3>;
-
-} // namespace Rpc
+} // namespace Rp
 } // namespace Pscf
 #endif

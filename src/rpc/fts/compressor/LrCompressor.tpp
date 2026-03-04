@@ -98,7 +98,7 @@ namespace Rpc {
    }
 
    /*
-   * Adjust pressure field find partial saddle point.
+   * Adjust pressure field to find partial saddle point.
    */
    template <int D>
    int LrCompressor<D>::compress()
@@ -182,18 +182,18 @@ namespace Rpc {
    }
 
    /*
-   * Compute and store the residual for the current system state
+   * Compute and store the residual for the current system state.
    */
    template <int D>
    void LrCompressor<D>::computeResidual()
    {
-      // Initialize residuals
+      // Initialize resid_ to -1
       VecOp::eqS(resid_, -1.0);
 
-       // Compute SCF residual vector elements
+      // Add all c fields
       const int nMonomer = system().mixture().nMonomer();
-      for (int j = 0; j < nMonomer; ++j) {
-         VecOp::addEqV(resid_, system().c().rgrid(j));
+      for (int i = 0; i < nMonomer; ++i) {
+         VecOp::addEqV(resid_, system().c().rgrid(i));
       }
    }
 
@@ -219,7 +219,7 @@ namespace Rpc {
       for (int i = 0; i < nMonomer; i++) {
          VecOp::addVV(wFieldTmp_[i], system().w().rgrid(i), resid_);
       }
-    
+
       // Set system w fields
       system().w().setRGrid(wFieldTmp_);
    }
