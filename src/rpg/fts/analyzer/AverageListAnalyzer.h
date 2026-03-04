@@ -29,10 +29,16 @@ namespace Rpg {
    * that evaluate averages and (optionally) block averages for several
    * physical variables.
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::AverageListAnalyzer,
+   * and inherit their public interface and almost all of their source
+   * code from this base class.
+   *
+   * \see Rp::AverageListAnalyzer
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>
-   class AverageListAnalyzer 
+   class AverageListAnalyzer
      : public Rp::AverageListAnalyzer< D, Types<D> >
    {
 

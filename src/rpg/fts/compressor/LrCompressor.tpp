@@ -9,18 +9,19 @@
 */
 
 #include "LrCompressor.h"
+#include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <rpg/system/System.h>
 #include <prdc/crystal/shiftToMinimum.h>
-#include <prdc/cuda/resources.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
 #include <pscf/mesh/MeshIterator.h>
 #include <pscf/iterator/NanException.h>
 #include <util/format/Dbl.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpg{
+namespace Rpg {
 
    using namespace Util;
 
@@ -30,16 +31,16 @@ namespace Rpg{
    template <int D>
    LrCompressor<D>::LrCompressor(System<D>& system)
     : Compressor<D>(system),
+      intra_(system),
+      errorType_("rms"),
       epsilon_(0.0),
       itr_(0),
       maxItr_(0),
       totalItr_(0),
       verbose_(0),
-      errorType_("rms"),
-      intra_(system),
-      isIntraCalculated_(false),
-      isAllocated_(false)
-   {  setClassName("LrCompressor"); }
+      isAllocated_(false),
+      isIntraCalculated_(false)
+   {  ParamComposite::setClassName("LrCompressor"); }
 
    /*
    * Destructor.
@@ -60,10 +61,10 @@ namespace Rpg{
       errorType_ = "rms";
 
       // Read parameters
-      read(in, "epsilon", epsilon_);
-      readOptional(in, "maxItr", maxItr_);
-      readOptional(in, "verbose", verbose_);
-      readOptional(in, "errorType", errorType_);
+      ParamComposite::read(in, "epsilon", epsilon_);
+      ParamComposite::readOptional(in, "maxItr", maxItr_);
+      ParamComposite::readOptional(in, "verbose", verbose_);
+      ParamComposite::readOptional(in, "errorType", errorType_);
    }
 
    /*
@@ -72,15 +73,15 @@ namespace Rpg{
    template <int D>
    void LrCompressor<D>::setup()
    {
-      const int nMonomer = system().mixture().nMonomer();
       IntVec<D> const & dimensions = system().domain().mesh().dimensions();
-
-      FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize_);
+      int kSize;
+      FFT<D>::computeKMesh(dimensions, kMeshDimensions_, kSize);
 
       // Allocate memory required by AM algorithm if not done earlier.
-      if (!isAllocated_){
+      if (!isAllocated_) {
          resid_.allocate(dimensions);
          residK_.allocate(dimensions);
+         const int nMonomer = system().mixture().nMonomer();
          wFieldTmp_.allocate(nMonomer);
          intraCorrelationK_.allocate(kMeshDimensions_);
          for (int i = 0; i < nMonomer; ++i) {
@@ -88,17 +89,16 @@ namespace Rpg{
          }
          isAllocated_ = true;
       }
-      
+
       // Compute intraCorrelation
       if (!isIntraCalculated_){
          intra_.computeIntraCorrelations(intraCorrelationK_);
          isIntraCalculated_ = true;
       }
-      
    }
 
    /*
-   * Iteratively adjust pressure field.
+   * Adjust pressure field to find partial saddle point.
    */
    template <int D>
    int LrCompressor<D>::compress()
@@ -128,7 +128,7 @@ namespace Rpg{
          }
 
          // Compute residual vector
-         getResidual();
+         computeResidual();
          double error;
          try {
             error = computeError(verbose_);
@@ -158,7 +158,7 @@ namespace Rpg{
             }
             //mdeCounter_ += itr_;
             totalItr_ += itr_;
-            
+
             return 0; // Success
 
          } else{
@@ -176,7 +176,6 @@ namespace Rpg{
 
       // Failure: iteration counter itr reached maxItr without converging
       timerTotal_.stop();
-
       Log::file() << "Iterator failed to converge.\n";
       return 1;
 
@@ -186,42 +185,42 @@ namespace Rpg{
    * Compute the residual for the current system state.
    */
    template <int D>
-   void LrCompressor<D>::getResidual()
+   void LrCompressor<D>::computeResidual()
    {
+      // Initialize resid to -1
+      VecOp::eqS(resid_, -1.0);
+
+      // Add all c fields to get SCF residual vector elements
       const int nMonomer = system().mixture().nMonomer();
-
-      // Initialize resid to c field of species 0 minus 1
-      VecOp::subVS(resid_, system().c().rgrid(0), 1.0);
-
-      // Add other c fields to get SCF residual vector elements
-      for (int i = 1; i < nMonomer; i++) {
+      for (int i = 0; i < nMonomer; ++i) {
          VecOp::addEqV(resid_, system().c().rgrid(i));
       }
    }
 
    /*
-   * Update system w field using linear response approximation.
+   * Update system w fields using linear response approximation.
    */
    template <int D>
-   void LrCompressor<D>::updateWFields(){
+   void LrCompressor<D>::updateWFields()
+   {
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();
-      
+
       // Convert residual to Fourier Space
       system().domain().fft().forwardTransform(resid_, residK_);
-      
+
       // Compute change in fields using estimated Jacobian
       VecOp::divEqVc(residK_, intraCorrelationK_, vMonomer);
-   
-      // Convert back to real Space (destroys residK_)
+
+      // Convert back to real space (destroys residK_)
       system().domain().fft().inverseTransformUnsafe(residK_, resid_);
-      
+
       // Update new fields
       for (int i = 0; i < nMonomer; i++) {
          VecOp::addVV(wFieldTmp_[i], system().w().rgrid(i), resid_);
       }
-      
-      // Set system r grid
+
+      // Set system w fields
       system().w().setRGrid(wFieldTmp_);
    }
 
@@ -264,33 +263,6 @@ namespace Rpg{
       totalItr_ = 0;
    }
 
-   template <int D>
-   double LrCompressor<D>::maxAbs(RField<D> const & a)
-   {
-      return Reduce::maxAbs(a);
-   }
-
-   /*
-   * Compute and return inner product of two vectors.
-   */
-   template <int D>
-   double LrCompressor<D>::dotProduct(RField<D> const & a,
-                                      RField<D> const & b)
-   {
-      UTIL_CHECK(a.capacity() == b.capacity());
-      return Reduce::innerProduct(a, b);
-   }
-
-   /*
-   * Compute the L2 norm of an RField.
-   */
-   template <int D>
-   double LrCompressor<D>::norm(RField<D> const & a)
-   {
-      double normSq = dotProduct(a, a);
-      return sqrt(normSq);
-   }
-
    /*
    * Compute and return the scalar error.
    */
@@ -301,9 +273,9 @@ namespace Rpg{
       double error = 0;
 
       // Find max residual vector element
-      double maxRes  = maxAbs(resid_);
+      double maxRes  = Reduce::maxAbs(resid_);
       // Find norm of residual vector
-      double normRes = norm(resid_);
+      double normRes = sqrt(Reduce::sumSq(resid_));
       // Find root-mean-squared residual element value
       double rmsRes = normRes/sqrt(meshSize);
       if (errorType_ == "max") {

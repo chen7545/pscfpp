@@ -8,28 +8,33 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
-#include "BdStep.h"                    // base class
-#include <prdc/cuda/RField.h>          // member
-#include <util/containers/DArray.h>    // member
+#include <rp/fts/brownian/PredCorrBdStep.h> // base class template
+#include <rpg/system/Types.h>               // base class template argument 
+#include <prdc/cuda/RField.h>               // base class member
+#include <rpg/fts/brownian/BdStep.h>        // indirect base class
 
 namespace Pscf {
 namespace Rpg {
 
-   using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
+   // Forward declaration
+   template <int D> class BdSimulator;
 
    /**
-   * Predictor-corrector Brownian dynamics stepper.
+   * Predictor-corrector Brownian dynamics time stepper.
    *
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::PredCorrBdStep, and
+   * inherit their public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * template for details. 
+   *
+   * \see Rp::PredCorrBdStep
    * \see \ref rp_PredCorrBdStep_page "Manual Page"
    * \ingroup Rpg_Fts_Brownian_Module
    */
    template <int D>
-   class PredCorrBdStep : public BdStep<D>
+   class PredCorrBdStep : public Rp::PredCorrBdStep<D, Types<D> >
    {
-
    public:
 
       /**
@@ -39,65 +44,22 @@ namespace Rpg {
       */
       PredCorrBdStep(BdSimulator<D>& simulator);
 
-      /**
-      * Destructor.
-      */
-      virtual ~PredCorrBdStep();
-
-      /**
-      * Read body of parameter file block and initialize.
-      *
-      * \param in  input parameter file stream
-      */
-      void readParameters(std::istream &in) override;
-
-      /**
-      * Setup before simulation.
-      */
-      void setup() override;
-
-      /**
-      * Take a single Brownian dynamics step.
-      *
-      * \return true if converged, false if failed to converge
-      */
-      bool step() override;
-
-   protected:
-
-      using BdStep<D>::system;
-      using BdStep<D>::simulator;
-
-   private:
-
-      // Predicted values of fields (monomer fields)
-      DArray< RField<D> > wp_;
-
-      // Corrected (final) values of fields (monomer fields)
-      DArray< RField<D> > wf_;
-
-      // Initial deterministic forces (eigenvector components)
-      DArray< RField<D> > dci_;
-
-      // Random displacement components (eigenvector components)
-      DArray< RField<D> > eta_;
-
-      // Change in one component of wc
-      RField<D> dwc_;
-
-      // Change in pressure field component
-      RField<D> dwp_;
-
-      // Prefactor of -dc_ in deterministic drift term
-      double mobility_;
-
    };
 
-   // Explicit instantiation declarations
-   extern template class PredCorrBdStep<1>;
-   extern template class PredCorrBdStep<2>;
-   extern template class PredCorrBdStep<3>;
-
 }
+}
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class Rp::PredCorrBdStep<1, Rpg::Types<1> >;
+      extern template class Rp::PredCorrBdStep<2, Rpg::Types<2> >;
+      extern template class Rp::PredCorrBdStep<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class PredCorrBdStep<1>;
+      extern template class PredCorrBdStep<2>;
+      extern template class PredCorrBdStep<3>;
+   }
 }
 #endif

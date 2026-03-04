@@ -26,7 +26,7 @@ namespace Rpg {
    * instantiations of the base class template Rp::RampParameter, and
    * inherit their public interface and almost all of their source code
    * from this base class.  See the documentation of this base class 
-   * template for details. 
+   * for details. 
    *
    * \see \ref Rp::RampParameter
    * \see \ref rp_LinearRamp_page "Manual Page"

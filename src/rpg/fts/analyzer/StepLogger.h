@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"                    // indirect base 
+#include "Analyzer.h"                    // indirect base
 #include <rp/fts/analyzer/StepLogger.h>  // base class template
 #include <rpg/system/Types.h>            // base class argument
 
@@ -23,12 +23,12 @@ namespace Rpg {
    /**
    * Periodically write the step index to a log file.
    *
-   * Instantiations of this template are derived from instantiations of 
-   * the base class template Rp::StepLogger, and inherit their entire 
-   * public interface and almost all of their source code from this 
-   * base class. See the documentation for this base class template for
-   * details. 
+   * Instantiations of this template are derived from instantiations of
+   * the base class template Rp::StepLogger, and inherit their entire
+   * public interface and almost all of their source code from this base
+   * class. 
    *
+   * \see Rp::StepLogger
    * \see \ref rp_StepLogger_page "Manual Page"
    * \ingroup Rpg_Fts_Analyzer_Module
    */
