@@ -147,7 +147,6 @@ namespace Rp {
    {
       // Preconditions
       UTIL_CHECK(system().w().hasData());
-      UTIL_CHECK(system().c().hasData());
       UTIL_CHECK(simulator().hasWc());
       UTIL_CHECK(simulator().hasCc());
       UTIL_CHECK(simulator().hasDc());

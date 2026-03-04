@@ -101,8 +101,14 @@ namespace Rpg {
       IntVec<D> shiftPosition;
       Mesh<D> mesh(meshDimensions);
       MeshIterator<D> iter(meshDimensions);
-      for (int i = 0; i < D; i++){
-         shift[i] = simulator().random().uniformInt(-maxShift_, maxShift_);
+      bool allZero = true;
+      while (allZero){
+         for (int i = 0; i < D; i++){
+            shift[i] = simulator().random().uniformInt(-maxShift_, maxShift_ + 1);
+            if (shift[i] != 0){
+               allZero = false;
+            }
+         }
       }
 
       for (int j = 0; j< nMonomer; ++j){

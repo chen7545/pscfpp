@@ -5,12 +5,7 @@ McSimulator{
       probability   0.5
       mobility  6e-07
       nStep     10
-   }
-   ShiftMove{
-      probability     0.5
-      maxShift        5
-   }
-      
+   }  
    }
    LrAmCompressor{
       epsilon      1.0e-4
