@@ -19,11 +19,12 @@ namespace Rpg {
    * accumulator, and/or outputting it to file. This periodic action must
    * be implemented by the pure virtual sample() function.
    *
-   * This class is basically a named instantiation of the base class 
-   * template Rp::Analyzer, using template arguments Rpg::Simulator<D>
-   * and Rpg::System<D> appropriate for use in the Rpg namespace. See
-   * documentation of the base class template for details.
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::Analyzer, and inherit
+   * their public entire interface and almost all of their source code
+   * from this base class.  
    *
+   * \see Rp::Analyzer
    * \ingroup Rpg_Fts_Analyzer_Module
    */
    template <int D>

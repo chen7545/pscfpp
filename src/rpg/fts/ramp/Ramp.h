@@ -25,8 +25,7 @@ namespace Rpg {
    * Instantiations of this template with D=1, 2, and 3 are derived from
    * instantiations of the base class template Rp::Ramp, and inherit their 
    * entire public interface and almost all of their source code from this
-   * base class.  See the documentation of this base class template for 
-   * details. 
+   * base class.  See the documentation of this base class for details. 
    *
    * \see \ref Rp::Ramp
    * \see \ref psfts_ramp_page

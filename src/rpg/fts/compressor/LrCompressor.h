@@ -14,7 +14,6 @@
 #include <prdc/cuda/RFieldDft.h>                  // member
 #include <util/containers/DArray.h>               // member
 #include <util/misc/Timer.h>                      // member
-#include <iostream>
 
 namespace Pscf {
 namespace Rpg {
@@ -22,8 +21,8 @@ namespace Rpg {
    template <int D> class System;
 
    using namespace Util;
-   using namespace Pscf::Prdc;
-   using namespace Pscf::Prdc::Cuda;
+   using namespace Prdc;
+   using namespace Prdc::Cuda;
 
    /**
    * Linear response compressor.
@@ -44,7 +43,7 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param system System object associated with this compressor.
+      * \param system  parent System object 
       */
       LrCompressor(System<D>& system);
 
@@ -56,7 +55,7 @@ namespace Rpg {
       /**
       * Read all parameters and initialize.
       *
-      * \param in input stream for parameter file
+      * \param in  input parameter file stream
       */
       void readParameters(std::istream& in);
 
@@ -76,9 +75,9 @@ namespace Rpg {
       */
       int compress();
 
-      double subspacePercent(){return 0;};
+      double subspacePercent(){return 0.0;};
 
-      double correctionPercent(){return 0;};
+      double correctionPercent(){return 0.0;};
 
       /**
       * Return compressor times contributions.
@@ -91,90 +90,68 @@ namespace Rpg {
 
       // Inherited protected members
       using Compressor<D>::mdeCounter_;
+      using Compressor<D>::system;
       using ParamComposite::read;
       using ParamComposite::readOptional;
       using ParamComposite::setClassName;
 
    private:
 
-      // Error tolerance.
-      double epsilon_;
+      // IntraCorrelation object
+      IntraCorrelation<D> intra_;
 
-      // Current iteration counter.
-      int itr_;
+      // Template w Field used in update function
+      DArray< RField<D> > wFieldTmp_;
 
-      // Maximum number of iterations.
-      int maxItr_;
+      // Residual in real space 
+      RField<D> resid_;
 
-      // Total iteration counter.
-      int totalItr_;
+      // Residual in Fourier space
+      RFieldDft<D> residK_;
 
-      // Verbosity level.
-      int verbose_;
+      // Intramolecular correlation in Fourier space.
+      RField<D> intraCorrelationK_;
 
-      // Type of error criterion used to test convergence
-      std::string errorType_;
+      // Dimensions of wavevector mesh in real-to-complex transform.
+      IntVec<D> kMeshDimensions_;
 
       // Timers for analyzing performance.
       Timer timerTotal_;
       Timer timerMDE_;
 
-      /**
-      * Number of points in k-space grid
-      */
-      int kSize_;
+      // Type of error criterion used to test convergence
+      std::string errorType_;
 
-      /**
-      * IntraCorrelation object
-      */
-      IntraCorrelation<D> intra_;
-      
-      /**
-      * Dimensions of wavevector mesh in real-to-complex transform
-      */
-      IntVec<D> kMeshDimensions_;
-      
-      /**
-      * IntraCorrelation in fourier space calculated by IntraCorrelation class.
-      */
-      RField<D> intraCorrelationK_;
+      // Error tolerance
+      double epsilon_;
 
-      /**
-      * Residual in real space used for linear response anderson mixing.
-      */
-      RField<D> resid_;
+      // Current iteration counter
+      int itr_;
 
-      /**
-      * Residual in Fourier space used for linear response anderson mixing.
-      */
-      RFieldDft<D> residK_;
-      
-      /**
-      * Template w Field used in update function
-      */
-      DArray< RField<D> > wFieldTmp_;
+      // Maximum number of iterations
+      int maxItr_;
 
-      /**
-      * Has the IntraCorrelation been calculated?
-      */
-      bool isIntraCalculated_;
-      
-      /**
-      * Has memory been allocated?
-      */
+      // Total iteration counter
+      int totalItr_;
+
+      // Verbosity level
+      int verbose_;
+
+      // Has memory been allocated?
       bool isAllocated_;
 
-      // Private functions
-      
-      /**
-      * Compute the residual vector.
-      *
-      * \param resid current residual vector value
-      */
-      void getResidual();
+      // Has the IntraCorrelation been calculated?
+      bool isIntraCalculated_;
+
+      // Private member functions
 
       /**
-      * Use homogenous linear respose analytic approximation to update wFields
+      * Compute the residual vector.
+      */
+      void computeResidual();
+
+      /**
+      * Update system w fields
       */
       void updateWFields();
 
@@ -187,33 +164,12 @@ namespace Rpg {
       double computeError(int verbose);
 
       /**
-      * Find the maximum magnitude element of a residual field.
-      */
-      double maxAbs(RField<D> const & a);
-
-      /**
-      * Compute the inner product of two fields.
-      *
-      * \param a first field
-      * \param b second field
-      */
-      double dotProduct(RField<D> const & a, RField<D> const & b);
-
-      /**
-      * Compute L2 norm
-      */
-      double norm(RField<D> const & a);
-
-      /**
       * Outputs relevant system details to the iteration log.
       */
       void outputToLog();
-      
-      // Private inherited members
-      using Compressor<D>::system;
 
    };
-   
+
    // Explicit instantiation declarations
    extern template class LrCompressor<1>;
    extern template class LrCompressor<2>;

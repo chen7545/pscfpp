@@ -25,10 +25,9 @@ namespace Rpg {
    * Ramp that varies parameters linearly with index.
    *
    * Instantiations of this template with D=1, 2, and 3 are derived from
-   * instantiations of the base class template Rp::LinearRamp, and
-   * inherit their public interface and almost all of their source code
-   * from this base class.  See the documentation of this base class 
-   * template for details. 
+   * instantiations of the base class template Rp::LinearRamp, and inherit
+   * their entire public interface and almost all of their source code 
+   * from this base class.  See the documentation of this base class.
    *
    * \see \ref Rp::LinearRamp
    * \see \ref rp_LinearRamp_page "Manual Page"

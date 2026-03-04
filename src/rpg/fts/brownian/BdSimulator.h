@@ -19,13 +19,14 @@ namespace Rpg {
    /**
    * Brownian dynamics simulator for PS-FTS.
    *
-   * This class is basically a named instantiation of the base class 
-   * template Rp::BdSimulator, using aliases defined in Rpg::Types<D> to 
-   * specialize to types used in the Rpg namespace. See documentation 
-   * of the base class for details.
+   * Instantiations of this template with D=1, 2, and 3 are derived 
+   * from instantiations of the base class template Rp::BdSimulator, and
+   * inherit their public interface and almost all of their source code
+   * from this base class.  See the documentation of this base class 
+   * for details. 
    *
-   * \see \ref rp_BdSimulator_page (manual page)
-   *
+   * \see Rp::BdSimulator
+   * \see \ref rp_BdSimulator_page "Manual page"
    * \ingroup Rpg_Fts_Brownian_Module
    */
    template <int D>
@@ -37,7 +38,7 @@ namespace Rpg {
       /**
       * Constructor.
       *
-      * \param system parent Rpg::System<D> object
+      * \param system  parent Rpg::System<D> object
       */
       BdSimulator(System<D>& system);
 

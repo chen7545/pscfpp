@@ -5,7 +5,48 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Simulator.tpp"
+#include "Simulator.h"
+
+#include <rpg/system/System.h>
+#include <rpg/solvers/Mixture.h>
+#include <rpg/solvers/Polymer.h>
+#include <rpg/solvers/Solvent.h>
+#include <rpg/field/Domain.h>
+#include <rpg/fts/simulator/SimState.h>
+#include <rpg/fts/compressor/Compressor.h>
+#include <rpg/fts/compressor/CompressorFactory.h>
+#include <rpg/fts/perturbation/Perturbation.h>
+#include <rpg/fts/perturbation/PerturbationFactory.h>
+#include <rpg/fts/ramp/Ramp.h>
+#include <rpg/fts/ramp/RampFactory.h>
+
+#include <prdc/cuda/RField.h>
+
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
+#include <pscf/cuda/CudaVecRandom.h>
+
+#include <rp/fts/simulator/Simulator.tpp>  // base class implementation
+
+namespace Pscf {
+namespace Rpg {
+
+   using namespace Util;
+
+   /*
+   * Constructor.
+   */
+   template <int D>
+   Simulator<D>::Simulator(typename Types<D>::System& system)
+    : Base(system, *this)
+   {}
+
+   template <int D>
+   void Simulator<D>::initializeVecRandom()
+   {  Base::vecRandom().setSeed(Base::seed_); }
+
+}
+}
 
 namespace Pscf {
    namespace Rp {
