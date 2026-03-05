@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/containers/DArray.h>
+#include <util/containers/DArray.h>         // member
 #include <util/global.h>
 
 #include <iostream>

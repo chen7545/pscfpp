@@ -13,9 +13,7 @@
 #include <string>
 
 // Forward declaration
-namespace Util {
-   template <class T> class Factory;
-}
+namespace Util { template <class T> class Factory; }
 
 namespace Pscf {
 namespace Rp {

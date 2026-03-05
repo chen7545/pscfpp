@@ -3,10 +3,8 @@
 
 #include <util/param/ParamComposite.h>      // base class
 
-// Forward declarations
-namespace Util {
-   template <typename T> class DArray;
-}
+// Forward declaration
+namespace Util { template <typename T> class DArray; }
 
 namespace Pscf {
 namespace Rp {

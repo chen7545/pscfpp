@@ -8,12 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AverageAnalyzer.h"
+#include <iostream>
 
 namespace Pscf {
 namespace Rp {
-
-   using namespace Util;
 
    /**
    * Evaluate the derivative of H with respect to chi.

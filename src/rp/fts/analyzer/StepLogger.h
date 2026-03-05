@@ -8,10 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <iostream>
+
 namespace Pscf {
 namespace Rp {
-
-   using namespace Util;
 
    /**
    * Periodically write the step index to a log file.

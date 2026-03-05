@@ -9,6 +9,7 @@
 */
 
 #include <util/containers/DArray.h>    // member
+#include <iostream>
 
 namespace Pscf {
 namespace Rp {
@@ -90,6 +91,8 @@ namespace Rp {
       bool bdStep();
 
       using McMoveT = typename T::McMove;
+
+      // Inherited protected member functions
       using McMoveT::system;
       using McMoveT::simulator;
       using McMoveT::random;

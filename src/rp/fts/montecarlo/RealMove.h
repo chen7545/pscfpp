@@ -8,8 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "McMove.h"                          // base class
 #include <util/containers/DArray.h>          // member
+#include <iostream>
 
 namespace Pscf {
 namespace Rp {

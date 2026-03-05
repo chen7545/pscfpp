@@ -9,6 +9,7 @@
 */
 
 #include "SimState.h"
+#include <pscf/math/IntVec.h>
 
 namespace Pscf {
 namespace Rp {

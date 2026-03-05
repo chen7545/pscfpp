@@ -11,8 +11,6 @@
 namespace Pscf {
 namespace Rp {
 
-   using namespace Util;
-
    /**
    * Evaluate derivative of H w/ respect to perturbation parameter lambda.
    *
@@ -64,8 +62,11 @@ namespace Rp {
       */
       virtual void outputValue(int step, double value);
 
+      // Aliases for base classes
       using AnalyzerT = typename T::Analyzer;
       using AverageAnalyzerT = typename T::AverageAnalyzer;
+
+      // Inherited protected member functions
       using AnalyzerT::simulator;
       using AnalyzerT::system;
 

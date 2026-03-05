@@ -10,8 +10,10 @@
 
 #include <util/param/ParamComposite.h>  // base class
 #include <util/misc/Timer.h>            // member
-#include <util/random/Random.h>
 #include <util/global.h>
+
+// Forward declaration
+namespace Util { class Random; }
 
 namespace Pscf {
 namespace Rp {

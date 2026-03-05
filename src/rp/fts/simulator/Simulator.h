@@ -9,15 +9,12 @@
 */
 
 #include <util/param/ParamComposite.h>     // base class
-
 #include <util/containers/DArray.h>        // member (template)
 #include <util/containers/DMatrix.h>       // member (template)
 #include <iostream>
 
-// Forward declarations
-namespace Util {
-   class Random;
-}
+// Forward declaration
+namespace Util { class Random; }
 
 namespace Pscf {
 namespace Rp {
