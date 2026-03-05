@@ -8,36 +8,34 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Compressor.h"                           // base class
-#include <rpg/fts/compressor/IntraCorrelation.h>  // member
-#include <prdc/cuda/RField.h>                     // member
-#include <prdc/cuda/RFieldDft.h>                  // member
-#include <util/containers/DArray.h>               // member
-#include <util/misc/Timer.h>                      // member
+#include <rp/fts/compressor/LrCompressor.h>      // direct base template
+#include <rpg/system/Types.h>                    // direct base argument
+#include <rpg/fts/compressor/IntraCorrelation.h> // direct base member
+#include <prdc/cuda/RField.h>                    // direct base member
+#include <prdc/cuda/RFieldDft.h>                 // direct base member
+#include <rpg/fts/compressor/Compressor.h>       // indirect base class
 
 namespace Pscf {
 namespace Rpg {
 
+   // Forward declaration
    template <int D> class System;
 
+   // Namespaces that can be used implicitly
    using namespace Util;
    using namespace Prdc;
    using namespace Prdc::Cuda;
 
    /**
-   * Linear response compressor.
+   * Linear-response Anderson mixing compressor.
    *
-   * This class implements a compressor that is an approximate Newton's
-   * method in which the Jacobian is approximated by the analytically
-   * calculated linear response of a homogeneous liquid with the same
-   * composition as the system of interest.
-   *
+   * \see \ref rp_LrCompressor_page "Manual Page"
    * \ingroup Rpg_Fts_Compressor_Module
    */
    template <int D>
-   class LrCompressor : public Compressor<D>
+   class LrCompressor
+    : public Rp::LrCompressor<D, Rpg::Types<D> >
    {
-
    public:
 
       /**
@@ -47,135 +45,22 @@ namespace Rpg {
       */
       LrCompressor(System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      ~LrCompressor();
-
-      /**
-      * Read all parameters and initialize.
-      *
-      * \param in  input parameter file stream
-      */
-      void readParameters(std::istream& in);
-
-      /**
-      * Initialize just before entry to iterative loop.
-      *
-      * This function is called by the solve function before entering the
-      * loop over iterations. Store the current values of the fields at the
-      * beginning of iteration
-      */
-      void setup();
-
-      /**
-      * Iterate pressure field to obtain partial saddle point.
-      *
-      * \return 0 for convergence, 1 for failure
-      */
-      int compress();
-
-      /**
-      * Return compressor times contributions.
-      *
-      * \param out  output stream
-      */
-      void outputTimers(std::ostream& out) const;
-
-      /**
-      * Clear all timers.
-      */
-      void clearTimers();
-
-   protected:
-
-      // Inherited protected members
-      using Compressor<D>::mdeCounter_;
-      using Compressor<D>::system;
-      using ParamComposite::read;
-      using ParamComposite::readOptional;
-      using ParamComposite::setClassName;
-
-   private:
-
-      // IntraCorrelation object
-      IntraCorrelation<D> intra_;
-
-      // Template w Field used in update function
-      DArray< RField<D> > wFieldTmp_;
-
-      // Residual in real space
-      RField<D> resid_;
-
-      // Residual in Fourier space
-      RFieldDft<D> residK_;
-
-      // Intramolecular correlation in Fourier space
-      RField<D> intraCorrelationK_;
-
-      // Dimensions of wavevector mesh in real-to-complex transform
-      IntVec<D> kMeshDimensions_;
-
-      // Timers for analyzing performance
-      Timer timerTotal_;
-      Timer timerMDE_;
-
-      // Type of error criterion used to test convergence
-      std::string errorType_;
-
-      // Error tolerance
-      double epsilon_;
-
-      // Current iteration counter
-      int itr_;
-
-      // Maximum number of iterations
-      int maxItr_;
-
-      // Total iteration counter
-      int totalItr_;
-
-      // Verbosity level
-      int verbose_;
-
-      // Has required memory been allocated?
-      bool isAllocated_;
-
-      // Has the IntraCorrelation been calculated?
-      bool isIntraCalculated_;
-
-      // Private member functions
-
-      /**
-      * Compute the residual vector.
-      */
-      void computeResidual();
-
-      /**
-      * Update system w fields.
-      */
-      void updateWFields();
-
-      /**
-      * Compute and return error used to test for convergence.
-      *
-      * \param verbose  verbosity level of output report
-      * \return error  measure used to test for convergence.
-      */
-      double computeError(int verbose);
-
-      /**
-      * Outputs relevant system details to the iteration log.
-      */
-      void outputToLog();
-
    };
-
-   // Explicit instantiation declarations
-   extern template class LrCompressor<1>;
-   extern template class LrCompressor<2>;
-   extern template class LrCompressor<3>;
 
 } // namespace Rpg
 } // namespace Pscf
+
+// Explicit instantiation declarations
+namespace Pscf {
+   namespace Rp {
+      extern template class LrCompressor<1, Rpg::Types<1> >;
+      extern template class LrCompressor<2, Rpg::Types<2> >;
+      extern template class LrCompressor<3, Rpg::Types<3> >;
+   }
+   namespace Rpg {
+      extern template class LrCompressor<1>;
+      extern template class LrCompressor<2>;
+      extern template class LrCompressor<3>;
+   }
+}
 #endif
