@@ -9,6 +9,7 @@
 */
 
 #include <util/containers/DArray.h>          // member
+#include <iostream>
 
 namespace Pscf {
 namespace Rp {

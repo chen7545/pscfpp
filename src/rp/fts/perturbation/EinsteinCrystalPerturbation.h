@@ -2,6 +2,7 @@
 #define RP_EINSTEIN_CRYSTAL_PERTURBATION_H
 
 #include <util/containers/DArray.h>  // member
+#include <iostream>
 
 namespace Pscf {
 namespace Rp {

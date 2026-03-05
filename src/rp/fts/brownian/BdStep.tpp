@@ -9,6 +9,7 @@
 */
 
 #include "BdStep.h"
+#include <util/random/Random.h>
 
 namespace Pscf {
 namespace Rp {

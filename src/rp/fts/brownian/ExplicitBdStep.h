@@ -8,7 +8,6 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
 #include "BdStep.h"                    // base class
 #include <util/containers/DArray.h>    // member
 

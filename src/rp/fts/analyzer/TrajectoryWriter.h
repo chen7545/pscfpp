@@ -8,10 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <iostream>
+#include <fstream>
+
 namespace Pscf {
 namespace Rp {
-
-   using namespace Util;
 
    /**
    * Periodically write field frames (snapshots) to a trajectory file.

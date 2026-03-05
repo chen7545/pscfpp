@@ -8,10 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
-#include <util/param/ParamComposite.h>
-#include <util/random/Random.h>
+#include <util/param/ParamComposite.h>    // base class
 #include <util/global.h>
+
+// Forward declaration
+namespace Util {
+   class Random;
+}
 
 namespace Pscf {
 namespace Rp {

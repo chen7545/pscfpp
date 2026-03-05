@@ -18,6 +18,7 @@ namespace Util {
 namespace Pscf {
 namespace Rp {
 
+   using namespace Util;
 
    /**
    * FourthOrderParameter is used to detect an order-disorder transition.

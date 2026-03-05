@@ -8,9 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-
-#include <pscf/math/IntVec.h>
-#include <util/containers/DArray.h>
+#include <pscf/math/IntVec.h>         // template with default parameter
+#include <util/containers/DArray.h>   // member
 
 namespace Pscf {
 namespace Rp {

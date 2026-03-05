@@ -13,8 +13,6 @@
 namespace Pscf {
 namespace Rp {
 
-   using namespace Util;
-
    /**
    * Compute averages and output block averages of Hamiltonian components.
    *

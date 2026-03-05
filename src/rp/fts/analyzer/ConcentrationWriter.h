@@ -8,14 +8,11 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"
-
 #include <iostream>
+#include <fstream>
 
 namespace Pscf {
 namespace Rp {
-
-   using namespace Util;
 
    /**
    * Periodically write c-field snapshots to a trajectory file.
