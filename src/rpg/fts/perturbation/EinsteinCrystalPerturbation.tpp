@@ -6,13 +6,15 @@
 #include <rpg/system/System.h>
 #include <rpg/solvers/Mixture.h>
 #include <rpg/field/Domain.h>
-#include <prdc/cuda/resources.h>
+#include <pscf/cuda/VecOp.h>
+#include <pscf/cuda/Reduce.h>
 #include <util/global.h>
 
 namespace Pscf {
 namespace Rpg {
 
    using namespace Util;
+   using namespace Prdc;
    using namespace Prdc::Cuda;
 
    /*
@@ -20,14 +22,14 @@ namespace Rpg {
    */
    template <int D>
    EinsteinCrystalPerturbation<D>::EinsteinCrystalPerturbation(
-                                                   Simulator<D>& simulator)
+                                                  Simulator<D>& simulator)
     : Perturbation<D>(simulator),
       ecHamiltonian_(0.0),
       unperturbedHamiltonian_(0.0),
       stateEcHamiltonian_(0.0),
       stateUnperturbedHamiltonian_(0.0),
       hasEpsilon_(false)
-   {  setClassName("EinsteinCrystalPerturbation"); }
+   {  ParamComposite::setClassName("EinsteinCrystalPerturbation"); }
 
    /*
    * Destructor.
@@ -42,7 +44,7 @@ namespace Rpg {
    template <int D>
    void EinsteinCrystalPerturbation<D>::readParameters(std::istream& in)
    {
-      read(in, "lambda", lambda_);
+      ParamComposite::read(in, "lambda", lambda_);
 
       // Allocate and initialize epsilon_ array
       const int nMonomer = system().mixture().nMonomer();
@@ -52,10 +54,11 @@ namespace Rpg {
       }
 
       // Optionally read the parameters used in Einstein crystal integration
-      hasEpsilon_ =
-        readOptionalDArray(in, "epsilon", epsilon_, nMonomer-1).isActive();
+      int nc = nMonomer -1;
+      hasEpsilon_
+         = readOptionalDArray(in, "epsilon", epsilon_, nc).isActive();
 
-      read(in, "referenceFieldFileName", referenceFieldFileName_);
+      ParamComposite::read(in, "fieldFileName", fieldFileName_);
    }
 
    /*
@@ -65,8 +68,8 @@ namespace Rpg {
    void EinsteinCrystalPerturbation<D>::setup()
    {
       const int nMonomer = system().mixture().nMonomer();
-      const IntVec<D>
-      meshDimensions = system().domain().mesh().dimensions();
+      const IntVec<D> meshDimensions
+                      = system().domain().mesh().dimensions();
 
       // Allocate memory for reference field
       w0_.allocate(nMonomer);
@@ -75,9 +78,10 @@ namespace Rpg {
          w0_[i].allocate(meshDimensions);
          wc0_[i].allocate(meshDimensions);
       }
+      dw_.allocate(meshDimensions);
 
       /*
-      * If the user did not input values for epsilon, set values to -1.0
+      * If the user did not input epsilon_ values, set values to -1.0
       * times the nontrivial eigenvalues of the projected chi matrix.
       */
       if (!hasEpsilon_){
@@ -94,8 +98,7 @@ namespace Rpg {
       // Read in reference field from a file
       UnitCell<D> tempUnitCell;
       FieldIo<D> const & fieldIo = system().domain().fieldIo();
-      fieldIo.readFieldsRGrid(referenceFieldFileName_,
-                              w0_, tempUnitCell);
+      fieldIo.readFieldsRGrid(fieldFileName_, w0_, tempUnitCell);
 
       // Compute eigenvector components of the reference field
       computeWcReference();
@@ -108,67 +111,53 @@ namespace Rpg {
    double
    EinsteinCrystalPerturbation<D>::hamiltonian(double unperturbedHamiltonian)
    {
-      // Compute Einstein crystal Hamiltonian
-      const int nMonomer = system().mixture().nMonomer();
-      const int meshSize = system().domain().mesh().size();
-      const IntVec<D> meshDimensions = system().domain().mesh().dimensions();
-      const double vSystem  = system().domain().unitCell().volume();
-      const double vMonomer = system().mixture().vMonomer();
-      const double nMonomerSystem = vSystem / vMonomer;
-      double prefactor;
-      RField<D> wcs;
-      wcs.allocate(meshDimensions);
-      ecHamiltonian_ = 0.0;
-
-      for (int j = 0; j < nMonomer - 1; ++j) {
-         RField<D> const & Wc = simulator().wc(j);
-         prefactor = double(nMonomer)/(2.0 * epsilon_[j]);
-         VecOp::subVV(wcs, Wc, wc0_[j]); // wcs = Wc - wc0_[j]
-         double wSqure = 0;
-         wSqure = Reduce::innerProduct(wcs, wcs);
-         ecHamiltonian_ += prefactor * wSqure;
-      }
-
-      // Normalize EC hamiltonian to equal a value per monomer
-      ecHamiltonian_ /= double(meshSize);
-
-      // Compute EC hamiltonian of system
-      ecHamiltonian_ *= nMonomerSystem;
-
       // Set unperturbedHamiltonian_ member variable
       unperturbedHamiltonian_ = unperturbedHamiltonian;
+
+      // Constants
+      const int nMonomer = system().mixture().nMonomer();
+      const double vMonomer = system().mixture().vMonomer();
+      Domain<D> const & domain = system().domain();
+      const int meshSize = domain.mesh().size();
+      const double vSystem  = domain.unitCell().volume();
+      const double nMonomerSystem = vSystem / vMonomer;
+
+      // Compute Einstein crystal Hamiltonian
+      double prefactor;
+      ecHamiltonian_ = 0.0;
+      for (int j = 0; j < nMonomer - 1; ++j) {
+         prefactor = double(nMonomer)/(2.0 * epsilon_[j]);
+         VecOp::subVV(dw_, simulator().wc(j), wc0_[j]);
+         ecHamiltonian_ += prefactor * Reduce::sumSq(dw_);
+      }
+      ecHamiltonian_ /= double(meshSize);
+      ecHamiltonian_ *= nMonomerSystem;
 
       return (1.0 - lambda_)*(ecHamiltonian_ - unperturbedHamiltonian_);
    }
 
    /*
-   * Modify functional derivatives, empty default implementation.
+   * Modify functional derivatives.
    */
    template <int D>
    void
    EinsteinCrystalPerturbation<D>::incrementDc(DArray< RField<D> > & dc)
    {
-      const IntVec<D> meshDimensions = system().domain().mesh().dimensions();
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();
       double prefactor;
-      RField<D> DcEC;
-      DcEC.allocate(meshDimensions);
 
       // Loop over composition eigenvectors (exclude the last)
       for (int i = 0; i < nMonomer - 1; ++i) {
-         RField<D>& Dc = dc[i];
-         RField<D> const & Wc = simulator().wc(i);
          prefactor = double(nMonomer) / (epsilon_[i] * vMonomer);
 
-         // Compute EC derivative
-         // DcEC = prefactor * (Wc - wc0_);
-         VecOp::subVV(DcEC, Wc, wc0_[i]);
-         VecOp::mulEqS(DcEC, prefactor);
+         // dw_ = prefactor * (wc - wc0_);
+         VecOp::subVV(dw_, simulator().wc(i), wc0_[i]);
+         VecOp::mulEqS(dw_, prefactor);
 
-         // Compute composite derivative
-         // Dc = (Dc * lambda_) + (DcEC * (1-lambda_))
-         VecOp::addVcVc(Dc, Dc, lambda_, DcEC, 1 - lambda_);
+         // dc = dc * lambda_ + dw_ * (1-lambda_)
+         VecOp::mulEqS(dc[i],  lambda_);
+         VecOp::addEqVc(dc[i], dw_, 1.0 - lambda_);
       }
    }
 
@@ -176,15 +165,15 @@ namespace Rpg {
    * Compute and return derivative of free energy with respect to lambda.
    */
    template <int D>
-   double EinsteinCrystalPerturbation<D>::df(){
-      return unperturbedHamiltonian_ - ecHamiltonian_;
-   }
+   double EinsteinCrystalPerturbation<D>::df()
+   {  return unperturbedHamiltonian_ - ecHamiltonian_; }
 
    /*
    * Save any required internal state variables.
    */
    template <int D>
-   void EinsteinCrystalPerturbation<D>::saveState(){
+   void EinsteinCrystalPerturbation<D>::saveState()
+   {
       stateEcHamiltonian_ = ecHamiltonian_;
       stateUnperturbedHamiltonian_ = unperturbedHamiltonian_;
    }
@@ -193,7 +182,8 @@ namespace Rpg {
    * Save any required internal state variables.
    */
    template <int D>
-   void EinsteinCrystalPerturbation<D>::restoreState(){
+   void EinsteinCrystalPerturbation<D>::restoreState()
+   {
       ecHamiltonian_ = stateEcHamiltonian_;
       unperturbedHamiltonian_ = stateUnperturbedHamiltonian_;
    }
@@ -208,23 +198,17 @@ namespace Rpg {
       const int nMonomer = system().mixture().nMonomer();
       int i, j;
 
-      // Loop over eigenvectors (i is an eigenvector index)
+      // Loop over eigenvectors
       for (i = 0; i < nMonomer; ++i) {
 
-         // Loop over grid points to zero out field wc0_[i]
-         RField<D>& Wc = wc0_[i];
+         // Initialize to zero
+         VecOp::eqS(wc0_[i], 0.0);
 
-         VecOp::eqS(Wc, 0.0); // initialize to 0
-
-         // Loop over monomer types (j is a monomer index)
+         // Loop over monomer types
          for (j = 0; j < nMonomer; ++j) {
-            cudaReal vec;
-            vec = (cudaReal) simulator().chiEvecs(i, j)/nMonomer;
-
-            // Loop over grid points
-            VecOp::addEqVc(Wc, w0_[j], vec);
+            double vec = simulator().chiEvecs(i, j)/double(nMonomer);
+            VecOp::addEqVc(wc0_[i], w0_[j], vec);
          }
-
       }
    }
 
