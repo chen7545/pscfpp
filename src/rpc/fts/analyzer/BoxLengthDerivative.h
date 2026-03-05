@@ -38,11 +38,6 @@ namespace Rpc
       */
       BoxLengthDerivative(Simulator<D>& simulator, System<D>& system);
 
-      /**
-      * Destructor.
-      */
-      virtual ~BoxLengthDerivative();
-
    protected:
 
       using AverageAnalyzerT = AverageAnalyzer<D>;
