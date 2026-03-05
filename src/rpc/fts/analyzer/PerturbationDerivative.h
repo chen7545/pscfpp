@@ -29,6 +29,7 @@ namespace Rpc {
    * base class. See the documentation for this base class template for
    * details. 
    *
+   * \see Rp::PerturbationDerivative
    * \see rp_PerturbationDerivative_page "Manual Page"
    * \ingroup Rpc_Fts_Analyzer_Module
    */

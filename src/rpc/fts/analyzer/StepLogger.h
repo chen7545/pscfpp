@@ -15,6 +15,7 @@
 namespace Pscf {
 namespace Rpc {
 
+   // Forward declarations
    template <int D> class Simulator;
    template <int D> class System;
 
@@ -26,9 +27,9 @@ namespace Rpc {
    * Instantiations of this template are derived from instantiations of 
    * the base class template Rp::StepLogger, and inherit their entire 
    * public interface and almost all of their source code from this 
-   * base class. See the documentation for this base class template 
-   * for details. 
+   * base class. 
    *
+   * \see Rp::StepLogger
    * \see \ref rp_StepLogger_page "Manual Page"
    * \ingroup Rpc_Fts_Analyzer_Module
    */

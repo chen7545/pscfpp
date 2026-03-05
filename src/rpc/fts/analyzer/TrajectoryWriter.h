@@ -8,9 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Analyzer.h"
-#include <rp/fts/analyzer/TrajectoryWriter.h>
-#include <rpc/system/Types.h>
+#include <rp/fts/analyzer/TrajectoryWriter.h> // direct base class template
+#include <rpc/system/Types.h>                 // base class argument
+#include "Analyzer.h"                         // indirect base class
 
 namespace Pscf {
 namespace Rpc {
@@ -23,12 +23,12 @@ namespace Rpc {
    /**
    * Evaluate the derivative of H with respect to chi.
    *
-   * Instantiations of this template are derived from instantiations of 
-   * the base class template Rp::TrajectoryWriter, and inherit their 
-   * entire public interface and almost all of their source code from 
-   * this base class. See the documentation for this base class template 
-   * for details. 
+   * Instantiations of this template are derived from instantiations of
+   * the base class template Rp::TrajectoryWriter, and inherit their
+   * entire public interface and almost all of their source code from
+   * this base class.
    *
+   * \see Rp::TrajectoryWriter
    * \see \ref rp_TrajectoryWriter_page "Manual Page"
    * \ingroup Rpc_Fts_Analyzer_Module
    */

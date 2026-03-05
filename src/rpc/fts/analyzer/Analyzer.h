@@ -19,11 +19,13 @@ namespace Rpc {
    * accumulator, and/or outputting it to file. This periodic action must
    * be implemented by the pure virtual sample() function.
    *
-   * This class is basically a named instantiation of the base class 
-   * template Rp::Analyzer, using template arguments Rpc::Simulator<D>
-   * and Rpc::System<D> appropriate for use in the Rpc namespace. See
-   * documentation of the base class template for details.
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::Analyzer, and inherit
+   * their entire public interface and almost all of their source code
+   * from this base class.  
    *
+   * \see Rp::Analyzer
+   * \see \ref psfts_algorithm_analyzer_sec "Analyzers"
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>

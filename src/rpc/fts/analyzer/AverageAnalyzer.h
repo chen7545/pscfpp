@@ -25,11 +25,12 @@ namespace Rpc {
    * simulation.  It is intended for use as a base class for any Analyzer
    * that computes and evaluates an average for a single physical variable.
    *
-   * This class is basically a named instantiation of the base class
-   * template Rp::AverageAnalyzer, using aliases defined in Rpc::Types<D>
-   * to specialize to types used in the Rpc namespace. See documentation
-   * of the base class for details.
+   * Instantiations of this template with D=1, 2, and 3 are derived from
+   * instantiations of the base class template Rp::AverageAnalyzer, and
+   * inherit their public interface and almost all of their source code
+   * from this base class.  
    *
+   * \see Rp::AverageAnalyzer
    * \ingroup Rpc_Fts_Analyzer_Module
    */
    template <int D>
