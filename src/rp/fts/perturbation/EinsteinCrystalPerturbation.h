@@ -82,7 +82,6 @@ namespace Rp {
       using PerturbationT::lambda_;
       using PerturbationT::simulator;
       using PerturbationT::system;
-      using ParamComposite::readOptionalDArray;
 
    private:
 

@@ -10,6 +10,7 @@
 //  T::Reduce
 
 #include "EinsteinCrystalPerturbation.h"
+#include <prdc/crystal/UnitCell.h>
 #include <util/global.h>
 
 namespace Pscf {
@@ -53,10 +54,10 @@ namespace Rp {
          epsilon_[i] = 0.0;
       }
 
-      // Optionally read the parameters used in Einstein crystal integration
+      // Optionally read array of epsilon parameters
       int nc = nMonomer - 1;
-      hasEpsilon_
-         = readOptionalDArray(in, "epsilon", epsilon_, nc).isActive();
+      hasEpsilon_ = ParamComposite::readOptionalDArray(in, "epsilon", 
+                                                  epsilon_, nc).isActive();
 
       ParamComposite::read(in, "fieldFileName", fieldFileName_);
    }
@@ -96,7 +97,7 @@ namespace Rp {
       }
 
       // Read in reference field from a file
-      typename T::UnitCell tempUnitCell;
+      UnitCell<D> tempUnitCell;
       typename T::FieldIo const & fieldIo = system().domain().fieldIo();
       fieldIo.readFieldsRGrid(fieldFileName_, w0_, tempUnitCell);
 
