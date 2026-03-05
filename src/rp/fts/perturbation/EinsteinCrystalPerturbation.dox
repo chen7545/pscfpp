@@ -2,7 +2,7 @@ namespace Pscf {
 namespace Rpc {
 
 /*! 
-\page rpc_EinsteinCrystalPerturbation_page EinsteinCrystalPerturbation
+\page rp_EinsteinCrystalPerturbation_page EinsteinCrystalPerturbation
 
 EinsteinCrystalPerturbation class templates in namespaces Rpc and Rpg
 are designed to enable use of Einstein crystal method of computing free 
@@ -14,7 +14,7 @@ energies by thermodynamic integration.
   <li> \ref psfts_perturb_page "Manual Page" </li>
 </ul>
 
-\section rpc_EinsteinCrystalPerturbation_algorithm_sec Theory
+\section rp_EinsteinCrystalPerturbation_algorithm_sec Theory
 
 The EinsteinCrystalPerturbation class defines a perturbation for a system 
 with two types of monomer (nMonomer = 2) of the form
@@ -79,7 +79,7 @@ The reference field configuration must be read from a file during
 setup of a simulation, and so the name of that file must be 
 provided as parameter in the parameter file. 
 
-\section rpc_EinsteinCrystalPerturbation_parameter_sec Parameter File
+\section rp_EinsteinCrystalPerturbation_parameter_sec Parameter File
 
 The parameter file format for this class is shown below:
 \code

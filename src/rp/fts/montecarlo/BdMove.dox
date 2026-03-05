@@ -1,0 +1,72 @@
+namespace Pscf {
+namespace Rp {
+
+/*! 
+\page rp_BdMove_page BdMove
+
+The BdMove classes used by both the pscf_rpc and pscf_rpg programs 
+implements a MC move that performs a short BD simulation, and always
+accepts the result.
+
+Two closely analogous class templates named Pscf::Rp::BdMove and 
+Pscf::Rpg::BdMove are used to perform this type of move in the
+pscf_rpc and pscf_rpg programs, respectively. Instantiations of 
+these templates are derived from instantiations of the base class 
+template Pscf::Rp::BdMove, which defines the implementation of the
+move in a generic form.
+
+\see Rp::BdMove (class API)
+
+\section rp_BdMove_algorithm_sec Step Algorithm
+
+To be written (if any)
+
+
+\section rp_BdMove_parameter_sec Parameter File
+
+The only parameters needed by this algorithm are the "probability" 
+parameter, which determines the probability that a move of this type
+will be attempted, a required parameter "nStep" that gives the number
+of BD steps that should be taken within a single MC move, 
+and a required parameter named "mobility", which
+is the mobility parameter of the explicit BD step.  A typical example 
+of an associated parameter file block is shown below.
+\code
+  BdMove{
+    probability   0.5
+    mobility      0.005
+    nStep         100
+  }
+\endcode
+The format for this block is thus:
+\code
+  BdMove{
+    probability  float (in range [0,1])
+    mobility     float
+    nStep        int
+  }
+\endcode
+The meanings of both parameter are summarized briefly below:
+<table>
+  <tr>
+    <td> <b> Label </b>  </td>
+    <td> <b> Description </b>  </td>
+  </tr>
+  <tr>
+    <td> probability </td>
+    <td> probability of attempting a step of this type  </td>
+  </tr>
+  <tr>
+    <td> mobility </td>
+    <td> Mobility parameter of underlying attempted BD step </td>
+  </tr>
+  <tr>
+    <td> nStep </td>
+    <td> number of BD steps per MC move of this type </td>
+  </tr>
+</table>
+
+*/
+
+}
+}

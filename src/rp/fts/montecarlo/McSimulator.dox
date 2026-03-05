@@ -118,9 +118,9 @@ Required relationships among subblocks:
   </ul>
   <li> \ref psfts_algorithm_compressor_sec "Compressor algorithms" </li>
   <li> \ref psfts_perturb_page "Perturbations" </li>
-     <ul> <li> \ref rpc_EinsteinCrystalPerturbation_page </li> </ul>
+     <ul> <li> \ref rp_EinsteinCrystalPerturbation_page </li> </ul>
   <li> \ref psfts_ramp_page "Parameter Ramps" </li>
-     <ul> <li> \ref rpc_LinearRamp_page </li> </ul>
+     <ul> <li> \ref rp_LinearRamp_page </li> </ul>
   <li> \ref psfts_algorithm_analyzer_sec "Analyzer algorithms" </li>
 </ul>
 

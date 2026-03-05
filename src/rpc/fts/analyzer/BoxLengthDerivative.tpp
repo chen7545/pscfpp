@@ -17,8 +17,7 @@
 #include <pscf/cpu/Reduce.h>
 
 namespace Pscf {
-namespace Rpc 
-{
+namespace Rpc {
 
    using namespace Util;
 
@@ -26,23 +25,19 @@ namespace Rpc
    * Constructor.
    */
    template <int D>
-   BoxLengthDerivative<D>::BoxLengthDerivative(Simulator<D>& simulator, 
-                                   System<D>& system) 
-    : AverageAnalyzer<D>(simulator, system)
-   {  setClassName("BoxLengthDerivative"); }
+   BoxLengthDerivative<D>::BoxLengthDerivative(Simulator<D>& simulator,
+                                   System<D>& system)
+    : AverageAnalyzerT(simulator, system)
+   {  ParamComposite::setClassName("BoxLengthDerivative"); }
 
    /*
-   * Destructor.
+   * Compute and return required derivative.
    */
-   template <int D>
-   BoxLengthDerivative<D>::~BoxLengthDerivative() 
-   {}
-
    template <int D>
    double BoxLengthDerivative<D>::compute()
    {
       UTIL_CHECK(system().w().hasData());
-      
+
       // For AB diblock
       const int nMonomer = system().mixture().nMonomer();
       UTIL_CHECK(nMonomer == 2);
@@ -52,16 +47,16 @@ namespace Rpc
 
       int nParameter = system().domain().unitCell().nParameter();
       UTIL_CHECK(nParameter == 1);
-      
+
       const double vSystem  = system().domain().unitCell().volume();
       const double vMonomer = system().mixture().vMonomer();
       const double nMonomerSystem = vSystem / vMonomer;
       const int meshSize = system().domain().mesh().size();
 
-      /* 
+      /*
       * Compute field Hamiltonian per monomer.
       * The fieldHamitonian is calculated in the computeHamiltonian() function,
-      * located in rpc/fts/Simulator.tpp 
+      * located in rpc/fts/Simulator.tpp
       */
       if (!system().c().hasData()) {
          system().compute();
@@ -76,7 +71,7 @@ namespace Rpc
       // Box length
       double l = system().domain().unitCell().parameter(0);
 
-      // Obtain fieldHamiltonian 
+      // Obtain fieldHamiltonian
       double HW = simulator().fieldHamiltonian();
 
       // The fieldHamiltonian contribution to the derivative
@@ -96,26 +91,28 @@ namespace Rpc
 
       // With N term
       dFdL -= 3.0 * double(meshSize)/(2.0 * l);
-      
+
       return dFdL;
    }
-   
+
    template <int D>
    void BoxLengthDerivative<D>::outputValue(int step, double value)
    {
-      if (simulator().hasRamp() && nSamplePerOutput() == 1) {
+      if (simulator().hasRamp()
+          && AverageAnalyzerT::nSamplePerOutput() == 1)
+      {
          double l = system().domain().unitCell().parameter(0);
-         
+
          UTIL_CHECK(outputFile_.is_open());
          outputFile_ << Int(step);
          outputFile_ << Dbl(l);
          outputFile_ << Dbl(value);
          outputFile_ << "\n";
-       } else {
-         AverageAnalyzer<D>::outputValue(step, value);
-       }
+      } else {
+         AverageAnalyzerT::outputValue(step, value);
+      }
    }
-   
+
 }
 }
 #endif

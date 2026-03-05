@@ -11,7 +11,7 @@ BdSimulator{
    }
    EinsteinCrystalPerturbation{
       lambda 0.25
-      referenceFieldFileName  in/w_dis_3D_homogenous.rf
+      fieldFileName  in/w_dis_3D_homogenous.rf
    }
    AnalyzerManager{
       baseInterval    1

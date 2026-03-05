@@ -30,9 +30,9 @@ namespace Rp {
    * Template parameters:
    *
    *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - T : class that defines type aliases, e.g., Rpc::Types<D>
    *
-   * \see \ref rpc_BdMove_page "Manual Page"
+   * \see \ref rp_BdMove_page "Manual Page"
    * \ingroup Rp_Fts_MonteCarlo_Module
    */
    template <int D, class T>

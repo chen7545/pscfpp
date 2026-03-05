@@ -24,9 +24,10 @@ namespace Rpc {
    * Instantiations of this template with D=1, 2, and 3 are derived from
    * instantiations of the base class template Rp::McMove< D, Types<D> >, 
    * and inherit their public interface and almost all of their source 
-   * code from this base class.  See the documentation of this base class 
-   * template for details. 
+   * code from this base class.  
    *
+   * \see Rp::McMove
+   * \see \ref psfts_algorithm_MC_sec "Manual Page"
    * \ingroup Rpc_Fts_MonteCarlo_Module
    */
    template <int D>

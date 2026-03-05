@@ -43,21 +43,15 @@ namespace Rpc
       */
       virtual ~BoxLengthDerivative();
 
-      using AverageAnalyzer<D>::readParameters;
-      using AverageAnalyzer<D>::nSamplePerOutput;
-      using AverageAnalyzer<D>::setup;
-      using AverageAnalyzer<D>::sample;
-      using AverageAnalyzer<D>::output;
-
    protected:
 
-      using ParamComposite::setClassName;
+      using AverageAnalyzerT = AverageAnalyzer<D>;
       using AverageAnalyzer<D>::simulator;
       using AverageAnalyzer<D>::system;
       using AverageAnalyzer<D>::outputFile_;
 
       /**
-      * Compute and return the derivative of H w/ respect to chi.
+      * Compute and return the derivative of H w/ respect to L.
       */
       virtual double compute();
       

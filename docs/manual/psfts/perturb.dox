@@ -51,7 +51,7 @@ asssociated with a perturbation may be performed by using the parameter
 type *lambda_pert* in the parameter block for the ramp to perform. A ramp
 that uses this parameter type performs a linear variation of the lambda
 parameter over the course of a simulation, as discussed
-\ref rpc_LinearRamp_perturbation_sec "here" .
+\ref rp_LinearRamp_perturbation_sec "here" .
 The implementation of this feature of the LinearRamp class only uses the
 interface defined by the Perturbation base class, and so is designed to
 work with any type of perturbation (i.e., any subclass of this base class).
@@ -86,7 +86,7 @@ default, and this default setting is used in the example given below.
 Generalization of the Einstein crystal Hamiltonian to cases with more
 than two monomer types, and the full parameter file format for the
 class are discussed in
-\ref rpc_EinsteinCrystalPerturbation_page "manual page" for the
+\ref rp_EinsteinCrystalPerturbation_page "manual page" for the
 EinsteinCrystalPerturbation class.
 
 When a perturbation of this form is added to the unperturbed Hamiltonian
@@ -108,7 +108,7 @@ where the partial derivative is evaluated at fixed field values.
 The parameter file block for an EinsteinCrystalPerturbation requires a user
 to enter a value for the perturbation parameter \f$ \lambda \f$, and the
 name of a file that contains the reference field configuration in r-grid
-format, as described \ref rpc_EinsteinCrystalPerturbation_page "here".
+format, as described \ref rp_EinsteinCrystalPerturbation_page "here".
 The reference field configuration is usually taken to be a SCFT solution
 for the phase of interest. When applied to a disordered phase, this
 reference field normally contains spatially homogeneous fields.
@@ -267,7 +267,7 @@ information about the time average.
 \section psfts_perturb_seealso_sec See Also:
 
 <ul>
- <li> \subpage rpc_EinsteinCrystalPerturbation_page </li>
+ <li> \subpage rp_EinsteinCrystalPerturbation_page </li>
  <li> \ref rp_PerturbationDerivative_page </li>
 </ul>
 

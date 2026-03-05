@@ -47,7 +47,7 @@ this class may contain either the generic block label "Ramp" (thereby
 choosing the default) or the specific class name "LinearRamp".
 
 A full description of the parameter file format for a LinearRamp block
-is given in a \ref rpc_LinearRamp_page "separate page" . The parameter
+is given in a \ref rp_LinearRamp_page "separate page" . The parameter
 file format for the LinearRamp class is very closely analogous to that
 of the LinearSweep class, which implements an analogous linear SCFT
 parameter sweep.  The "parameter" array valued parameter contains a 1D
@@ -73,7 +73,7 @@ MC steps given as a parameter to the SIMULATE command in the command
 file.
 
 \see
-\subpage rpc_LinearRamp_page "LinearRamp (manual page)"
+\subpage rp_LinearRamp_page "LinearRamp (manual page)"
 
 \section psfts_ramp_example_sec Example
 

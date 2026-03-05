@@ -1,0 +1,71 @@
+namespace Pscf {
+namespace Rp {
+
+/*! 
+\page rp_BoxLengthDerivative_page BoxLengthDerivative
+
+This analyzer calculates the derivative of free energy with respect 
+to the unit cell size of a cubic unit cell. 
+
+\see BoxLengthDerivative (class API)
+
+\section rp_BoxLengthDerivative_algorithm_sec Mathematical Formula
+
+To be added
+
+\section rp_BoxLengthDerivative_parameter_sec Parameter File
+
+The full parameter file format, including all optional parameters, 
+is shown below:
+\code
+BoxLengthDerivative{
+  interval           int
+  outputFileName     string
+  hasAverage*        bool    (default true)
+  nSamplePerOutput*  int     (default 1)
+}
+\endcode
+Meanings of the parameters are described briefly below:
+<table>
+  <tr>
+    <td> <b> Label </b>  </td>
+    <td> <b> Description </b>  </td>
+  </tr>
+  <tr>
+    <td> interval </td>
+    <td> number of steps between data samples </td>
+  </tr>
+    <tr>
+     <td> outputFileName </td>
+     <td> name of output file </td>
+  </tr>
+  <tr>
+     <td>hasAverage</td>
+     <td>whether the average and error analysis are needed?</td>
+  </tr>
+  <tr>
+     <td>nSamplePerOutput</td>
+     <td>Number of sampled values per block average, and per output</td>
+  </tr>
+</table>
+
+\section rp_BoxLengthDerivative_output_sec Output
+Values of the derivative \f$  \frac{\partial F}{\partial L}  \f$ are
+computed every interval simulation steps. 
+
+By default, block averages of nSamplerPerOutput sequential sampled 
+values are output every interval*nSamplerPerOutput time steps.
+
+In the special case in which a ramp is enabled and 
+nSamplePerOutput == 1, then \f$ L \f$ and a corresponding sampled 
+value of \f$  \frac{\partial F}{\partial L}  \f$ are output to the 
+file {outputFileName} every interval simulation steps.
+
+If hasAverage is true, then at the end of the simulation:
+  - average info and error analysis are output to {outputFileName}.ave
+  - error analysis info are output to {outputFileName}.aer
+
+*/
+
+}
+}

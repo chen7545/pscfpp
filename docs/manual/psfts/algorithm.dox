@@ -451,7 +451,7 @@ more of the parameters of a model are taken to vary linearly with the BD
 or MC simulation step counter during a simulation.  The interface for a
 LinearRamp is closely analogous to that of the LinearSweep class that is
 used for SCFT sweep calculations, as discussed
-\ref rpc_LinearRamp_page "here".
+\ref rp_LinearRamp_page "here".
 
 \section psfts_algorithm_perturbation_sec Perturbation
 
@@ -464,7 +464,7 @@ The only type of perturbation that is available in the current version
 of PSCF is implemented by a class named EinsteinCrystalPerturbation,
 which is designed to enable the Einstein crystal method of computing
 free energies. The parameter file format is discussed in detail on a
-\ref rpc_EinsteinCrystalPerturbation_page "separate page".
+\ref rp_EinsteinCrystalPerturbation_page "separate page".
 
 <BR>
 \ref psfts_psa_page    (Prev) &nbsp; &nbsp; &nbsp; &nbsp;

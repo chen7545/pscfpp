@@ -25,10 +25,9 @@ namespace Rpc {
    * Instantiations of this template with D=1, 2, and 3 are derived from
    * instantiations of the base class template Rp::BdStep, and inherit
    * their entire public interface and almost all of their source code
-   * from this base class.  See the documentation of this base class 
-   * template for details. 
+   * from this base class.  
    *
-   * \see \ref rp_BdStep_page "Manual Page"
+   * \see \ref psfts_algorithm_BD_sec "Manual Page"
    * \ingroup Rpc_Fts_Brownian_Module
    */
    template <int D>
