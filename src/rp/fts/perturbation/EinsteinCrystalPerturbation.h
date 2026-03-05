@@ -1,28 +1,22 @@
-#ifndef RPG_EINSTEIN_CRYSTAL_PERTURBATION_H
-#define RPG_EINSTEIN_CRYSTAL_PERTURBATION_H
+#ifndef RP_EINSTEIN_CRYSTAL_PERTURBATION_H
+#define RP_EINSTEIN_CRYSTAL_PERTURBATION_H
 
-#include "Perturbation.h"            // base class
-#include <prdc/cuda/RField.h>        // member
 #include <util/containers/DArray.h>  // member
 
 namespace Pscf {
-namespace Rpg {
-
-   template <int D> class Simulator;
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /**
    * Perturbation for Einstein crystal thermodynamic integration.
    *
    * \see \ref rp_EinsteinCrystalPerturbation_page "Einstein Crystal"
    * \see \ref psfts_perturb_page "Perturbations"
-   * \ingroup Rpg_Fts_Perturbation_Module
+   * \ingroup Rp_Fts_Perturbation_Module
    */
-   template <int D>
-   class EinsteinCrystalPerturbation : public Perturbation<D>
+   template <int D, class T>
+   class EinsteinCrystalPerturbation : public T::Perturbation
    {
 
    public:
@@ -32,7 +26,7 @@ namespace Rpg {
       *
       * \param simulator  parent Simulator object
       */
-      EinsteinCrystalPerturbation(Simulator<D>& simulator);
+      EinsteinCrystalPerturbation(typename T::Simulator& simulator);
 
       /**
       * Destructor.
@@ -63,7 +57,7 @@ namespace Rpg {
       *
       * \param dc  functional derivatives of Hamiltonian (in/out)
       */
-      virtual void incrementDc(DArray< RField<D> >& dc);
+      virtual void incrementDc(DArray<typename T::RField>& dc);
 
       /**
       * Compute and return derivative of free energy w/ respect to lambda.
@@ -82,25 +76,29 @@ namespace Rpg {
 
    protected:
 
+      using PerturbationT = typename T::Perturbation;
+
       // Inherited protected members
-      using Perturbation<D>::lambda_;
-      using Perturbation<D>::simulator;
-      using Perturbation<D>::system;
+      using PerturbationT::lambda_;
+      using PerturbationT::simulator;
+      using PerturbationT::system;
       using ParamComposite::readOptionalDArray;
 
    private:
+
+      using RFieldT = typename T::RField;
 
       // Parameters used in Einstein crystal integration
       DArray<double> epsilon_;
 
       // Reference w field
-      DArray< RField<D> > w0_;
+      DArray< RFieldT > w0_;
 
       // Eigenvector components of the reference w fields
-      DArray< RField<D> > wc0_;
+      DArray< RFieldT > wc0_;
 
       // Work space
-      RField<D> dw_;
+      RFieldT dw_;
 
       // Current Einstein crystal Hamiltonian
       double ecHamiltonian_;
@@ -124,11 +122,6 @@ namespace Rpg {
       void computeWcReference();
 
    };
-
-   // Explicit instantiation declarations
-   extern template class EinsteinCrystalPerturbation<1>;
-   extern template class EinsteinCrystalPerturbation<2>;
-   extern template class EinsteinCrystalPerturbation<3>;
 
 }
 }

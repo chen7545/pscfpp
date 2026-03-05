@@ -29,7 +29,7 @@ namespace Rpc {
       stateEcHamiltonian_(0.0),
       stateUnperturbedHamiltonian_(0.0),
       hasEpsilon_(false)
-   {  ParamComposite::setClassName("EinsteinCrystal"); }
+   {  ParamComposite::setClassName("EinsteinCrystalPerturbation"); }
 
    /*
    * Destructor.
@@ -196,18 +196,18 @@ namespace Rpc {
    void EinsteinCrystalPerturbation<D>::computeWcReference()
    {
       const int nMonomer = system().mixture().nMonomer();
-      int j, k;
+      int i, j;
 
-      // Loop over eigenvectors 
-      for (j = 0; j < nMonomer; ++j) {
+      // Loop over eigenvectors
+      for (i = 0; i < nMonomer; ++i) {
 
          // Initialize to zero
-         VecOp::eqS(wc0_[j], 0.0);
+         VecOp::eqS(wc0_[i], 0.0);
 
-         // Loop over monomer types 
-         for (k = 0; k < nMonomer; ++k) {
-            double vec = simulator().chiEvecs(j, k)/double(nMonomer);
-            VecOp::addEqVc(wc0_[j] ,w0_[k], vec);
+         // Loop over monomer types
+         for (j = 0; j < nMonomer; ++j) {
+            double vec = simulator().chiEvecs(i, j)/double(nMonomer);
+            VecOp::addEqVc(wc0_[i], w0_[j], vec);
          }
       }
    }

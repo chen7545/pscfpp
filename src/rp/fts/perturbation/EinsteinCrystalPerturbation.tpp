@@ -1,29 +1,29 @@
-#ifndef RPG_EINSTEIN_CRYSTAL_PERTURBATION_TPP
-#define RPG_EINSTEIN_CRYSTAL_PERTURBATION_TPP
+#ifndef RP_EINSTEIN_CRYSTAL_PERTURBATION_TPP
+#define RP_EINSTEIN_CRYSTAL_PERTURBATION_TPP
+
+// Derived classes must include headers for:
+//  T::Simulator
+//  T::System
+//  T::Mixture
+//  T::Domain
+//  T::VecOp
+//  T::Reduce
 
 #include "EinsteinCrystalPerturbation.h"
-#include <rpg/fts/simulator/Simulator.h>
-#include <rpg/system/System.h>
-#include <rpg/solvers/Mixture.h>
-#include <rpg/field/Domain.h>
-#include <pscf/cuda/VecOp.h>
-#include <pscf/cuda/Reduce.h>
 #include <util/global.h>
 
 namespace Pscf {
-namespace Rpg {
+namespace Rp {
 
    using namespace Util;
-   using namespace Prdc;
-   using namespace Prdc::Cuda;
 
    /*
    * Constructor.
    */
-   template <int D>
-   EinsteinCrystalPerturbation<D>::EinsteinCrystalPerturbation(
-                                                  Simulator<D>& simulator)
-    : Perturbation<D>(simulator),
+   template <int D, class T>
+   EinsteinCrystalPerturbation<D,T>::EinsteinCrystalPerturbation(
+                                      typename T::Simulator& simulator)
+    : PerturbationT(simulator),
       ecHamiltonian_(0.0),
       unperturbedHamiltonian_(0.0),
       stateEcHamiltonian_(0.0),
@@ -34,15 +34,15 @@ namespace Rpg {
    /*
    * Destructor.
    */
-   template <int D>
-   EinsteinCrystalPerturbation<D>::~EinsteinCrystalPerturbation()
+   template <int D, class T>
+   EinsteinCrystalPerturbation<D,T>::~EinsteinCrystalPerturbation()
    {}
 
    /*
    * Read parameters from stream, empty default implementation.
    */
-   template <int D>
-   void EinsteinCrystalPerturbation<D>::readParameters(std::istream& in)
+   template <int D, class T>
+   void EinsteinCrystalPerturbation<D,T>::readParameters(std::istream& in)
    {
       ParamComposite::read(in, "lambda", lambda_);
 
@@ -64,8 +64,8 @@ namespace Rpg {
    /*
    * Setup before simulation.
    */
-   template <int D>
-   void EinsteinCrystalPerturbation<D>::setup()
+   template <int D, class T>
+   void EinsteinCrystalPerturbation<D,T>::setup()
    {
       const int nMonomer = system().mixture().nMonomer();
       const IntVec<D> meshDimensions
@@ -96,8 +96,8 @@ namespace Rpg {
       }
 
       // Read in reference field from a file
-      UnitCell<D> tempUnitCell;
-      FieldIo<D> const & fieldIo = system().domain().fieldIo();
+      typename T::UnitCell tempUnitCell;
+      typename T::FieldIo const & fieldIo = system().domain().fieldIo();
       fieldIo.readFieldsRGrid(fieldFileName_, w0_, tempUnitCell);
 
       // Compute eigenvector components of the reference field
@@ -107,9 +107,10 @@ namespace Rpg {
    /*
    * Compute and return perturbation to Hamiltonian.
    */
-   template <int D>
+   template <int D, class T>
    double
-   EinsteinCrystalPerturbation<D>::hamiltonian(double unperturbedHamiltonian)
+   EinsteinCrystalPerturbation<D,T>::hamiltonian(
+                                          double unperturbedHamiltonian)
    {
       // Set unperturbedHamiltonian_ member variable
       unperturbedHamiltonian_ = unperturbedHamiltonian;
@@ -117,7 +118,7 @@ namespace Rpg {
       // Constants
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();
-      Domain<D> const & domain = system().domain();
+      typename T::Domain const & domain = system().domain();
       const int meshSize = domain.mesh().size();
       const double vSystem  = domain.unitCell().volume();
       const double nMonomerSystem = vSystem / vMonomer;
@@ -139,9 +140,9 @@ namespace Rpg {
    /*
    * Modify functional derivatives.
    */
-   template <int D>
+   template <int D, class T>
    void
-   EinsteinCrystalPerturbation<D>::incrementDc(DArray< RField<D> > & dc)
+   EinsteinCrystalPerturbation<D,T>::incrementDc(DArray<RFieldT> & dc)
    {
       const int nMonomer = system().mixture().nMonomer();
       const double vMonomer = system().mixture().vMonomer();
@@ -164,15 +165,15 @@ namespace Rpg {
    /*
    * Compute and return derivative of free energy with respect to lambda.
    */
-   template <int D>
-   double EinsteinCrystalPerturbation<D>::df()
+   template <int D, class T>
+   double EinsteinCrystalPerturbation<D,T>::df()
    {  return unperturbedHamiltonian_ - ecHamiltonian_; }
 
    /*
    * Save any required internal state variables.
    */
-   template <int D>
-   void EinsteinCrystalPerturbation<D>::saveState()
+   template <int D, class T>
+   void EinsteinCrystalPerturbation<D,T>::saveState()
    {
       stateEcHamiltonian_ = ecHamiltonian_;
       stateUnperturbedHamiltonian_ = unperturbedHamiltonian_;
@@ -181,8 +182,8 @@ namespace Rpg {
    /*
    * Save any required internal state variables.
    */
-   template <int D>
-   void EinsteinCrystalPerturbation<D>::restoreState()
+   template <int D, class T>
+   void EinsteinCrystalPerturbation<D,T>::restoreState()
    {
       ecHamiltonian_ = stateEcHamiltonian_;
       unperturbedHamiltonian_ = stateUnperturbedHamiltonian_;
@@ -192,8 +193,8 @@ namespace Rpg {
    * Compute the eigenvector components of the w fields, using the
    * eigenvectors chiEvecs of the projected chi matrix as a basis.
    */
-   template <int D>
-   void EinsteinCrystalPerturbation<D>::computeWcReference()
+   template <int D, class T>
+   void EinsteinCrystalPerturbation<D,T>::computeWcReference()
    {
       const int nMonomer = system().mixture().nMonomer();
       int i, j;
