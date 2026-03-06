@@ -35,7 +35,7 @@ namespace Rp {
    * Template parameters:
    *
    *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \ingroup Rp_Fts_MonteCarlo_Module
    */

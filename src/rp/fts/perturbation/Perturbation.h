@@ -4,7 +4,7 @@
 #include <util/param/ParamComposite.h>      // base class
 
 // Forward declaration
-namespace Util { template <typename T> class DArray; }
+namespace Util {  template <typename T> class DArray; }
 
 namespace Pscf {
 namespace Rp {
@@ -13,6 +13,16 @@ namespace Rp {
 
    /**
    * Base class for additive perturbations of standard FTS Hamiltonian.
+   *
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named Perturbation, that
+   * are defined in Rpc and Rpg namespaces for use in the pscf_rpc and
+   * pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *   - D : dimension
+   *   - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \see \ref psfts_perturb_page "Manual Page"
    * \ingroup Rp_Fts_Perturbation_Module

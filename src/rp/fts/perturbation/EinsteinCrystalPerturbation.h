@@ -12,6 +12,16 @@ namespace Rp {
    /**
    * Perturbation for Einstein crystal thermodynamic integration.
    *
+   * Instantiations of this class template are used as base classes for two
+   * analogous class templates, also named EinsteinCrystalPerturbation,
+   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc
+   * and pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *   - D : dimension
+   *   - T : Types class, Rpc::Types<D> or Rpg::Types<D>
+   *
    * \see \ref rp_EinsteinCrystalPerturbation_page "Einstein Crystal"
    * \see \ref psfts_perturb_page "Perturbations"
    * \ingroup Rp_Fts_Perturbation_Module

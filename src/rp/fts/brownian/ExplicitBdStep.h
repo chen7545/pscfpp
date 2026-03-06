@@ -25,12 +25,10 @@ namespace Rp {
    * and pscf_rpg programs, respectively.
    *
    * Template parameters:
-   *
    *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \see \ref rp_ExplicitBdStep_page "Manual Page"
-   *
    * \ingroup Rp_Fts_Brownian_Module
    */
    template <int D, class T>

@@ -21,13 +21,13 @@ namespace Rp {
    *
    * Instantiations of this class template are used as base classes for 
    * two closely analogous class templates, also named RealMove, that
-   * are defined in Rpc and Rpg namespaces and used in the pscf_rpc and
+   * are defined in Rpc and Rpg namespaces for use in the pscf_rpc and
    * pscf_rpg programs, respectively.
    *
    * Template parameters:
    *
-   *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - D : spatial dimension
+   *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \see \ref rp_RealMove_page "Manual Page"
    * \ingroup Rp_Fts_MonteCarlo_Module

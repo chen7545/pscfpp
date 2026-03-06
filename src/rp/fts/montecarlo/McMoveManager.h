@@ -24,13 +24,13 @@ namespace Rp {
    *
    * Instantiations of this class template are used as base classes for 
    * two closely analogous class templates, both also named McMoveManager,
-   * that are defined in Rpc and Rpg namespaces and used in the pscf_rpc
+   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc
    * and pscf_rpg programs, respectively.
    *
    * Template parameters:
    *
    *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \ingroup Rp_Fts_MonteCarlo_Module
    */

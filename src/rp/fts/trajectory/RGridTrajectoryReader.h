@@ -12,7 +12,7 @@
 #include <pscf/math/IntVec.h>           // member
 #include <util/containers/DArray.h>     // member
 #include <fstream>                      // member
-#include <string>
+#include <string>                       // function parameter
 
 namespace Pscf {
 namespace Rp {
@@ -21,6 +21,16 @@ namespace Rp {
 
    /**
    * Trajectory file reader.
+   *
+   * Instantiations of this class template are used as base classes for two
+   * closely analogous class templates, also named RGridTrajectorReader,
+   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc
+   * and pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *   - D : dimension
+   *   - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \ingroup Rp_Fts_Trajectory_Module
    */

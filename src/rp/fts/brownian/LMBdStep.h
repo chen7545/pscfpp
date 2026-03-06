@@ -25,14 +25,14 @@ namespace Rp {
    *
    * References:
    *
-   *   B. Vorselaars, J. Chemical Physics, 158 114117 (2023)
-   *   [ https://doi.org/10.1063/5.0131183 ]
+   *  - B. Vorselaars, J. Chemical Physics, 158 114117 (2023)
+   *    [ https://doi.org/10.1063/5.0131183 ]
    *
-   *   B. Leimkuhler and C. Matthews, Applied Mathematics Research Express,
-   *   Issue 1, pages 34-56 (2013) [ https://doi.org/10.1093/amrx/abs010 ]
+   *  - B. Leimkuhler and C. Matthews, Applied Mathematics Research Express,
+   *    Issue 1, pages 34-56 (2013) [ https://doi.org/10.1093/amrx/abs010 ]
    *
-   *   B. Leimkuhler and C. Matthews, J. Chemical Physics,
-   *   vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ]
+   *  - B. Leimkuhler and C. Matthews, J. Chemical Physics,
+   *    vol. 138, 174102 (2013) [ https://doi.org/10.1063/1.4802990 ]
    *
    * Instantiations of this class template are used as base classes for 
    * two closely analogous class templates, both also named LmBdStep, 
@@ -42,7 +42,7 @@ namespace Rp {
    * Template parameters:
    *
    *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - T : Types class, Rpc::Types<D> or Rpg::Types<D>
    *
    * \see \ref rp_LMBdStep_page "Manual Page"
    * \ingroup Rp_Fts_Brownian_Module

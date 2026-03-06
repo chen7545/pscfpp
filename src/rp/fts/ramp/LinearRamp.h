@@ -12,6 +12,16 @@ namespace Rp {
    /**
    * Linear ramp - parameters vary linearly with step index.
    * 
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, both also named LinearRamp,
+   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc
+   * and pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *   - D : dimension
+   *   - T : Types class, Rpc::Types<D> or Rpg::Types<D>
+   *
    * \see \ref rp_LinearRamp_page "Manual Page (Linear Ramp)"
    * \see \ref psfts_ramp_page "Manual Page" (Ramp)"
    * \ingroup Rp_Fts_Ramp_Module

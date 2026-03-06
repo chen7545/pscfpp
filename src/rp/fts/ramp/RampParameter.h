@@ -83,6 +83,16 @@ namespace Rp {
    * value. The corresponding format for a parameter that requires two
    * indices (e.g., block or chi) is instead: "type id(0) id(1) change".
    *
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named RampParameter,
+   * that are defined in Rpc and Rpg namespaces for use in the pscf_rpc
+   * and pscf_rpg programs, respectively.
+   *
+   * Template parameters:
+   *
+   *   - D : dimension
+   *   - T : Types class, Rpc::Types<D> or Rpg::Types<D>
+   *
    * \see \ref rp_LinearRamp_page "Manual Page"
    * \ingroup Rp_Fts_Ramp_Module
    */

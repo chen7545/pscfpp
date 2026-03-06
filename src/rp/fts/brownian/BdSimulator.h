@@ -32,10 +32,10 @@ namespace Rp {
    *
    * Template parameters:
    *
-   *    - D : dimension
-   *    - Types : class that contains type aliases, e.g., Rpc::Types<D>
+   *    - D : dimension of space
+   *    - T : Types class Rpc::Types<D> or Rpg::Types<D>
    *
-   * \see \ref rp_BdSimulator_page (manual page)
+   * \see \ref rp_BdSimulator_page "Manual Page"
    * \ingroup Rp_Fts_Brownian_Module
    */
    template <int D, class T>

@@ -17,7 +17,7 @@ namespace Rp {
    using namespace Util;
 
    /**
-   * SimState stores the state used by an FTS simulation.
+   * SimState stores the state used by a FTS simulation.
    *
    * This class is used to restore the state of FTS simulation after an
    * attempted MC move or BD step is rejected or fails to converge. It
@@ -27,9 +27,14 @@ namespace Rp {
    * algorithm (the search for a partial saddle point) fails to converge 
    * after an attempted unconstrained BD step.
    * 
+   * Instantiations of this class template are used as base classes for 
+   * two closely analogous class templates, also named SimState, that
+   * are defined in Rpc and Rpg namespaces and used in the pscf_rpc and
+   * pscf_rpg programs, respectively.
+   *
    * Template parameters:
    *   - D  : dimension of space
-   *   - FT : field type (i.e., Rpc::RField<D> or Rpg::RField<D> )
+   *   - FT : field type, Rpc::RField<D> or Rpg::RField<D> 
    *
    * \ingroup Rp_Fts_Simulator_Module
    */

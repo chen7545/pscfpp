@@ -105,7 +105,10 @@ namespace Rp {
       */
       void computePrefactor(Array<double>& prefactor);
 
+      // Alias for base class
       using AverageAnalyzerT = typename T::AverageAnalyzer;
+
+      // Inherited protected member functions
       using AverageAnalyzerT::simulator;
       using AverageAnalyzerT::system;
 
