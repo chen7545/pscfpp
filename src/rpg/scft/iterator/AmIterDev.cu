@@ -5,17 +5,19 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmCompBase.h"
+#include "AmIterDev.h"
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
 #include <pscf/iterator/AmIteratorTmpl.tpp>
 
 // Explicit instantiation definitions
 namespace Pscf {
+
    template 
-   class AmIteratorTmpl< Rpg::Compressor<1>, DeviceArray<cudaReal> >;
+   class AmIteratorTmpl< Rpg::Iterator<1>, DeviceArray<cudaReal> >;
    template 
-   class AmIteratorTmpl< Rpg::Compressor<2>, DeviceArray<cudaReal> >; 
+   class AmIteratorTmpl< Rpg::Iterator<2>, DeviceArray<cudaReal> >; 
    template 
-   class AmIteratorTmpl< Rpg::Compressor<3>, DeviceArray<cudaReal> >;
+   class AmIteratorTmpl< Rpg::Iterator<3>, DeviceArray<cudaReal> >;
+
 }

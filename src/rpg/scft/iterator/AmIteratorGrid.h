@@ -8,13 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Iterator.h"                        // base class argument
-#include <pscf/cuda/cudaTypes.h>                 // base class argument
-#include <pscf/cuda/DeviceArray.h>           // base class argument
-#include <pscf/iterator/AmIteratorTmpl.h>    // base class template
-
+#include "AmIterDev.h"                       // base class
 #include <pscf/iterator/AmbdInteraction.h>   // member variable
-#include <util/containers/DArray.h>          // base class argument
 #include <util/containers/RingBuffer.h>      // method input variable
 
 namespace Pscf {

@@ -8,11 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Iterator.h"                        // base class argument
-#include <pscf/iterator/AmIteratorDArray.h>  // base class template
-#include <pscf/iterator/AmbdInteraction.h>   // member variable
-#include <util/containers/DArray.h>          // function argument
-#include <util/containers/RingBuffer.h>      // function argument
+#include <rpg/scft/iterator/AmIterHost.h>   // base class template
+#include <pscf/iterator/AmbdInteraction.h>  // member variable
+#include <util/containers/DArray.h>         // function argument
+#include <util/containers/RingBuffer.h>     // function argument
 
 namespace Pscf {
 namespace Rpg {
@@ -30,7 +29,8 @@ namespace Rpg {
    * \ingroup Rpg_Scft_Iterator_Module
    */
    template <int D>
-   class AmIteratorBasis : public AmIteratorDArray< Iterator<D> >
+   class AmIteratorBasis 
+     : public AmIteratorTmpl< Iterator<D>, DArray<double> >
    {
 
    public:

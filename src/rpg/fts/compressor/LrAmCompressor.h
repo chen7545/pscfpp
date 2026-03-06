@@ -8,15 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <rpg/fts/compressor/AmCompBase.h>       // indirect base argument
 #include <rp/fts/compressor/LrAmCompressor.h>    // direct base template
 #include <rpg/system/Types.h>                    // direct base argument
 #include <rpg/fts/compressor/IntraCorrelation.h> // direct base member
 #include <prdc/cuda/RField.h>                    // direct base member
 #include <prdc/cuda/RFieldDft.h>                 // direct base member
-#include <pscf/iterator/AmIteratorTmpl.h>        // indirect base template
-#include <rpg/fts/compressor/Compressor.h>       // indirect base argument
-#include <pscf/cuda/DeviceArray.h>               // indirect base argument
-#include <pscf/cuda/cudaTypes.h>                 // indirect base argument
 
 namespace Pscf {
 namespace Rpg {

@@ -11,14 +11,15 @@
 #include <pscf/iterator/AmIteratorTmpl.h>   // base class template
 #include <rpg/fts/compressor/Compressor.h>  // base class argument
 #include <pscf/cuda/DeviceArray.h>          // base class argument
+#include <pscf/cuda/cudaTypes.h>
 
 // Explicit instantiation declarations
 namespace Pscf {
-   extern template 
+   extern template
    class AmIteratorTmpl< Rpg::Compressor<1>, DeviceArray<cudaReal> >;
-   extern template 
+   extern template
    class AmIteratorTmpl< Rpg::Compressor<2>, DeviceArray<cudaReal> >;
-   extern template 
+   extern template
    class AmIteratorTmpl< Rpg::Compressor<3>, DeviceArray<cudaReal> >;
 }
 #endif
