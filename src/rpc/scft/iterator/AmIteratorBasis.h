@@ -8,14 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Iterator.h"                          // base class argument
-#include <pscf/iterator/AmIteratorDArray.h>    // base class template
+#include "AmIterBase.h"                        // base class
 #include <pscf/iterator/AmbdInteraction.h>     // member 
 
 // Forward declarations
-namespace Util {
-   template <typename T> class DArray;
-}
 namespace Pscf {
    namespace Rpc {
       template <int D> class System;
@@ -36,7 +32,8 @@ namespace Rpc {
    * \ingroup Rpc_Scft_Iterator_Module
    */
    template <int D>
-   class AmIteratorBasis : public AmIteratorDArray< Iterator<D> >
+   class AmIteratorBasis 
+    : public AmIteratorTmpl< Iterator<D>, DArray<double> >
    {
 
    public:

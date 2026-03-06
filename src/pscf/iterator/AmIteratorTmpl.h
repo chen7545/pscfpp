@@ -43,7 +43,7 @@ namespace Pscf {
    *
    * \ingroup Pscf_Iterator_Module
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    class AmIteratorTmpl : virtual public Iterator
    {
    public:
@@ -514,7 +514,7 @@ namespace Pscf {
       * \param a  vector to be set (lhs of assignment)
       * \param b  vector value to assign (rhs of assignment)
       */
-      virtual void setEqual(T& a, T const & b) = 0;
+      virtual void setEqual(T& a, T const & b);
 
       /**
       * Compute the inner product of two vectors.
@@ -522,7 +522,7 @@ namespace Pscf {
       * \param a first vector
       * \param b second vector
       */
-      virtual double dotProduct(T const & a, T const & b) = 0;
+      virtual double dotProduct(T const & a, T const & b);
 
       /**
       * Find the L2 norm of a vector.
@@ -539,7 +539,7 @@ namespace Pscf {
       *
       * \param a  input vector
       */
-      virtual double maxAbs(T const & a) = 0;
+      virtual double maxAbs(T const & a);
 
       /**
       * Compute the difference a = b - c for vectors a, b and c.
@@ -548,7 +548,7 @@ namespace Pscf {
       * \param b first vector (RHS)
       * \param c second vector (RHS)
       */
-      virtual void subVV(T& a, T const & b, T const & c) = 0;
+      virtual void subVV(T& a, T const & b, T const & c);
 
       /**
       * Compute a += c*b for vectors a and b and scalar c.
@@ -557,101 +557,101 @@ namespace Pscf {
       * \param b input vector (RHS)
       * \param c scalar coefficient (RHS)
       */
-      virtual void addEqVc(T& a, T const & b, double c) = 0;
+      virtual void addEqVc(T& a, T const & b, double c);
 
    };
 
    /*
    * Return integer level for verbosity of the log output (0-2).
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    int AmIteratorTmpl<Iterator,T>::verbose() const
    {  return verbose_; }
 
    /*
    * Return error type string.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    std::string AmIteratorTmpl<Iterator,T>::errorType() const
    {  return errorType_; }
 
    /*
    * Return the current state vector by const reference.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    T const & AmIteratorTmpl<Iterator,T>::state() const
    {  return stateHistory_[0]; }
 
    /*
    * Return the current residual vector by const reference.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    T const & AmIteratorTmpl<Iterator,T>::residual() const
    {  return residualHistory_[0]; }
 
    /*
    * Has memory required by the AM algorithm been allocated?
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    bool AmIteratorTmpl<Iterator,T>::isAllocatedAM() const
    {  return isAllocatedAM_; }
 
    /*
    * Return total iteration counter.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    int AmIteratorTmpl<Iterator,T>::totalItr()
    {  return totalItr_; }
 
    /*
    * Return computing MDE time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerMDE()
    {  return timerMDE_.time(); }
 
    /*
    * Return computing AM time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerAM()
    {  return timerAM_.time(); }
 
    /*
    * Return computing Resid time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerResid()
    {  return timerResid_.time(); }
 
    /*
    * Return computing Error time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerError()
    {  return timerError_.time(); }
 
    /*
    * Return computing Coeff time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerCoeff()
    {  return timerCoeff_.time(); }
 
    /*
    * Return computing Omega time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerOmega()
    {  return timerOmega_.time(); }
 
    /*
    * Return total time cost.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::timerTotal()
    {  return timerTotal_.time(); }
 
 }
-#include "AmIteratorTmpl.tpp"
+//#include "AmIteratorTmpl.tpp"
 #endif

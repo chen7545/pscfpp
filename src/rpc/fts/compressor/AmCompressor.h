@@ -8,11 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rp/fts/compressor/AmCompressor.h> // direct base class template
-#include <rpc/system/Types.h>               // direct base template argument
-#include <prdc/cpu/RField.h>                // direct base class member
-#include <pscf/iterator/AmIteratorTmpl.h>   // indirect base class template
-#include <rpc/fts/compressor/Compressor.h>  // indirect base argument
+#include <rpc/fts/compressor/AmCompBase.h>    // indirect base
+#include <rp/fts/compressor/AmCompressor.h>   // direct base template
+#include <rpc/system/Types.h>                 // direct base argument
+#include <prdc/cpu/RField.h>                  // direct base member
 
 namespace Pscf {
 namespace Rpc {

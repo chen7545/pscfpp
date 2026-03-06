@@ -1,5 +1,6 @@
 rpc_scft_iterator_= \
   rpc/scft/iterator/Iterator.cpp \
+  rpc/scft/iterator/AmIterBase.cpp \
   rpc/scft/iterator/AmIteratorBasis.cpp \
   rpc/scft/iterator/AmIteratorGrid.cpp \
   rpc/scft/iterator/IteratorFactory.cpp

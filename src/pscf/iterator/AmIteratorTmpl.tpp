@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include "AmIteratorTmpl.h"
 #include "NanException.h"
 #include <pscf/math/LuSolver.h>
 #include <util/format/Dbl.h>
@@ -27,7 +28,7 @@ namespace Pscf
    /*
    * Constructor
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    AmIteratorTmpl<Iterator,T>::AmIteratorTmpl()
     : epsilon_(0),
       maxItr_(200),
@@ -48,14 +49,14 @@ namespace Pscf
    /*
    * Destructor
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    AmIteratorTmpl<Iterator,T>::~AmIteratorTmpl()
    {}
 
    /*
    * Read parameter file block.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::readParameters(std::istream& in)
    {
 
@@ -93,7 +94,7 @@ namespace Pscf
    /*
    * Iteratively solve a fixed-point problem.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    int AmIteratorTmpl<Iterator,T>::solve(bool isContinuation)
    {
       // Initialization and allocate operations on entry to loop.
@@ -230,7 +231,7 @@ namespace Pscf
 
    }
 
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::outputTimers(std::ostream& out) const
    {
       // Output timing results, if requested.
@@ -274,7 +275,7 @@ namespace Pscf
       #endif
    }
 
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::clearTimers()
    {
       timerMDE_.clear();
@@ -292,7 +293,7 @@ namespace Pscf
    /*
    * Read and validate optional errorType string parameter.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::readErrorType(std::istream& in)
    {
       // Note: errorType_ is initialized to "relNormResid" in constructor
@@ -315,7 +316,7 @@ namespace Pscf
    /*
    * Check validity of errorType_ string and normalize if valid.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    bool AmIteratorTmpl<Iterator,T>::isValidErrorType()
    {
       // Process possible synonyms
@@ -337,7 +338,7 @@ namespace Pscf
    /*
    * Read and validate optional errorType string parameter.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void 
    AmIteratorTmpl<Iterator,T>::readMixingParameters(std::istream& in,
                                                     bool useLambdaRamp)
@@ -357,7 +358,7 @@ namespace Pscf
    * Allocate memory required by the AM algorithm, if needed.
    * (protected, non-virtual)
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::allocateAM()
    {
       // If already allocated, do nothing and return
@@ -389,7 +390,7 @@ namespace Pscf
    * Initialize just before entry to iterative loop.
    * (virtual)
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::setup(bool isContinuation)
    {
       if (!isAllocatedAM()) {
@@ -409,7 +410,7 @@ namespace Pscf
    /*
    * Clear all history and basis vector data.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::clear()
    {
       UTIL_CHECK(isAllocatedAM_);
@@ -424,7 +425,7 @@ namespace Pscf
    /*
    * Compute optimal coefficients of basis vectors.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::computeTrialCoeff()
    {
       // If first iteration and bases are empty
@@ -520,7 +521,7 @@ namespace Pscf
       return;
    }
 
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator,T>::updateTrial()
    {
 
@@ -568,7 +569,7 @@ namespace Pscf
    /*
    * Compute ramped mixing parameter for Anderson mixing algorithm.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::computeLambda()
    {
       if (useLambdaRamp_ && (nBasis_ < maxHist_)) {
@@ -582,7 +583,7 @@ namespace Pscf
    /*
    * Update entire U matrix.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void
    AmIteratorTmpl<Iterator, T> ::updateU(
                                  DMatrix<double> & U,
@@ -615,7 +616,7 @@ namespace Pscf
    /* 
    * Compute v vector (dot products of residual and basis vectors).
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void AmIteratorTmpl<Iterator, T>::computeV(
                                    DArray<double> & v,
                                    T const & resCurrent,
@@ -631,7 +632,7 @@ namespace Pscf
    /*
    * Compute scalar error, possibly output to log.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double 
    AmIteratorTmpl<Iterator,T>::computeError(T&residTrial, 
                                             T&stateTrial,
@@ -684,7 +685,7 @@ namespace Pscf
    /*
    * Compute error (use current residual, errorType).
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::computeError(int verbose)
    {
       return computeError(residualHistory_[0], stateHistory_[0], 
@@ -695,7 +696,7 @@ namespace Pscf
    /*
    * Update a list of basis vectors.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void 
    AmIteratorTmpl<Iterator,T>::updateBasis(RingBuffer<T> & basis, 
                                            RingBuffer<T> const & history)
@@ -718,7 +719,7 @@ namespace Pscf
    /*
    * Add a linear combination of basis vectors to a vector v. 
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void 
    AmIteratorTmpl<Iterator,T>::addEqVectors(T& v, 
                                             RingBuffer<T> const & basis, 
@@ -734,7 +735,7 @@ namespace Pscf
    /*
    * Add a correction based on the predicted remaining residual. 
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    void 
    AmIteratorTmpl<Iterator,T>::addCorrection(T& stateTrial, 
                                              T const & residualTrial)
@@ -748,12 +749,48 @@ namespace Pscf
    /*
    * Compute L2 norm of a vector.
    */
-   template <typename Iterator, typename T>
+   template <class Iterator, class T>
    double AmIteratorTmpl<Iterator,T>::norm(T const & a)
    {
       double normSq = dotProduct(a, a);
       return sqrt(normSq);
    }
+
+   /*
+   * Vector assignment, a = b .
+   */
+   template <class Iterator, class T>
+   void AmIteratorTmpl<Iterator,T>::setEqual(T& a, T const & b)
+   {  VecOp::eqV(a, b); }
+
+   /*
+   * Compute and return the inner product of two vectors
+   */
+   template <class Iterator, class T> 
+   double 
+   AmIteratorTmpl<Iterator,T>::dotProduct(T const & a, T const & b)
+   {  return Reduce::innerProduct(a, b); }
+
+   /*
+   * Compute and return the maximum magnitude element of a vector.
+   */
+   template <class Iterator, class T>
+   double AmIteratorTmpl<Iterator,T>::maxAbs(T const & a)
+   {  return Reduce::maxAbs(a); }
+
+   /*
+   * Compute the vector difference a = b - c .
+   */
+   template <class Iterator, class T>
+   void AmIteratorTmpl<Iterator,T>::subVV(T& a, T const & b, T const & c)
+   {  VecOp::subVV(a, b, c); }
+
+   /*
+   * Composite a += b*c for vectors a and b, scalar c .
+   */
+   template <class Iterator, class T>
+   void AmIteratorTmpl<Iterator,T>::addEqVc(T& a, T const & b, double c)
+   {  VecOp::addEqVc(a, b, c); }
 
 }
 #endif

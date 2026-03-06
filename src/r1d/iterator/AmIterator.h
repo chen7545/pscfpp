@@ -8,9 +8,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <pscf/iterator/AmIteratorDArray.h>  // base class template
-#include "Iterator.h"                        // base class template param
-#include <pscf/iterator/AmbdInteraction.h>   // member
+#include <pscf/iterator/AmIteratorTmpl.h>   // base class template
+#include <r1d/iterator/Iterator.h>          // base class template argument
+#include <util/containers/DArray.h>         // base class template argument
+#include <pscf/iterator/AmbdInteraction.h>  // member
 
 namespace Pscf {
 namespace R1d {
@@ -25,10 +26,9 @@ namespace R1d {
    *
    * \see \ref r1d_AmIterator_page      "Manual Page"
    * \see \ref pscf_AmIteratorTmpl_page "AM Iterator Algorithm"
-   *
    * \ingroup R1d_Iterator_Module
    */
-   class AmIterator : public AmIteratorDArray<Iterator>
+   class AmIterator : public AmIteratorTmpl<Iterator, DArray<double> >
    {
 
    public:
@@ -125,4 +125,9 @@ namespace R1d {
 
 } // namespace R1d
 } // namespace Pscf
+
+// Explicit instantiation declaration
+namespace Pscf {
+   extern template class AmIteratorTmpl< R1d::Iterator, DArray<double> >;
+}
 #endif

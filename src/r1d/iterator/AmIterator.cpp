@@ -12,10 +12,19 @@
 #include <r1d/solvers/Solvent.h>
 #include <pscf/chem/Ensemble.h>
 #include <pscf/iterator/NanException.h>
+#include <pscf/cpu/VecOp.h>
+#include <pscf/cpu/Reduce.h>
 #include <util/global.h>
 
+#include <pscf/iterator/AmIteratorTmpl.tpp>
+
+// Explicit instantiation of base class
 namespace Pscf {
-namespace R1d{
+   template class AmIteratorTmpl< R1d::Iterator, DArray<double> > ;
+}
+
+namespace Pscf {
+namespace R1d {
 
    using namespace Util;
 

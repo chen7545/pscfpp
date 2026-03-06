@@ -8,13 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <rpc/fts/compressor/AmCompBase.h>       // indirect base
 #include <rp/fts/compressor/LrAmCompressor.h>    // direct base template
 #include <rpc/system/Types.h>                    // direct base argument
 #include <rpc/fts/compressor/IntraCorrelation.h> // direct base member
 #include <prdc/cpu/RField.h>                     // direct base member
 #include <prdc/cpu/RFieldDft.h>                  // direct base member
-#include <pscf/iterator/AmIteratorTmpl.h>        // indirect base template
-#include <rpc/fts/compressor/Compressor.h>       // indirect base argument
 
 namespace Pscf {
 namespace Rpc {

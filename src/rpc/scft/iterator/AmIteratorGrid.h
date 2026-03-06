@@ -8,8 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "Iterator.h"                            // base class argument
-#include <pscf/iterator/AmIteratorDArray.h>      // base class template
+#include "AmIterBase.h"                          // base class
 #include <pscf/iterator/AmbdInteraction.h>       // member 
 
 // Forward declarations
@@ -36,7 +35,8 @@ namespace Rpc {
    * \ingroup Rpc_Scft_Iterator_Module
    */
    template <int D>
-   class AmIteratorGrid : public AmIteratorDArray< Iterator<D> >
+   class AmIteratorGrid 
+    : public AmIteratorTmpl< Iterator<D>, DArray<double> >
    {
 
    public:
