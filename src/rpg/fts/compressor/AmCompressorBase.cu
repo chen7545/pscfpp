@@ -5,7 +5,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmCompBase.h"
+/*
+* Declarations of explicit instantiations of AmIteratorTmpl used as base
+* classes for class templates Rpg::AmCompressor and Rpg::LrAmCompressor.
+*/
+
+#include "AmCompressorBase.h"
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
 #include <pscf/iterator/AmIteratorTmpl.tpp>

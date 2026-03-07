@@ -5,7 +5,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmCompBase.h"
+#include "AmCompressorBase.h"
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/Reduce.h>
 #include <pscf/iterator/AmIteratorTmpl.tpp>

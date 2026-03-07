@@ -8,12 +8,16 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+/*
+* Declarations of explicit instantiations of AmIteratorTmpl used as base
+* classes for class templates Rpg::AmCompressor and Rpg::LrAmCompressor.
+*/
+
 #include <pscf/iterator/AmIteratorTmpl.h>   // base class template
 #include <rpg/fts/compressor/Compressor.h>  // base class argument
 #include <pscf/cuda/DeviceArray.h>          // base class argument
 #include <pscf/cuda/cudaTypes.h>
 
-// Explicit instantiation declarations
 namespace Pscf {
    extern template
    class AmIteratorTmpl< Rpg::Compressor<1>, DeviceArray<cudaReal> >;

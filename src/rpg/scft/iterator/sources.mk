@@ -1,8 +1,8 @@
 rpg_scft_iterator_= \
   rpg/scft/iterator/Iterator.cu \
-  rpg/scft/iterator/AmIterHost.cu \
+  rpg/scft/iterator/AmIteratorHost.cu \
   rpg/scft/iterator/AmIteratorBasis.cu \
-  rpg/scft/iterator/AmIterDev.cu \
+  rpg/scft/iterator/AmIteratorDev.cu \
   rpg/scft/iterator/AmIteratorGrid.cu \
   rpg/scft/iterator/IteratorFactory.cu
 

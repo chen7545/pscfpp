@@ -1,5 +1,5 @@
 rpc_fts_compressor_= \
-  rpc/fts/compressor/AmCompBase.cpp \
+  rpc/fts/compressor/AmCompressorBase.cpp \
   rpc/fts/compressor/AmCompressor.cpp \
   rpc/fts/compressor/LrCompressor.cpp \
   rpc/fts/compressor/LrAmCompressor.cpp \

@@ -165,52 +165,6 @@ namespace Rp {
       */
       void outputToLog() override;
 
-      // Private virtual functions for vector math operations
-
-      /**
-      * Assign one field to another.
-      *
-      * \param a the field to be set (lhs of assignment)
-      * \param b the field for it to be set to (rhs of assigment)
-      */
-      void setEqual(VectorT& a,
-                    VectorT const & b) override;
-
-      /**
-      * Compute the inner product of two vectors
-      */
-      double dotProduct(VectorT const & a,
-                        VectorT const & b) override;
-
-      /**
-      * Find the maximum magnitude element of a residual vector.
-      */
-      double maxAbs(VectorT const & hist) override;
-
-      /**
-      * Compute the difference a = b - c for vectors a, b and c.
-      *
-      * \param a result vector (LHS)
-      * \param b first vector (RHS)
-      * \param c second vector (RHS)
-      */
-      void subVV(VectorT& a,
-                 VectorT const & b,
-                 VectorT const & c) override;
-
-      /**
-      * Compute a += c*b for vectors a and b and scalar c.
-      *
-      * \param a result vector (LHS)
-      * \param b input vector (RHS)
-      * \param c scalar coefficient (RHS)
-      */
-      void addEqVc(VectorT& a,
-		   VectorT const & b,
-		   double c) override;
-
-      // Private typename alias
-
       /// Typename alias for base class.
       using AmTmpl = AmIteratorTmpl< CompressorT, VectorT >;
 

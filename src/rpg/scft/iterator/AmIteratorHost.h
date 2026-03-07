@@ -1,11 +1,16 @@
-#ifndef RPG_AM_ITER_HOST_H
-#define RPG_AM_ITER_HOST_H
+#ifndef RPG_AM_ITERATOR_HOST_H
+#define RPG_AM_ITERATOR_HOST_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
 *
 * Copyright 2015 - 2025, The Regents of the University of Minnesota
 * Distributed under the terms of the GNU General Public License.
+*/
+
+/*
+* Declarations of explicit instantiations of AmIteratorTmpl that are
+* used as base classes for class template Rpg::AmIteratorBasis.
 */
 
 #include <pscf/iterator/AmIteratorTmpl.h>  // base class template

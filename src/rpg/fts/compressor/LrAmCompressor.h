@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <rpg/fts/compressor/AmCompBase.h>       // indirect base argument
+#include <rpg/fts/compressor/AmCompressorBase.h> // indirect base 
 #include <rp/fts/compressor/LrAmCompressor.h>    // direct base template
 #include <rpg/system/Types.h>                    // direct base argument
 #include <rpg/fts/compressor/IntraCorrelation.h> // direct base member

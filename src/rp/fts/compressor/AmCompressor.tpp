@@ -200,61 +200,6 @@ namespace Rp {
    void AmCompressor<D,T,V>::outputToLog()
    {}
 
-   // Private virtual functions for vector math
-
-   /*
-   * Assign one array to another.
-   */
-   template <int D, class T, class V>
-   void AmCompressor<D,T,V>::setEqual(VectorT& a,
-                                      VectorT const & b)
-   {
-      UTIL_CHECK(b.capacity() == a.capacity());
-      VecOp::eqV(a, b);
-   }
-
-   /*
-   * Compute and return inner product of two vectors.
-   */
-   template <int D, class T, class V>
-   double AmCompressor<D,T,V>::dotProduct(VectorT const & a,
-                                          VectorT const & b)
-   {
-      UTIL_CHECK(a.capacity() == b.capacity());
-      return Reduce::innerProduct(a, b);
-   }
-
-   /*
-   * Compute and return maximum absolute value element of a vector.
-   */
-   template <int D, class T, class V>
-   double AmCompressor<D,T,V>::maxAbs(VectorT const & a)
-   {  return Reduce::maxAbs(a); }
-
-   /*
-   * Compute the vector difference a = b - c
-   */
-   template <int D, class T, class V>
-   void AmCompressor<D,T,V>::subVV(VectorT& a,
-                                   VectorT const & b,
-                                   VectorT const & c)
-   {
-      UTIL_CHECK(a.capacity() == b.capacity());
-      VecOp::subVV(a, b, c);
-   }
-
-   /*
-   * Composite a += b*c for vectors a and b, scalar c
-   */
-   template <int D, class T, class V>
-   void AmCompressor<D,T,V>::addEqVc(VectorT& a,
-                                     VectorT const & b,
-                                     double c)
-   {
-      UTIL_CHECK(a.capacity() == b.capacity());
-      VecOp::addEqVc(a, b, c);
-   }
-
 }
 }
 #endif

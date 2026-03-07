@@ -5,10 +5,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmIterBase.h"
+#include "AmIteratorBase.h"
 #include <pscf/cpu/VecOp.h>
 #include <pscf/cpu/Reduce.h>
-
 #include <pscf/iterator/AmIteratorTmpl.tpp>
 
 // Explicit instantiation definitions

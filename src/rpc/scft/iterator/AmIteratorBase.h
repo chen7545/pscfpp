@@ -1,5 +1,5 @@
-#ifndef RPC_AM_ITER_BASE_H
-#define RPC_AM_ITER_BASE_H
+#ifndef RPC_AM_ITERATOR_BASE_H
+#define RPC_AM_ITERATOR_BASE_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,11 +8,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+/*
+* Ddeclarations of explicit instantations of AmIteratorTmpl used as base 
+* classes for class templates Rpc::AmIteratorBasis and Rpc::AmIteratorGrid.
+*/
+
 #include <pscf/iterator/AmIteratorTmpl.h>   // base class template
 #include <rpc/scft/iterator/Iterator.h>     // base class argument
 #include <util/containers/DArray.h>         // base class argument
 
-// Explicit instantiation declarations
 namespace Pscf {
    extern template 
    class AmIteratorTmpl< Rpc::Iterator<1>, DArray<double> >;

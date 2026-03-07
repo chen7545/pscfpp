@@ -8,21 +8,13 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmIterBase.h"                          // base class
+#include "AmIteratorBase.h"                      // base class
 #include <pscf/iterator/AmbdInteraction.h>       // member 
-
-// Forward declarations
-namespace Util {
-   template <typename T> class DArray;
-}
-namespace Pscf {
-  namespace Rpc {
-     template <int D> class System;
-  }
-}
 
 namespace Pscf {
 namespace Rpc {
+
+   template <int D> class System;
 
    using namespace Util;
 

@@ -5,9 +5,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmIterDev.h"
+#include "AmIteratorDev.h"
 #include <pscf/cuda/VecOp.h>
 #include <pscf/cuda/Reduce.h>
+
 #include <pscf/iterator/AmIteratorTmpl.tpp>
 
 // Explicit instantiation definitions

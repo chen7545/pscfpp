@@ -1,5 +1,5 @@
-#ifndef RPG_AM_ITER_DEV_H
-#define RPG_AM_ITER_DEV_H
+#ifndef RPG_AM_ITERATOR_DEV_H
+#define RPG_AM_ITERATOR_DEV_H
 
 /*
 * PSCF - Polymer Self-Consistent Field
@@ -8,14 +8,17 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+/*
+* Declarations of explicit instantiations of AmiteratorTmpl that 
+* used as base classes for class template Rpg::AmIteratorGrid.
+*/
+
 #include <pscf/iterator/AmIteratorTmpl.h>  // base class template
 #include <rpg/scft/iterator/Iterator.h>    // base class argument
 #include <pscf/cuda/DeviceArray.h>         // base class argument
 #include <pscf/cuda/cudaTypes.h>           // base class argument
 
-// Explicit instantiation declarations
 namespace Pscf {
-
    extern template 
    class AmIteratorTmpl< Rpg::Iterator<1>, DeviceArray<cudaReal> >;
    extern template 

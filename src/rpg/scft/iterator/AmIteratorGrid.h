@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "AmIterDev.h"                       // base class
+#include "AmIteratorDev.h"                   // base class
 #include <pscf/iterator/AmbdInteraction.h>   // member variable
 #include <util/containers/RingBuffer.h>      // method input variable
 

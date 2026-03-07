@@ -8,11 +8,15 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+/*
+* Declarations of explicit instantiations used as base classes for 
+* class templates Rpc::AmCompressor and Rpc::LrAmCompressor.
+*/
+
 #include <pscf/iterator/AmIteratorTmpl.h>   // base class template
 #include <rpc/fts/compressor/Compressor.h>  // base class argument
 #include <util/containers/DArray.h>         // base class argument
 
-// Explicit instantiation declarations
 namespace Pscf {
    extern template 
    class AmIteratorTmpl< Rpc::Compressor<1>, DArray<double> >;
